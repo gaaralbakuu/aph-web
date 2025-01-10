@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>e+万邦</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link href="img/layout.css" rel="stylesheet" type="text/css" />
+    <script src="jquery-2.1.1.min.js"></script>
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+  </head>
+  <body>
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      .test {
+        height: 600px;
+        max-width: 600px;
+        font-size: 40px;
+      }
+    </style>
+    <div class="wrap">
+      <header>
+        <h1 class="logo"></h1>
+      </header>
+
+      <section class="qr">
+        <img src="img/qrcode.png" />
+      </section>
+      <section class="book">
+        <div style="margin-top:10px;">
+          <a class="btn s1" href="#" onclick="downloadIos()">IOS AppStore</a>
+        </div>
+        <div style="margin-top:20px;">
+          <a class="btn s2" href="#" onclick="downloadAndroid()"
+            >Android App下载</a
+          >
+        </div>
+      </section>
+
+      <!-- <footer>Copyright 2015 中文在线 版权所有</footer> -->
+    </div>
+
+    <script type="text/javascript">
+      //
+      var url =
+        'https://app.apachefootwear.com/Platform/appversion/getLatestPackageUrl'
+      var uid = getQueryString('uid')
+      uid = uid ? uncompile(uid) : null
+      var isWeixin = is_weixin()
+      var winHeight =
+        typeof window.innerHeight != 'undefined'
+          ? window.innerHeight
+          : document.documentElement.clientHeight
+      var cssText =
+        '#weixin-tip{position: fixed; left:0; top:0; background: rgba(0,0,0,0.8); filter:alpha(opacity=80); width: 100%; height:100%; z-index: 100;} ' +
+        '#weixin-tip p{text-align: center; margin-top: 10%; padding:0 5%;}'
+      if (isWeixin) {
+        loadHtml()
+        loadStyleText(cssText)
+      }
+
+      function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+        var r = window.location.search.substr(1).match(reg)
+        if (r != null) return unescape(r[2])
+        return null
+      }
+
+      function uncompile(code) {
+        code = unescape(code)
+        var c = String.fromCharCode(code.charCodeAt(0) - code.length)
+        for (var i = 1; i < code.length; i++) {
+          c += String.fromCharCode(code.charCodeAt(i) - c.charCodeAt(i - 1))
+        }
+        return c
+      }
+
+      function downloadIos() {
+        $.get(url, { shareFrom: uid, isIos: 'Y' }, function(r) {
+          if (r && r.data) window.location = r.data
+        })
+      }
+
+      function downloadAndroid() {
+        $.get(url, { shareFrom: uid }, function(r) {
+          if (r && r.data) window.location = r.data
+        })
+      }
+
+      function is_weixin() {
+        //window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
+        var ua = window.navigator.userAgent.toLowerCase()
+        //通过正则表达式匹配ua中是否含有MicroMessenger字符串
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      function loadHtml() {
+        var div = document.createElement('div')
+        div.id = 'weixin-tip'
+        div.innerHTML = '<p><img src="img/live_weixin.png" alt="微信打开"/></p>'
+        document.body.appendChild(div)
+      }
+
+      function loadStyleText(cssText) {
+        var style = document.createElement('style')
+        style.rel = 'stylesheet'
+        style.type = 'text/css'
+        try {
+          style.appendChild(document.createTextNode(cssText))
+        } catch (e) {
+          style.styleSheet.cssText = cssText //ie9以下
+        }
+        var head = document.getElementsByTagName('head')[0] //head标签之间加上style样式
+        head.appendChild(style)
+      }
+    </script>
+  </body>
+</html>
