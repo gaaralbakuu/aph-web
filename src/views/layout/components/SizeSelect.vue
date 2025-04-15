@@ -4,15 +4,16 @@
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item :disabled="size==='medium'" command="medium">宽松</el-dropdown-item>
-      <el-dropdown-item :disabled="size==='small'" command="small">适中</el-dropdown-item>
-      <el-dropdown-item :disabled="size==='mini'" command="mini">紧凑</el-dropdown-item>
+      <el-dropdown-item :disabled="size==='medium'" command="medium">{{ $l.loose }}</el-dropdown-item>
+      <el-dropdown-item :disabled="size==='small'" command="small">{{ $l.moderate }}</el-dropdown-item>
+      <el-dropdown-item :disabled="size==='mini'" command="mini">{{ $l.compact }}</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>
 
 <script>
 export default {
+  name: 'SizeSelect',
   computed: {
     size() {
       return this.$store.getters.size
@@ -24,7 +25,7 @@ export default {
       this.$store.dispatch('setSize', size)
       this.refreshView()
       this.$message({
-        message: '切换成功',
+        message: this.$l.switchSuccess,
         type: 'success',
       })
     },
@@ -37,6 +38,9 @@ export default {
           path: '/redirect' + fullPath,
         })
       })
+    },
+    mounted() {
+      console.log("asdddddddddddddddddddd", this.$l)
     },
   },
 }

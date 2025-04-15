@@ -46,7 +46,14 @@
     "sass-loader": "^10.2.0",
     "script-loader": "^0.7.2",
     "svg-sprite-loader": "^5.0.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "@vue-office/docx": "^1.6.2",
+    "@vue-office/excel": "^1.7.11",
+    "@vue-office/pdf": "^2.0.8",
+    "@vue-office/pptx": "0.0.2",
+    "@vue/composition-api": "^1.7.2",
+    "spark-md5": "^3.0.2",
+    "vue-demi": "^0.14.10"
   },
   "browserslist": [
     "> 1%",

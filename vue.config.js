@@ -5,7 +5,7 @@ const resolve = dir => require('path').join(__dirname, dir)
 process.env.VUE_APP_API = 'https://appvn.apachefootwear.com' //prd
 
 if (process.env.NODE_ENV === 'development') {
-  process.env.VUE_APP_API = 'http://10.30.2.247:5000' 
+  process.env.VUE_APP_API = 'http://10.30.3.121:65301' 
 }
 
 module.exports = {

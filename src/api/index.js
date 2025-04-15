@@ -14,16 +14,21 @@ const api = {
   banner: url + 'platform/banner/',
   rtestuser: url + 'platform/rtestuser/',
   appVersion: url + 'platform/appversion/',
-  userfeedback:url + 'Platform/suggest/',
+  userfeedback: url + 'Platform/suggest/',
   workflowField: url + 'platform/workflowfield/',
   symesg: url + 'platform/symesg/',
   epidemic: url + 'Requirements/Epidemic/',
   file: url + 'platform/file/',
   Message: url + 'Platform/message/',
-  suggest:url + 'Platform/suggest/',
-  Sydept:url + 'Requirements/Sydept/',
-  BpmUser:url + 'Interface/BpmUser/',
-  publiccode:url + 'Requirements/Publiccode/'
+  suggest: url + 'Platform/suggest/',
+  Sydept: url + 'Requirements/Sydept/',
+  BpmUser: url + 'Interface/BpmUser/',
+  publiccode: url + 'Requirements/Publiccode/',
+  ComplianceDictionary: url + 'Compliance/complianceDictionary/',
+  ComplianceAttachments: url + 'Compliance/complianceAttachments/',
+  ComplianceUser: url + 'Compliance/ComplianceUser/',
+  ComplianceManufacturer: url + 'Compliance/ComplianceManufacturer/',
+  checkMenuAuth: url +  'platform/user/checkMenuAuth',
 }
 
 export default api

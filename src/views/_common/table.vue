@@ -11,11 +11,11 @@
           </slot>
         </template>
       </el-table-column>
-      <el-table-column v-if="!tableProps.hideOperations" label="操作" :width="tableProps.opsColWith||86" fixed="right">
+      <el-table-column v-if="!tableProps.hideOperations" :label="$c.operation" :width="tableProps.opsColWith||86" fixed="right">
         <template slot-scope="scope">
           <slot name="operation" v-bind="{row:scope.row,$index:scope.$index}">
-            <a href="#" class="text-blue" @click.prevent="editItem(scope.row,scope.$index)">编辑</a>&nbsp;
-            <a href="#" class="text-red" @click.prevent="deleteItem(scope.row,scope.$index)">删除</a>
+            <a href="#" class="text-blue" @click.prevent="editItem(scope.row,scope.$index)">{{ $c.edit }}</a>&nbsp;
+            <a href="#" class="text-red" @click.prevent="deleteItem(scope.row,scope.$index)">{{ $c.delete }}</a>
           </slot>
         </template>
       </el-table-column>

@@ -30,7 +30,7 @@ import '@/utils/filter'
 Vue.use(VueI18n)
 const i18n = new VueI18n({
   // 默认语言
-  locale: 'zh-CN',
+  locale: 'vi-VN',
   // 引入语言文件
   messages: {
     'zh-CN': zhCn,
@@ -44,7 +44,11 @@ Vue.mixin(mixinCommon)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'small', // set element-ui default size [medium,small,mini]
-  i18n: (key, value) => i18n.t(key, value),
+  i18n: (key, value) => {
+    console.log(key,value);
+
+    return i18n.t(key, value)
+  },
 })
 Vue.config.productionTip = false
 

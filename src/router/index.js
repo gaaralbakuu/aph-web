@@ -7,6 +7,8 @@ import SubLayout from '@/views/layout/SubLayout'
 
 import admin from './admin'
 import sysbasics from './sysbasics'
+import compliance from './compliance'
+// import compliance from './compliance'
 
 Vue.use(Router)
 
@@ -65,7 +67,7 @@ export const constantRouterMap = [
         path: 'welcome',
         component: () => import('@/views/home/welcome'),
         name: 'welcome',
-        meta: { title: '欢迎页' }
+        meta: { title: 'Welcome Page' }
       }
     ]
   },
@@ -83,7 +85,7 @@ export const constantRouterMap = [
   }
 ]
 
-export const asyncRouterMap = [admin,sysbasics]
+export const asyncRouterMap = [admin,sysbasics, compliance]
 //export const asyncRouterMap = [sysbasics]
 
 export const noPageRoute = { path: '*', redirect: { name: '404' } }

@@ -1,46 +1,203 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{$l.createItem}}</el-button>
+    <el-button type="primary" class="fr" @click="createItem">{{
+      $l.createItem
+    }}</el-button>
     <div class="filter-container">
-      <el-input style="width: 300px;" :placeholder="$l.search" clearable prefix-icon="el-icon-search"
-        class="filter-item" @keyup.enter.native="research" @clear="research" v-model="query.queryString"></el-input>
+      <el-input
+        style="width: 300px"
+        :placeholder="$l.search"
+        clearable
+        prefix-icon="el-icon-search"
+        class="filter-item"
+        @keyup.enter.native="research"
+        @clear="research"
+        v-model="query.queryString"
+      ></el-input>
     </div>
     <el-row :gutter="20">
-      <el-col :span="10">
-        <z-table :list="list" :tableProps="tableProps" :columns="columns" @row-click="getChildrenTree"
-          @editItem="editItem" @deleteItem="deleteItem">
-        </z-table>
-        <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size"
-          @change="getList"></z-pagination>
-      </el-col>
       <el-col :span="7">
-        <div style="min-height: 36px;">
-          <div style="display:inline-block;width: 120px;font-size: 12px; padding-top: 10px;" v-if="currentDataId">
-            {{$l.selectedMemnu}}
+        <z-table
+          :list="list"
+          :tableProps="tableProps"
+          :columns="columns"
+          @row-click="getChildrenTree"
+          @editItem="editItem"
+          @deleteItem="deleteItem"
+        >
+        </z-table>
+        <z-pagination
+          :pagination="pagination"
+          :total="total"
+          :page.sync="query.page"
+          :limit.sync="query.size"
+          @change="getList"
+        ></z-pagination>
+      </el-col>
+      <el-col :span="12">
+        <div style="min-height: 36px">
+          <div
+            style="
+              display: inline-block;
+              width: 120px;
+              font-size: 12px;
+              padding-top: 10px;
+            "
+            v-if="currentDataId"
+          >
+            {{ $l.selectedMemnu }}
           </div>
-          <el-button type="success" style="float: right;" v-if="currentDataId && menuCheckChange"
-            :loading="saveMenuLoading" @click="saveRoleMenu">{{$l.save}}
+          <el-button
+            type="success"
+            style="float: right"
+            v-if="currentDataId && menuCheckChange"
+            :loading="saveMenuLoading"
+            @click="saveRoleMenu"
+            >{{ $l.save }}
           </el-button>
         </div>
-        <div v-if="currentDataId" style="border: #f4f4f4 solid 1px; padding: 10px 0;">
-          <el-tree :data="treeData" node-key="menu_id" :default-expand-all="false" :show-checkbox="true" ref="tree"
-            :default-checked-keys="menuIds" :expand-on-click-node="false" @check-change="menuCheckChange=true">
+        <div
+          v-if="currentDataId"
+          style="border: #f4f4f4 solid 1px; padding: 10px 0"
+        >
+          <el-tree
+            :data="treeData"
+            node-key="menu_id"
+            :default-expand-all="false"
+            :show-checkbox="true"
+            ref="tree"
+            :default-checked-keys="menuIds"
+            :expand-on-click-node="false"
+            @check-change="menuCheckChange = true"
+          >
             <span class="custom-tree-node" slot-scope="{ data }">
-              <span style="font-weight: bold">{{ data.menu_name_label }}&nbsp;&nbsp;[{{ data.resource_type }}]
+              <span style="font-weight: bold"
+                >{{ data.menu_name_label }}&nbsp;&nbsp;[{{
+                  data.resource_type
+                }}]
+              </span>
+              <span v-show="showAuth.m_updata">
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_add == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_add1"
+                  :active-text="$c.m_add"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_del == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_del1"
+                  :active-text="$c.m_del"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_updata == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_updata1"
+                  :active-text="$c.m_updata"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_search == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_search1"
+                  :active-text="$c.m_search"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_import == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_import1"
+                  :active-text="$c.m_import"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_export == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_export1"
+                  :active-text="$c.m_export"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_upload == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_upload1"
+                  :active-text="$c.m_upload"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_audit == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_audit1"
+                  :active-text="$c.m_audit"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
+                <el-switch
+                  :width="27"
+                  @change="menuCheckChange = true"
+                  v-show="data.m_print == 'Y' && data.resource_type != 'MENU'"
+                  v-model="data.m_print1"
+                  :active-text="$c.m_print"
+                  active-value="Y"
+                  inactive-value="N"
+                >
+                </el-switch>
               </span>
             </span>
           </el-tree>
         </div>
       </el-col>
-      <el-col :span="7">
-        <div style="min-height: 36px;" v-if="currentDataId">
-          <div class="flex flex-center" style="font-size: 12px; margin-bottom:10px;">
-            <span>{{$l.allocatedAccount}}</span>
+      <el-col :span="5">
+        <div style="min-height: 36px" v-if="currentDataId">
+          <div
+            class="flex flex-center"
+            style="font-size: 12px; margin-bottom: 10px"
+          >
+            <span>{{ $l.allocatedAccount }}</span>
             <div class="flex1"></div>
-            <el-input style="display:inline-block;width: 120px;" suffix-icon="el-icon-search" size="mini" clearable
-              v-model="userQuery.queryString" @change="researchUser">
+            <el-input
+              style="display: inline-block; width: 120px"
+              suffix-icon="el-icon-search"
+              size="mini"
+              clearable
+              v-model="userQuery.queryString"
+              @change="researchUser"
+            >
             </el-input>
-            <el-button class="ml-5" size="mini" type="primary" icon="el-icon-plus" circle plain @click="addUserClick">
+            <el-button
+              class="ml-5"
+              size="mini"
+              type="primary"
+              icon="el-icon-plus"
+              circle
+              plain
+              @click="addUserClick"
+            >
             </el-button>
           </div>
           <!-- <el-button type="success" style="float: right;" v-if="currentDataId && empCheckChange"
@@ -55,28 +212,66 @@
               <span>{{ data.name }}</span>
             </span>
           </el-tree> -->
-          <z-table :list="userList" :tableProps="userTableProps" :columns="userColumns">
+          <z-table
+            :list="userList"
+            :tableProps="userTableProps"
+            :columns="userColumns"
+          >
             <template v-slot:operation="v">
-              <a href="#" class="text-red" @click.prevent="deleteUserRoleItem(v.row, v.$index)">{{$c.delete}}</a>
+              <a
+                href="#"
+                class="text-red"
+                @click.prevent="deleteUserRoleItem(v.row, v.$index)"
+                >{{ $c.delete }}</a
+              >
             </template>
           </z-table>
-          <z-pagination :small="true" :pagination="userPagination" :total="userTotal" :page.sync="userQuery.page"
-            :limit.sync="userQuery.size" @change="getUserList"></z-pagination>
+          <z-pagination
+            :small="true"
+            :pagination="userPagination"
+            :total="userTotal"
+            :page.sync="userQuery.page"
+            :limit.sync="userQuery.size"
+            @change="getUserList"
+          ></z-pagination>
         </div>
       </el-col>
     </el-row>
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit"
-      :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
-    <el-dialog :title="$l.batchAddUser" :visible.sync="addUserDialogShow" width="40%">
+    <z-form-dialog
+      :name="name"
+      :data="data"
+      :formProps="formProps"
+      :fields="fields"
+      @submmit="submmit"
+      :submmitLoading="submmitLoading"
+      :visible.sync="editFormVisible"
+    ></z-form-dialog>
+    <el-dialog
+      :title="$l.batchAddUser"
+      :visible.sync="addUserDialogShow"
+      width="40%"
+    >
       <el-form label-width="100px">
         <el-form-item :label="$l.addUserLabel">
-          <el-input type="textarea" :placeholder="$l.addUserPlaceholder" v-model="addUsers" style="width: 80%">
+          <el-input
+            type="textarea"
+            :placeholder="$l.addUserPlaceholder"
+            v-model="addUsers"
+            style="width: 80%"
+          >
           </el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addUserDialogShow = false">{{$c.cancel}}</el-button>
-        <el-button type="primary" @click="submmitAddUser" :loading="submitAddUserLoading">{{$c.confirm}}</el-button>
+        <el-button @click="addUserDialogShow = false">{{
+          $c.cancel
+        }}</el-button>
+        <el-button
+          type="primary"
+          @click="submmitAddUser"
+          :loading="submitAddUserLoading"
+          >{{ $c.confirm }}</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -102,6 +297,7 @@ export default {
       fields: [
         { title: this.$l.role_name, key: 'role_name', required: true },
         { title: this.$l.role_desc, key: 'role_desc', required: true },
+        { title: this.$l.role_type, key: 'role_type', required: false },
       ],
       tableProps: {
         border: true,
@@ -161,6 +357,19 @@ export default {
       addUserDialogShow: false,
       addUsers: '',
       submitAddUserLoading: false,
+
+      showAuth: {
+        //用于权限控制，搭配v-show控制界面上的操作按钮是否展示
+        m_search: true,
+        m_add: true,
+        m_del: true,
+        m_updata: true,
+        m_import: true,
+        m_export: true,
+        m_upload: true,
+        m_audit: true,
+        m_print: true,
+      },
     }
   },
   methods: {
@@ -319,9 +528,28 @@ export default {
         this.pageLoading = true
         this.$request(this.api + 'getMenuAndEmp/' + this.currentDataId)
           .then((r) => {
+            this.menuObj = r.data.menuids
             this.treeData = _.cloneDeep(this.menuData)
-            // this.treeData2 = _.cloneDeep(this.empData)
-            this.menuIds = r.data.menuids
+
+            this.treeData.forEach((i) => {
+              i.children.forEach((x) => {
+                this.menuObj.forEach((y) => {
+                  if (x.menu_id == y.menu_id) {
+                    ;(x.m_search1 = y.m_search),
+                      (x.m_add1 = y.m_add),
+                      (x.m_del1 = y.m_del),
+                      (x.m_updata1 = y.m_updata),
+                      (x.m_import1 = y.m_import),
+                      (x.m_export1 = y.m_export),
+                      (x.m_upload1 = y.m_upload),
+                      (x.m_audit1 = y.m_audit),
+                      (x.m_print1 = y.m_print)
+                  }
+                })
+              })
+            })
+
+            this.menuIds = _.map(r.data.menuids, (i) => i.menu_id)
             // this.empIds = r.data.empids
             this.pageLoading = false
           })

@@ -15,10 +15,10 @@
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
-      <!--<li @click="closeSelectedTag(selectedTag)">关闭当前</li>-->
-      <li @click="closeOthersTags">关闭其他</li>
-      <li @click="closeAllTags">关闭所有</li>
+      <li @click="refreshSelectedTag(selectedTag)">{{ $l.refresh }}</li>
+      <!-- <li @click="closeSelectedTag(selectedTag)">关闭当前</li> -->
+      <li @click="closeOthersTags">{{ $l.closeOtherTags }}</li>
+      <li @click="closeAllTags">{{ $l.closeAllTags }}</li>
     </ul>
   </div>
 </template>
@@ -27,6 +27,7 @@
 import ScrollPane from '@/components/ScrollPane'
 
 export default {
+  name: 'TagsView',
   components: { ScrollPane },
   data () {
     return {
@@ -56,6 +57,8 @@ export default {
   },
   mounted () {
     this.addViewTags()
+
+    console.log(this.$l)
   },
   methods: {
     generateRoute () {

@@ -152,7 +152,7 @@ export default {
       this.theme = Cookies.get('theme-color') || ORIGINAL_THEME
       document.getElementsByClassName(
         'el-color-dropdown__link-btn'
-      )[0].innerHTML = '默认'
+      )[0].innerHTML = 'Default'
     }, 500)
   },
 }
