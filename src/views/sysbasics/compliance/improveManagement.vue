@@ -1107,7 +1107,7 @@ export default {
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '改进管理数据' + '_' + dayjs().format('YYYYMMDD'),
+            filename: this.$l.xlsxImproveManageName + '_' + dayjs().format('YYYYMMDD'),
           })
           this.exportLoading = false
         })

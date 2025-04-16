@@ -4,7 +4,7 @@
 
     <div>
       <el-button type="success" @click="backInvestigation"
-        >返回上一页</el-button
+        >{{ $l.backToPreviousPage }}</el-button
       >
     </div>
     <!-- 内容 -->

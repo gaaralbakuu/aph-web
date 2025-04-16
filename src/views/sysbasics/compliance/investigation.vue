@@ -40,7 +40,7 @@
           <el-col :span="7">
             <el-form-item :label="this.$l.recStatus">
               <el-select v-model="queryList.rec_status" :placeholder="this.$l.pleaseEnterTheAuditResult" clearable>
-                <el-option label="全部" value=""></el-option>
+                <el-option :label="$c.all" value=""></el-option>
                 <el-option v-for="(item, index) in rec_status" :label="item.label" :value="item.value" :key="index"></el-option>
               </el-select>
             </el-form-item>
@@ -59,9 +59,9 @@
     <div>
       <el-button v-show="showAuth.m_add" @click="addForm()" icon="el-icon-search" type="primary">{{ $l.cAdd }}</el-button>
 
-      <el-button v-show="showAuth.m_export" @click="exportInfo()" icon="el-icon-download" type="info" class="fr">下载</el-button>
+      <el-button v-show="showAuth.m_export" @click="exportInfo()" icon="el-icon-download" type="info" class="fr">{{ $l.down }}</el-button>
 
-      <el-button @click="recEmail()" icon="el-icon-message" type="info" class="fr">邮件通知</el-button>
+      <el-button @click="recEmail()" icon="el-icon-message" type="info" class="fr">{{ $l.emailNotification }}</el-button>
 
       <div style="margin-top: 10px">
         <!-- 表格 -->
@@ -498,17 +498,17 @@
             <el-form style="border-radius: 2px">
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="角色"></el-form-item>
+                  <el-form-item :label="$l.roles"></el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="邮件通知角色"></el-form-item>
+                  <el-form-item :label="$l.emailNotificationRole"></el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-table :data="roleList.list" style="width: 90%">
                     <el-table-column v-for="(item, index) in roleList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                     <el-table-column fixed="right" :label="this.$c.operation" width="145">
                       <template slot-scope="scope">
-                        <el-button @click="addRoleItem(scope.row)" type="text" size="small">添加通知</el-button>
+                        <el-button @click="addRoleItem(scope.row)" type="text" size="small">{{ $l.addNotification }}</el-button>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -519,25 +519,25 @@
                     <el-table-column v-for="(item, index) in recEmailList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                     <el-table-column fixed="right" :label="this.$c.operation" width="145">
                       <template slot-scope="scope">
-                        <el-button @click="deleteRoleItem(scope.row)" type="text" size="small" style="color: red">取消通知</el-button>
+                        <el-button @click="deleteRoleItem(scope.row)" type="text" size="small" style="color: red">{{ $l.cancellationNotice }}</el-button>
                       </template>
                     </el-table-column>
                   </el-table>
                 </el-col>
 
                 <el-col :span="24">
-                  <el-form-item label="发送邮件"></el-form-item>
+                  <el-form-item :label="$l.sendEmail"></el-form-item>
                 </el-col>
 
                 <el-col :span="8">
-                  <el-form-item label="临近审核日期">
+                  <el-form-item :label="$l.approachingReviewDate">
                     <el-date-picker v-model="recEmailList.distanceTime" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="4">
                   <el-form-item>
-                    <el-button type="primary" @click="sendRoleEmail">发送邮件</el-button>
+                    <el-button type="primary" @click="sendRoleEmail">{{ $l.sendEmail }}</el-button>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -1272,15 +1272,15 @@ export default {
         total: 0,
         columns: [
           {
-            title: '角色ID',
+            title: this.$l.role_id,
             key: 'role_id',
           },
           {
-            title: '角色名称',
+            title: this.$l.role_name,
             key: 'role_name',
           },
           {
-            title: '角色说明',
+            title: this.$l.role_desc,
             key: 'role_desc',
           },
         ],
@@ -1303,15 +1303,15 @@ export default {
         total: 0,
         columns: [
           {
-            title: '角色ID',
+            title: this.$l.role_id,
             key: 'role_id',
           },
           {
-            title: '角色名称',
+            title: this.$l.role_name,
             key: 'role_name',
           },
           {
-            title: '角色说明',
+            title: this.$l.role_desc,
             key: 'role_desc',
           },
         ],
