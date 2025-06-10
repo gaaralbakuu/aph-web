@@ -277,23 +277,23 @@ export default {
 
     refreshTree() {
       //查询部门列表
-      this.pageLoading = true
-      this.$request(this.apiSydept + 'getlist', {
-        pageSize: 9999,
-        queryString: {},
-      })
-        .then((r) => {
-          this.department.treeData = this.generate(
-            r.data.list,
-            'dept_no',
-            'up_dept_no',
-            '0'
-          )
-          this.pageLoading = false
-        })
-        .catch((e) => {
-          this.pageLoading = false
-        })
+      // this.pageLoading = true
+      // this.$request(this.apiSydept + 'getlist', {
+      //   pageSize: 9999,
+      //   queryString: {},
+      // })
+      //   .then((r) => {
+      //     this.department.treeData = this.generate(
+      //       r.data.list,
+      //       'dept_no',
+      //       'up_dept_no',
+      //       '0'
+      //     )
+      //     this.pageLoading = false
+      //   })
+      //   .catch((e) => {
+      //     this.pageLoading = false
+      //   })
     },
 
     getUserByDept(data) {

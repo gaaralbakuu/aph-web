@@ -8,6 +8,7 @@ import SubLayout from '@/views/layout/SubLayout'
 import admin from './admin'
 import sysbasics from './sysbasics'
 import compliance from './compliance'
+import compliance2 from './compliance2'
 // import compliance from './compliance'
 
 Vue.use(Router)
@@ -85,7 +86,7 @@ export const constantRouterMap = [
   }
 ]
 
-export const asyncRouterMap = [admin,sysbasics, compliance]
+export const asyncRouterMap = [admin,sysbasics, compliance, compliance2]
 //export const asyncRouterMap = [sysbasics]
 
 export const noPageRoute = { path: '*', redirect: { name: '404' } }

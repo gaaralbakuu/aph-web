@@ -1,21 +1,21 @@
 <template>
   <div class="mar">
     <div class="dialog-content shadow">
-      <span class="top-title">{{ $l.basicInformation }}</span>
+      <span class="top-title">基础信息</span>
       <el-form label-position="top" inline style="border-radius: 2px">
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.manufactureName">
+            <el-form-item label="合作伙伴中文名称">
               <el-input v-model="manufacturer.data.name_zh" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.manufactureNameEn">
+            <el-form-item label="合作伙伴英文名称">
               <el-input v-model="manufacturer.data.name_en" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.requestorFacilityType">
+            <el-form-item label="需求工厂">
               <el-radio-group v-model="manufacturer.data.requestor_facility_type">
                 <el-radio label="T1" :disabled="true">T1</el-radio>
                 <el-radio label="T2" :disabled="true">T2</el-radio>
@@ -25,99 +25,99 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.legalPerson">
+            <el-form-item label="法人代表">
               <el-input v-model="manufacturer.data.legal_person" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.country">
+            <el-form-item label="合作伙伴国家">
               <el-input v-model="manufacturer.data.country" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.isExportBiz">
+            <el-form-item label="是否有出口业务">
               <el-radio-group v-model="manufacturer.data.is_export_biz">
-                <el-radio label="Y" :disabled="true">{{ $l.yes }}</el-radio>
-                <el-radio label="N" :disabled="true">{{ $l.no }}</el-radio>
+                <el-radio label="Y" :disabled="true">是</el-radio>
+                <el-radio label="N" :disabled="true">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.customsNumber">
+            <el-form-item label="海关登记号码">
               <el-input v-model="manufacturer.data.customs_number" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.bizLicenseNumber">
+            <el-form-item label="营业执照号码">
               <el-input v-model="manufacturer.data.biz_license_number" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.isInvolveProduct">
+            <el-form-item label="涉及产品/开发">
               <el-radio-group v-model="manufacturer.data.is_involve_product">
-                <el-radio label="Y" :disabled="true">{{ $l.product }}</el-radio>
-                <el-radio label="N" :disabled="true">{{ $l.development }}</el-radio>
+                <el-radio label="Y" :disabled="true">产品</el-radio>
+                <el-radio label="N" :disabled="true">开发</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.cooperationStartDate">
+            <el-form-item label="合作开始时间">
               <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime"
                 :disabled="true"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.cooperationEndDate">
+            <el-form-item label="合作结束时间">
               <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime"
                 :disabled="true"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.isAlidasProducer">
+            <el-form-item label="是否专门为阿迪达斯生产产品">
               <el-radio-group v-model="manufacturer.data.is_alidas_producer">
-                <el-radio label="Y" :disabled="true">{{ $l.yes }}</el-radio>
-                <el-radio label="N" :disabled="true">{{ $l.no }}</el-radio>
+                <el-radio label="Y" :disabled="true">是</el-radio>
+                <el-radio label="N" :disabled="true">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.cooperationCompanyOwnership">
+            <el-form-item label="合作伙伴所有权">
               <el-input v-model="manufacturer.data.cooperation_company_ownership" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.cooperationGroupName">
+            <el-form-item label="合作伙伴集团名称">
               <el-input v-model="manufacturer.data.cooperation_group_name" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.isAlidasAuthorized">
+            <el-form-item label="是否100%阿迪达斯授权工厂">
               <el-radio-group v-model="manufacturer.data.is_alidas_authorized">
-                <el-radio label="Y" :disabled="true">{{ $l.yes }}</el-radio>
-                <el-radio label="N" :disabled="true">{{ $l.no }}</el-radio>
+                <el-radio label="Y" :disabled="true">是</el-radio>
+                <el-radio label="N" :disabled="true">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.requestorFacilityName">
+            <el-form-item label="申请工厂">
               <el-input v-model="manufacturer.data.requestor_facility_name" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.requestorContactName">
+            <el-form-item label="申请人">
               <el-input v-model="manufacturer.data.requestor_contact_name" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.monthlyProduceQuantity">
+            <el-form-item label="厂每月产量">
               <el-input-number v-model="manufacturer.data.monthly_produce_quantity" :min="1"
                 :disabled="true"></el-input-number>
             </el-form-item>
@@ -125,12 +125,12 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$l.employeeNum">
+            <el-form-item label="员工数量">
               <el-input-number v-model="manufacturer.data.employee_num" :min="1" :disabled="true"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$l.requestorFacilityCode">
+            <el-form-item label="申请工厂代码">
               <el-input v-model="manufacturer.data.requestor_facility_code" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
@@ -138,26 +138,26 @@
       </el-form>
     </div>
     <div class="dialog-content shadow">
-      <span class="top-title">{{ $l.complianceContactInfo }}</span>
+      <span class="top-title">合规联系人信息</span>
       <el-form label-position="top" inline style="border-radius: 2px">
         <el-row>
           <el-col :span="6">
-            <el-form-item :label="$l.contactName">
+            <el-form-item label="姓名">
               <el-input v-model="manufacturer.data.contact_name" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item :label="$l.contactJobTitle">
+            <el-form-item label="职位">
               <el-input v-model="manufacturer.data.contact_job_title" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item :label="$l.contactPhone" prop="contactPhone">
+            <el-form-item label="电话" prop="contactPhone">
               <el-input v-model="manufacturer.data.contact_phone" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item :label="$l.contactEmail" prop="contactEmail">
+            <el-form-item label="邮件" prop="contactEmail">
               <el-input v-model="manufacturer.data.contact_email" clearable :disabled="true"></el-input>
             </el-form-item>
           </el-col>
@@ -165,26 +165,29 @@
       </el-form>
     </div>
     <div class="dialog-content shadow">
-      <span class="top-title">{{ $l.partnerAddressAndProcesses }}</span>
+      <span class="top-title">合作伙伴地址与处理工序</span>
       <z-table :list="address.list" :tableProps="{
         border: true,
         hideOperations: true
       }" :columns="address.columns">
+        <!-- <template v-slot:operation="v">
+          <a href="#" class="text-red" >
+            {{ }}
+          </a>
+        </template> -->
       </z-table>
     </div>
     <div class="dialog-content shadow">
-      <span class="top-title">{{ $l.complianceEvidence }}</span>
+      <span class="top-title">合规证件资料</span>
       <z-table :list="attachment.list" :tableProps="tableProps" :columns="attachment.columns">
         <template v-slot:operation="v">
           <a href="#" class="text-red" @click.prevent="checkAttachment(v.row, v.$index)">
-            {{ $l.view }}
+            查看
           </a>
         </template>
       </z-table>
     </div>
-    <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3"
-      @update:visible="attachment.dialogFormVisible3 = $event">
-    </filePreviews>
+    <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3"  @update:visible="attachment.dialogFormVisible3 = $event "></filePreviews>
   </div>
 </template>
 
