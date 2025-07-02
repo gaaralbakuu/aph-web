@@ -508,6 +508,7 @@ export default {
     inputErrorMessage: 'Please enter Y/y',
     delete_error: 'Error deleting data',
     info: 'Cancel delete operation',
+    choose: 'choose',
   },
   manufacturer: {
     manufacture_name: 'Partner Name',
@@ -600,6 +601,9 @@ export default {
     select_file: 'Please select a file',
     select_file_type: 'Please select a file type',
     upload_failed: 'Upload failed',
+
+    file_download: 'Basic file data import template',
+    fileBasic_download: 'Basic Files'
   },
   dataDic: {
     dict: 'Dictionary',
@@ -758,5 +762,13 @@ export default {
     refresh: 'Refresh',
     closeOtherTags: 'Close other',
     closeAllTags: 'Close all',
+  },
+  chooseUser: {
+    title: 'Choose User',
+    userList: 'User List',
+    selectedList: 'Selected List',
+    mainDept: 'Main Department',
+    levelDept: 'Sub Department',
+    deliver: 'Transfer',
   },
 }

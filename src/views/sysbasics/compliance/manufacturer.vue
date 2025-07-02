@@ -853,9 +853,10 @@ import {
   defaultConfig,
 } from '@/views/_common'
 import axios from 'axios'
-import { getToken } from '@/utils/auth'
+import { getToken, localGet } from '@/utils/auth'
 import filePreviews from '../../_common/filePreviews.vue'
 import SparkMD5 from 'spark-md5'
+
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.ComplianceManufacturer,
   apiManufacturer: api.ComplianceManufacturer + 'getlist',
@@ -880,7 +881,7 @@ export default {
   },
   data() {
     var checkPhone = (rule, value, callback) => {
-      const reg = /^1[3-9]\d{9}$/ // 中国大陆手机号码正则表达式
+      const reg = /^(0|\+84)[1-9][0-9]{8}$/ // Số điện thoại Việt Nam
       console.log(reg.test(this.contactInfo.data.contact_phone))
       this.rulesRules.isPhone = false
       if (this.contactInfo.data.contact_phone === '') {
@@ -1360,9 +1361,18 @@ export default {
         })
     },
     exportExcel() {
+      let lang = localGet('lang')
+      let acceptLanguage = "";
+      if (lang) {
+        let array = lang.split('-')
+        acceptLanguage = lang + ',' + array[0] + ';q=0.9'
+      }
+      console.log(acceptLanguage)
+
       axios({
         headers: {
           token: getToken(),
+          "Accept-Language": acceptLanguage
           // "Content-Type":"application/vnd.ms-excel"
         },
         responseType: 'blob',
@@ -1380,7 +1390,7 @@ export default {
             })
             // 创建一个超链接，将文件流赋进去，然后实现这个超链接的单击事件
             const elink = document.createElement('a')
-            elink.download = decodeURIComponent('基础档案.zip')
+            elink.download = decodeURIComponent(this.$l.fileBasic_download + '.zip')
             elink.style.display = 'none'
             elink.href = URL.createObjectURL(blob)
             document.body.appendChild(elink)
@@ -1395,9 +1405,18 @@ export default {
       })
     },
     exportTemplate() {
+      let lang = localGet('lang')
+      let acceptLanguage = "";
+      if (lang) {
+        let array = lang.split('-')
+        acceptLanguage = lang + ',' + array[0] + ';q=0.9'
+      }
+      
+
       axios({
         headers: {
           token: getToken(),
+          "Accept-Language": acceptLanguage
           // "Content-Type":"application/vnd.ms-excel"
         },
         responseType: 'blob',
@@ -1411,8 +1430,8 @@ export default {
             type: 'application/octet-stream;',
           })
           // 创建一个隐藏的 <a> 元素
-          const elink = document.createElement('a')
-          elink.download = '基础档案资料导入模板.xlsx' // 确保包含文件扩展名
+          const elink = document.createElement('a');
+          elink.download = this.$l.file_download + '.xlsx' // 确保包含文件扩展名
           elink.style.display = 'none'
           elink.href = URL.createObjectURL(blob)
           // 添加到 DOM 并触发点击事件

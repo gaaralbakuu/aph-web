@@ -497,10 +497,12 @@ export default {
     phone: 'Điện thoại',
     legal_person: 'Người đại diện pháp luật',
     requestor_facility_type: 'Nhu cầu nhà máy',
+    requestor_facility_name: 'Tên nhà máy yêu cầu',
     prompt: 'Có chắc chắn muốn xóa dữ liệu này？Xác nhận vui lòng nhập Y/y',
     inputErrorMessage: 'Vui lòng nhập Y/y',
     delete_error: 'Xóa dữ liệu bất thường',
     info: 'Hủy bỏ xóa thao tác',
+    choose: 'Lựa chọn',
   },
   manufacturer: {
     manufacture_name: 'Tên đối tác',
@@ -508,6 +510,7 @@ export default {
     addr: 'Địa chỉ',
     input_addr: 'Vui lòng nhập địa chỉ',
     legal_person: 'Người đại diện pháp luật',
+    requestor_facility_type: 'Nhu cầu nhà máy',
     input_legal_person: 'Vui lòng nhập người đại diện pháp luật',
     fileName: 'Tên tệp',
     input_fileName: 'Vui lòng nhập tên tệp',
@@ -593,6 +596,9 @@ export default {
     select_file: 'Vui lòng chọn một tệp',
     select_file_type: 'Vui lòng chọn loại tệp',
     upload_failed: 'Tải lên thất bại',
+
+    file_download: 'Mẫu nhập dữ liệu tệp cơ bản',
+    fileBasic_download: 'Các tập tin cơ bản'
   },
   dataDic: {
     dict: 'Từ điển',

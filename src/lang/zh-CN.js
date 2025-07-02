@@ -504,6 +504,7 @@ export default {
     input_create_time: '请选择创建时间',
     status: '状态',
     input_status: '请选择创建时间',
+    choose: '请选择',
     reset: '重置',
     baseFile_select: '基础档案选择',
     select: '选择',
@@ -606,6 +607,9 @@ export default {
     select_file: '请选择一个文件',
     select_file_type: '请选择文件类型',
     upload_failed: '上传失败',
+
+    file_download: '基础档案资料导入模板',
+    fileBasic_download: '基础档案'
   },
   dataDic: {
     dict: '字典',
@@ -766,5 +770,13 @@ export default {
     refresh: '刷新',
     closeOtherTags: '关闭其他',
     closeAllTags: '关闭所有',
+  },
+  chooseUser: {
+    title: '选择用户',
+    userList: '用户列表',
+    selectedList: '已选列表',
+    mainDept: '主要部门',
+    levelDept: '下级部门',
+    deliver: '转移',
   },
 }

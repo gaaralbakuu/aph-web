@@ -6,7 +6,7 @@
       width="60%"
       @opened="initData">
       <el-row :gutter="10">
-        <el-col :span="7">
+        <!-- <el-col :span="7">
           <el-scrollbar style="height: 550px">
             <el-tree
               :data="department.treeData"
@@ -41,9 +41,9 @@
               </div>
             </el-tree>
           </el-scrollbar>
-        </el-col>
+        </el-col> -->
 
-        <el-col :span="8">
+        <el-col :span="14">
           <div style="display: flex; flex-direction: column; gap: 4px">
             <div style="font-weight: bold">{{ $l.userList }}</div>
             <div
@@ -75,20 +75,18 @@
             <el-table-column type="selection" width="40"></el-table-column>
             <el-table-column
               property="userid"
-              :label="$c.userid"
-              width="70"></el-table-column>
+              :label="$c.userid"></el-table-column>
             <el-table-column
               property="username"
               :label="$c.username"
-              width="70"
               show-overflow-tooltip></el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               property="work_name"
               :label="$c.workName"
-              width="50"></el-table-column>
-            <el-table-column
+              width="50"></el-table-column> -->
+            <!-- <el-table-column
               property="department_t"
-              :label="$c.dept"></el-table-column>
+              :label="$c.dept"></el-table-column> -->
           </el-table>
           <z-pagination
             :pagination="userTable.pagination"
@@ -98,7 +96,7 @@
             @change="getUser(null)"></z-pagination>
         </el-col>
 
-        <el-col :span="9">
+        <el-col :span="10">
           <div style="display: flex; flex-direction: column; gap: 4px">
             <div style="font-weight: bold">{{ $l.selectedList }}</div>
             <div style="display: flex; justify-content: space-between; gap: 4px;">
@@ -230,10 +228,10 @@ export default {
             title: this.$c.username,
             key: 'username',
           },
-          {
-            title: this.$c.dept,
-            key: 'department_t',
-          },
+          // {
+          //   title: this.$c.dept,
+          //   key: 'department_t',
+          // },
         ],
       },
     }

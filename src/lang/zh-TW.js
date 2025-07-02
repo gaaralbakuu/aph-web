@@ -509,6 +509,7 @@ export default {
     prompt: '是否確定要刪除該資料？確認請輸入Y/y',
     inputErrorMessage: '請輸入Y/y',
     delete_error: '刪除資料異常',
+    choose: '請選擇',
     info: '取消刪除操作',
   },
   manufacturer: {
@@ -587,6 +588,9 @@ export default {
     info: '取消刪除操作',
     prompt: '是否確定要刪除該資料？確認請輸入Y/y',
     inputErrorMessage: '請輸入Y/y',
+
+    file_download: '基礎檔案資料匯入模板',
+    fileBasic_download: '基礎檔案'
   },
   dataDic: {
     dict: '字典',
@@ -744,5 +748,13 @@ export default {
     refresh: '刷新當前',
     closeOtherTags: '關閉其他',
     closeAllTags: '關閉所有',
+  },
+  chooseUser: {
+    title: '選擇用戶',
+    userList: '用戶列表',
+    selectedList: '已選列表',
+    mainDept: '主要部門',
+    levelDept: '下級部門',
+    deliver: '轉移',
   },
 }

@@ -2,125 +2,51 @@
   <div class="app-container">
     <!-- 查询区域 -->
     <div>
-      <el-row :gutter="24">
-        <el-col :span="22">
-          <el-row :gutter="22" class="r_input">
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.account }}</span>
-              <el-input
-                :placeholder="$l.input_accou"
-                v-model="account.query.account"
-                clearable
-                style="width: 300px"
-              ></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.manufacture_name }}</span>
-              <el-input
-                :placeholder="$l.input_manufacture_name"
-                v-model="account.query.manufacture_name"
-                clearable
-                style="width: 300px"
-              ></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.account_type }}</span>
-              <el-input
-                :placeholder="$l.input_account_type"
-                v-model="account.query.account_type"
-                clearable
-                style="width: 300px"
-              ></el-input>
-            </el-col>
-          </el-row>
-          <el-row :gutter="22" class="r_input">
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.email }}</span>
-              <el-input
-                :placeholder="$l.input_email"
-                v-model="account.query.email"
-                clearable
-                style="width: 300px"
-              >
-              </el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.create_time }}</span>
-              <el-input
-                :placeholder="$l.input_create_time"
-                v-model="account.query.create_time"
-                clearable
-                style="width: 300px"
-              ></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.status }}</span>
-              <!-- <el-input
-                :placeholder="$l.input_status"
-                v-model="account.query.status"
-                clearable
-                style="width: 300px"
-              ></el-input> -->
-              <el-select
-                v-model="account.query.is_valid"
-                placeholder="请选择"
-                clearable
-                style="width: 300px"
-              >
-                <el-option
-                  v-for="item in account.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
+      <div style="display: flex; gap: 16px; margin-bottom: 10px">
+        <!-- Left: 6 search fields in one column -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.account }}</label>
+              <el-input :placeholder="$l.input_accou" v-model="account.query.account" clearable style="width: 100%" />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.manufacture_name }}</label>
+              <el-input :placeholder="$l.input_manufacture_name" v-model="account.query.manufacture_name" clearable style="width: 100%" />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.account_type }}</label>
+              <el-input :placeholder="$l.input_account_type" v-model="account.query.account_type" clearable style="width: 100%" />
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.email }}</label>
+              <el-input :placeholder="$l.input_email" v-model="account.query.email" clearable style="width: 100%" />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.create_time }}</label>
+              <el-input :placeholder="$l.input_create_time" v-model="account.query.create_time" clearable style="width: 100%" />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.status }}</label>
+              <el-select v-model="account.query.is_valid" :placeholder="$l.choose" clearable style="width: 100%">
+                <el-option v-for="item in account.options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-            </el-col>
-          </el-row>
-        </el-col>
-        <el-col :span="2" class="r_btn">
-          <el-row :gutter="2">
-            <el-col :span="2">
-              <el-button
-                v-show="showAuth.m_search"
-                type="primary"
-                size="medium"
-                @click="getUser"
-                >{{ $c.queryButton }}</el-button
-              >
-            </el-col>
-          </el-row>
-          <el-row :gutter="2">
-            <el-col :span="2">
-              <el-button
-                v-show="showAuth.m_search"
-                type="info"
-                size="medium"
-                @click="reset"
-                >{{ $l.reset }}</el-button
-              >
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
+            </div>
+          </div>
+        </div>
+        <!-- Right: 2 buttons aligned at the bottom -->
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px;">
+          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getUser" style="margin-right: 8px">{{ $c.queryButton }}</el-button>
+          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="reset">{{ $l.reset }}</el-button>
+        </div>
+      </div>
     </div>
     <el-divider></el-divider>
-    <el-button
-      v-show="showAuth.m_add"
-      type="primary"
-      class="create_btn"
-      size="medium"
-      @click="add"
-      >{{ $c.create }}</el-button
-    >
+    <el-button v-show="showAuth.m_add" type="primary" class="create_btn" size="medium" @click="add">{{ $c.create }}</el-button>
     <!-- 表格 -->
-    <z-table
-      :list="account.list"
-      :tableProps="tableProps"
-      :columns="account.columns"
-      @editItem="editItem"
-      @deleteItem="deleteItem"
-    >
+    <z-table :list="account.list" :tableProps="tableProps" :columns="account.columns" @editItem="editItem" @deleteItem="deleteItem">
       <template v-slot:operation="v">
         <a v-if="v.row.is_valid == 'N'" href="#" class="text-blue">
           {{ $c.enable }}
@@ -129,104 +55,37 @@
           {{ $c.disable }}
         </a>
         <span>&nbsp;</span>
-        <a
-          v-show="showAuth.m_updata"
-          href="#"
-          class="text-green"
-          @click.prevent="editItem(v.row, v.$index)"
-        >
+        <a v-show="showAuth.m_updata" href="#" class="text-green" @click.prevent="editItem(v.row, v.$index)">
           {{ $c.edit }}
         </a>
         <span>&nbsp;</span>
-        <a
-          v-show="showAuth.m_del"
-          href="#"
-          class="text-red"
-          @click.prevent="deleteItem(v.row, v.$index)"
-        >
+        <a v-show="showAuth.m_del" href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">
           {{ $c.delete }}
         </a>
       </template>
     </z-table>
     <!-- 分页 -->
-    <z-pagination
-      :pagination="pagination"
-      :total="account.total"
-      :page.sync="account.query.page"
-      :limit.sync="account.query.pageSize"
-      @change="getUser"
-    >
-    </z-pagination>
+    <z-pagination :pagination="pagination" :total="account.total" :page.sync="account.query.page" :limit.sync="account.query.pageSize" @change="getUser"></z-pagination>
     <!-- 创建、编辑表单 -->
-    <z-form-dialog
-      :name="$l.account"
-      :data="account.data"
-      :formProps="account.formProps"
-      :fields="account.fields"
-      @submmit="submmit"
-      :submmitLoading="submmitLoading"
-      :visible.sync="account.editFormVisible"
-    >
-    </z-form-dialog>
+    <z-form-dialog :name="$l.account" :data="account.data" :formProps="account.formProps" :fields="account.fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="account.editFormVisible"></z-form-dialog>
     <!-- 选择分类对话框 -->
-    <el-dialog
-      :title="$l.baseFile_select"
-      :visible.sync="manufacturer.dialogVisible"
-      width="35%"
-    >
-      <el-input
-        style="width: 200px; margin-bottom: 10px"
-        prefix-icon="el-icon-search"
-        :placeholder="$l.manufacture_name"
-        clearable
-        class="filter-item"
-        @keyup.enter.native="getManufacturer"
-        @clear="getManufacturer"
-        @blur="getManufacturer"
-        v-model="manufacturer.manufacture_name"
-      >
-      </el-input>
-      <z-table
-        :list="manufacturer.list"
-        :tableProps="tableProps"
-        :columns="manufacturer.columns"
-        @row-dblclick="sendManufacturerItem"
-      >
+    <el-dialog :title="$l.baseFile_select" :visible.sync="manufacturer.dialogVisible" width="35%">
+      <el-input style="width: 200px; margin-bottom: 10px" prefix-icon="el-icon-search" :placeholder="$l.manufacture_name" clearable class="filter-item" @keyup.enter.native="getManufacturer" @clear="getManufacturer" @blur="getManufacturer" v-model="manufacturer.manufacture_name"></el-input>
+      <z-table :list="manufacturer.list" :tableProps="tableProps" :columns="manufacturer.columns" @row-dblclick="sendManufacturerItem">
         <template v-slot:operation="v">
-          <a
-            href="#"
-            class="text-blue"
-            @click.prevent="sendManufacturerItem(v.row, v.$index)"
-          >
+          <a href="#" class="text-blue" @click.prevent="sendManufacturerItem(v.row, v.$index)">
             {{ $l.select }}
           </a>
           &nbsp;
         </template>
       </z-table>
-      <z-pagination
-        :pagination="pagination"
-        :total="manufacturer.query.total"
-        :page.sync="manufacturer.query.curPage"
-        :limit.sync="manufacturer.query.pageSize"
-        @change="getManufacturer"
-      >
-      </z-pagination>
+      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.curPage" :limit.sync="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
     </el-dialog>
   </div>
 </template>
 
-<script >
-import {
-  _,
-  api,
-  zTable,
-  zForm,
-  zPagination,
-  zFormDialog,
-  initFuncs,
-  eTable,
-  defaultConfig,
-} from '@/views/_common'
+<script>
+import { _, api, zTable, zForm, zPagination, zFormDialog, initFuncs, eTable, defaultConfig } from '@/views/_common'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.ComplianceUser,
   apiList: api.ComplianceUser + 'getlist',
@@ -287,11 +146,11 @@ export default {
         options: [
           {
             value: 'Y',
-            label: '启用',
+            label: this.$c.enable,
           },
           {
             value: 'N',
-            label: '禁用',
+            label: this.$c.disable,
           },
         ],
         total: 0,
@@ -606,4 +465,3 @@ export default {
   margin-bottom: 15px;
 }
 </style>
-

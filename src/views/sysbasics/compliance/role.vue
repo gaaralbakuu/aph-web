@@ -425,10 +425,10 @@ export default {
           title: this.$l.username,
           key: 'username',
         },
-        {
-          title: this.$l.department,
-          key: 'department_t',
-        },
+        // {
+        //   title: this.$l.department,
+        //   key: 'department_t',
+        // },
       ],
       userTableProps: {
         border: true,
