@@ -308,7 +308,7 @@ export default {
       this.account.query.account_type = ''
       this.account.query.email = ''
       this.account.query.create_time = ''
-      this.account.query.status = ''
+      this.account.query.is_valid = ''
     },
     getManufacturer() {
       this.$request(this.apiManufacturer, this.manufacturer.query, 'get')
