@@ -1,80 +1,44 @@
 <template>
-  <div>
+  <div class="app-container" v-loading="pageLoading">
+    <!-- 查询区域 (Refactored) -->
     <div>
-      <div style="position: relative; top: 20px; left: 1%">
-        <el-form :inline="true" :model="formInline" ref="loginFormRef">
-          <el-form-item prop="manufacture_name" :label="$l.manufactureName">
-            <el-input
-              v-model="formInline.manufacture_name"
-              :placeholder="$l.manufactureName"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search"></i
-            ></el-input>
-          </el-form-item>
-          <el-form-item prop="issue_type" :label="$l.issueType">
-            <el-input
-              v-model="formInline.issues_type"
-              :placeholder="$l.issueType"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search"></i
-            ></el-input>
-          </el-form-item>
-          <el-form-item prop="issue_desc" :label="$l.issueDesc">
-            <el-input
-              v-model="formInline.issues_desc"
-              :placeholder="$l.issueDesc"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search"></i
-            ></el-input>
-          </el-form-item>
-          <el-button
-            v-show="showAuth.m_search"
-            type="primary"
-            plain
-            @click="getTotal"
-            >{{ $l.search }}</el-button
-          >
-        </el-form>
-
-        <el-form
-          :inline="true"
-          :model="formInline"
-          ref="FormRef"
-          style="position: relative; left: 1.6%"
-        >
-          <el-form-item prop="suggest" :label="$l.suggest">
-            <el-input v-model="formInline.suggest" :placeholder="$l.suggest">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i
-            ></el-input>
-          </el-form-item>
-          <el-form-item prop="corrective_date" :label="$l.correctiveDate">
-            <el-input
-              v-model="formInline.corrective_date"
-              :placeholder="$l.correctiveDate"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search"></i
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            style="position: relative; left: 1.65%"
-            prop="corrective_principal"
-            :label="$l.correctivePrincipal"
-          >
-            <el-input
-              v-model="formInline.corrective_principal"
-              :placeholder="$l.correctivePrincipal"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search"></i
-            ></el-input>
-          </el-form-item>
-          <el-button
-            v-show="showAuth.m_search"
-            plain
-            class="resetbutton"
-            @click="resetForm"
-            >{{ $l.reset }}</el-button
-          >
-        </el-form>
+      <div style="display: flex; gap: 16px; margin-bottom: 10px">
+        <!-- Left: search fields in columns -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.manufactureName }}</label>
+              <el-input :placeholder="$l.manufactureName" v-model="formInline.manufacture_name" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.issueType }}</label>
+              <el-input :placeholder="$l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.issueDesc }}</label>
+              <el-input :placeholder="$l.issueDesc" v-model="formInline.issues_desc" style="width: 100%" clearable />
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.suggest }}</label>
+              <el-input :placeholder="$l.suggest" v-model="formInline.suggest" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.correctiveDate }}</label>
+              <el-input :placeholder="$l.correctiveDate" v-model="formInline.corrective_date" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.correctivePrincipal }}</label>
+              <el-input :placeholder="$l.correctivePrincipal" v-model="formInline.corrective_principal" style="width: 100%" clearable />
+            </div>
+          </div>
+        </div>
+        <!-- Right: buttons -->
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px;">
+          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getTotal" style="margin-right: 8px">{{ $l.search }}</el-button>
+          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
+        </div>
       </div>
     </div>
     <div>
@@ -302,6 +266,42 @@ export default {
       }
     },
 
+    // 获取当前页面用户拥有的操作权限的函数
+    getUserAuth() {
+      //获取当前页面用户拥有的操作权限的函数
+      // this.userAuth = null
+      this.$request(this.$api.checkMenuAuth, {
+        resourcepath: this.$route.name,
+      }).then((r) => {
+        this.userAuth = r.data[0]
+      })
+    },
+  },
+  watch: {
+    userAuth: {
+      deep: true,
+      handler(newV) {
+        this.showAuth.m_add = newV.m_add == 'Y' ? true : false
+        this.showAuth.m_search = newV.m_search == 'Y' ? true : false
+        this.showAuth.m_del = newV.m_del == 'Y' ? true : false
+        this.showAuth.m_updata = newV.m_updata == 'Y' ? true : false
+        this.showAuth.m_import = newV.m_import == 'Y' ? true : false
+        this.showAuth.m_export = newV.m_export == 'Y' ? true : false
+        this.showAuth.m_upload = newV.m_upload == 'Y' ? true : false
+        this.showAuth.m_audit = newV.m_audit == 'Y' ? true : false
+        this.showAuth.m_print = newV.m_print == 'Y' ? true : false
+      },
+    },
+  },
+}
+</script>
+  
+  <style lang="scss" scoped>
+.resetbutton {
+  position: relative;
+  left: 1.8%;
+}
+</style>
     // 获取当前页面用户拥有的操作权限的函数
     getUserAuth() {
       //获取当前页面用户拥有的操作权限的函数

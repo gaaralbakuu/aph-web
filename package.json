@@ -33,10 +33,15 @@
     "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
+    "@vue-office/docx": "^1.6.2",
+    "@vue-office/excel": "^1.7.11",
+    "@vue-office/pdf": "^2.0.8",
+    "@vue-office/pptx": "0.0.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/composition-api": "^1.7.2",
     "cross-env": "^7.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
@@ -45,15 +50,10 @@
     "sass": "^1.46.0",
     "sass-loader": "^10.2.0",
     "script-loader": "^0.7.2",
-    "svg-sprite-loader": "^5.0.0",
-    "vue-template-compiler": "^2.6.11",
-    "@vue-office/docx": "^1.6.2",
-    "@vue-office/excel": "^1.7.11",
-    "@vue-office/pdf": "^2.0.8",
-    "@vue-office/pptx": "0.0.2",
-    "@vue/composition-api": "^1.7.2",
     "spark-md5": "^3.0.2",
-    "vue-demi": "^0.14.10"
+    "svg-sprite-loader": "^5.0.0",
+    "vue-demi": "^0.14.10",
+    "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
     "> 1%",

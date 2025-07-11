@@ -1,57 +1,51 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
-    <!-- 查询 -->
+    <!-- 查询区域 -->
     <div>
-      <el-form :inline="true" :model="queryList" label-position="right" label-width="140px">
-        <el-row>
-          <el-col :span="7">
-            <el-form-item :label="this.$l.manufactureName">
-              <el-input v-model="queryList.manufacture_name" :placeholder="this.$l.pleaseEnterAPartnerName"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item :label="this.$l.address">
-              <el-input v-model="queryList.address" :placeholder="this.$l.PleaseEnterTheAddress"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item :label="this.$l.requestorFacilityType">
-              <el-select v-model="queryList.requestor_facility_type" :placeholder="this.$l.pleaseSelect">
+      <div style="display: flex; gap: 16px; margin-bottom: 10px">
+        <!-- Left: search fields in columns -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.manufactureName }}</label>
+              <el-input :placeholder="$l.pleaseEnterAPartnerName" v-model="queryList.manufacture_name" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.address }}</label>
+              <el-input :placeholder="$l.PleaseEnterTheAddress" v-model="queryList.address" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.requestorFacilityType }}</label>
+              <el-select v-model="queryList.requestor_facility_type" :placeholder="$l.pleaseSelect" clearable style="width: 100%">
                 <el-option label="T1" value="T1"></el-option>
                 <el-option label="T2" value="T2"></el-option>
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="3">
-            <el-form-item>
-              <el-button v-show="showAuth.m_search" @click="submitForm()" icon="el-icon-search" type="primary">{{ $c.queryButton }}</el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item :label="this.$l.name">
-              <el-input v-model="queryList.name" :placeholder="this.$l.pleaseEnterAName"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item :label="this.$l.auditTime">
-              <el-date-picker v-model="queryList.audit_time" type="date" :placeholder="this.$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 200px"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item :label="this.$l.recStatus">
-              <el-select v-model="queryList.rec_status" :placeholder="this.$l.pleaseEnterTheAuditResult" clearable>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.name }}</label>
+              <el-input :placeholder="$l.pleaseEnterAName" v-model="queryList.name" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.auditTime }}</label>
+              <el-date-picker v-model="queryList.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.recStatus }}</label>
+              <el-select v-model="queryList.rec_status" :placeholder="$l.pleaseEnterTheAuditResult" clearable style="width: 100%">
                 <el-option :label="$c.all" value=""></el-option>
                 <el-option v-for="(item, index) in rec_status" :label="item.label" :value="item.value" :key="index"></el-option>
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="3">
-            <el-form-item>
-              <el-button v-show="showAuth.m_search" @click="resetForm()" type="info" icon="el-icon-delete">{{ $l.reset }}</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+            </div>
+          </div>
+        </div>
+        <!-- Right: buttons -->
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px;">
+          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="submitForm" style="margin-right: 8px">{{ $c.queryButton }}</el-button>
+          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
+        </div>
+      </div>
     </div>
     <el-divider></el-divider>
 
@@ -142,7 +136,7 @@
 
                 <el-form-item :label="this.$l.basicArchives">
                   <el-col :span="8">
-                    <el-input v-model="editSurvey.list.name_zh" placeholder="请选择基础档案" :disabled="true"></el-input>
+                    <el-input v-model="editSurvey.list.name_zh" :placeholder="this.$l.pleaseSelectBaseArchive" :disabled="true"></el-input>
                   </el-col>
 
                   <!-- <el-button @click="editselectClick()" type="primary"
@@ -257,7 +251,7 @@
                 <el-col :span="24"></el-col>
 
                 <el-col :span="6">
-                  <el-form-item label="调查年份">
+                  <el-form-item :label="$l.surveyYear">
                     <el-input v-model="checkSurvey.list.survey_year"></el-input>
                   </el-form-item>
                 </el-col>
@@ -342,8 +336,8 @@
         <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields1" @submmit="submitAudit" :visible.sync="auditFormsVisible"></z-form-dialog>
 
         <!-- 新增 -->
-        <el-dialog width="80%" :lock-scroll="true" @submmit="submmitadd" :visible.sync="addFormVisible" top="1vh" custom-class="custom-dialog">
-          <div style="padding: 0 50px; margin-top: 30px; height: 70vh; overflow-y: auto">
+        <CustomDialog :clickOutside="false" width="100%" :lock-scroll="true" @submmit="submmitadd" :visible.sync="addFormVisible" top="1vh" custom-class="custom-dialog">
+          <div>
             <div>
               <el-form :model="addSurvey.addList" label-position="top" label-width="160px">
                 <el-col :span="24">
@@ -357,9 +351,9 @@
 
                   <el-button @click="addselectClick()" type="primary">{{ $c.check }}</el-button>
                 </el-form-item>
-                <el-form-item label="调查年份">
+                <el-form-item :label="$l.surveyYear">
                   <el-col :span="8">
-                    <el-date-picker v-model="addSurvey.addList.survey_year" type="year" placeholder="选择年" format="yyyy" value-format="yyyy"></el-date-picker>
+                    <el-date-picker v-model="addSurvey.addList.survey_year" type="year" :placeholder="$l.surveyYearPlaceholder" format="yyyy" value-format="yyyy"></el-date-picker>
                   </el-col>
                 </el-form-item>
                 <el-col :span="24">
@@ -449,10 +443,10 @@
             </el-button>
             <slot name="operation"></slot>
           </span>
-        </el-dialog>
+        </CustomDialog>
 
         <!-- 新增 选择基础档案 -->
-        <el-dialog :formProps="formProps" :visible.sync="addselectFormVisible" title="选择基础档案" custom-class="custom-dialog">
+        <el-dialog :formProps="formProps" :visible.sync="addselectFormVisible" :title="$l.selectTheBaseFile" custom-class="custom-dialog">
           <div>
             <el-col :span="14">
               <el-input v-model="manufacture.queryString" :placeholder="this.$l.search"></el-input>
@@ -531,7 +525,7 @@
 
                 <el-col :span="8">
                   <el-form-item :label="$l.approachingReviewDate">
-                    <el-date-picker v-model="recEmailList.distanceTime" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+                    <el-date-picker v-model="recEmailList.distanceTime" type="date" :placeholder="this.$l.selectDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
                   </el-form-item>
                 </el-col>
 
@@ -546,7 +540,7 @@
         </el-dialog>
 
         <!-- 查看附件 -->
-        <el-dialog width="50%" title="查看附件" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
+        <el-dialog width="50%" :title="this.$l.viewAttachment" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
           <div style="padding: 0 50px">
             <!-- 文件表格 -->
             <el-table :data="checkFile.fileList" style="width: 100%">
@@ -571,6 +565,8 @@ import { _, api, zTable, zPagination, zFormDialog, initFuncs, zForm, dayjs } fro
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import filePreviews from '../../_common/filePreviews.vue'
+import CustomDialog from '../../_common/CustomDialog.vue'
+
 export default {
   name: 'investigation',
   components: {
@@ -580,6 +576,7 @@ export default {
     initFuncs,
     zForm,
     filePreviews,
+    CustomDialog,
   },
   data() {
     return {
@@ -680,7 +677,7 @@ export default {
 
         columns1: [
           {
-            title: '调查年份',
+            title: this.$l.surveyYear,
             key: 'survey_year',
             width: 60,
           },
@@ -1423,7 +1420,7 @@ export default {
         return falg
       })
       if (someFlag) {
-        return this.$message.error('该文件已存在')
+        return this.$message.error(this.$l.fileAlreadyExists)
       }
       this.addSurvey.addFileList.push(e.target.files)
       let etf = e.target.files
@@ -1439,7 +1436,7 @@ export default {
         .catch((error) => {
           this.$message({
             type: 'info',
-            message: '添加失败',
+            message: this.$l.addFailed,
           })
         })
     },
@@ -1458,7 +1455,7 @@ export default {
       if (!this.addSurvey.addList.manufacture_id && this.addSurvey.addList.manufacture_id == '') {
         this.$message({
           type: 'info',
-          message: '请选择基础档案',
+          message: this.$l.pleaseSelectBaseArchive,
         })
         return
       }
@@ -1476,14 +1473,14 @@ export default {
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '附件添加失败',
+                message: this.$l.attachmentAddFailed,
               })
             })
         }
       }
-      this.$confirm('确认添加该数据吗, 是否继续?', '尽职调查', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$l.confirmAdd, this.$l.title, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -1497,16 +1494,16 @@ export default {
       if (!this.addSurvey.addList.manufacture_id) {
         this.$message({
           type: 'info',
-          message: '请选择基础档案',
+          message: this.$l.pleaseSelectBaseArchive,
         })
         return
       }
 
       // 显示确认对话框
       try {
-        await this.$confirm('确认添加该数据吗, 是否继续?', '尽职调查', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        await this.$confirm(this.$l.confirmAdd, this.$l.title, {
+          confirmButtonText: this.$c.confirm,
+          cancelButtonText: this.$c.cancel,
           type: 'warning',
         })
 
@@ -1524,7 +1521,7 @@ export default {
               .catch(() => {
                 this.$message({
                   type: 'info',
-                  message: '附件添加失败',
+                  message: this.$l.attachmentAddFailed,
                 })
                 throw new Error('附件上传失败') // 确保有错误时不会继续执行
               })
@@ -1544,7 +1541,7 @@ export default {
         if (error.message !== '附件上传失败') {
           this.$message({
             type: 'info',
-            message: '操作已取消',
+            message: this.$l.operationCanceled,
           })
         }
       }
@@ -1556,7 +1553,7 @@ export default {
         .then(() => {
           this.$message({
             type: 'success',
-            message: '添加成功!',
+            message: this.$l.addSuccess,
           })
           this.addSurvey.addList = this.addSurvey.addListInit
           this.addSurvey.fileList = []
@@ -1568,7 +1565,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '添加失败',
+            message: this.$l.addFailed,
           })
         })
     },
@@ -1719,9 +1716,9 @@ export default {
     // 提交修改
     async submmitedit() {
       try {
-        await this.$confirm('确认添加该数据吗, 是否继续?', '尽职调查', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        await this.$confirm(this.$l.confirmEdit, this.$l.title, {
+          confirmButtonText: this.$c.confirm,
+          cancelButtonText: this.$c.cancel,
           type: 'warning',
         })
         this.$set(this.editSurvey.list, 'attachments', this.editSurvey.fileList)
@@ -1744,7 +1741,7 @@ export default {
               .catch(() => {
                 this.$message({
                   type: 'info',
-                  message: '附件添加失败',
+                  message: this.$l.attachmentAddFailed,
                 })
                 throw new Error('附件上传失败') // 确保有错误时不会继续执行
               })
@@ -1761,7 +1758,7 @@ export default {
         if (error.message !== '附件上传失败') {
           this.$message({
             type: 'info',
-            message: '操作已取消',
+            message: this.$l.operationCanceled,
           })
         }
       }
@@ -1838,12 +1835,12 @@ export default {
       if (!this.auditSurvey.list.rec_status && this.auditSurvey.list.rec_status == null) {
         this.$message({
           type: 'info',
-          message: '请选择审核结果',
+          message: this.$l.pleaseSelectAuditResult,
         })
       }
-      this.$confirm('正在审核该数据, 是否继续?', '尽职调查', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$l.confirmAudit, this.$l.title, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -1851,7 +1848,7 @@ export default {
             .then((r) => {
               this.$message({
                 type: 'success',
-                message: '审核成功',
+                message: this.$l.auditSuccess,
               })
               this.getList()
               this.auditSurvey.list = {}
@@ -1861,14 +1858,14 @@ export default {
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '审核失败',
+                message: this.$l.auditFailed,
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '取消审核',
+            message: this.$l.cancelAudit,
           })
         })
     },
@@ -1899,16 +1896,16 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '附件添加失败',
+            message: this.$l.attachmentAddFailed,
           })
         })
     },
     // 删除附件
     removeEditFile(row, index) {
       let i = index + 1
-      this.$confirm('此操作将删除第' + i + '条数据, 是否继续?', '删除帮助手册', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm('此操作将删除第' + i + '条数据, 是否继续?', this.$l.deleteHelpManual, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -1923,21 +1920,21 @@ export default {
             .then((r) => {
               this.$message({
                 type: 'success',
-                message: '删除成功',
+                message: this.$l.deleteSuccess,
               })
               // this.getList()
             })
             .catch(() => {
               this.$message({
                 type: 'error',
-                message: '删除失败',
+                message: this.$l.deleteFailed,
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '取消删除',
+            message: this.$l.cancelDelete,
           })
         })
     },
@@ -2019,6 +2016,7 @@ export default {
             this.file_type = file_type
             const fileExtension = this.getFileExtension(file_name)
             // 创建新对象并添加额外属性
+           
             return {
               ...file, // 拷贝原文件的所有属性
               file_suffix: fileExtension,
@@ -2046,7 +2044,7 @@ export default {
             this.pageLoading = false
             return this.$message({
               type: 'info',
-              message: '暂无文件',
+              message: this.$l.noFile,
             })
           }
           const { file_url, file_name, file_type } = r.data[0]
@@ -2095,7 +2093,7 @@ export default {
           const data1 = this.tableList.list.map((item) => filterVal1.map((key) => item[key]))
           excel.export_json_to_excel({
             header: tHeader,
-            sheetname: '回答详情',
+            sheetname: this.$l.answerDetails,
             data: data1,
             filename: (this.name || 'export_data') + '_' + dayjs().format('YYYYMMDD'),
           })
@@ -2103,7 +2101,7 @@ export default {
         })
         .catch((e) => {
           this.exportLoading = false
-          this.$message.error('数据处理失败，导出失败')
+          this.$message.error(this.$l.dataProcessingFailed)
 
           throw e
         })
@@ -2119,9 +2117,9 @@ export default {
     addRoleItem(row, index) {
       this.surveyEmail.rec_survey = '1'
       this.surveyEmail.role_id = row.role_id
-      this.$confirm('是否添加角色为收件对象, 是否继续?', '尽职调查', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$l.confirmAddRole, this.$l.title, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -2129,21 +2127,21 @@ export default {
             .then((r) => {
               this.$message({
                 type: 'success',
-                message: '添加成功',
+                message: this.$l.addSuccess,
               })
               this.getRoleEmail()
             })
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '添加失败',
+                message: this.$l.addFailed,
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '取消添加',
+            message: this.$l.cancelAdd,
           })
         })
     },
@@ -2151,9 +2149,9 @@ export default {
     deleteRoleItem(row, index) {
       this.surveyEmail.rec_survey = '0'
       this.surveyEmail.role_id = row.role_id
-      this.$confirm('是否删除角色为收件对象, 是否继续?', '尽职调查', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$l.confirmDeleteRole, this.$l.title, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -2161,29 +2159,29 @@ export default {
             .then((r) => {
               this.$message({
                 type: 'success',
-                message: '删除成功',
+                message: this.$l.deleteSuccess,
               })
               this.getRoleEmail()
             })
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '删除失败',
+                message: this.$l.deleteFailed,
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '取消删除',
+            message: this.$l.cancelDelete,
           })
         })
     },
 
     sendRoleEmail() {
-      this.$confirm('是否发送邮件, 是否继续?', '尽职调查', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$l.confirmSendEmail, this.$l.title, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -2191,20 +2189,20 @@ export default {
             .then((r) => {
               this.$message({
                 type: 'success',
-                message: '添加成功',
+                message: this.$l.addSuccess,
               })
             })
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '添加失败',
+                message: this.$l.addFailed,
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '取消添加',
+            message: this.$l.cancelAdd,
           })
         })
     },
@@ -2258,6 +2256,11 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   /* 限制为3行 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

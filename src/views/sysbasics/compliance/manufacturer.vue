@@ -1,183 +1,90 @@
 <template>
   <div class="app-container">
-    <input
-      type="file"
-      ref="fileInput"
-      style="display: none"
-      @change="fileChange" />
+    <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
 
     <!-- 查询区域 -->
     <div>
-      <el-row :gutter="24">
-        <el-col :span="22">
-          <el-row :gutter="22" class="r_input">
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.manufacture_name }}</span>
-              <el-input
-                :placeholder="$l.input_manufacture_name"
-                v-model="manufacturer.query.manufacture_name"
-                clearable
-                style="width: 300px"></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.addr }}</span>
-              <el-input
-                :placeholder="$l.addr"
-                v-model="manufacturer.query.addr"
-                clearable
-                style="width: 300px"></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.legal_person }}</span>
-              <el-input
-                :placeholder="$l.input_legal_person"
-                v-model="manufacturer.query.legal_person"
-                clearable
-                style="width: 300px"></el-input>
-            </el-col>
-          </el-row>
-          <el-row :gutter="22" class="r_input">
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.fileName }}</span>
-              <el-input
-                :placeholder="$l.input_fileName"
-                v-model="manufacturer.query.fileName"
-                clearable
-                style="width: 300px"></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.produce_processes }}</span>
-              <el-input
-                :placeholder="$l.input_produce_processes"
-                v-model="manufacturer.query.produce_processes"
-                clearable
-                style="width: 300px"></el-input>
-            </el-col>
-            <el-col :span="7">
-              <span class="search_tips">{{ $l.requestor_facility_type }}</span>
-              <!-- <el-input
-                :placeholder="$l.input_requestor_facility_type"
-                v-model="manufacturer.query.requestor_facility_type"
-                clearable
-                style="width: 300px"
-              ></el-input> -->
-              <el-select
-                v-model="manufacturer.query.requestor_facility_type"
-                :placeholder="$l.input_requestor_facility_type"
-                clearable
-                style="width: 300px">
+      <div style="display: flex; gap: 16px; margin-bottom: 10px">
+        <!-- Left: search fields in columns -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.manufacture_name }}</label>
+              <el-input :placeholder="$l.input_manufacture_name" v-model="manufacturer.query.manufacture_name" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.addr }}</label>
+              <el-input :placeholder="$l.addr" v-model="manufacturer.query.addr" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.legal_person }}</label>
+              <el-input :placeholder="$l.input_legal_person" v-model="manufacturer.query.legal_person" style="width: 100%" clearable />
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.fileName }}</label>
+              <el-input :placeholder="$l.input_fileName" v-model="manufacturer.query.fileName" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.produce_processes }}</label>
+              <el-input :placeholder="$l.input_produce_processes" v-model="manufacturer.query.produce_processes" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+              <label>{{ $l.requestor_facility_type }}</label>
+              <el-select v-model="manufacturer.query.requestor_facility_type" :placeholder="$l.input_requestor_facility_type" clearable style="width: 100%">
                 <el-option label="T1" value="T1"></el-option>
                 <el-option label="T2" value="T2"></el-option>
               </el-select>
-            </el-col>
-          </el-row>
-        </el-col>
-        <el-col :span="2" class="r_btn">
-          <el-row :gutter="2">
-            <el-col :span="2">
-              <el-button
-                v-show="showAuth.m_search"
-                type="primary"
-                size="medium"
-                @click="getList">
-                {{ $c.queryButton }}
-              </el-button>
-            </el-col>
-          </el-row>
-          <el-row :gutter="2">
-            <el-col :span="2">
-              <el-button
-                v-show="showAuth.m_search"
-                type="info"
-                size="medium"
-                @click="reset">
-                {{ $l.reset }}
-              </el-button>
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
+            </div>
+          </div>
+        </div>
+        <!-- Right: buttons -->
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px;">
+          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getList" style="margin-right: 8px">{{ $c.queryButton }}</el-button>
+          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="reset">{{ $l.reset }}</el-button>
+        </div>
+      </div>
     </div>
     <el-divider></el-divider>
-    <el-button
-      v-show="showAuth.m_add"
-      type="primary"
-      class="create_btn"
-      size="medium"
-      @click="add">
-      {{ $c.create }}
-    </el-button>
-    <el-button
-      v-show="showAuth.m_export"
-      type="success"
-      class="create_btn"
-      size="medium"
-      @click="exportExcel">
-      {{ $c.export }}
-    </el-button>
-
-    <el-button type="warning" size="medium" @click="visabled.uploadFile = true">
-      {{ $c.m_upload }}
-    </el-button>
-    <el-button type="warning" size="medium" @click="exportTemplate">
-      {{ $c.downloadTemplate }}
-    </el-button>
+    <el-button v-show="showAuth.m_add" type="primary" class="create_btn" size="medium" @click="add">{{ $c.create }}</el-button>
+    <el-button v-show="showAuth.m_export" type="success" class="create_btn" size="medium" @click="exportExcel">{{ $c.export }}</el-button>
+    <el-button type="warning" size="medium" @click="visabled.uploadFile = true">{{ $c.m_upload }}</el-button>
+    <el-button type="warning" size="medium" @click="exportTemplate">{{ $c.downloadTemplate }}</el-button>
     <!-- 表格 -->
     <template>
       <el-table :data="manufacturer.list" style="width: 100%">
         <el-table-column :label="$l.basic">
-          <el-table-column
-            type="index"
-            :index="indexMethod"
-            :label="$l.num"
-            width="60"></el-table-column>
-          <el-table-column
-            prop="name_zh"
-            :label="$l.manufacture_name"></el-table-column>
+          <el-table-column type="index" :index="indexMethod" :label="$l.num" width="60"></el-table-column>
+          <el-table-column prop="name_zh" :label="$l.manufacture_name"></el-table-column>
           <el-table-column :label="$l.addr">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="checkArrdess(scope.$index, scope.row)"
-                type="text"
-                size="small">
+              <el-button @click.native.prevent="checkArrdess(scope.$index, scope.row)" type="text" size="small">
                 {{ $l.check_addr }}
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="legal_person"
-            :label="$l.legal_person"></el-table-column>
-          <el-table-column
-            prop="requestor_facility_name"
-            :label="$l.requestor_facility_name"></el-table-column>
+          <el-table-column prop="legal_person" :label="$l.legal_person"></el-table-column>
+          <el-table-column prop="requestor_facility_name" :label="$l.requestor_facility_name"></el-table-column>
         </el-table-column>
         <el-table-column :label="$l.compliance_evidence">
           <el-table-column prop="province" :label="$l.business_license">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="check0A(scope.$index, scope.row)"
-                type="text"
-                size="small">
+              <el-button @click.native.prevent="check0A(scope.$index, scope.row)" type="text" size="small">
                 {{ $l.chenck_attachment }}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column label="NDA">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="check0B(scope.$index, scope.row)"
-                type="text"
-                size="small">
+              <el-button @click.native.prevent="check0B(scope.$index, scope.row)" type="text" size="small">
                 {{ $l.chenck_attachment }}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column :label="$l.other_attachment">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="check0C(scope.$index, scope.row)"
-                type="text"
-                size="small">
+              <el-button @click.native.prevent="check0C(scope.$index, scope.row)" type="text" size="small">
                 {{ $l.chenck_attachment }}
               </el-button>
             </template>
@@ -185,22 +92,13 @@
         </el-table-column>
         <el-table-column fixed="right" :label="$c.operation" width="120">
           <template slot-scope="scope">
-            <el-link
-              v-show="showAuth.m_updata"
-              type="primary"
-              @click.native.prevent="editItem(scope.$index, scope.row)">
+            <el-link v-show="showAuth.m_updata" type="primary" @click.native.prevent="editItem(scope.$index, scope.row)">
               {{ $c.edit }}
             </el-link>
-            <el-link
-              v-show="showAuth.m_export"
-              type="success"
-              @click.native.prevent="exportItem(scope.row)">
+            <el-link v-show="showAuth.m_export" type="success" @click.native.prevent="exportItem(scope.row)">
               {{ $c.export }}
             </el-link>
-            <el-link
-              v-show="showAuth.m_del"
-              type="danger"
-              @click.native.prevent="deleteItem(scope.$index, scope.row)">
+            <el-link v-show="showAuth.m_del" type="danger" @click.native.prevent="deleteItem(scope.$index, scope.row)">
               {{ $c.delete }}
             </el-link>
           </template>
@@ -208,342 +106,317 @@
       </el-table>
     </template>
     <!-- 分页 -->
-    <z-pagination
-      :pagination="pagination"
-      :total="manufacturer.query.total"
-      :page.sync="manufacturer.query.curPage"
-      :limit.sync="manufacturer.query.pageSize"
-      @change="getList"></z-pagination>
+    <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.curPage" :limit.sync="manufacturer.query.pageSize" @change="getList"></z-pagination>
     <!-- 创建/编辑窗口 -->
-    <el-dialog
+    <CustomDialog
       :title="$l.add_manufacturer"
       :visible.sync="manufacturer.addOrEditFormVisible"
-      width="70%"
-      custom-class="scrollable-dialog">
-      <div class="dialog-content shadow">
-        <span class="top-title">{{ $l.basic }}</span>
-        <el-form label-position="top" inline style="border-radius: 2px">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.manufacture_name_CN">
-                <el-input
-                  :placeholder="$l.input_manufacture_name_CN"
-                  v-model="manufacturer.data.name_zh"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.manufacture_name_US">
-                <el-input
-                  :placeholder="$l.input_manufacture_name_US"
-                  v-model="manufacturer.data.name_en"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.requestor_facility_type">
-                <el-radio-group
-                  v-model="manufacturer.data.requestor_facility_type">
-                  <el-radio label="T1">T1</el-radio>
-                  <el-radio label="T2">T2</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.legal_person">
-                <el-input
-                  :placeholder="$l.input_legal_person"
-                  v-model="manufacturer.data.legal_person"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.partner_country">
-                <el-input
-                  :placeholder="$l.input_partner_country"
-                  v-model="manufacturer.data.country"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.export_business">
-                <el-radio-group v-model="manufacturer.data.is_export_biz">
-                  <el-radio label="Y">{{ $c.Y }}</el-radio>
-                  <el-radio label="N">{{ $c.N }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.customs_number">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.customs_number"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.biz_license_number">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.biz_license_number"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.is_involve_product">
-                <el-radio-group v-model="manufacturer.data.is_involve_product">
-                  <el-radio label="Y">{{ $l.product }}</el-radio>
-                  <el-radio label="N">{{ $l.exploit }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.cooperation_start_date">
+      :clickOutside="false"
+      width="85%"
+      custom-class="scrollable-dialog manufacturer-form-dialog"
+    >
+      <template #content>
+        <div class="form-container">
+          <!-- Basic Information Section -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.manufacture_name_CN }}</label>
+                <el-input :placeholder="$l.input_manufacture_name_CN" v-model="manufacturer.data.name_zh" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.manufacture_name_US }}</label>
+                <el-input :placeholder="$l.input_manufacture_name_US" v-model="manufacturer.data.name_en" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.legal_person }}</label>
+                <el-input :placeholder="$l.input_legal_person" v-model="manufacturer.data.legal_person" clearable class="form-input" />
+              </div>
+            </div>
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.partner_country }}</label>
+                <el-input :placeholder="$l.input_partner_country" v-model="manufacturer.data.country" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.customs_number }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.customs_number" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.biz_license_number }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.biz_license_number" clearable class="form-input" />
+              </div>
+            </div>
+
+            <!-- Row 3: Radio Groups -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.requestor_facility_type }}</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.requestor_facility_type" value="T1" />
+                    <span class="radio-text">T1</span>
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.requestor_facility_type" value="T2" />
+                    <span class="radio-text">T2</span>
+                  </label>
+                </div>
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.export_business }}</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_export_biz" value="Y" />
+                    <span class="radio-text">{{ $c.Y }}</span>
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_export_biz" value="N" />
+                    <span class="radio-text">{{ $c.N }}</span>
+                  </label>
+                </div>
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.is_involve_product }}</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_involve_product" value="Y" />
+                    <span class="radio-text">{{ $l.product }}</span>
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_involve_product" value="N" />
+                    <span class="radio-text">{{ $l.exploit }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 4: Dates + Producer Status -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.cooperation_start_date }}</label>
                 <el-date-picker
                   v-model="manufacturer.data.cooperation_start_date"
                   type="datetime"
-                  :placeholder="$l.input"></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.cooperation_end_date">
+                  :placeholder="$l.input"
+                  class="form-input date-picker"
+                  format="yyyy-MM-dd HH:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.cooperation_end_date }}</label>
                 <el-date-picker
                   v-model="manufacturer.data.cooperation_end_date"
                   type="datetime"
-                  :placeholder="$l.input"></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.is_alidas_producer">
-                <el-radio-group v-model="manufacturer.data.is_alidas_producer">
-                  <el-radio label="Y">{{ $c.Y }}</el-radio>
-                  <el-radio label="N">{{ $c.N }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.cooperation_company_ownership">
-                <el-input
                   :placeholder="$l.input"
-                  v-model="manufacturer.data.cooperation_company_ownership"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.cooperation_group_name">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.cooperation_group_name"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.is_alidas_authorized">
-                <el-radio-group
-                  v-model="manufacturer.data.is_alidas_authorized">
-                  <el-radio label="Y">{{ $c.Y }}</el-radio>
-                  <el-radio label="N">{{ $c.N }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.requestor_facility_name">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.requestor_facility_name"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.requestor_contact_name">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.requestor_contact_name"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.monthly_produce_quantity">
+                  class="form-input date-picker"
+                  format="yyyy-MM-dd HH:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.is_alidas_producer }}</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_alidas_producer" value="Y" />
+                    <span class="radio-text">{{ $c.Y }}</span>
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_alidas_producer" value="N" />
+                    <span class="radio-text">{{ $c.N }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 5: Company Details + Authorization -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.cooperation_company_ownership }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.cooperation_company_ownership" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.cooperation_group_name }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.cooperation_group_name" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.is_alidas_authorized }}</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_alidas_authorized" value="Y" />
+                    <span class="radio-text">{{ $c.Y }}</span>
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" v-model="manufacturer.data.is_alidas_authorized" value="N" />
+                    <span class="radio-text">{{ $c.N }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 6: Facility Information -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.requestor_facility_name }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.requestor_facility_name" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.requestor_facility_code }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.requestor_facility_code" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.requestor_contact_name }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.requestor_contact_name" clearable class="form-input" />
+              </div>
+            </div>
+
+            <!-- Row 7: Numbers + Manual ID -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.monthly_produce_quantity }}</label>
                 <el-input-number
                   v-model="manufacturer.data.monthly_produce_quantity"
-                  :min="1"></el-input-number>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item :label="$l.employee_num">
+                  :min="1"
+                  class="form-input number-input"
+                  controls-position="right"
+                />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.employee_num }}</label>
                 <el-input-number
                   v-model="manufacturer.data.employee_num"
-                  :min="1"></el-input-number>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.requestor_facility_code">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.requestor_facility_code"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$l.manual_input_id">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.manual_input_id"
-                  clearable></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <!-- <div class="dialog-content shadow">
-        <span class="top-title">{{ $l.contact_info }}</span>
-        <el-form
-          label-position="top"
-          inline
-          style="border-radius: 2px"
-          :rules="rulesRules"
-        >
-          <el-row>
-            <el-col :span="6">
-              <el-form-item :label="$l.contact_name">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.contact_name"
-                  clearable
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item :label="$l.contact_job_title">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.contact_job_title"
-                  clearable
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item :label="$l.contact_phone" prop="contactPhone">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.contact_phone"
-                  clearable
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item :label="$l.contact_email" prop="contactEmail">
-                <el-input
-                  :placeholder="$l.input"
-                  v-model="manufacturer.data.contact_email"
-                  clearable
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div> -->
-      <div class="dialog-content shadow">
-        <span class="top-title">{{ $l.contact_info }}</span>
-        <div>
-          <el-button
-            type="primary"
-            style="margin: 10px; font-size: 14px"
-            @click="contactInfoList">
-            {{ $l.addData }}
-          </el-button>
+                  :min="1"
+                  class="form-input number-input"
+                  controls-position="right"
+                />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.manual_input_id }}</label>
+                <el-input :placeholder="$l.input" v-model="manufacturer.data.manual_input_id" clearable class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Information Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">{{ $l.contact_info }}</h3>
+              <el-button
+                type="primary"
+                size="small"
+                @click="contactInfoList"
+                class="add-button"
+              >
+                <i class="el-icon-plus"></i>
+                {{ $l.addData }}
+              </el-button>
+            </div>
+            <div class="table-container">
+              <z-table
+                :list="contactInfo.list"
+                :tableProps="tableProps"
+                :columns="contactInfo.columns"
+                @deleteItem="contactInfoDeleteItem"
+                class="custom-table"
+              >
+                <template v-slot:operation="v">
+                  <el-button
+                    type="text"
+                    size="small"
+                    class="delete-button"
+                    @click="contactInfoDeleteItem(v.row, v.$index)"
+                  >
+                    <i class="el-icon-delete"></i>
+                    {{ $c.delete }}
+                  </el-button>
+                </template>
+              </z-table>
+            </div>
+          </div>
+
+          <!-- Address & Processes Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">{{ $l.addr_and_processes }}</h3>
+              <el-button
+                type="primary"
+                size="small"
+                @click="addressList"
+                class="add-button"
+              >
+                <i class="el-icon-plus"></i>
+                {{ $l.addData }}
+              </el-button>
+            </div>
+            <div class="table-container">
+              <z-table
+                :list="address.list"
+                :tableProps="tableProps"
+                :columns="address.columns"
+                @deleteItem="addressDeleteItem"
+                class="custom-table"
+              >
+                <template v-slot:operation="v">
+                  <el-button
+                    type="text"
+                    size="small"
+                    class="delete-button"
+                    @click="addressDeleteItem(v.row, v.$index)"
+                  >
+                    <i class="el-icon-delete"></i>
+                    {{ $c.delete }}
+                  </el-button>
+                </template>
+              </z-table>
+            </div>
+          </div>
+
+          <!-- Compliance Evidence Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">{{ $l.compliance_evidence }}</h3>
+              <el-button
+                type="primary"
+                size="small"
+                @click="createFileData"
+                class="add-button"
+              >
+                <i class="el-icon-plus"></i>
+                {{ $l.add_attachments }}
+              </el-button>
+            </div>
+            <div class="table-container">
+              <z-table
+                :list="attachment.list"
+                :tableProps="tableProps"
+                :columns="attachment.columns"
+                @deleteItem="attachmentDeleteItem"
+                class="custom-table"
+              >
+                <template v-slot:operation="v">
+                  <el-button
+                    type="text"
+                    size="small"
+                    class="delete-button"
+                    @click="attachmentDeleteItem(v.row, v.$index)"
+                  >
+                    <i class="el-icon-delete"></i>
+                    {{ $c.delete }}
+                  </el-button>
+                </template>
+              </z-table>
+            </div>
+          </div>
         </div>
-        <z-table
-          :list="contactInfo.list"
-          :tableProps="tableProps"
-          :columns="contactInfo.columns"
-          @deleteItem="contactInfoDeleteItem">
-          <template v-slot:operation="v">
-            <a
-              href="#"
-              class="text-red"
-              @click.prevent="contactInfoDeleteItem(v.row, v.$index)">
-              {{ $c.delete }}
-            </a>
-          </template>
-        </z-table>
-      </div>
-      <div class="dialog-content shadow">
-        <span class="top-title">{{ $l.addr_and_processes }}</span>
-        <div>
-          <el-button
-            type="primary"
-            style="margin: 10px; font-size: 14px"
-            @click="addressList">
-            {{ $l.addData }}
-          </el-button>
-        </div>
-        <z-table
-          :list="address.list"
-          :tableProps="tableProps"
-          :columns="address.columns"
-          @deleteItem="addressDeleteItem">
-          <template v-slot:operation="v">
-            <a
-              href="#"
-              class="text-red"
-              @click.prevent="addressDeleteItem(v.row, v.$index)">
-              {{ $c.delete }}
-            </a>
-          </template>
-        </z-table>
-      </div>
-      <div class="dialog-content shadow">
-        <span class="top-title">{{ $l.compliance_evidence }}</span>
-        <div>
-          <el-button
-            type="primary"
-            style="margin: 10px; font-size: 14px"
-            @click="createFileData">
-            {{ $l.add_attachments }}
-          </el-button>
-        </div>
-        <z-table
-          :list="attachment.list"
-          :tableProps="tableProps"
-          :columns="attachment.columns"
-          @deleteItem="attachmentDeleteItem">
-          <template v-slot:operation="v">
-            <a
-              href="#"
-              class="text-red"
-              @click.prevent="attachmentDeleteItem(v.row, v.$index)">
-              {{ $c.delete }}
-            </a>
-          </template>
-        </z-table>
-      </div>
+      </template>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="manufacturer.addOrEditFormVisible = false">
-          {{ $c.cancel }}
-        </el-button>
-        <el-button type="primary" @click="OPenManufacturer">
-          {{ $c.confirm }}
-        </el-button>
+        <el-button @click="manufacturer.addOrEditFormVisible = false" class="cancel-button">{{ $c.cancel }}</el-button>
+        <el-button type="primary" @click="OPenManufacturer" class="confirm-button">{{ $c.confirm }}</el-button>
       </span>
-    </el-dialog>
+    </CustomDialog>
     <!-- 确认信息窗口 -->
-    <el-dialog
-      :title="$l.confirm_info"
-      :visible.sync="manufacturer.inforFormVisible"
-      width="40%">
+    <el-dialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" width="40%">
       <el-descriptions :title="$l.basic">
         <el-descriptions-item :label="$l.manufacture_name_CN">
           {{ manufacturer.data.name_zh }}
@@ -634,24 +507,16 @@
     </el-dialog>
 
     <!-- 合规联系人信息 -->
-    <el-dialog
-      :title="$l.contact_info"
-      @submmit="contactInfoSubmmit"
-      :visible.sync="contactInfo.dialogFormVisible"
-      width="50%">
-      <el-form
-        :model="contactInfo.data"
-        label-position="top"
-        inline
-        style="border-radius: 2px"
-        :rules="rulesRules">
+    <el-dialog :title="$l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" width="50%">
+      <el-form :model="contactInfo.data" label-position="top" inline style="border-radius: 2px" :rules="rulesRules">
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$l.contact_name">
               <el-input
                 :placeholder="$l.input"
                 v-model="contactInfo.data.contact_name"
-                clearable></el-input>
+                clearable
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -659,7 +524,8 @@
               <el-input
                 :placeholder="$l.input"
                 v-model="contactInfo.data.contact_job_title"
-                clearable></el-input>
+                clearable
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -667,7 +533,8 @@
               <el-input
                 :placeholder="$l.input"
                 v-model="contactInfo.data.contact_phone"
-                clearable></el-input>
+                clearable
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -675,7 +542,8 @@
               <el-input
                 :placeholder="$l.input"
                 v-model="contactInfo.data.contact_email"
-                clearable></el-input>
+                clearable
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -692,19 +560,9 @@
     </el-dialog>
 
     <!-- 地址窗口 -->
-    <z-form-dialog
-      :name="$l.addr_and_processes"
-      :data="address.data"
-      :formProps="formProps"
-      :fields="address.fields"
-      @submmit="addressSubmmit"
-      :submmitLoading="submmitLoading"
-      :visible.sync="address.dialogFormVisible"></z-form-dialog>
+    <z-form-dialog :name="$l.addr_and_processes" :data="address.data" :formProps="formProps" :fields="address.fields" @submmit="addressSubmmit" :submmitLoading="submmitLoading" :visible.sync="address.dialogFormVisible"></z-form-dialog>
     <!-- 附件窗口 -->
-    <el-dialog
-      :title="$l.add_attachments"
-      :visible.sync="attachment.dialogFormVisible"
-      width="30%">
+    <el-dialog :title="$l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
       <el-form ref="form">
         <el-form-item label="">
           <el-button type="primary" @click="selectFile">
@@ -714,29 +572,15 @@
             {{ attachment.fileList.file.name }}
           </div>
           <div>
-            <progress
-              v-if="this.attachment.uploadProgress > 0"
-              :value="this.attachment.uploadProgress"
-              max="100"></progress>
+            <progress v-if="this.attachment.uploadProgress > 0" :value="this.attachment.uploadProgress" max="100"></progress>
           </div>
         </el-form-item>
         <el-form-item :label="$l.fileName">
-          <el-input
-            :placeholder="$l.input_fileName"
-            v-model="attachment.fileList.file.name"
-            :disabled="true"
-            style="width: 300px"></el-input>
+          <el-input :placeholder="$l.input_fileName" v-model="attachment.fileList.file.name" :disabled="true" style="width: 300px"></el-input>
         </el-form-item>
         <el-form-item :label="$l.fileType">
-          <el-select
-            :placeholder="$l.choose"
-            style="width: 300px"
-            v-model="attachment.fileList.attachment_type">
-            <el-option
-              v-for="item in attachment.options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"></el-option>
+          <el-select :placeholder="$l.choose" style="width: 300px" v-model="attachment.fileList.attachment_type">
+            <el-option v-for="item in attachment.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -752,52 +596,26 @@
       </el-form>
     </el-dialog>
     <!-- 地址信息 -->
-    <el-dialog
-      :title="$l.addr_and_processes"
-      :visible.sync="address.dialogTableVisible2"
-      width="30%">
+    <el-dialog :title="$l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
       <el-table :data="address.list">
-        <el-table-column
-          property="address_zh"
-          :label="$l.address_zh"></el-table-column>
-        <el-table-column
-          property="address_en"
-          :label="$l.address_en"></el-table-column>
-        <el-table-column
-          property="own_processes"
-          :label="$l.own_processes"></el-table-column>
-        <el-table-column
-          property="match_processes"
-          :label="$l.own_processes"></el-table-column>
+        <el-table-column property="address_zh" :label="$l.address_zh"></el-table-column>
+        <el-table-column property="address_en" :label="$l.address_en"></el-table-column>
+        <el-table-column property="own_processes" :label="$l.own_processes"></el-table-column>
+        <el-table-column property="match_processes" :label="$l.own_processes"></el-table-column>
       </el-table>
     </el-dialog>
     <!-- 附件信息 -->
-    <el-dialog
-      :title="$l.attachment_info"
-      :visible.sync="attachment.dialogFormVisible2"
-      width="30%">
+    <el-dialog :title="$l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
       <el-table :data="attachment.list">
-        <el-table-column
-          property="file_name"
-          :label="$l.fileName"></el-table-column>
-        <el-table-column
-          property="create_user"
-          :label="$l.create_people"></el-table-column>
-        <el-table-column
-          property="create_time"
-          :label="$l.create_date"></el-table-column>
+        <el-table-column property="file_name" :label="$l.fileName"></el-table-column>
+        <el-table-column property="create_user" :label="$l.create_people"></el-table-column>
+        <el-table-column property="create_time" :label="$l.create_date"></el-table-column>
         <el-table-column fixed="right" :label="$l.operation">
           <template slot-scope="scope">
-            <el-button
-              @click="checkAttachments(scope.row)"
-              type="text"
-              size="small">
+            <el-button @click="checkAttachments(scope.row)" type="text" size="small">
               {{ $l.check }}
             </el-button>
-            <el-button
-              type="text"
-              size="small"
-              @click="downAttachments(scope.row)">
+            <el-button type="text" size="small" @click="downAttachments(scope.row)">
               {{ $l.down }}
             </el-button>
           </template>
@@ -809,17 +627,7 @@
       <div>
         <el-form style="margin-top: 20px">
           <el-form-item :label="$l.upload_file" required>
-            <input
-              type="file"
-              accept=".xls,.xlsx"
-              class="el-input"
-              @change="onFileChange"
-              ref="addfileinput"
-              style="
-                border: 1px solid #dcdcdc;
-                border-radius: 5px;
-                padding: 3px;
-              " />
+            <input type="file" accept=".xls,.xlsx" class="el-input" @change="onFileChange" ref="addfileinput" style="border: 1px solid #dcdcdc; border-radius: 5px; padding: 3px" />
           </el-form-item>
         </el-form>
         <div style="margin-top: 40px; text-align: right">
@@ -832,29 +640,16 @@
         </div>
       </div>
     </el-dialog>
-    <filePreviews
-      v-if="attachment.fileUrl"
-      :file-url="attachment.fileUrl"
-      :visible="attachment.dialogFormVisible3"
-      @update:visible="attachment.dialogFormVisible3 = $event"></filePreviews>
+    <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3" @update:visible="attachment.dialogFormVisible3 = $event"></filePreviews>
   </div>
 </template>
 
 <script>
-import {
-  _,
-  api,
-  zTable,
-  zForm,
-  zPagination,
-  zFormDialog,
-  initFuncs,
-  eTable,
-  defaultConfig,
-} from '@/views/_common'
+import { _, api, zTable, zForm, zPagination, zFormDialog, initFuncs, eTable, defaultConfig } from '@/views/_common'
 import axios from 'axios'
 import { getToken, localGet } from '@/utils/auth'
 import filePreviews from '../../_common/filePreviews.vue'
+import CustomDialog from '../../_common/CustomDialog.vue'
 import SparkMD5 from 'spark-md5'
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
@@ -878,6 +673,7 @@ export default {
     zFormDialog,
     zPagination,
     filePreviews,
+    CustomDialog,
   },
   data() {
     var checkPhone = (rule, value, callback) => {
@@ -1158,10 +954,8 @@ export default {
           fileName: this.manufacturer.query.fileName,
           legal_person: this.manufacturer.query.legal_person,
           produce_processes: this.manufacturer.query.produce_processes,
-          requestor_facility_type:
-            this.manufacturer.query.requestor_facility_type,
-          requestor_facility_name:
-            this.manufacturer.query.requestor_facility_name,
+          requestor_facility_type: this.manufacturer.query.requestor_facility_type,
+          requestor_facility_name: this.manufacturer.query.requestor_facility_name,
           pageSize: this.manufacturer.query.pageSize,
           curPage: this.manufacturer.query.curPage,
         },
@@ -1362,7 +1156,7 @@ export default {
     },
     exportExcel() {
       let lang = localGet('lang')
-      let acceptLanguage = "";
+      let acceptLanguage = ''
       if (lang) {
         let array = lang.split('-')
         acceptLanguage = lang + ',' + array[0] + ';q=0.9'
@@ -1372,13 +1166,12 @@ export default {
       axios({
         headers: {
           token: getToken(),
-          "Accept-Language": acceptLanguage
+          'Accept-Language': acceptLanguage,
           // "Content-Type":"application/vnd.ms-excel"
         },
         responseType: 'blob',
         method: 'post',
-        url:
-          this.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
+        url: this.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
         data: this.query,
       }).then((r) => {
         let file = new FileReader()
@@ -1406,31 +1199,28 @@ export default {
     },
     exportTemplate() {
       let lang = localGet('lang')
-      let acceptLanguage = "";
+      let acceptLanguage = ''
       if (lang) {
         let array = lang.split('-')
         acceptLanguage = lang + ',' + array[0] + ';q=0.9'
       }
-      
 
       axios({
         headers: {
           token: getToken(),
-          "Accept-Language": acceptLanguage
+          'Accept-Language': acceptLanguage,
           // "Content-Type":"application/vnd.ms-excel"
         },
         responseType: 'blob',
         method: 'post',
-        url:
-          api.baseUrl +
-          '/Compliance/complianceManufacturer/uploadManufacturerTemplate',
+        url: api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturerTemplate',
       }).then((r) => {
         try {
           const blob = new Blob([r.data], {
             type: 'application/octet-stream;',
           })
           // 创建一个隐藏的 <a> 元素
-          const elink = document.createElement('a');
+          const elink = document.createElement('a')
           elink.download = this.$l.file_download + '.xlsx' // 确保包含文件扩展名
           elink.style.display = 'none'
           elink.href = URL.createObjectURL(blob)
@@ -1455,8 +1245,7 @@ export default {
         },
         responseType: 'blob',
         method: 'post',
-        url:
-          this.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
+        url: this.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
         data: {
           id: row.id,
         },
@@ -1585,18 +1374,11 @@ export default {
         let forData = new FormData()
         forData.append('fileName', this.attachment.fileList.fileName)
         forData.append('file', this.attachment.fileList.file)
-        forData.append(
-          'attachment_type',
-          this.attachment.fileList.attachment_type
-        )
+        forData.append('attachment_type', this.attachment.fileList.attachment_type)
         this.$request(this.apiUploadAttachment, forData, 'post')
           .then((r) => {
             console.log(r.data[0])
-            this.$set(
-              r.data[0],
-              'attachment_type',
-              this.attachment.fileList.attachment_type
-            )
+            this.$set(r.data[0], 'attachment_type', this.attachment.fileList.attachment_type)
             this.attachment.list.push(r.data[0])
             this.$message({
               message: this.$c.oprConfirm,
@@ -1629,12 +1411,7 @@ export default {
       let formData = new FormData()
       formData.append('file', this.uploadQuery.file)
 
-      this.$request(
-        this.$api.baseUrl +
-          '/Compliance/complianceManufacturer/uploadManufacturer',
-        formData,
-        'post'
-      )
+      this.$request(this.$api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturer', formData, 'post')
         .then((r) => {
           console.log(r)
           this.$message({
@@ -1710,10 +1487,7 @@ export default {
       let start = 0
       this.attachment.divide.chunks = []
       while (start < this.attachment.divide.file.size) {
-        const chunk = this.attachment.divide.file.slice(
-          start,
-          start + this.attachment.divide.chunkSize
-        )
+        const chunk = this.attachment.divide.file.slice(start, start + this.attachment.divide.chunkSize)
         this.attachment.divide.chunks.push(chunk)
         start += this.attachment.divide.chunkSize
       }
@@ -1723,41 +1497,27 @@ export default {
     generateUUID() {
       // Public Domain/MIT
       let d = new Date().getTime()
-      if (
-        typeof performance !== 'undefined' &&
-        typeof performance.now === 'function'
-      ) {
+      if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
         d += performance.now() // use high-precision timer if available
       }
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-        /[xy]/g,
-        function (c) {
-          let r = (d + Math.random() * 16) % 16 | 0
-          d = Math.floor(d / 16)
-          return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
-        }
-      )
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = (d + Math.random() * 16) % 16 | 0
+        d = Math.floor(d / 16)
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
+      })
     },
     getAttachmentFlag() {
       /* let mergeFile = {
         fileHash: this.attachment.divide.fileHash,
         attachment_type: this.attachment.fileList.attachment_type
       } */
-      this.$request(
-        this.$api.baseUrl +
-          '/Compliance/complianceAttachments/getAttachmentFlag',
-        {
-          fileHash: this.attachment.divide.fileHash,
-          attachment_type: this.attachment.fileList.attachment_type,
-        }
-      ).then((r) => {
+      this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/getAttachmentFlag', {
+        fileHash: this.attachment.divide.fileHash,
+        attachment_type: this.attachment.fileList.attachment_type,
+      }).then((r) => {
         if (r.data && r.data.length > 0) {
           console.log(r.data[0])
-          this.$set(
-            r.data[0],
-            'attachment_type',
-            this.attachment.fileList.attachment_type
-          )
+          this.$set(r.data[0], 'attachment_type', this.attachment.fileList.attachment_type)
           this.attachment.list.push(r.data[0])
           this.$message({
             message: this.$c.oprConfirm,
@@ -1784,20 +1544,10 @@ export default {
         formData.append('fileName', this.attachment.divide.file.name)
         formData.append('fileType', this.attachment.divide.file.type)
         formData.append('totalChunks', this.attachment.divide.chunks.length)
-        formData.append(
-          'attachment_type',
-          this.attachment.fileList.attachment_type
-        )
-        await this.$request(
-          this.$api.baseUrl +
-            '/Compliance/complianceAttachments/AddTaskToQueue',
-          formData,
-          'post'
-        ).then((r) => {
+        formData.append('attachment_type', this.attachment.fileList.attachment_type)
+        await this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/AddTaskToQueue', formData, 'post').then((r) => {
           uploadedChunks++
-          this.attachment.uploadProgress = Math.round(
-            (uploadedChunks / this.attachment.divide.chunks.length) * 100
-          )
+          this.attachment.uploadProgress = Math.round((uploadedChunks / this.attachment.divide.chunks.length) * 100)
         })
       }
       await this.mergeFile()
@@ -1816,11 +1566,7 @@ export default {
           attachment_type: this.attachment.fileList.attachment_type,
         }
         console.log(fileObj)
-        await this.$request(
-          this.$api.baseUrl + '/Compliance/complianceAttachments/getTaskStatus',
-          fileObj,
-          'post'
-        ).then((r) => {
+        await this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/getTaskStatus', fileObj, 'post').then((r) => {
           this.$message({
             type: 'success',
             message: this.$c.oprConfirm,
@@ -1950,7 +1696,7 @@ export default {
 }
 
 .dialog-content {
-  padding: ⅛rem;
+  padding: 0.125rem;
 }
 
 .shadow {
@@ -1985,5 +1731,126 @@ export default {
 .el-table .cell,
 .el-table--border .el-table__cell:first-child .cell {
   text-align: center !important;
+}
+</style>
+    },
+  },
+  watch: {
+    userAuth: {
+      deep: true,
+      handler(newV) {
+        this.showAuth.m_add = newV.m_add == 'Y' ? true : false
+        this.showAuth.m_search = newV.m_search == 'Y' ? true : false
+        this.showAuth.m_del = newV.m_del == 'Y' ? true : false
+        this.showAuth.m_updata = newV.m_updata == 'Y' ? true : false
+        this.showAuth.m_import = newV.m_import == 'Y' ? true : false
+        this.showAuth.m_export = newV.m_export == 'Y' ? true : false
+        this.showAuth.m_upload = newV.m_upload == 'Y' ? true : false
+        this.showAuth.m_audit = newV.m_audit == 'Y' ? true : false
+        this.showAuth.m_print = newV.m_print == 'Y' ? true : false
+      },
+    },
+  },
+}
+</script>
+
+<style>
+.el-row {
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.el-col {
+  border-radius: 4px;
+  padding: 0px;
+}
+
+.bg-purple-dark {
+  background: #99a9bf;
+}
+
+.bg-purple-light {
+  background: #e5e9f2;
+}
+
+.row-bg {
+  padding: 5px 0;
+  background-color: #f9fafc;
+}
+
+.r_input {
+  width: 1600px;
+}
+
+.r_btn {
+  float: right;
+  padding: 0;
+  margin: 0;
+}
+
+.search_tips {
+  width: 100px;
+  text-align: right;
+  font-size: 14px;
+  display: inline-block;
+  font-family: '微软雅黑';
+}
+
+.create_btn {
+  margin-bottom: 15px;
+}
+
+.scrollable-dialog .el-dialog__body {
+  max-height: 70vh;
+  /* 设置最大高度，根据需要调整 */
+  overflow-y: auto;
+  /* 启用垂直滚动条 */
+}
+
+.dialog-content {
+  padding: 0.125rem;
+}
+
+.shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.top-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
+}
+
+.text {
+  font-size: 14px;
+  text-align: center !important;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.el-table .cell,
+.el-table--border .el-table__cell:first-child .cell {
+  text-align: center !important;
+}
+
+.form-contaier{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 </style>

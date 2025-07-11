@@ -1,65 +1,69 @@
 <template>
-  <div>
+  <div class="app-container" v-loading="pageLoading">
+    <!-- 查询区域 (Refactored) -->
     <div>
-      <div class="check">
-        <el-form :inline="true" :model="formInline" ref="loginFormRef" :label-position="labelPosition">
-          <el-form-item prop="manufacture_name" :label="$l.manufactureName">
-            <el-input v-model="formInline.manufacture_name" :placeholder="$l.manufactureName">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="issue_type" :label="$l.issueType">
-            <el-input v-model="formInline.issues_type" :placeholder="$l.issueType">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="issue_desc" :label="$l.issueDesc">
-            <el-input v-model="formInline.issues_desc" :placeholder="$l.issueDesc">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-          </el-form-item>
-          <el-button type="primary" plain @click="getList">{{ $l.search }}</el-button>
-        </el-form>
-
-        <el-form :inline="true" :model="formInline" ref="FormRef" style="position: relative; left: 1.6%">
-          <el-form-item prop="suggest" :label="$l.suggest">
-            <el-input v-model="formInline.suggest" :placeholder="$l.suggest">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="corrective_date" :label="$l.correctiveDate">
-            <el-input v-model="formInline.corrective_date" :placeholder="$l.correctiveDate">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item style="position: relative; left: 1.65%" prop="corrective_principal" :label="$l.correctivePrincipal">
-            <el-input v-model="formInline.corrective_principal" :placeholder="$l.correctivePrincipal">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-          </el-form-item>
-          <el-button plain class="resetbutton" @click="resetForm">{{ $l.reset }}</el-button>
-        </el-form>
+      <div style="display: flex; gap: 16px; margin-bottom: 10px">
+        <!-- Left: search fields in columns -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.manufactureName }}</label>
+              <el-input :placeholder="$l.manufactureName" v-model="formInline.manufacture_name" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.issueType }}</label>
+              <el-input :placeholder="$l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.issueDesc }}</label>
+              <el-input :placeholder="$l.issueDesc" v-model="formInline.issues_desc" style="width: 100%" clearable />
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.suggest }}</label>
+              <el-input :placeholder="$l.suggest" v-model="formInline.suggest" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.correctiveDate }}</label>
+              <el-input :placeholder="$l.correctiveDate" v-model="formInline.corrective_date" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.correctivePrincipal }}</label>
+              <el-input :placeholder="$l.correctivePrincipal" v-model="formInline.corrective_principal" style="width: 100%" clearable />
+            </div>
+          </div>
+        </div>
+        <!-- Right: buttons -->
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
+          <el-button type="primary" size="medium" @click="getList" style="margin-right: 8px">{{ $l.search }}</el-button>
+          <el-button type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
+        </div>
       </div>
     </div>
     <div>
       <el-divider></el-divider>
     </div>
-    <div>
-      <el-button type="primary" plain @click="addForm" class="addbutton">
-        <i class="el-icon-circle-plus-outline"></i>
-        {{ $l.create }}
-      </el-button>
-      <el-button plain class="addbutton" @click="visabled.uploadFile = true">{{ $l.bulkImport }}</el-button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px">
+      <div>
+        <el-button type="primary" plain @click="addForm">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{ $l.create }}
+        </el-button>
 
-      <el-button plain class="addbutton" @click="exportTemplate">{{ $c.downloadTemplate }}</el-button>
+        <el-button plain @click="visabled.uploadFile = true">{{ $l.bulkImport }}</el-button>
+        <el-button plain @click="exportTemplate">{{ $c.downloadTemplate }}</el-button>
 
-      <el-button @click="exportExcel" icon="el-icon-download" type="info" class="fr">{{ $l.download }}</el-button>
-      <el-button @click="recEmail()" icon="el-icon-message" type="info" class="fr">{{ $l.emailNotification }}</el-button>
-      <!-- <el-button class="downbutton" @click="exportExcel"
+      </div>
+      <div>
+        <el-button @click="exportExcel" icon="el-icon-download" type="info">{{ $l.download }}</el-button>
+        <el-button @click="recEmail()" icon="el-icon-message" type="info">{{ $l.emailNotification }}</el-button>
+      </div>
+        <!-- <el-button class="downbutton" @click="exportExcel"
         >{{ $l.download }}<i class="el-icon-download el-icon--right"></i
       ></el-button> -->
     </div>
-    <el-table :data="tableData.list" style="width: 98%; margin: 1%">
+    <el-table :data="tableData.list">
       <el-table-column :label="$l.basicInformation">
         <el-table-column :label="$l.ordinal" type="index" width="50"></el-table-column>
         <el-table-column prop="name_zh" :label="$l.manufactureName" width="150"></el-table-column>
@@ -181,7 +185,7 @@
 
     <z-pagination :pagination="pagination" :total="tableData.total" :page.sync="query.page" :limit.sync="query.pageSize" @change="getList"></z-pagination>
 
-    <el-dialog :title="$l.create" :visible.sync="addFormVisible">
+    <CustomDialog :title="$l.create" :visible.sync="addFormVisible">
       <el-form :model="form" :rules="rules" ref="form" :label-width="formLabelWidth">
         <el-row style="margin: 20px">
           <el-col :span="24">
@@ -236,7 +240,7 @@
         <el-button @click="addCancel('form')">{{ $l.cancel }}</el-button>
         <el-button type="primary" plain @click="submit('form')">{{ $l.submit }}</el-button>
       </div>
-    </el-dialog>
+    </CustomDialog>
 
     <el-dialog :title="$l.check" :visible.sync="dialogFormVisible" width="80%">
       <el-form inline :model="getDetailsQuery">
@@ -463,11 +467,14 @@ import { _, api, zPagination } from '@/views/_common'
 import { getToken } from '@/utils/auth'
 import dayjs from 'dayjs'
 import filePreviews from '../../_common/filePreviews.vue'
+import CustomDialog from '../../_common/CustomDialog.vue'
+
 export default {
   name: 'issuesType',
   components: {
     filePreviews,
     zPagination,
+    CustomDialog,
   },
   data() {
     return {
