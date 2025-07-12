@@ -7,18 +7,18 @@
           <div style="display: flex; gap: 12px">
             <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.manufactureName }}</label>
-              <el-input :placeholder="$l.manufactureName" v-model="formInline.manufacture_name" style="width: 100%" clearable />
+              <el-input :placeholder="$l.manufactureName" v-model="formInline.name" style="width: 100%" clearable />
             </div>
             <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.issueType }}</label>
               <el-input :placeholder="$l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+            <!-- <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.issueDesc }}</label>
               <el-input :placeholder="$l.issueDesc" v-model="formInline.issues_desc" style="width: 100%" clearable />
-            </div>
+            </div> -->
           </div>
-          <div style="display: flex; gap: 12px">
+          <!-- <div style="display: flex; gap: 12px">
             <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.suggest }}</label>
               <el-input :placeholder="$l.suggest" v-model="formInline.suggest" style="width: 100%" clearable />
@@ -31,11 +31,11 @@
               <label>{{ $l.correctivePrincipal }}</label>
               <el-input :placeholder="$l.correctivePrincipal" v-model="formInline.corrective_principal" style="width: 100%" clearable />
             </div>
-          </div>
+          </div> -->
         </div>
         <!-- Right: buttons -->
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
-          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getTotal" style="margin-right: 8px">{{ $l.search }}</el-button>
+        <div style="display: flex; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
+          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getTotal">{{ $l.search }}</el-button>
           <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
         </div>
       </div>
