@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
+  <div class="app-container">
     <!-- 查询区域 (Refactored) -->
     <div>
       <div style="display: flex; gap: 16px; margin-bottom: 10px">
@@ -44,26 +44,22 @@
     <div>
       <el-divider></el-divider>
     </div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px">
-      <div>
-        <el-button type="primary" plain @click="addForm">
-          <i class="el-icon-circle-plus-outline"></i>
-          {{ $l.create }}
-        </el-button>
+    <div>
+      <el-button type="primary" plain @click="addForm" class="addbutton">
+        <i class="el-icon-circle-plus-outline"></i>
+        {{ $l.create }}
+      </el-button>
+      <el-button plain class="addbutton" @click="visabled.uploadFile = true">{{ $l.bulkImport }}</el-button>
 
-        <el-button plain @click="visabled.uploadFile = true">{{ $l.bulkImport }}</el-button>
-        <el-button plain @click="exportTemplate">{{ $c.downloadTemplate }}</el-button>
+      <el-button plain class="addbutton" @click="exportTemplate">{{ $c.downloadTemplate }}</el-button>
 
-      </div>
-      <div>
-        <el-button @click="exportExcel" icon="el-icon-download" type="info">{{ $l.download }}</el-button>
-        <el-button @click="recEmail()" icon="el-icon-message" type="info">{{ $l.emailNotification }}</el-button>
-      </div>
-        <!-- <el-button class="downbutton" @click="exportExcel"
+      <el-button @click="exportExcel" icon="el-icon-download" type="info" class="fr">{{ $l.download }}</el-button>
+      <el-button @click="recEmail()" icon="el-icon-message" type="info" class="fr">{{ $l.emailNotification }}</el-button>
+      <!-- <el-button class="downbutton" @click="exportExcel"
         >{{ $l.download }}<i class="el-icon-download el-icon--right"></i
       ></el-button> -->
     </div>
-    <el-table :data="tableData.list">
+    <el-table :data="tableData.list" style="width: 98%; margin: 1%">
       <el-table-column :label="$l.basicInformation">
         <el-table-column :label="$l.ordinal" type="index" width="50"></el-table-column>
         <el-table-column prop="name_zh" :label="$l.manufactureName" width="150"></el-table-column>
@@ -185,7 +181,7 @@
 
     <z-pagination :pagination="pagination" :total="tableData.total" :page.sync="query.page" :limit.sync="query.pageSize" @change="getList"></z-pagination>
 
-    <CustomDialog :title="$l.create" :visible.sync="addFormVisible">
+    <CustomDialog :title="$l.create" :visible.sync="addFormVisible" :clickOutside="false">
       <el-form :model="form" :rules="rules" ref="form" :label-width="formLabelWidth">
         <el-row style="margin: 20px">
           <el-col :span="24">
@@ -357,6 +353,7 @@
       <el-form :model="editForm">
         <el-form-item :label="$l.issueType">
           <el-select v-model="editForm.issue_type" :placeholder="$l.inputIssue" style="width: 100%">
+            asda
             <el-option v-for="item in issueType" :key="item.name_zh" :label="item.name_label" :value="item.name_zh"></el-option>
           </el-select>
         </el-form-item>
@@ -1020,10 +1017,14 @@ export default {
               ],
             },
             'post'
-          ).then((response) => {
-            this.data = response.data
-            this.getList()
-          })
+          )
+            .then((response) => {
+              this.data = response.data
+              this.getList()
+            })
+            .catch((error) => {
+              console.error("Error submitting form:", error)
+            })
           // this.getList()
         }
       })

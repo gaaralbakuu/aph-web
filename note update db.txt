@@ -1,0 +1,5 @@
+UPDATE DB:
+- cis_r_issues:
+  + issue_type: 155 -> 2000
+  + issue_desc: 500 -> 2000
+  + issue_suggest: 500 -> 2000

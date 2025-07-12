@@ -69,33 +69,30 @@ service.interceptors.response.use(
 )
 
 export default function request(url, data, method, donotAutoShowError) {
-  data = data || {}
-  method = method || 'get'
-  method = method.toLowerCase()
+  data = data || {};
+  method = method || 'get';
+  method = method.toLowerCase();
   var config = {
     url,
     method
-  }
+  };
   if (method === 'get') {
-    config.params = data
+    config.params = data;
   } else {
-    console.info(data)
-    config.data = data
+    config.data = data;
   }
-  return new Promise((resolve, reject) => {
-    service(config)
-      .then(r => {
-        resolve(r)
-      })
-      .catch(e => {
-        if (!donotAutoShowError) {
-          Vue.prototype.$message({
-            message: e.message || 'Unknown Error',
-            type: 'error',
-            duration: 5 * 1000
-          })
-        }
-        reject(e)
-      })
-  })
+  return service(config)
+    .then(r => r)
+    .catch(e => {
+      // debugger;
+      if (!donotAutoShowError) {
+        Vue.prototype.$message({
+          message: (e && e.message) ? e.message : 'Unknown Error',
+          type: 'error',
+          duration: 5 * 1000
+        });
+      }
+      // Re-throw error so .catch outside can receive it and message is shown
+      throw e;
+    });
 }
