@@ -5,36 +5,36 @@
         <!-- Left: search fields in columns -->
         <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
           <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.manufactureName }}</label>
               <el-input :placeholder="$l.manufactureName" v-model="formInline.manufacture_name" style="width: 100%" clearable />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.issueType }}</label>
               <el-input :placeholder="$l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.issueDesc }}</label>
               <el-input :placeholder="$l.issueDesc" v-model="formInline.issues_desc" style="width: 100%" clearable />
             </div>
           </div>
           <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.suggest }}</label>
               <el-input :placeholder="$l.suggest" v-model="formInline.suggest" style="width: 100%" clearable />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.correctiveDate }}</label>
               <el-input :placeholder="$l.correctiveDate" v-model="formInline.corrective_date" style="width: 100%" clearable />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.correctivePrincipal }}</label>
               <el-input :placeholder="$l.correctivePrincipal" v-model="formInline.corrective_principal" style="width: 100%" clearable />
             </div>
           </div>
         </div>
         <!-- Right: buttons -->
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px;">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
           <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getTotal" style="margin-right: 8px">{{ $l.search }}</el-button>
           <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
         </div>
@@ -55,6 +55,7 @@
         <table class="custom-table">
           <thead>
             <tr>
+              <th rowspan="2" class="main-header" width="80">{{ $l.ordinal }}</th>
               <th rowspan="2" class="main-header">{{ $l.manufactureName }}</th>
               <th colspan="5" class="main-header">{{ $l.thresholdIssueManagement }}</th>
             </tr>
@@ -68,6 +69,9 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in tableData" :key="index">
+              <td v-if="item._rowspan" :rowspan="item._rowspan" class="index-column">
+                {{ item.index + 1 }}
+              </td>
               <td v-if="item._rowspan" :rowspan="item._rowspan" class="manufacturer-column">
                 {{ item.name_zh }}
               </td>
@@ -197,13 +201,13 @@ export default {
             updategsl,
           }
         })
-        this.tableData = updatedData.reduce((acc, cur) => {
-
+        this.tableData = updatedData.reduce((acc, cur, currentIndex) => {
           cur.issue_type.map((type, index) => {
             acc.push({
               ...cur,
               issue_type: type,
               _rowspan: index === 0 ? cur.issue_type.length : 0,
+              index: currentIndex,
             })
           })
           return acc
@@ -234,12 +238,13 @@ export default {
             updategsl,
           }
         })
-        this.tableData = updatedData.reduce((acc, cur) => {
+        this.tableData = updatedData.reduce((acc, cur, currentIndex) => {
           cur.issue_type.map((type, index) => {
             acc.push({
               ...cur,
               issue_type: type,
               _rowspan: index === 0 ? cur.issue_type.length : 0, // 设置行合并
+              index: currentIndex,
             })
           })
           return acc

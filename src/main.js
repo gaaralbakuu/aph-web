@@ -9,6 +9,7 @@ import api from '@/api'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+import '@fontsource-variable/inter';
 import 'font-awesome/css/font-awesome.min.css' // font-awesome
 import '@/styles/index.scss' // global css
 import '@/router/permission' // permission control
