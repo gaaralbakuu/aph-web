@@ -2,10 +2,11 @@
 const resolve = (dir) => require('path').join(__dirname, dir)
 
 // API_URL
-process.env.VUE_APP_API = 'http://10.30.3.121:65301' //prd
+// process.env.VUE_APP_API = 'http://10.30.3.121:65301' //prd
+  process.env.VUE_APP_API = 'http://localhost:65301' //prd
 
 if (process.env.NODE_ENV === 'development') {
-  process.env.VUE_APP_API = 'http://10.30.2.247:5000' //test
+  // process.env.VUE_APP_API = 'http://10.30.2.247:5000' //test
   // process.env.VUE_APP_API = 'http://localhost:65301' //prd
 }
 
