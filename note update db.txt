@@ -3,3 +3,28 @@ UPDATE DB:
   + issue_type: 155 -> 2000
   + issue_desc: 500 -> 2000
   + issue_suggest: 500 -> 2000
+
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN vendor_code VARCHAR(255) NULL COMMENT 'Vendor Code';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN unique_identifier VARCHAR(255) NULL COMMENT 'Unique Identifier';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN ffc_id VARCHAR(255) NULL COMMENT 'FFC ID';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN sap_code VARCHAR(255) NULL COMMENT 'SAP Code';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN classification VARCHAR(255) NULL COMMENT 'Classification';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN authorization_status VARCHAR(255) NULL COMMENT 'Authorization Status';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN compliance_warning_letter VARCHAR(500) NULL COMMENT 'Compliance Warning Letter';
+
+ALTER TABLE cis_r_manufacturer 
+ADD COLUMN types_of_orders VARCHAR(255) NULL COMMENT 'Types of Orders';

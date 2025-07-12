@@ -502,7 +502,7 @@ export default {
             width: 140,
           },
           {
-            title: '审核状态',
+            title: this.$l.recStatus,
             key: 'rec_status',
             width: 100,
             formatter: this.formatterRec,

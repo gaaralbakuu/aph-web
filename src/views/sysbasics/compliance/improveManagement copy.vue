@@ -65,13 +65,29 @@
         <el-table-column prop="name_zh" :label="$l.manufactureName" width="150"></el-table-column>
       </el-table-column>
       <el-table-column :label="$l.issueInformation">
-        <el-table-column :label="$l.issueType" width="350">
+        <el-table-column :label="$l.issueType" width="150">
           <template slot-scope="scope">
             <!-- <div v-for="(detail_item, index) in scope.row.detail" :key="index">
               {{ checkField({ detail_item }, ['detail_item', 'issue_type']) }}
             </div> -->
             <div v-for="(detail_item, index) in scope.row.detail" :key="index">
               <span :title="checkField({ detail_item }, ['detail_item', 'issue_type'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'issue_type'])"></span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$l.issueDesc" width="250">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              <!-- {{ checkField({ detail_item }, ['detail_item', 'issue_desc']) }} -->
+              <span :title="checkField({ detail_item }, ['detail_item', 'issue_desc'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'issue_desc'])"></span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$l.suggest" width="250">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              <!-- {{ checkField({ detail_item }, ['detail_item', 'issue_suggest']) }} -->
+              <span :title="checkField({ detail_item }, ['detail_item', 'issue_suggest'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'issue_suggest'])"></span>
             </div>
           </template>
         </el-table-column>

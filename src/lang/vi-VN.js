@@ -630,7 +630,25 @@ export default {
     upload_failed: 'Tải lên thất bại',
 
     file_download: 'Mẫu nhập dữ liệu tệp cơ bản',
-    fileBasic_download: 'Các tập tin cơ bản'
+    fileBasic_download: 'Các tập tin cơ bản',
+
+    // New fields
+    vendor_code: 'Mã Nhà Cung Cấp',
+    input_vendor_code: 'Vui lòng nhập mã nhà cung cấp',
+    unique_identifier: 'Mã Định Danh Duy Nhất',
+    input_unique_identifier: 'Vui lòng nhập mã định danh duy nhất',
+    ffc_id: 'FFC ID',
+    input_ffc_id: 'Vui lòng nhập FFC ID',
+    sap_code: 'Mã SAP',
+    input_sap_code: 'Vui lòng nhập mã SAP',
+    classification: 'Phân Loại',
+    input_classification: 'Vui lòng nhập phân loại',
+    authorization_status: 'Trạng Thái Ủy Quyền',
+    input_authorization_status: 'Vui lòng nhập trạng thái ủy quyền',
+    compliance_warning_letter: 'Thư Cảnh Báo Tuân Thủ',
+    input_compliance_warning_letter: 'Vui lòng nhập thư cảnh báo tuân thủ',
+    types_of_orders: 'Loại Đơn Hàng',
+    input_types_of_orders: 'Vui lòng nhập loại đơn hàng'
   },
   dataDic: {
     dict: 'Từ điển',

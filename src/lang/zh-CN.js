@@ -641,7 +641,25 @@ export default {
     upload_failed: '上传失败',
 
     file_download: '基础档案资料导入模板',
-    fileBasic_download: '基础档案'
+    fileBasic_download: '基础档案',
+
+    // New fields
+    vendor_code: '供应商代码',
+    input_vendor_code: '请输入供应商代码',
+    unique_identifier: '唯一标识符',
+    input_unique_identifier: '请输入唯一标识符',
+    ffc_id: 'FFC ID',
+    input_ffc_id: '请输入FFC ID',
+    sap_code: 'SAP代码',
+    input_sap_code: '请输入SAP代码',
+    classification: '分类',
+    input_classification: '请输入分类',
+    authorization_status: '授权状态',
+    input_authorization_status: '请输入授权状态',
+    compliance_warning_letter: '合规警告信',
+    input_compliance_warning_letter: '请输入合规警告信',
+    types_of_orders: '订单类型',
+    input_types_of_orders: '请输入订单类型'
   },
   dataDic: {
     dict: '字典',

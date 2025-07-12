@@ -622,7 +622,25 @@ export default {
     inputErrorMessage: '請輸入Y/y',
 
     file_download: '基礎檔案資料匯入模板',
-    fileBasic_download: '基礎檔案'
+    fileBasic_download: '基礎檔案',
+
+    // New fields
+    vendor_code: '供應商代碼',
+    input_vendor_code: '請輸入供應商代碼',
+    unique_identifier: '唯一標識符',
+    input_unique_identifier: '請輸入唯一標識符',
+    ffc_id: 'FFC ID',
+    input_ffc_id: '請輸入FFC ID',
+    sap_code: 'SAP代碼',
+    input_sap_code: '請輸入SAP代碼',
+    classification: '分類',
+    input_classification: '請輸入分類',
+    authorization_status: '授權狀態',
+    input_authorization_status: '請輸入授權狀態',
+    compliance_warning_letter: '合規警告信',
+    input_compliance_warning_letter: '請輸入合規警告信',
+    types_of_orders: '訂單類型',
+    input_types_of_orders: '請輸入訂單類型'
   },
   dataDic: {
     dict: '字典',

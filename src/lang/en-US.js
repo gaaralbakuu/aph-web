@@ -635,7 +635,25 @@ export default {
     upload_failed: 'Upload failed',
 
     file_download: 'Basic file data import template',
-    fileBasic_download: 'Basic Files'
+    fileBasic_download: 'Basic Files',
+
+    // New fields
+    vendor_code: 'Vendor Code',
+    input_vendor_code: 'Please enter vendor code',
+    unique_identifier: 'Unique Identifier',
+    input_unique_identifier: 'Please enter unique identifier',
+    ffc_id: 'FFC ID',
+    input_ffc_id: 'Please enter FFC ID',
+    sap_code: 'SAP Code',
+    input_sap_code: 'Please enter SAP code',
+    classification: 'Classification',
+    input_classification: 'Please enter classification',
+    authorization_status: 'Authorization Status',
+    input_authorization_status: 'Please enter authorization status',
+    compliance_warning_letter: 'Compliance Warning Letter',
+    input_compliance_warning_letter: 'Please enter compliance warning letter',
+    types_of_orders: 'Types of Orders',
+    input_types_of_orders: 'Please enter types of orders'
   },
   dataDic: {
     dict: 'Dictionary',

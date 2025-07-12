@@ -33,7 +33,7 @@
             <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
               <label>{{ $l.requestor_facility_type }}</label>
               <el-select v-model="manufacturer.query.requestor_facility_type" :placeholder="$l.input_requestor_facility_type" clearable style="width: 100%">
-                <el-option label="T1" value="T1"></el-option>
+                <el-option label="T1SC" value="T1SC"></el-option>
                 <el-option label="T2" value="T2"></el-option>
               </el-select>
             </div>
@@ -154,8 +154,8 @@
                 <label class="form-label">{{ $l.requestor_facility_type }}</label>
                 <div class="radio-group">
                   <label class="radio-item">
-                    <input type="radio" v-model="manufacturer.data.requestor_facility_type" value="T1" />
-                    <span class="radio-text">T1</span>
+                    <input type="radio" v-model="manufacturer.data.requestor_facility_type" value="T1SC" />
+                    <span class="radio-text">T1SC</span>
                   </label>
                   <label class="radio-item">
                     <input type="radio" v-model="manufacturer.data.requestor_facility_type" value="T2" />
@@ -295,6 +295,51 @@
                 <label class="form-label">{{ $l.manual_input_id }}</label>
                 <el-input :placeholder="$l.input" v-model="manufacturer.data.manual_input_id" clearable class="form-input" />
               </div>
+            </div>
+
+            <!-- Row 8: New Fields - Part 1 -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.vendor_code }}</label>
+                <el-input :placeholder="$l.input_vendor_code" v-model="manufacturer.data.vendor_code" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.unique_identifier }}</label>
+                <el-input :placeholder="$l.input_unique_identifier" v-model="manufacturer.data.unique_identifier" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.ffc_id }}</label>
+                <el-input :placeholder="$l.input_ffc_id" v-model="manufacturer.data.ffc_id" clearable class="form-input" />
+              </div>
+            </div>
+
+            <!-- Row 9: New Fields - Part 2 -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.sap_code }}</label>
+                <el-input :placeholder="$l.input_sap_code" v-model="manufacturer.data.sap_code" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.classification }}</label>
+                <el-input :placeholder="$l.input_classification" v-model="manufacturer.data.classification" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.authorization_status }}</label>
+                <el-input :placeholder="$l.input_authorization_status" v-model="manufacturer.data.authorization_status" clearable class="form-input" />
+              </div>
+            </div>
+
+            <!-- Row 10: New Fields - Part 3 -->
+            <div style="display: flex; gap: 16px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.compliance_warning_letter }}</label>
+                <el-input :placeholder="$l.input_compliance_warning_letter" v-model="manufacturer.data.compliance_warning_letter" clearable class="form-input" />
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <label class="form-label">{{ $l.types_of_orders }}</label>
+                <el-input :placeholder="$l.input_types_of_orders" v-model="manufacturer.data.types_of_orders" clearable class="form-input" />
+              </div>
+              <div style="flex: 1;"></div>
             </div>
           </div>
 
@@ -480,6 +525,30 @@
         </el-descriptions-item>
         <el-descriptions-item label="手动输入的ID">
           {{ manufacturer.data.manual_input_id }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.vendor_code">
+          {{ manufacturer.data.vendor_code }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.unique_identifier">
+          {{ manufacturer.data.unique_identifier }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.ffc_id">
+          {{ manufacturer.data.ffc_id }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.sap_code">
+          {{ manufacturer.data.sap_code }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.classification">
+          {{ manufacturer.data.classification }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.authorization_status">
+          {{ manufacturer.data.authorization_status }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.compliance_warning_letter">
+          {{ manufacturer.data.compliance_warning_letter }}
+        </el-descriptions-item>
+        <el-descriptions-item :label="$l.types_of_orders">
+          {{ manufacturer.data.types_of_orders }}
         </el-descriptions-item>
       </el-descriptions>
       <!-- <el-descriptions :title="$l.contact_infos" :column="4">
@@ -733,6 +802,14 @@ export default {
           is_alidas_producer: '',
           is_alidas_authorized: '',
           manual_input_id: '',
+          vendor_code: '',
+          unique_identifier: '',
+          ffc_id: '',
+          sap_code: '',
+          classification: '',
+          authorization_status: '',
+          compliance_warning_letter: '',
+          types_of_orders: '',
           contactInfoList: [],
           addressList: [],
           attachment: [],
@@ -1060,6 +1137,14 @@ export default {
         is_involve_product: '',
         is_alidas_producer: '',
         is_alidas_authorized: '',
+        vendor_code: '',
+        unique_identifier: '',
+        ffc_id: '',
+        sap_code: '',
+        classification: '',
+        authorization_status: '',
+        compliance_warning_letter: '',
+        types_of_orders: '',
         contactInfoList: [],
         addressList: [],
         attachment: [],
@@ -1138,13 +1223,13 @@ export default {
               console.log(r)
               this.$message({
                 type: 'success',
-                message: '操作成功',
+                message: this.$c.success,
               })
               this.getList()
             })
             .catch((e) => {
               console.log(e)
-              this.$message.error('删除数据异常')
+              this.$message.error(this.$c.delete_error)
             })
         })
         .catch(() => {
@@ -1618,121 +1703,6 @@ export default {
     },
     Edate() {
       return this.manufacturer.data.cooperation_end_date.toLocaleString()
-    },
-  },
-  watch: {
-    userAuth: {
-      deep: true,
-      handler(newV) {
-        this.showAuth.m_add = newV.m_add == 'Y' ? true : false
-        this.showAuth.m_search = newV.m_search == 'Y' ? true : false
-        this.showAuth.m_del = newV.m_del == 'Y' ? true : false
-        this.showAuth.m_updata = newV.m_updata == 'Y' ? true : false
-        this.showAuth.m_import = newV.m_import == 'Y' ? true : false
-        this.showAuth.m_export = newV.m_export == 'Y' ? true : false
-        this.showAuth.m_upload = newV.m_upload == 'Y' ? true : false
-        this.showAuth.m_audit = newV.m_audit == 'Y' ? true : false
-        this.showAuth.m_print = newV.m_print == 'Y' ? true : false
-      },
-    },
-  },
-}
-</script>
-
-<style>
-.el-row {
-  margin-bottom: 20px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.el-col {
-  border-radius: 4px;
-  padding: 0px;
-}
-
-.bg-purple-dark {
-  background: #99a9bf;
-}
-
-.bg-purple-light {
-  background: #e5e9f2;
-}
-
-.row-bg {
-  padding: 5px 0;
-  background-color: #f9fafc;
-}
-
-.r_input {
-  width: 1600px;
-}
-
-.r_btn {
-  float: right;
-  padding: 0;
-  margin: 0;
-}
-
-.search_tips {
-  width: 100px;
-  text-align: right;
-  font-size: 14px;
-  display: inline-block;
-  font-family: '微软雅黑';
-}
-
-.create_btn {
-  margin-bottom: 15px;
-}
-
-.scrollable-dialog .el-dialog__body {
-  max-height: 70vh;
-  /* 设置最大高度，根据需要调整 */
-  overflow-y: auto;
-  /* 启用垂直滚动条 */
-}
-
-.dialog-content {
-  padding: 0.125rem;
-}
-
-.shadow {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.top-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.el-table .warning-row {
-  background: oldlace;
-}
-
-.el-table .success-row {
-  background: #f0f9eb;
-}
-
-.text {
-  font-size: 14px;
-  text-align: center !important;
-}
-
-.item {
-  margin-bottom: 18px;
-}
-
-.el-table .cell,
-.el-table--border .el-table__cell:first-child .cell {
-  text-align: center !important;
-}
-</style>
     },
   },
   watch: {
