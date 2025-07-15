@@ -3,6 +3,7 @@ UPDATE DB:
   + issue_type: 155 -> 2000
   + issue_desc: 500 -> 2000
   + issue_suggest: 500 -> 2000
+  + corrective_plan: 300 -> 2000
 
 
 ALTER TABLE cis_r_manufacturer 

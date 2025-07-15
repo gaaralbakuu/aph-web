@@ -566,6 +566,7 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import filePreviews from '../../_common/filePreviews.vue'
 import CustomDialog from '../../_common/CustomDialog.vue'
+import exportExcel from '../../../utils/exportExcel'
 
 export default {
   name: 'investigation',
@@ -2080,6 +2081,120 @@ export default {
 
     exportInfo() {
       const mergedArrayUsingSpread = [...this.tableList.columns1, ...this.tableList.columns2, ...this.tableList.columns3, ...this.tableList.columns4]
+
+      const name = (this.name || 'export_data') + '_' + dayjs().format('YYYYMMDD');
+      const tHeader = mergedArrayUsingSpread.map((item) => ({
+          ...item,
+          header: item.title || item.key,
+          width: item.width || 20,
+        }))
+      const tData = this.tableList.list.map((item) => {
+        Object.entries(item).forEach(([key, value]) => {
+          if (value === null || value === undefined) {
+            item[key] = '';
+          } else if (typeof value === 'object') {
+            item[key] = JSON.stringify(value);
+          } else if (typeof value === 'string') {
+            item[key] = value.split(/<br \/>/g).filter(Boolean).join('\n');
+          }
+        });
+
+        return item;
+      });
+
+      console.log(this.tableList)
+
+      exportExcel(name + ".xlsx", [
+      {
+        name: this.$l.answerDetails,
+        columns: tHeader,
+        data: tData,
+        callback: ({ worksheet }) => {
+          const col = tHeader.length;
+          const row = tData.length;
+
+          // Styling for header and rows (simplified for brevity)
+          worksheet.getRow(1).height = 45;
+          Array.from({ length: col }).forEach((_, index) => {
+            worksheet.getRow(1).getCell(1 + index).border = {
+              top: { style: "thick", color: { argb: "000000" } },
+              left: { style: index === 0 ? "thick" : "thin", color: { argb: "000000" } },
+              bottom: { style: "thin", color: { argb: "000000" } },
+              right: { style: index === col - 1 ? "thick" : "thin", color: { argb: "000000" } },
+            };
+            worksheet.getRow(1).getCell(1 + index).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+              wrapText: true,
+            };
+            worksheet.getRow(1).getCell(1 + index).fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFD080" },
+            };
+          });
+
+          // style row
+          Array.from({
+            length: col,
+          }).forEach((_, indexColumn) => {
+            Array.from({
+              length: row,
+            }).forEach((_, indexRow) => {
+              // border
+              worksheet.getRow(2 + indexRow).getCell(1 + indexColumn).border =
+              {
+                top: { style: "thin", color: { argb: "000000" } },
+                left: {
+                  style: indexColumn === 0 ? "thick" : "thin",
+                  color: { argb: "000000" },
+                },
+                bottom: {
+                  style: indexRow === row - 1 ? "thick" : "thin",
+                  color: { argb: "000000" },
+                },
+                right: {
+                  style: indexColumn === col - 1 ? "thick" : "thin",
+                  color: { argb: "000000" },
+                },
+              };
+
+              // bg color
+              if (indexRow % 2 !== 0) {
+                worksheet.getRow(2 + indexRow).getCell(1 + indexColumn).fill =
+                {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "F3F3F3" },
+                };
+              }
+
+              worksheet.getRow(2 + indexRow).getCell(1 + indexColumn).numFmt =
+                "@";
+
+              worksheet.getRow(2 + indexRow).getCell(1 + indexColumn).alignment = {
+                vertical: "top",
+                wrapText: true,
+              };
+            });
+          });
+        },
+        views: [{ showGridLines: false }],
+      },
+      {
+        name: "GW-IMPORT-WAREHOUSE",
+        columns: [],
+        data: [],
+        state: "veryHidden",
+      }
+    ])
+      .then(() => {
+
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
       import('@/vendor/Export2Excel')
         .then((excel) => {
           const tHeader = mergedArrayUsingSpread.map((item) => {
@@ -2090,7 +2205,10 @@ export default {
             return item.key
           })
 
-          const data1 = this.tableList.list.map((item) => filterVal1.map((key) => item[key]))
+          const data1 = this.tableList.list.map((item) => filterVal1.map((key) => (item[key] || '').toString().replace(/<br \/>/g, '\n')))
+
+          console.log(data1)
+
           excel.export_json_to_excel({
             header: tHeader,
             sheetname: this.$l.answerDetails,
