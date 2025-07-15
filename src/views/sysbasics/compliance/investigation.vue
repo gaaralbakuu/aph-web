@@ -2195,34 +2195,34 @@ export default {
         console.error(error);
       });
 
-      import('@/vendor/Export2Excel')
-        .then((excel) => {
-          const tHeader = mergedArrayUsingSpread.map((item) => {
-            return item.title || item.key
-          })
+      // import('@/vendor/Export2Excel')
+      //   .then((excel) => {
+      //     const tHeader = mergedArrayUsingSpread.map((item) => {
+      //       return item.title || item.key
+      //     })
 
-          const filterVal1 = mergedArrayUsingSpread.map((item) => {
-            return item.key
-          })
+      //     const filterVal1 = mergedArrayUsingSpread.map((item) => {
+      //       return item.key
+      //     })
 
-          const data1 = this.tableList.list.map((item) => filterVal1.map((key) => (item[key] || '').toString().replace(/<br \/>/g, '\n')))
+      //     const data1 = this.tableList.list.map((item) => filterVal1.map((key) => (item[key] || '').toString().replace(/<br \/>/g, '\n')))
 
-          console.log(data1)
+      //     console.log(data1)
 
-          excel.export_json_to_excel({
-            header: tHeader,
-            sheetname: this.$l.answerDetails,
-            data: data1,
-            filename: (this.name || 'export_data') + '_' + dayjs().format('YYYYMMDD'),
-          })
-          this.exportLoading = false
-        })
-        .catch((e) => {
-          this.exportLoading = false
-          this.$message.error(this.$l.dataProcessingFailed)
+      //     excel.export_json_to_excel({
+      //       header: tHeader,
+      //       sheetname: this.$l.answerDetails,
+      //       data: data1,
+      //       filename: (this.name || 'export_data') + '_' + dayjs().format('YYYYMMDD'),
+      //     })
+      //     this.exportLoading = false
+      //   })
+      //   .catch((e) => {
+      //     this.exportLoading = false
+      //     this.$message.error(this.$l.dataProcessingFailed)
 
-          throw e
-        })
+      //     throw e
+      //   })
     },
 
     // 邮件通知
