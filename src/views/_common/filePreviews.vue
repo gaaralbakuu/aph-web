@@ -66,7 +66,7 @@
         />
       </div>
       <div v-else @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
-        <p>不支持的文件类型</p>
+        <p>{{ $l.fileDontSupport }}</p>
       </div>
     </div>
   </el-dialog>

@@ -495,6 +495,7 @@ export default {
   },
   FilePreview: {
     filePreview: 'File Preview',
+    fileDontSupport: 'Unsupported file type'
   },
   shareInformation: {
     helpManual: 'Help Manual',

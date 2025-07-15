@@ -488,6 +488,7 @@ export default {
   },
   FilePreview: {
     filePreview: 'Xem trước tệp',
+    fileDontSupport: 'Không hỗ trợ loại tệp này'
   },
   shareInformation: {
     helpManual: 'Sổ tay hướng dẫn',

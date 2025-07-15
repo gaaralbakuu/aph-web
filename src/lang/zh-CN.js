@@ -501,6 +501,7 @@ export default {
   },
   FilePreview: {
     filePreview: '文件预览',
+    fileDontSupport: '不支持的文件类型'
   },
   shareInformation: {
     helpManual: '帮助手册',

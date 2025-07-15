@@ -497,6 +497,7 @@ export default {
   },
   FilePreview: {
     filePreview: '文件預覽',
+    fileDontSupport: '不支持的文件類型'
   },
   shareInformation: {
     helpManual: '幫助手冊',
