@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
-        <tip-box :content="content" type="danger"></tip-box>
-        <el-button icon="arrow-left" class="pan-back-btn" @click="back">返回</el-button>
+        <tip-box :content="$l.notFoundContent" type="danger"></tip-box>
+        <el-button icon="arrow-left" class="pan-back-btn" @click="back">{{$c.back}}</el-button>
     </div>
 </template>
 
@@ -12,9 +12,7 @@ export default {
   name: 'page404',
   components: { TipBox },
   data () {
-    return {
-      content: '页面不存在。请检查您输入的网址是否正确，或与管理员联系。'
-    }
+    return {}
   },
   methods: {
     back () {

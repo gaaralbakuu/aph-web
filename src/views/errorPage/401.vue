@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
-        <tip-box :content="content" type="danger"></tip-box>
-        <el-button icon="arrow-left" class="pan-back-btn" @click="back">返回</el-button>
+        <tip-box :content="$l.noPermissionContent" type="danger"></tip-box>
+        <el-button icon="arrow-left" class="pan-back-btn" @click="back">{{$c.back}}</el-button>
     </div>
 </template>
 
@@ -12,9 +12,7 @@ export default {
   name: 'page401',
   components: { TipBox },
   data () {
-    return {
-      content: '您可能没有权限查看此页面。如有疑问，请与管理员联系。'
-    }
+    return {}
   },
   methods: {
     back () {

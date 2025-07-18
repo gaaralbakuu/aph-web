@@ -1,30 +1,29 @@
 <template>
-  <el-container style="height: 100%;" :class="{'mobile':device==='mobile'}">
-    <div v-if="device==='mobile'&&!isCollapse" class="drawer-bg" @click="handleClickOutside"></div>
-    <el-aside class="app-aside" :style="menuWidthStyle" :class="{hideSidebar:isCollapse}">
-      <el-container style="height: 100%" :style="{'background-color':menuBackgroundColor}">
-        <el-header class="no-padding" style="height: auto;">
+  <el-container style="height: 100%" :class="{ mobile: device === 'mobile' }">
+    <div v-if="device === 'mobile' && !isCollapse" class="drawer-bg" @click="handleClickOutside"></div>
+    <el-aside class="app-aside" :style="menuWidthStyle" :class="{ hideSidebar: isCollapse }">
+      <el-container style="height: 100%" :style="{ 'background-color': menuBackgroundColor }">
+        <el-header class="no-padding" style="height: auto">
           <div class="app-logo">
-            <template v-if="!isCollapse"><span style="font-size: 18px">{{sysname}}</span></template>
+            <template v-if="!isCollapse">
+              <span style="font-size: 18px">{{ sysname }}</span>
+            </template>
             <template v-else>
-              <div style="padding-top: 2px;"><img style="width: 44px;" :src="scuLogo" /></div>
+              <div style="padding-top: 2px"><img style="width: 44px" :src="scuLogo" /></div>
             </template>
           </div>
         </el-header>
         <el-main class="no-padding no-scroll-x">
-          <el-menu style="border:0" :style="menuWidthStyle" :default-active="$route.name" :collapse="isCollapse"
-            :collapse-transition="false" mode="vertical" unique-opened :background-color="menuBackgroundColor"
-            :text-color="textColor" :active-text-color="textActiveColor">
-            <sidebar-item v-for="item in user.menus" :key="item.id" :style="menuWidthStyle" :item="item">
-            </sidebar-item>
+          <el-menu style="border: 0" :style="menuWidthStyle" :default-active="$route.name" :collapse="isCollapse" :collapse-transition="false" mode="vertical" unique-opened :background-color="menuBackgroundColor" :text-color="textColor" :active-text-color="textActiveColor">
+            <sidebar-item v-for="item in user.menus" :key="item.id" :style="menuWidthStyle" :item="item"></sidebar-item>
           </el-menu>
         </el-main>
       </el-container>
     </el-aside>
-    <el-container style="height: 100%;" class="app-aside-right no-scroll-x">
+    <el-container style="height: 100%" class="app-aside-right no-scroll-x">
       <el-header class="no-padding" style="height: auto">
-        <navbar></navbar>
         <tags-view v-if="showTagBar"></tags-view>
+        <navbar></navbar>
       </el-header>
       <el-main class="no-padding" v-if="showTagBar">
         <keep-alive :include="cachedViews">
@@ -91,11 +90,7 @@ export default {
       return this.$route.fullPath
     },
     menuWidthStyle() {
-      const width = this.isCollapse
-        ? this.device === 'mobile'
-          ? 0
-          : config.menuCollapseWidth
-        : config.menuWidth
+      const width = this.isCollapse ? (this.device === 'mobile' ? 0 : config.menuCollapseWidth) : config.menuWidth
       return { width: width + 'px' }
     },
   },

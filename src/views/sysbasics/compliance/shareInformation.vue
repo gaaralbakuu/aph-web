@@ -593,7 +593,7 @@ export default {
   },
 }
 </script>
-<style>
+<style scoped>
 /* .preview-container {
     width: 100%;
     height: 600px;

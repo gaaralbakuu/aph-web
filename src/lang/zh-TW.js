@@ -8,6 +8,7 @@ export default {
     create: '創建',
     edit: '編輯',
     delete: '刪除',
+    detail: '詳情',
     push: '推送',
     cancel: '取消',
     confirm: '確認',
@@ -55,15 +56,20 @@ export default {
     Y: '是',
     N: '否',
     sure: '確定',
-    info: 'Hủy bỏ hoạt động này',
+    info: '取消刪除操作',
+  },
+  errorPage: {
+  },
+  page401: {
+    noPermissionContent: '您可能沒有權限查看此頁面。如有疑問，請與管理員聯繫。',
+  },
+  page404: {
+    notFoundContent: '頁面不存在。請檢查您輸入的網址是否正確，或與管理員聯繫。',
   },
   SizeSelect: {
     loose: '寬鬆',
     moderate: '中等',
     compact: '緊湊',
-    switchSuccess: '切換成功',
-  },
-  adminParam: {
     title: '系統參數',
     param_type: '參數類型',
     param_typePd: '請選擇參數類型',
@@ -119,6 +125,9 @@ export default {
     forgetPass: '忘記密碼？',
     login: '登錄',
     success: '登錄成功',
+    errorPage: {
+      noPermissionContent: '您可能沒有權限查看此頁面。如有疑問，請與管理員聯繫。',
+    },
   },
   loginRegister: {
     name: '註冊賬號',
@@ -141,6 +150,24 @@ export default {
     success: '註冊成功',
     goBack: '賬號密碼登陸',
     forgetButton: '提交',
+  },
+  manufacturer_table: {
+    partner_english_name: '英文名稱',
+    vendor_code: '供應商編碼',
+    sap_code: 'SAP編碼',
+    address: '地址',
+    types_of_orders: '訂單類型',
+    overall_capabilities: '整體能力',
+    business_registration_number: '營業執照號',
+    authorization_status: '授權狀態',
+    leading_t1: '主T1',
+    action: '操作',
+    onboarding: '入職中',
+    discontinued: '已停用',
+    in_use: '使用中',
+    view_address: '查看地址',
+    view_capabilities: '查看整體能力',
+    empty: '無',
   },
   adminDictionary: {
     name: '數據字典',
@@ -493,11 +520,11 @@ export default {
     dataProcessingFailed: '數據處理失敗，導出失敗',
     confirmAddRole: '是否添加角色為收件對象, 是否繼續?',
     confirmDeleteRole: '是否刪除角色為收件對象, 是否繼續?',
-    confirmSendEmail: '是否發送郵件, 是否繼續?'
+    confirmSendEmail: '是否發送郵件, 是否繼續?',
   },
   FilePreview: {
     filePreview: '文件預覽',
-    fileDontSupport: '不支持的文件類型'
+    fileDontSupport: '不支持的文件類型',
   },
   shareInformation: {
     helpManual: '幫助手冊',
@@ -517,6 +544,21 @@ export default {
     deleteContactContent: '此操作將刪除第$1行資料, 是否繼續?',
     deleteTutorialTitle: '刪除幫助手冊',
     deleteTutorialContent: '此操作將刪除第$1條資料, 是否繼續?',
+    businessLicense: '营业执照',
+    otherAttachment: '其他附件',
+    dueDiligence: '尽职调查',
+    improve: '改善',
+    attachmentAddFail: '附件添加失败',
+    attachmentAddSuccess: '附件添加成功',
+    addFail: '添加失败',
+    confirmAddRow: '此操作将新增该数据, 是否继续?',
+    addContact: '新增联系人',
+    confirm: '确定',
+    cancel: '取消',
+    confirmDeleteRow: '此操作将删除第{row}行数据, 是否继续?',
+    deleteContact: '删除联系人',
+    deleteSuccess: '删除成功',
+    deleteFail: '删除失败',
   },
   accountManagement: {
     account: '帳號',
@@ -641,7 +683,10 @@ export default {
     compliance_warning_letter: '合規警告信',
     input_compliance_warning_letter: '請輸入合規警告信',
     types_of_orders: '訂單類型',
-    input_types_of_orders: '請輸入訂單類型'
+    input_types_of_orders: '請輸入訂單類型',
+    producer_status_onboarding: '入職中',
+    producer_status_discontinued: '已停用',
+    producer_status_in_use: '使用中',
   },
   dataDic: {
     dict: '字典',
@@ -662,6 +707,10 @@ export default {
     value: '內容',
     description: '描述',
     info: '取消該操作',
+    back: '返回',
+    view_address: '查看地址',
+    view_capabilities: '查看整體能力',
+    empty: '無',
   },
   issuesType: {
     manufactureName: '合作夥伴名稱',

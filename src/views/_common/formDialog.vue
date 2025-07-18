@@ -3,7 +3,7 @@
     :visible.sync="dialogShow">
     <div style="padding-right: 100px;">
       <z-form :data="data" :formProps="formProps" :fields="fields"></z-form>
-			<slot class="operation1" name="operation1"></slot>
+      <slot class="operation1" name="operation1"></slot>
       <div class="align-r">
         <el-button @click="dialogShow = false">{{$c.cancel}}</el-button>
         <el-button v-if="!formProps.disabled" type="primary" @click.native="submmit" :loading="submmitLoading">{{$c.confirm}}
@@ -24,8 +24,8 @@ export default {
     name: { type: String, default: '' },
     fields: { type: Array, default: [] },
     data: { type: Object, default: function(){
-			return {}
-		} },
+      return {}
+    } },
     formProps: { type: Object, default: {} },
     visible: { type: Boolean, default: false },
     submmitLoading: { type: Boolean, default: false }
@@ -48,6 +48,7 @@ export default {
 }
 </script>
 
-<style>
+
+<style scoped>
 
 </style>

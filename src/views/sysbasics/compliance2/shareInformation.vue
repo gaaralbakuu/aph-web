@@ -359,7 +359,7 @@ export default {
       options: [
         {
           value: '0A',
-          label: '营业执照',
+          label: this.$l.businessLicense, // { businessLicense: '营业执照' }
         },
         {
           value: '0B',
@@ -367,15 +367,15 @@ export default {
         },
         {
           value: '0C',
-          label: '其他附件',
+          label: this.$l.otherAttachment, // { otherAttachment: '其他附件' }
         },
         {
           value: '1',
-          label: '尽职调查',
+          label: this.$l.dueDiligence, // { dueDiligence: '尽职调查' }
         },
         {
           value: '2',
-          label: '改善',
+          label: this.$l.improve, // { improve: '改善' }
         },
       ],
       addHelpManual: {
@@ -498,7 +498,7 @@ export default {
       if (this.fileList && this.fileList.length == 0) {
         this.$message({
           type: 'info',
-          message: '附件添加失败',
+          message: this.$l.attachmentAddFail, // { attachmentAddFail: '附件添加失败' }
         })
       }
       const formData = new FormData()
@@ -516,7 +516,7 @@ export default {
           console.log(r)
           this.$message({
             type: 'success',
-            message: '附件添加成功',
+            message: this.$l.attachmentAddSuccess, // { attachmentAddSuccess: '附件添加成功' }
           })
           this.addHelpFormVisible = false
           this.getList()
@@ -524,7 +524,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '附件添加失败',
+            message: this.$l.attachmentAddFail, // { attachmentAddFail: '附件添加失败' }
           })
         })
     },
@@ -534,11 +534,15 @@ export default {
     },
     submmitaddCis() {
       console.log(this.addCisCCtacter.list)
-      this.$confirm('此操作将新增该数据, 是否继续?', '新增联系人', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
+      this.$confirm(
+        this.$l.confirmAddRow, // { confirmAddRow: '此操作将新增该数据, 是否继续?' }
+        this.$l.addContact, // { addContact: '新增联系人' }
+        {
+          confirmButtonText: this.$l.confirm, // { confirm: '确定' }
+          cancelButtonText: this.$l.cancel, // { cancel: '取消' }
+          type: 'warning',
+        }
+      )
         .then(() => {
           this.$request(
             api.baseUrl + '/Compliance/ComplianceContacter/addCisCContacter',
@@ -549,7 +553,7 @@ export default {
               console.log(r)
               this.$message({
                 type: 'success',
-                message: '附件添加成功',
+                message: this.$l.attachmentAddSuccess, // { attachmentAddSuccess: '附件添加成功' }
               })
               this.getCisList()
               this.addCisFormVisible = false
@@ -557,14 +561,14 @@ export default {
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '添加失败',
+                message: this.$l.addFail, // { addFail: '添加失败' }
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '添加失败',
+            message: this.$l.addFail, // { addFail: '添加失败' }
           })
         })
     },
@@ -572,11 +576,15 @@ export default {
     deleteCisClick(row, index) {
       console.log(row)
       let i = index + 1
-      this.$confirm('此操作将删除第' + i + '行数据, 是否继续?', '删除联系人', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
+      this.$confirm(
+        this.$l.confirmDeleteRow.replace('{row}', i), // { confirmDeleteRow: '此操作将删除第{row}行数据, 是否继续?' }
+        this.$l.deleteContact, // { deleteContact: '删除联系人' }
+        {
+          confirmButtonText: this.$l.confirm, // { confirm: '确定' }
+          cancelButtonText: this.$l.cancel, // { cancel: '取消' }
+          type: 'warning',
+        }
+      )
         .then(() => {
           this.$request(
             api.baseUrl + '/Compliance/ComplianceContacter/deleteCisCContacter',
@@ -587,21 +595,21 @@ export default {
               console.log(r)
               this.$message({
                 type: 'success',
-                message: '删除成功',
+                message: this.$l.deleteSuccess, // { deleteSuccess: '删除成功' }
               })
               this.getCisList()
             })
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '删除失败',
+                message: this.$l.deleteFail, // { deleteFail: '删除失败' }
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '删除失败',
+            message: this.$l.deleteFail, // { deleteFail: '删除失败' }
           })
         })
     },
@@ -715,7 +723,7 @@ export default {
   },
 }
 </script>
-      <style>
+      <style scoped>
 /* .preview-container {
       width: 100%;
       height: 600px;
