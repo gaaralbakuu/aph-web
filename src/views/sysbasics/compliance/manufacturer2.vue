@@ -6,73 +6,70 @@
       <div class="text-gray-500 text-sm">Danh sách các hồ sơ của đối tác</div>
     </div>
     <!-- Search Section -->
-    <div class="flex gap-3 flex-wrap p-3">
-      <div class="relative h-8">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
-            <path d="m8 13 4-7 4 7" />
-            <path d="M9.1 11h5.7" />
-          </svg>
+    <div class="flex gap-3 flex-wrap justify-between p-3">
+      <div class="flex gap-3 flex-wrap">
+        <div class="relative h-9 flex items-center gap-2 mr-5">
+          <div class="flex bg-gray-100 p-0.5 rounded h-9">
+            <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === '' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = ''">
+              {{ $c.all || 'All' }}
+            </button>
+            <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T1SC' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T1SC'">
+              {{ $l.requestor_facility_type_T1SC || 'T1SC' }}
+            </button>
+            <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T2' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T2'">
+              {{ $l.requestor_facility_type_T2 || 'T2' }}
+            </button>
+          </div>
+          <div class="h-full py-2">
+            <div class="border-r border-solid border-gray-200 h-full"></div>
+          </div>
         </div>
-        <input type="text" :placeholder="$l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
-      </div>
-      <div class="relative h-8">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-          </svg>
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+              <path d="m8 13 4-7 4 7" />
+              <path d="M9.1 11h5.7" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
-        <input type="text" :placeholder="$l.addr" v-model="manufacturer.query.addr" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
-      </div>
-      <div class="relative h-8">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-          </svg>
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.addr" v-model="manufacturer.query.addr" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
-        <input type="text" :placeholder="$l.legal_person" v-model="manufacturer.query.legal_person" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
-      </div>
-      <!-- <div class="relative h-8">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-          </svg>
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.legal_person" v-model="manufacturer.query.legal_person" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
-        <input type="text" :placeholder="$l.fileName" v-model="manufacturer.query.fileName" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
-      </div> -->
-      <div class="relative h-8">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-          </svg>
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
-        <input type="text" :placeholder="$l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
-      </div>
-      <div class="relative h-8">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-          </svg>
-        </div>
-        <select v-model="manufacturer.query.requestor_facility_type" :placeholder="$l.requestor_facility_type" class="pl-10 h-8 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md w-full appearance-none min-w-[200px]">
-          <option value="" disabled selected hidden>{{ $l.requestor_facility_type }}</option>
-          <option value="T1SC">T1SC</option>
-          <option value="T2">T2</option>
-        </select>
       </div>
       <!-- Search buttons -->
       <div class="flex gap-3">
-        <button v-show="showAuth.m_search" @click="getList" class="h-8 rounded flex items-center bg-black text-white px-4 hover:bg-blue-600 transition-colors duration-150">
+        <button v-show="showAuth.m_search" @click="getList" class="h-9 rounded flex items-center bg-black text-white px-4 hover:bg-gray-800 transition-colors duration-150">
           {{ $c.queryButton }}
         </button>
-        <button v-show="showAuth.m_search" @click="reset" class="h-8 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-blue-400 transition-colors duration-150">
+        <button v-show="showAuth.m_search" @click="reset" class="h-9 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-150">
           {{ $c.reset }}
         </button>
       </div>
@@ -106,7 +103,7 @@
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          {{ $l.downloadTemplate || "Download Template" }}
+          {{ $l.downloadTemplate || 'Download Template' }}
         </button>
       </div>
     </div>
@@ -275,7 +272,7 @@
             </div>
 
             <div>
-              <button class="px-3 h-8 bg-white text-xs rounded-full border border-gray-300 flex items-center gap-1 hover:bg-gray-100" @click="contactInfoList">
+              <button class="px-3 h-9 bg-white text-xs rounded-full border border-gray-300 flex items-center gap-1 hover:bg-gray-100" @click="contactInfoList">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -301,7 +298,7 @@
             </div>
 
             <div>
-              <button class="px-3 h-8 bg-white text-xs rounded-full border border-gray-300 flex items-center gap-1 hover:bg-gray-100" @click="addressList">
+              <button class="px-3 h-9 bg-white text-xs rounded-full border border-gray-300 flex items-center gap-1 hover:bg-gray-100" @click="addressList">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -328,7 +325,7 @@
             </div>
 
             <div>
-              <button class="px-3 h-8 bg-white text-xs rounded-full border border-gray-300 flex items-center gap-1 hover:bg-gray-100" @click="createFileData">
+              <button class="px-3 h-9 bg-white text-xs rounded-full border border-gray-300 flex items-center gap-1 hover:bg-gray-100" @click="createFileData">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
