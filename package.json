@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development vue-cli-service serve",
     "dev:debug": "cross-env NODE_ENV=development DEBUG=* vue-cli-service serve --mode development",
     "build": "cross-env NODE_ENV=production vue-cli-service build",
-    "build:test": "cross-env NODE_ENV=development vue-cli-service build",
+    "build:test": "cross-env NODE_ENV=test vue-cli-service build",
     "lint": "vue-cli-service lint",
     "lint:fix": "vue-cli-service lint --fix",
     "check-tailwind": "node check-tailwind.js"
