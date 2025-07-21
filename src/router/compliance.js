@@ -46,6 +46,14 @@ export default {
             }
         },
         {
+            path: 'Manufacturer2',
+            component: () => import('@/views/sysbasics/compliance/manufacturer2'),
+            name: 'Manufacturer2',
+            meta: {
+                noCache: isDevelopMode
+            }
+        },
+        {
             path: 'Demo3',
             component: () => import('@/views/sysbasics/compliance/demo3'),
             name: 'Demo3',

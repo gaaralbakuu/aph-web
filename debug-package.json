@@ -1,0 +1,11 @@
+{
+  "name": "tailwind-hot-reload-check",
+  "version": "1.0.0",
+  "description": "Script kiểm tra và khắc phục vấn đề hot reload với Tailwind CSS 2",
+  "main": "check-tailwind.js",
+  "scripts": {
+    "check": "node check-tailwind.js",
+    "fix-deps": "npm install --save-dev babel-eslint@^10.1.0",
+    "dev-debug": "cross-env NODE_ENV=development DEBUG=* vue-cli-service serve --mode development"
+  }
+}

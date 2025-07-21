@@ -24,7 +24,16 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 8180,
+    hot: true,
+    liveReload: true,
+    watchOptions: {
+      poll: 1000,
+      ignored: /node_modules/,
+    },
   },
+  transpileDependencies: [
+    'element-ui'
+  ],
   configureWebpack: () => {
     var obj = {
       externals: {

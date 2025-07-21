@@ -15,15 +15,15 @@
         </el-header>
         <el-main class="no-padding no-scroll-x">
           <el-menu style="border: 0" :style="menuWidthStyle" :default-active="$route.name" :collapse="isCollapse" :collapse-transition="false" mode="vertical" unique-opened :background-color="menuBackgroundColor" :text-color="textColor" :active-text-color="textActiveColor">
-            <sidebar-item v-for="item in user.menus" :key="item.id" :style="menuWidthStyle" :item="item"></sidebar-item>
+            <sidebar-item v-for="item in user.menus" :key="item.id" :style="{ ...menuWidthStyle, backgroundColor: 'red' }" :item="item"></sidebar-item>
           </el-menu>
         </el-main>
       </el-container>
     </el-aside>
     <el-container style="height: 100%" class="app-aside-right no-scroll-x">
       <el-header class="no-padding" style="height: auto">
-        <tags-view v-if="showTagBar"></tags-view>
         <navbar></navbar>
+        <!-- <tags-view v-if="showTagBar"></tags-view> -->
       </el-header>
       <el-main class="no-padding" v-if="showTagBar">
         <keep-alive :include="cachedViews">
@@ -117,5 +117,12 @@ export default {
   height: 100%;
   position: absolute;
   z-index: 999;
+}
+</style>
+
+<style>
+.el-submenu__title {
+  display: flex;
+  align-items: center;
 }
 </style>

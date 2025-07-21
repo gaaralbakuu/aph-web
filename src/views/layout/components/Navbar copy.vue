@@ -1,48 +1,49 @@
 <template>
-  <div class="flex h-[64px] px-3 items-center justify-between bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">
+  <div class="navbar">
     <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
-    <div class="flex gap-3 items-center">
-      <div class="h-10 w-10 rounded-md text-[20px] cursor-pointer flex items-center justify-center bg-[#f5f5f5] text-black hover:bg-[#eaeaea] hover:text-black dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#272727] dark:hover:text-white" @click="toggleScreenfull">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-        </svg>
-      </div>
-      <size-select />
-      <lang-select />
-      <div class="relative group">
-        <div class="h-10 w-10 rounded-md text-[20px] cursor-pointer flex items-center justify-center bg-[#f5f5f5] text-black hover:bg-[#eaeaea] hover:text-black dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#272727] dark:hover:text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-        </div>
-        <div class="absolute right-0 transform w-[240px] z-50 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 pt-3">
-          <div class="bg-white text-black rounded-md shadow dark:bg-[#1a1a1a] dark:text-white flex flex-col py-2 font-medium">
-            <div class="flex items-center gap-2 px-5 py-3">
-              <div class="rounded-full overflow-hidden w-5 h-5 bg-black text-white flex justify-center items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-sm font-semibold">{{ user.userId }}</span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">{{ user.userName }}</span>
-              </div>
-            </div>
-            <div class="flex flex-col my-1 py-1 border-t border-b border-[#ebebeb] dark:border-gray-600">
-              <div @click="passwordFormVisible = true" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{$l.changePwd}}</div>
-            </div>
-            <div class="flex flex-col">
-              <div @click="logout" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{$l.logout}}</div>
-            </div>
+    <breadcrumb class="breadcrumb-container" />
+    <div class="flex1"></div>
+    <div class="right-menu">
+      <template v-if="device!=='mobile'">
+        <error-log class="errLog-container right-menu-item" />
+        <el-tooltip :content="$l.screenfull" effect="dark" placement="bottom">
+          <screenfull class="screenfull right-menu-item" />
+        </el-tooltip>
+        <el-tooltip :content="$l.size" effect="dark" placement="bottom">
+          <size-select class="international right-menu-item" />
+        </el-tooltip>
+        <el-tooltip :content="$l.language" effect="dark" placement="bottom">
+          <lang-select class="international right-menu-item" />
+        </el-tooltip>
+        <el-tooltip :content="$l.theme" effect="dark" placement="bottom">
+          <theme-picker class="theme-switch right-menu-item" />
+        </el-tooltip>
+      </template>
+      <el-dropdown class="avatar-container right-menu-item" trigger="click">
+        <div class="avatar-wrapper">
+          <img :src="user.avatar||default_avatar" class="user-avatar">
+          <div class="user-info">
+            <label>{{user.userId}}</label>
+            <div>{{user.userName}}</div>
           </div>
+          <svg-icon class-name="more-icon" icon-class="more" />
         </div>
-      </div>
+        <el-dropdown-menu slot="dropdown">
+          <!-- <el-dropdown-item>
+            <div @click="toggleAvatarShow">上传头像</div>
+          </el-dropdown-item> -->
+          <el-dropdown-item>
+            <div @click="passwordFormVisible = true">{{$l.changePwd}}</div>
+          </el-dropdown-item>
+          <el-dropdown-item divided>
+            <div @click="logout">{{$l.logout}}</div>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
 
     <el-dialog :title="$l.changePwd" :visible.sync="passwordFormVisible">
-      <div style="padding-right: 120px">
+      <div style="padding-right: 120px;">
         <!--表单-->
         <el-form :model="pass" :hide-required-asterisk="false" label-width="120px">
           <el-form-item :label="$l.oldPwd">
@@ -58,12 +59,17 @@
         <!--表单-->
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="passwordFormVisible = false">{{ $c.cancel }}</el-button>
+        <el-button @click="passwordFormVisible = false">{{$c.cancel}}</el-button>
         <el-button type="primary" @click.native="submitPass()" :loading="loading">
-          {{ $c.confirm }}
+          {{$c.confirm}}
         </el-button>
       </div>
     </el-dialog>
+
+    <my-upload field="img" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
+      v-model="avatarEditVisitable" :width="120" :height="120" :headers="{'TOKEN':token}" :url="avatarUrl"
+      img-format="png">
+    </my-upload>
   </div>
 </template>
 
@@ -79,12 +85,11 @@ import ThemePicker from './ThemePicker'
 import avatar from '@/assets/default_avatar.png'
 import myUpload from 'vue-image-crop-upload/upload-2'
 import { getToken } from '@/utils/auth'
-import screenfull, { toggle } from 'screenfull'
 
 const token = getToken()
 
 export default {
-  name: 'layoutNavbar',
+  name:'layoutNavbar',
   components: {
     Breadcrumb,
     Hamburger,
@@ -164,16 +169,87 @@ export default {
     cropUploadFail(status) {
       this.$message({ message: '图片上传失败', type: 'error' })
     },
-    toggleScreenfull() {
-      if (!screenfull.enabled) {
-        this.$message({
-          message: 'Your browser does not support fullscreen mode',
-          type: 'warning',
-        })
-        return false
-      }
-      screenfull.toggle()
-    },
   },
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.navbar {
+  height: 50px;
+  display: flex;
+
+  .hamburger-container {
+    height: 100%;
+    padding: 0 10px;
+    line-height: 50px;
+  }
+
+  .breadcrumb-container {
+    margin-left: 5px;
+  }
+
+  .errLog-container {
+  }
+
+  .right-menu {
+    float: right;
+    height: 100%;
+    display: flex;
+    color: #606266;
+
+    &:focus {
+      outline: none;
+    }
+
+    .right-menu-item {
+      border-top: solid 3px transparent;
+      width: 50px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .right-menu-item:hover {
+      border-top-color: #409eff;
+    }
+
+    .screenfull {
+    }
+
+    .theme-switch {
+      .el-color-picker__trigger {
+        border: 0px !important;
+        height: 20px;
+        width: 20px;
+      }
+    }
+
+    .avatar-container {
+      width: auto !important;
+      padding: 0 5px;
+      .avatar-wrapper {
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        .user-avatar {
+          width: 35px;
+          height: 35px;
+          border-radius: 5px;
+        }
+
+        .user-info {
+          font-size: 12px;
+          line-height: 1.5;
+          margin-left: 10px;
+        }
+
+        .more-icon {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+</style>

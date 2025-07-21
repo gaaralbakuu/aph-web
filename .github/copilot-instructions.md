@@ -7,54 +7,70 @@
 ## Quy ước đa ngôn ngữ chi tiết
 - **Vị trí thêm key mới:**  
   - Key mới luôn phải thêm vào bên trong object `export default { ... }` của file ngôn ngữ.
-  - Nếu là key dùng chung, đặt trong object `common`. Nếu là nhóm key riêng (ví dụ: `errorPage`), đặt ngay sau object `common`.
+  - Nếu là key dùng chung toàn hệ thống, đặt trong object `common`. Nếu là nhóm key riêng theo view/page (ví dụ: `errorPage`, `manufacturer`), đặt ngay sau object `common`.
 
 - **Tuyệt đối không hard code text hiển thị** (bất kỳ ngôn ngữ nào) trong template hoặc script. Mọi text đều phải lấy từ file ngôn ngữ.
 - **Cách sử dụng:**  
-  - Trong template: dùng `{{$l.key}}` hoặc `{{$t('object.key')}}`  
-  - Trong script: dùng `this.$l.key` hoặc `this.$t('object.key')`
+  - **Local page keys:** `$l.key` trong template, `this.$l.key` trong script - dành cho các key riêng của view hiện tại
+  - **Common keys:** `$c.key` trong template, `this.$c.key` trong script - dành cho các key dùng chung toàn hệ thống
+  - **Specific object keys:** `$t('object.key')` trong template, `this.$t('object.key')` trong script - dành cho key trong object cụ thể
 - **Tổ chức key:**  
-  - Mỗi view có object riêng trong file ngôn ngữ, tên object trùng với `name` của view (ví dụ: view `name: 'shareInformation'` thì key nằm trong object `shareInformation`, view lỗi `name: 'page401'` thì key nằm trong object `page401`, `name: 'page404'` thì key nằm trong object `page404`).
+  - Mỗi view có object riêng trong file ngôn ngữ, tên object trùng với `name` của view (ví dụ: view `name: 'manufacturer'` thì key nằm trong object `manufacturer`, view lỗi `name: 'page401'` thì key nằm trong object `page401`).
   - Key dùng chung toàn hệ thống đặt trong object `common`, sử dụng `$c.xxx` trong template hoặc `this.$c.xxx` trong script.
+  - Key riêng của view sử dụng `$l.xxx` trong template hoặc `this.$l.xxx` trong script.
 - **Thêm key mới:**  
   - Khi thêm text mới, phải bổ sung key vào đúng object trong cả 4 file ngôn ngữ (`zh-CN.js`, `en-US.js`, `vi-VN.js`, `zh-TW.js`).
   - Không sửa trực tiếp text trong component, chỉ sửa key trong file ngôn ngữ.
 - **Ví dụ chuẩn:**
   - Trong file ngôn ngữ:
     ```js
-    // zh-CN.js
-    shareInformation: {
-      businessLicense: '营业执照',
+    // vi-VN.js
+    common: {
+      confirm: 'Xác nhận',
+      cancel: 'Hủy',
+      edit: 'Chỉnh sửa',
+      create: 'Tạo mới',
       ...
     },
-    common: {
-      confirm: '确定',
-      cancel: '取消',
+    manufacturer: {
+      manufacture_name: 'Tên nhà sản xuất',
+      legal_person: 'Người đại diện pháp lý',
+      add_manufacturer: 'Thêm nhà sản xuất',
       ...
     }
     ```
-  - Trong template:
+  - Trong template của view manufacturer:
     ```vue
-    <span>{{$l.businessLicense}}</span> <!-- key theo view -->
+    <span>{{$l.manufacture_name}}</span> <!-- key riêng của manufacturer page -->
     <span>{{$c.confirm}}</span> <!-- key dùng chung -->
+    <span>{{$t('manufacturer.legal_person')}}</span> <!-- key từ object cụ thể -->
     ```
-  - Trong script:
+  - Trong script của view manufacturer:
     ```js
-    this.$l.businessLicense // key theo view
+    this.$l.manufacture_name // key riêng của manufacturer page
     this.$c.confirm // key dùng chung
+    this.$t('manufacturer.legal_person') // key từ object cụ thể
     ```
+- **Quy tắc phân loại key:**
+  - `$c` (common): confirm, cancel, edit, delete, create, save, operation, success, fail, etc.
+  - `$l` (local): manufacture_name, legal_person, contact_info, add_manufacturer, etc.
 - **Kiểm tra vi phạm:**  
   - Nếu phát hiện text hiển thị không qua key ngôn ngữ, phải refactor lại đúng chuẩn trên cho cả 4 file ngôn ngữ.
 
 # Hướng dẫn Copilot cho aph-web
 
 ## Tổng quan dự án
-- Đây là dự án dashboard quản trị front-end sử dụng Vue 2.x + Element-UI, kết hợp Vuex, Vue Router, Axios và ES2015+.
+- Đây là dự án dashboard quản trị front-end sử dụng Vue 2.x + Element-UI, kết hợp Vuex, Vue Router, Axios, ES2015+ **và TailwindCSS 2**.
 - Kiến trúc dạng module: `src/api` (định nghĩa API), `src/components` (UI dùng chung), `src/views` (các trang), `src/router` (định tuyến), `src/store` (Vuex modules), `src/utils` (hàm tiện ích), và `src/styles` (style toàn cục).
 - Layout chính quản lý qua `src/views/layout/Layout.vue`, hầu hết các trang là con của layout này. Các trang login, 404... dùng layout riêng.
 - Định tuyến chia thành `constantRoutes` (luôn tải, ví dụ login, 404) và `asyncRoutes` (tải động dựa trên quyền/role từ backend).
 - Các endpoint API định nghĩa ở `src/api/index.js`, truy cập qua `this.$api` trong component. Mọi request dùng wrapper Axios tùy chỉnh ở `src/utils/request.js`.
 - Đa ngôn ngữ qua `src/lang` dùng vue-i18n. Thêm key mới vào file JS tương ứng.
+- **Sử dụng TailwindCSS 2:**
+  - Đã tích hợp TailwindCSS 2 cho utility-first CSS. Có thể sử dụng class Tailwind trực tiếp trong template để xây dựng layout, spacing, màu sắc, typography, v.v.
+  - File cấu hình: `tailwind.config.js`, style import tại `src/assets/css/tailwind.css`.
+  - Ưu tiên dùng class Tailwind cho layout, spacing, màu sắc, font, responsive. Chỉ dùng CSS custom khi thật sự cần thiết.
+  - Có thể kết hợp class Tailwind với Element-UI để tuỳ biến giao diện.
 
 ## Quy trình phát triển
 - **Cài đặt phụ thuộc:** `npm install` (ở Trung Quốc dùng `--registry=https://registry.npm.taobao.org` để tăng tốc)
@@ -75,7 +91,43 @@
 - **Quản lý state:** Vuex module trong `src/store/modules/`. Dùng action cho logic bất đồng bộ, mutation cho thay đổi state.
 - **Đa ngôn ngữ:** Tuyệt đối không được hard code ngôn ngữ/text hiển thị trong template hoặc script. Luôn sử dụng `$l.key` trong template, và thêm key mới vào file tương ứng trong `src/lang/`.
 
-## Điểm tích hợp
+
+## Style Guide - Giao diện OKX Style (Đồng bộ toàn hệ thống)
+
+### 1. Nền & border
+- **Nền trắng (`bg-white`) hoặc đen (`dark:bg-black`), border dưới mỏng (`border-b border-gray-100 dark:border-gray-700`).**
+- **Các vùng/card/dialog/table đều có border radius lớn (`rounded-lg` hoặc `rounded-xl`), shadow nhẹ (`shadow`, `shadow-lg`).**
+
+### 2. Icon, nút, avatar
+- **Icon, nút, avatar đều bo tròn (`rounded-full` hoặc `rounded-md`).**
+- **Nút/box chức năng:** `h-10 w-10 flex items-center justify-center bg-[#f5f5f5] text-black hover:bg-[#eaeaea] hover:scale-105 transition dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#272727]`
+- **Hiệu ứng hover:** Đổi nền, scale nhẹ, chuyển màu mượt.
+
+### 3. Dropdown, dialog, card
+- **Dropdown, dialog, card:** `bg-white dark:bg-[#1a1a1a] rounded-xl shadow-lg p-6`
+- **Menu/dropdown:** `w-[240px]`, padding lớn, border radius lớn, shadow mạnh, tách biệt nền.
+
+### 4. Typography & spacing
+- **Font:** Sans-serif, size 14-16px, heading 18-20px, `font-semibold` cho tiêu đề.
+- **Spacing:** Sử dụng `gap-3`, `gap-4`, `px-4`, `py-3`, `space-x-3`, `space-y-4` cho bố cục.
+- **Label/input:** `font-medium text-gray-700`, input bo tròn, border mỏng, focus border xanh.
+
+### 5. Table, form, section
+- **Table:** `rounded-lg shadow`, header đậm, row hover `bg-gray-50`, padding đều.
+- **Form:** Input, select, radio, button đều bo tròn, spacing đều, label rõ ràng.
+- **Section:** Card hoặc box có shadow, border radius lớn, padding rộng, header section có icon bo tròn màu xanh.
+
+### 6. Responsive
+- **Luôn dùng flex, grid, gap, breakpoint Tailwind (`md:`, `lg:`...) cho layout.**
+- **Ẩn bớt item trên mobile, ưu tiên icon, nút tròn.**
+
+### 7. Best practice
+- **Luôn dùng Tailwind cho layout, spacing, màu sắc, font, hover, shadow.**
+- **Không dùng CSS custom trừ khi thật sự cần thiết.**
+- **Không hard code text, luôn lấy từ file ngôn ngữ.**
+- **Tất cả component phải đồng bộ style với Navbar: bo tròn, shadow, hover, padding rộng, font hiện đại.**
+
+---
 - **Backend:** Kết nối API backend cho auth, user, menu, role... (xem `src/api/index.js`).
 - **Thư viện bên ngoài:** Sử dụng Element-UI, vue-i18n, FontAwesome, và Axios.
 

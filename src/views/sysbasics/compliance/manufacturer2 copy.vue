@@ -1,85 +1,144 @@
 <template>
-  <div class="app-container">
+  <div class="h-full flex flex-col">
     <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
-
+    <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
+      <div class="text-2xl font-bold text-black">Tệp tin cơ bản</div>
+      <div class="text-gray-500 text-sm">Danh sách các hồ sơ của đối tác</div>
+    </div>
     <!-- Search Section -->
-    <div class="search-section">
-      <el-card shadow="never" class="search-card">
-        <div class="search-form">
-          <!-- Search fields -->
-          <div class="search-fields">
-            <div class="field-row">
-              <div class="field-group">
-                <label class="field-label">{{ $l.manufacture_name }}</label>
-                <el-input :placeholder="$l.input_manufacture_name" v-model="manufacturer.query.manufacture_name" clearable class="search-input" />
-              </div>
-              <div class="field-group">
-                <label class="field-label">{{ $l.addr }}</label>
-                <el-input :placeholder="$l.addr" v-model="manufacturer.query.addr" clearable class="search-input" />
-              </div>
-              <div class="field-group">
-                <label class="field-label">{{ $l.legal_person }}</label>
-                <el-input :placeholder="$l.input_legal_person" v-model="manufacturer.query.legal_person" clearable class="search-input" />
-              </div>
-            </div>
-            <div class="field-row">
-              <div class="field-group">
-                <label class="field-label">{{ $l.fileName }}</label>
-                <el-input :placeholder="$l.input_fileName" v-model="manufacturer.query.fileName" clearable class="search-input" />
-              </div>
-              <div class="field-group">
-                <label class="field-label">{{ $l.produce_processes }}</label>
-                <el-input :placeholder="$l.input_produce_processes" v-model="manufacturer.query.produce_processes" clearable class="search-input" />
-              </div>
-              <div class="field-group">
-                <label class="field-label">{{ $l.requestor_facility_type }}</label>
-                <el-select v-model="manufacturer.query.requestor_facility_type" :placeholder="$l.input_requestor_facility_type" clearable class="search-input">
-                  <el-option label="T1SC" value="T1SC"></el-option>
-                  <el-option label="T2" value="T2"></el-option>
-                </el-select>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Search buttons -->
-          <div class="search-actions">
-            <el-button v-show="showAuth.m_search" type="primary" icon="el-icon-search" @click="getList" class="search-button">
-              {{ $c.queryButton }}
-            </el-button>
-            <el-button v-show="showAuth.m_search" icon="el-icon-refresh-left" @click="reset" class="reset-button">
-              {{ $c.reset }}
-            </el-button>
-          </div>
+    <div class="flex gap-3 flex-wrap p-3">
+      <div class="relative h-8">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+            <path d="m8 13 4-7 4 7" />
+            <path d="M9.1 11h5.7" />
+          </svg>
         </div>
-      </el-card>
+        <input type="text" :placeholder="$l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
+      </div>
+      <div class="relative h-8">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+          </svg>
+        </div>
+        <input type="text" :placeholder="$l.addr" v-model="manufacturer.query.addr" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
+      </div>
+      <div class="relative h-8">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+          </svg>
+        </div>
+        <input type="text" :placeholder="$l.legal_person" v-model="manufacturer.query.legal_person" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
+      </div>
+      <!-- <div class="relative h-8">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+          </svg>
+        </div>
+        <input type="text" :placeholder="$l.fileName" v-model="manufacturer.query.fileName" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
+      </div> -->
+      <div class="relative h-8">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+        </div>
+        <input type="text" :placeholder="$l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-8 pr-3 pl-10 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md" />
+      </div>
+      <div class="relative h-8">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+          </svg>
+        </div>
+        <select v-model="manufacturer.query.requestor_facility_type" :placeholder="$l.requestor_facility_type" class="pl-10 h-8 border border-gray-200 rounded-md focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-md w-full appearance-none">
+          <option value="" disabled selected hidden>{{ $l.requestor_facility_type }}</option>
+          <option value="T1SC">T1SC</option>
+          <option value="T2">T2</option>
+        </select>
+      </div>
+      <!-- Search buttons -->
+      <div class="flex gap-3">
+        <button
+          v-show="showAuth.m_search"
+          @click="getList"
+          class="h-8 rounded flex items-center bg-black text-white px-4 hover:bg-blue-600 transition-colors duration-150"
+        >
+          {{ $c.queryButton }}
+        </button>
+        <button
+          v-show="showAuth.m_search"
+          @click="reset"
+          class="h-8 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-blue-400 transition-colors duration-150"
+        >
+          {{ $c.reset }}
+        </button>
+      </div>
     </div>
 
     <!-- Action Bar -->
-    <div class="action-bar">
-      <div class="action-buttons">
-        <el-button v-show="showAuth.m_add" type="primary" icon="el-icon-plus" @click="add" class="action-btn primary-btn">
+    <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100">
+      <div class="flex items-center gap-3">
+        <button 
+          v-show="showAuth.m_add" 
+          @click="add" 
+          class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
           {{ $c.create }}
-        </el-button>
-        <el-button v-show="showAuth.m_export" type="success" icon="el-icon-download" @click="exportExcel" class="action-btn success-btn">
+        </button>
+        
+        <button 
+          v-show="showAuth.m_export" 
+          @click="exportExcel" 
+          class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
           {{ $c.export }}
-        </el-button>
-        <el-button type="warning" icon="el-icon-upload2" @click="visabled.uploadFile = true" class="action-btn warning-btn">
+        </button>
+        
+        <button 
+          @click="visabled.uploadFile = true" 
+          class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
           {{ $c.m_upload }}
-        </el-button>
-        <el-button type="info" icon="el-icon-document" @click="exportTemplate" class="action-btn info-btn">
+        </button>
+        
+        <button 
+          @click="exportTemplate" 
+          class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
           {{ $l.downloadTemplate }}
-        </el-button>
+        </button>
       </div>
     </div>
     <!-- Table Section -->
-    <div class="table-section">
-      <el-card shadow="never" class="table-card">
+    <div class="flex-1 p-3">
         <manufacturer-table :data="manufacturer.list" :isLoading="manufacturer.loading" @action="handleTableAction" @row-click="handleRowClick" class="main-table" />
-      </el-card>
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-section">
+    <div class="p-3">
       <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.curPage" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
     <!-- Create/Edit Dialog -->
@@ -1835,748 +1894,7 @@ export default {
 </script>
 
 <style scoped>
-/* ===== MAIN CONTAINER ===== */
-.app-container {
-  padding: 24px;
-  background: #f5f7fa;
-  min-height: 100vh;
-}
-
-/* ===== SEARCH SECTION ===== */
-.search-section {
-  margin-bottom: 24px;
-}
-
-.search-card {
-  border: 1px solid #e4e7ed;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
-}
-
-.search-form {
-  display: flex;
-  gap: 24px;
-  align-items: flex-end;
-}
-
-.search-fields {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.field-row {
-  display: flex;
-  gap: 16px;
-}
-
-.field-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #606266;
-  margin-bottom: 0;
-}
-
-.search-input {
-  width: 100%;
-}
-
-.search-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 160px;
-}
-
-.search-button {
-  min-width: 140px;
-}
-
-.reset-button {
-  min-width: 140px;
-}
-
-/* ===== ACTION BAR ===== */
-.action-bar {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 12px;
-}
-
-.action-btn {
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.primary-btn:hover {
-  background: #66b1ff;
-  border-color: #66b1ff;
-}
-
-.success-btn:hover {
-  background: #85ce61;
-  border-color: #85ce61;
-}
-
-.warning-btn:hover {
-  background: #ebb563;
-  border-color: #ebb563;
-}
-
-.info-btn:hover {
-  background: #a6a9ad;
-  border-color: #a6a9ad;
-}
-
-/* ===== TABLE SECTION ===== */
-.table-section {
-  margin-bottom: 20px;
-}
-
-.table-card {
-  border: 1px solid #e4e7ed;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
-}
-
-.main-table {
-  height: 600px;
-}
-
-/* ===== PAGINATION ===== */
-.pagination-section {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px 0;
-}
-
-.custom-pagination {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
-}
-
-/* ===== FORM DIALOG STYLES ===== */
-.form-container {
-  padding: 0;
-}
-
-.form-section {
-  background: #ffffff;
-  border: 1px solid #e4e7ed;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  overflow: hidden;
-}
-
-.section-header {
-  background: #f8f9fa;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e4e7ed;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #303133;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-title i {
-  color: #409eff;
-  font-size: 18px;
-}
-
-.form-content {
-  padding: 24px 20px;
-}
-
-.form-row {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.form-row:last-child {
-  margin-bottom: 0;
-}
-
-.form-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #606266;
-  margin-bottom: 0;
-}
-
-.form-label.required::after {
-  content: ' *';
-  color: #f56c6c;
-}
-
-.form-input {
-  width: 100%;
-}
-
-.number-input {
-  width: 100%;
-}
-
-.date-picker {
-  width: 100%;
-}
-
-.radio-group-container {
-  margin-top: 4px;
-}
-
-.custom-radio-group {
-  display: flex;
-  gap: 16px;
-}
-
-.add-section-button {
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-/* ===== TABLE CONTAINERS ===== */
-.table-container {
-  padding: 16px 20px 20px;
-  border-radius: 0px!important;
-  border: 0px!important;
-}
-
-.form-table {
-  border: 1px solid #e4e7ed;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.delete-action-button {
-  color: #f56c6c;
-  padding: 4px 8px;
-}
-
-.delete-action-button:hover {
-  color: #f78989;
-  background: rgba(245, 108, 108, 0.1);
-}
-
-/* ===== DIALOG FOOTER ===== */
-.dialog-footer {
-  padding: 16px 24px;
-  background: #f8f9fa;
-  border-top: 1px solid #e4e7ed;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.dialog-cancel-button {
-  padding: 10px 20px;
-  border-radius: 6px;
-}
-
-.dialog-confirm-button {
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-/* ===== DETAIL DIALOG ===== */
-.detail-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 0;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-/* Detail Header */
-.detail-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 24px 32px;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: -24px -24px 0 -24px;
-}
-
-.manufacturer-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.manufacturer-name {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-  color: white;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.status-success {
-  background: rgba(103, 194, 58, 0.2);
-  color: #67c23a;
-  border: 1px solid rgba(103, 194, 58, 0.3);
-}
-
-.status-warning {
-  background: rgba(230, 162, 60, 0.2);
-  color: #e6a23c;
-  border: 1px solid rgba(230, 162, 60, 0.3);
-}
-
-.status-danger {
-  background: rgba(245, 108, 108, 0.2);
-  color: #f56c6c;
-  border: 1px solid rgba(245, 108, 108, 0.3);
-}
-
-.status-default {
-  background: rgba(144, 147, 153, 0.2);
-  color: #909399;
-  border: 1px solid rgba(144, 147, 153, 0.3);
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.action-btn-header {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  backdrop-filter: blur(10px);
-}
-
-.action-btn-header:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Overview Cards */
-.overview-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 0 24px;
-  margin-top: 24px;
-}
-
-.overview-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e4e7ed;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.overview-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 20px;
-}
-
-.card-content {
-  flex: 1;
-}
-
-.card-label {
-  font-size: 14px;
-  color: #909399;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.card-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #303133;
-  word-break: break-all;
-}
-
-/* Detail Sections */
-.detail-sections {
-  padding: 0 24px 24px;
-}
-
-.detail-section {
-  background: white;
-  border: 1px solid #e4e7ed;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.detail-section:last-child {
-  margin-bottom: 0;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #303133;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.section-title i {
-  color: #409eff;
-  font-size: 18px;
-}
-
-.record-count {
-  background: #409eff;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.section-content {
-  padding: 24px;
-}
-
-/* Custom Descriptions */
-.custom-descriptions {
-  margin: 0;
-}
-
-.custom-descriptions .el-descriptions__body .el-descriptions__table .el-descriptions__cell {
-  padding: 12px 16px;
-}
-
-.custom-descriptions .el-descriptions__label {
-  font-weight: 600;
-  color: #606266;
-  background: #f8f9fa;
-}
-
-.custom-descriptions .el-descriptions__content {
-  color: #303133;
-}
-
-/* Custom Table */
-.custom-table {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: none;
-}
-
-.custom-table .el-table__header {
-  background: #f8f9fa;
-}
-
-.custom-table .el-table__header th {
-  background: #f8f9fa;
-  color: #606266;
-  font-weight: 600;
-  border-bottom: 2px solid #e4e7ed;
-}
-
-.custom-table .el-table__row:hover > td {
-  background: #f0f7ff;
-}
-
-.custom-table .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background: #fafbfc;
-}
-
-/* Action Links */
-.action-link {
-  color: #409eff;
-  padding: 4px 8px;
-  margin-right: 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.action-link:hover {
-  background: rgba(64, 158, 255, 0.1);
-  color: #66b1ff;
-}
-
-.action-link i {
-  margin-right: 4px;
-}
-
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: #909399;
-}
-
-.empty-icon {
-  font-size: 64px;
-  color: #c0c4cc;
-  margin-bottom: 16px;
-}
-
-.empty-text {
-  font-size: 16px;
-  color: #909399;
-}
-
-/* Detail Footer */
-.detail-footer {
-  padding: 20px 32px;
-  background: #f8f9fa;
-  border-top: 1px solid #e4e7ed;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.cancel-button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Responsive Design for Detail Dialog */
-@media (max-width: 1200px) {
-  .detail-header {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
-
-  .overview-cards {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-  }
-
-  .overview-card {
-    padding: 16px;
-  }
-
-  .custom-descriptions {
-    column-count: 1;
-  }
-}
-
-@media (max-width: 768px) {
-  .detail-header {
-    padding: 16px 20px;
-    margin: -20px -20px 0 -20px;
-  }
-
-  .manufacturer-name {
-    font-size: 20px;
-  }
-
-  .overview-cards {
-    grid-template-columns: 1fr;
-    padding: 0 16px;
-  }
-
-  .detail-sections {
-    padding: 0 16px 16px;
-  }
-
-  .section-content {
-    padding: 16px;
-  }
-
-  .detail-footer {
-    padding: 16px 20px;
-  }
-}
-
-.detail-section {
-  background: #f9f9f9;
-  padding: 16px;
-  border-radius: 6px;
-}
-/* 
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  border-bottom:  2px solid #409eff;
-  padding-bottom: 8px;
-} */
-
-.manufacturer-detail-dialog .el-descriptions {
-  margin-bottom: 0;
-}
-
-.manufacturer-detail-dialog .el-table {
-  margin-bottom: 0;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1200px) {
-  .form-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .field-row {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .search-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-actions {
-    flex-direction: row;
-    min-width: auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .app-container {
-    padding: 16px;
-  }
-
-  .action-buttons {
-    flex-wrap: wrap;
-  }
-
-  .action-btn {
-    flex: 1;
-    min-width: 120px;
-  }
-}
-
-/* Form container styling - đơn giản như modal create */
-.form-container .form-section {
-  margin-bottom: 24px;
-}
-
-.form-container .form-section:last-child {
-  margin-bottom: 0;
-}
-
-.form-container .form-section .section-header {
-  padding: 10px 15px;
-  border-bottom: 1px solid #e1e4e8;
-}
-
-.form-container .form-section .section-header .section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.form-container .form-section .section-header .section-title i {
-  font-size: 18px;
-  color: #3b82f6;
-}
-
-.form-container .form-section .form-content .detail-descriptions .el-descriptions .el-descriptions__header {
-  display: none;
-}
-
-.form-container .form-section .form-content .detail-descriptions .el-descriptions .el-descriptions__body .el-descriptions__table {
-  border: 1px solid #e1e4e8;
-}
-
-.form-container .form-section .form-content .detail-descriptions .el-descriptions .el-descriptions__body .el-descriptions__table .el-descriptions__cell {
-  border-color: #e1e4e8;
-  padding: 12px 16px;
-}
-
-.form-container .form-section .form-content .detail-descriptions .el-descriptions .el-descriptions__body .el-descriptions__table .el-descriptions__cell.el-descriptions__label {
-  background-color: #f8fafc;
-  font-weight: 500;
-  color: #374151;
-  width: 30%;
-}
-
-.form-container .form-section .form-content .detail-descriptions .el-descriptions .el-descriptions__body .el-descriptions__table .el-descriptions__cell.el-descriptions__content {
-  color: #1f2937;
-}
-
-.form-container .form-section .table-container .form-table .el-table__header-wrapper .el-table__header th {
-  background-color: #f8fafc;
-  color: #374151;
-  font-weight: 500;
-  border-bottom: 2px solid #e1e4e8;
-}
-
-.form-container .form-section .table-container .form-table .el-table__body-wrapper .el-table__body tr:hover {
-  background-color: #f8fafc;
-}
-
-.form-container .form-section .table-container .form-table .el-table__body-wrapper .el-table__body tr td {
-  border-bottom: 1px solid #f1f5f9;
-  color: #1f2937;
-}
-
-.el-button+.el-button{
-  margin-left: 0px!important;
+.el-button + .el-button {
+  margin-left: 0px !important;
 }
 </style>

@@ -5,11 +5,12 @@ import router from '@/router'
 import store from '@/store'
 import request from '@/utils/request'
 import api from '@/api'
+import '@/assets/css/tailwind.css'
 
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import '@fontsource-variable/inter';
+import '@fontsource-variable/inter'
 import 'font-awesome/css/font-awesome.min.css' // font-awesome
 import '@/styles/index.scss' // global css
 import '@/router/permission' // permission control
@@ -46,7 +47,7 @@ Vue.mixin(mixinCommon)
 Vue.use(Element, {
   size: Cookies.get('size') || 'small', // set element-ui default size [medium,small,mini]
   i18n: (key, value) => {
-    console.log(key,value);
+    console.log(key, value)
 
     return i18n.t(key, value)
   },
