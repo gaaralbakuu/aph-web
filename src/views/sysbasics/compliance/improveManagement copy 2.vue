@@ -1,238 +1,286 @@
 <template>
-  <div class="h-full flex flex-col">
-    <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
-      <div class="text-2xl font-bold text-black">{{ $l.thresholdIssueManagement }}</div>
-      <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
-    </div>
-    <!-- Search Section -->
-    <!-- <div class="flex gap-3 flex-wrap justify-between p-3">
-      <div class="flex gap-3 flex-wrap">
-        <div class="relative h-9">
-          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
-              <path d="m8 13 4-7 4 7" />
-              <path d="M9.1 11h5.7" />
-            </svg>
-          </div>
-          <input type="text" :placeholder="$l.manufactureName" v-model="formInline.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
-        </div>
-        <div class="relative h-9">
-          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-            </svg>
-          </div>
-          <input type="text" :placeholder="$l.issueType" v-model="formInline.issue_type" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
-        </div>
-      </div>
-      
-
-      <div class="flex gap-3">
-        <button v-show="showAuth.m_search" @click="getList" class="h-9 rounded flex items-center bg-black text-white px-4 hover:bg-gray-800 transition-colors duration-150">
-          {{ $l.search }}
-        </button>
-        <button v-show="showAuth.m_search" @click="resetForm" class="h-9 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-150">
-          {{ $l.reset }}
-        </button>
-      </div>
-    </div> -->
-
-    <!-- Action Bar -->
-    <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100">
-      <div class="flex items-center gap-3">
-        <button v-show="showAuth.m_add" @click="addForm" class="inline-flex items-center h-8 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          {{ $l.create }}
-        </button>
-        <!--         
-        <button v-show="showAuth.m_upload" @click="visabled.uploadFile = true" class="inline-flex items-center h-8 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
-          {{ $l.bulkImport }}
-        </button>
-
-        <button @click="exportTemplate" class="inline-flex items-center h-8 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          {{ $c.downloadTemplate }}
-        </button> -->
-      </div>
-
-      <div class="flex items-center gap-3">
-        <!-- <button v-show="showAuth.m_export" @click="exportExcel" class="inline-flex items-center h-8 bg-green-600 hover:bg-green-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          {{ $l.download }}
-        </button>
-        
-        <button @click="recEmail()" class="inline-flex items-center h-8 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          {{ $l.emailNotification }}
-        </button> -->
-      </div>
-    </div>
-
-    <!-- Table Section -->
-    <div class="flex-1 px-3">
-      <improve-management-table :data="tableData.list" :isLoading="tableData.loading" @action="handleTableAction" class="main-table" />
-    </div>
-
-    <!-- Pagination -->
-    <div class="p-3">
-      <z-pagination :pagination="pagination" :total="tableData.total" :page.sync="query.page" :limit.sync="query.pageSize" @change="getList" class="custom-pagination" />
-    </div>
-
-    <!-- Create/Edit Dialog -->
-    <CustomDialog :title="$l.create" :visible.sync="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
-      <template #content>
-        <div class="flex flex-col gap-6">
-          <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-
-          <el-form :model="form" ref="form" :rules="rules" :label-width="formLabelWidth">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div v-show="false" class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.manufacture }}</label>
-                <el-input v-model="form.manufacture_id" :disabled="true"></el-input>
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.manufactureName }}</label>
-                <div class="flex gap-2">
-                  <el-input v-model="form.name_en" :disabled="true" :placeholder="$l.selectManufacture" class="rounded-md" />
-                  <el-button type="primary" plain @click="showManufacture" class="rounded-md">{{ $l.selectManufacture }}</el-button>
-                </div>
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.issueType }}</label>
-                <el-input v-model="form.issue_type" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.subheader }}</label>
-                <el-input v-model="form.subheader" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.code_provision }}</label>
-                <el-input v-model="form.code_provision" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.audit_explanation }}</label>
-                <el-input type="textarea" v-model="form.audit_explanation" :autosize="{ minRows: 4 }" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.corrective_action_plan }}</label>
-                <el-input type="textarea" v-model="form.corrective_action_plan" :autosize="{ minRows: 4 }" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.corrective_date }}</label>
-                <el-date-picker v-model="form.corrective_date" type="date" :placeholder="$l.corrective_date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" style="width: 100%" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.pic }}</label>
-                <el-input v-model="form.corrective_principal" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.status }}</label>
-                <el-select v-model="form.status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
-                  <el-option :label="$l.on_track" value="on_track"></el-option>
-                  <el-option :label="$l.off_track" value="off_track"></el-option>
-                  <el-option :label="$l.closed" value="closed"></el-option>
-                </el-select>
-              </div>
-
-              <div class="flex flex-col col-span-full gap-2">
-                <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.supportInfo }}</div>
-                <input type="file" @change="addFile" ref="addfileinput" style="display: none" />
-                <div>
-                  <el-button type="primary" @click="$refs.addfileinput.click()" class="rounded-md w-full">{{ $l.fileUpload }}</el-button>
-                </div>
-              </div>
-
-              <div class="col-span-full" v-if="form.fileList.length > 0">
-                <div class="">
-                  <el-table :data="form.fileList" class="rounded-lg">
-                    <el-table-column v-for="(item, index) in form.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                    <el-table-column fixed="right" :label="$c.operation" width="145">
-                      <template slot-scope="scope">
-                        <el-button @click="removeAddClick(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ $c.delete }}</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </div>
+  <div class="app-container">
+    <!-- 查询区域 (Refactored) -->
+    <div>
+      <div style="display: flex; gap: 16px; margin-bottom: 10px">
+        <!-- Left: search fields in columns -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.manufactureName }}</label>
+              <el-input :placeholder="$l.manufactureName" v-model="formInline.manufacture_name" style="width: 100%" clearable />
             </div>
-          </el-form>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.issueType }}</label>
+              <el-input :placeholder="$l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.issueDesc }}</label>
+              <el-input :placeholder="$l.issueDesc" v-model="formInline.issues_desc" style="width: 100%" clearable />
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.suggest }}</label>
+              <el-input :placeholder="$l.suggest" v-model="formInline.suggest" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.correctiveDate }}</label>
+              <el-input :placeholder="$l.correctiveDate" v-model="formInline.corrective_date" style="width: 100%" clearable />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+              <label>{{ $l.correctivePrincipal }}</label>
+              <el-input :placeholder="$l.correctivePrincipal" v-model="formInline.corrective_principal" style="width: 100%" clearable />
+            </div>
+          </div>
         </div>
-      </template>
+        <!-- Right: buttons -->
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
+          <el-button type="primary" size="medium" @click="getList" style="margin-right: 8px">{{ $l.search }}</el-button>
+          <el-button type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <el-divider></el-divider>
+    </div>
+    <div>
+      <el-button type="primary" plain @click="addForm" class="addbutton">
+        <i class="el-icon-circle-plus-outline"></i>
+        {{ $l.create }}
+      </el-button>
+      <el-button plain class="addbutton" @click="visabled.uploadFile = true">{{ $l.bulkImport }}</el-button>
 
-      <template slot="footer">
-        <div class="flex gap-3 justify-end">
-          <el-button @click="addCancel('form')" :disabled="isSubmitting" class="rounded-md">{{ $l.cancel }}</el-button>
-          <el-button type="primary" @click="submit('form')" :loading="isSubmitting" class="rounded-md">{{ $l.submit }}</el-button>
-        </div>
-      </template>
+      <el-button plain class="addbutton" @click="exportTemplate">{{ $c.downloadTemplate }}</el-button>
+
+      <el-button @click="exportExcel" icon="el-icon-download" type="info" class="fr">{{ $l.download }}</el-button>
+      <el-button @click="recEmail()" icon="el-icon-message" type="info" class="fr">{{ $l.emailNotification }}</el-button>
+      <!-- <el-button class="downbutton" @click="exportExcel"
+        >{{ $l.download }}<i class="el-icon-download el-icon--right"></i
+      ></el-button> -->
+    </div>
+    <el-table :data="tableData.list" style="width: 98%; margin: 1%">
+      <el-table-column :label="$l.basicInformation">
+        <el-table-column :label="$l.ordinal" type="index" width="50"></el-table-column>
+        <el-table-column prop="name_zh" :label="$l.manufactureName" width="150"></el-table-column>
+      </el-table-column>
+      <el-table-column :label="$l.issueInformation">
+        <el-table-column :label="$l.issueType" width="350">
+          <template slot-scope="scope">
+            <!-- <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              {{ checkField({ detail_item }, ['detail_item', 'issue_type']) }}
+            </div> -->
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              <span :title="checkField({ detail_item }, ['detail_item', 'issue_type'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'issue_type'])"></span>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table-column>
+      <el-table-column :label="$l.T1subcom">
+        <el-table-column :label="$l.correctivePlan" width="250">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              <!-- {{
+                checkField({ detail_item }, ['detail_item', 'corrective_plan'])
+              }} -->
+              <span :title="checkField({ detail_item }, ['detail_item', 'corrective_plan'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'corrective_plan'])"></span>
+            </div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column prop="attchments" :label="$l.attchments" width="120">
+          <el-button type="text">{{ $l.check }}</el-button>
+        </el-table-column> -->
+        <el-table-column :label="$l.correctivePrincipal" width="90">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              <!-- {{
+                checkField({ detail_item }, [
+                  'detail_item',
+                  'corrective_principal',
+                ])
+              }} -->
+              <span :title="checkField({ detail_item }, ['detail_item', 'corrective_principal'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'corrective_principal'])"></span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$l.correctiveDate" width="140">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              {{ checkField({ detail_item }, ['detail_item', 'corrective_date']) }}
+              <!-- <span
+                  :title="checkField({ detail_item }, ['detail_item', 'corrective_date'])"
+                  class="truncate-lines"
+                  v-html="checkField({ detail_item }, ['detail_item', 'corrective_date'])"
+                >
+                </span> -->
+            </div>
+          </template>
+        </el-table-column>
+      </el-table-column>
+      <el-table-column :label="$l.factoryProven">
+        <el-table-column :label="$l.verifyDetail" width="250">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              <!-- {{
+                checkField({ detail_item }, ['detail_item', 'verify_detail'])
+              }} -->
+              <span :title="checkField({ detail_item }, ['detail_item', 'verify_detail'])" class="truncate-lines" v-html="checkField({ detail_item }, ['detail_item', 'verify_detail'])"></span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$l.isFinish" width="110">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              {{ detail_item.is_finish === 'N' ? $l.unfinished : detail_item.is_finish === 'Y' ? $l.finish : '' }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$l.isPass" width="90">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              {{ detail_item.is_verify_pass === 'N' ? $l.noPass : detail_item.is_verify_pass === 'Y' ? $l.pass : '' }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$l.verifyDate" width="140">
+          <template slot-scope="scope">
+            <div v-for="(detail_item, index) in scope.row.detail" :key="index">
+              {{ checkField({ detail_item }, ['detail_item', 'verify_date']) }}
+              <!-- <span
+                  :title="checkField({ detail_item }, ['detail_item', 'verify_date'])"
+                  class="truncate-lines"
+                  v-html="checkField({ detail_item }, ['detail_item', 'verify_date'])"
+                >
+                </span> -->
+            </div>
+          </template>
+        </el-table-column>
+      </el-table-column>
+      <el-table-column fixed="right" :label="$l.operate" width="100">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" plain @click="getDetails(scope.$index, scope.row)">{{ $l.check }}</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <z-pagination :pagination="pagination" :total="tableData.total" :page.sync="query.page" :limit.sync="query.pageSize" @change="getList"></z-pagination>
+
+    <CustomDialog :title="$l.create" :visible.sync="addFormVisible" :clickOutside="false">
+      <el-form :model="form" :rules="rules" ref="form" :label-width="formLabelWidth">
+        <el-row style="margin: 20px">
+          <el-col :span="24">
+            <el-form-item v-show="false" :label="$l.manufacture" prop="manufacture_id">
+              <el-input v-model="form.manufacture_id" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="$l.manufactureName" prop="name_zh">
+              <el-input v-model="form.name_zh" :disabled="true" :placeholder="$l.selectManufacture"></el-input>
+              <el-button type="primary" plain @click="showManufacture">{{ $l.selectManufacture }}</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="$l.issueType" prop="issue_type">
+              <el-input v-model="form.issue_type"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="$l.issueDesc" prop="issue_desc">
+              <el-input type="textarea" v-model="form.issue_desc" :autosize="{ minRows: 4 }"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="$l.suggest" prop="issue_suggest">
+              <el-input type="textarea" v-model="form.issue_suggest" :autosize="{ minRows: 4 }"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="$l.supportInfo"></el-form-item>
+          </el-col>
+          <input type="file" @change="addFile" ref="addfileinput" style="display: none" />
+          <el-col :span="24">
+            <el-button type="primary" @click="$refs.addfileinput.click()">{{ $l.fileUpload }}</el-button>
+          </el-col>
+          <el-col :span="24">
+            <div>
+              <!-- 文件表格 -->
+              <el-table :data="form.fileList">
+                <el-table-column v-for="(item, index) in form.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="this.$c.operation" width="145">
+                  <template slot-scope="scope">
+                    <el-button @click="removeAddClick(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addCancel('form')">{{ $l.cancel }}</el-button>
+        <el-button type="primary" plain @click="submit('form')">{{ $l.submit }}</el-button>
+      </div>
     </CustomDialog>
 
-    <CustomDialog :title="$l.check" :visible.sync="dialogFormVisible" width="90%" :height="'100%'">
-      <template #content>
-        <div class="flex flex-col h-full overflow-hidden gap-2">
-          <div class="grid grid-cols-2 gap-3">
-            <div class="flex gap-2 items-center">
-              <label class="font-light text-sm text-gray-700 mr-2">
-                {{ $l.factory_name }}
-              </label>
-              <div class="flex-1">
-                <el-input v-model="clickRow.name_en" :placeholder="$l.basicArchives" class="w-full" style="width: 100%" disabled></el-input>
-              </div>
-            </div>
-            <div class="flex gap-2 items-center">
-              <label class="font-light text-sm text-gray-700 mr-2">
-                {{ $l.vendor_code }}
-              </label>
-              <div class="flex-1">
-                <el-input v-model="clickRow.vendor_code" :placeholder="$l.basicArchives" class="w-full" style="width: 100%" disabled></el-input>
-              </div>
-            </div>
-          </div>
-          <!-- <el-form inline :model="getDetailsQuery">
-            <el-form-item prop="manufacture_name" :label="$l.reviewStatus">
-              <el-select v-model="getDetailsQuery.rec_status" :placeholder="$l.pleaseSelect">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option :label="$l.pendingReview" value="1"></el-option>
-                <el-option :label="$l.reviewed" value="7"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item prop="manufacture_name" :label="$l.shoudSaveHistory">
-              <el-select v-model="getDetailsQuery.is_his" :placeholder="$l.pleaseSelect">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option :label="$l.currentRecord" value="0"></el-option>
-                <el-option :label="$l.history" value="1"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-button type="primary" @click="getDetail">{{ $c.m_search }}</el-button>
-          </el-form> -->
-
-          <improve-management-details-table :data="detailtable.list" :isLoading="detailtable.isLoading" @action="handleDetailsTableAction" class="main-table" :page="getDetailsQuery" />
-          <!-- <el-button v-if="is_his == 1" @click="showHisList(0)" style="margin-left: 96.3%;margin-top:0.5%;" type="primary"
+    <el-dialog :title="$l.check" :visible.sync="dialogFormVisible" width="80%">
+      <el-form inline :model="getDetailsQuery">
+        <el-form-item prop="manufacture_name" :label="$l.reviewStatus">
+          <el-select v-model="getDetailsQuery.rec_status" :placeholder="$l.pleaseSelect">
+            <el-option :label="$c.all" value=""></el-option>
+            <el-option :label="$l.pendingReview" value="1"></el-option>
+            <el-option :label="$l.reviewed" value="7"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="manufacture_name" :label="$l.shoudSaveHistory">
+          <el-select v-model="getDetailsQuery.is_his" :placeholder="$l.pleaseSelect">
+            <el-option :label="$c.all" value=""></el-option>
+            <el-option :label="$l.currentRecord" value="0"></el-option>
+            <el-option :label="$l.history" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-button type="primary" @click="getDetail">{{ $c.m_search }}</el-button>
+      </el-form>
+      <el-table :data="detailtable.list" border style="color: cornflowerblue">
+        <el-table-column :label="$l.ordinal" type="index" width="50"></el-table-column>
+        <el-table-column prop="issue_type" :label="$l.issueType" width="70"></el-table-column>
+        <el-table-column prop="issue_desc" :label="$l.issueDesc" width="300"></el-table-column>
+        <el-table-column prop="issue_suggest" :label="$l.suggest" width="300"></el-table-column>
+        <el-table-column prop="corrective_principal" :label="$l.correctivePrincipal" width="90"></el-table-column>
+        <el-table-column prop="attchments" :label="$l.attchments" width="100">
+          <template slot-scope="scope">
+            <el-button @click="checkFile(scope.row)" type="text">{{ $l.check }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="corrective_date" :label="$l.correctiveDate" width="90"></el-table-column>
+        <el-table-column prop="verify_detail" :label="$l.verifyDetail" width="300"></el-table-column>
+        <el-table-column prop="is_finish" :label="$l.isFinish" width="110" :formatter="formatIsFinish"></el-table-column>
+        <el-table-column prop="is_verify_pass" :label="$l.isPass" width="90" :formatter="formatIsPass"></el-table-column>
+        <el-table-column prop="verify_date" :label="$l.verifyDate" width="90"></el-table-column>
+        <el-table-column v-if="is_his == 0" fixed="right" :label="$l.operate" width="130">
+          <template slot-scope="scope">
+            <el-button :disabled="scope.row.rec_status === 7 || scope.row.rec_status === -1" @click="passornot(scope.row)" type="text" size="small">{{ $l.audit }}</el-button>
+            <el-button @click="editDetail(scope.$index, scope.row)" v-show="showAuth.m_updata" type="text" size="small">{{ $l.edit }}</el-button>
+            &nbsp;
+            <el-popconfirm :title="$l.error">
+              <el-button v-show="showAuth.m_del" slot="reference" type="text" size="mini">{{ $l.delete }}</el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+        <!--        <el-table-column v-if="is_his == 0" fixed="right" label="状态" width="80">
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.rec_status === 7" v-show="showAuth.m_audit == 'Y'" type="text"
+              size="small">通过</el-button>
+            <el-button v-if="scope.row.rec_status === 1" type="text" size="small">新单</el-button>
+            <el-button v-if="scope.row.rec_status === -1" v-show="showAuth.m_audit == 'Y'" type="text"
+              size="small">不通过</el-button>
+          </template>
+        </el-table-column> -->
+      </el-table>
+      <!-- <el-button v-if="is_his == 1" @click="showHisList(0)" style="margin-left: 96.3%;margin-top:0.5%;" type="primary"
         plain>返回</el-button>
       <el-button v-if="is_his == 0" @click="showHisList(1)" style="margin-left: 93%; margin-top: 0.5%;" type="primary"
         plain>历史记录</el-button> -->
-          <!-- <el-pagination
+      <!-- <el-pagination
         style="margin-top: 15px"
         @size-change="getList"
         @current-change="showHisList(is_his)"
@@ -243,29 +291,23 @@
         :total="detailtable.total"
       >
       </el-pagination> -->
-        </div>
-      </template>
-      <template slot="footer">
-        <z-pagination :pagination="pagination" :total="detailtable.total" :page.sync="getDetailsQuery.page" :limit.sync="getDetailsQuery.pageSize" @change="showHisList(is_his)"></z-pagination>
-      </template>
-    </CustomDialog>
+      <z-pagination :pagination="pagination" :total="detailtable.total" :page.sync="getDetailsQuery.page" :limit.sync="getDetailsQuery.pageSize" @change="showHisList(is_his)"></z-pagination>
+    </el-dialog>
 
-    <CustomDialog :title="'Select Manufacturer'" :visible.sync="dialogSelectManufacture">
-      <template #content>
-        <el-input v-show="false" v-model="manufacture.query.manufacture_name"></el-input>
-        <el-button v-show="false" @click="getManufactureList"></el-button>
-        <el-table :data="manufacture.tableData">
-          <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key"></el-table-column>
-          <el-table-column align="right">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-    </CustomDialog>
+    <el-dialog :visible.sync="dialogSelectManufacture">
+      <el-input v-show="false" v-model="manufacture.query.manufacture_name"></el-input>
+      <el-button v-show="false" @click="getManufactureList"></el-button>
+      <el-table :data="manufacture.tableData" height="400px">
+        <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key"></el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
 
-    <el-dialog :title="$l.result" :visible.sync="passFormVisible" width="40%" class="modern-dialog">
+    <el-dialog :title="$l.result" :visible.sync="passFormVisible" width="40%">
       <el-form>
         <el-form-item :label="$l.results" :label-width="formLabelWidth">
           <el-radio-group v-model="check.rec_status">
@@ -286,75 +328,31 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="passFormVisible = false" class="rounded-md">{{ $l.cancel }}</el-button>
-        <el-button type="primary" @click="passsubmit" class="rounded-md">{{ $l.submit }}</el-button>
+        <el-button @click="passFormVisible = false">{{ $l.cancel }}</el-button>
+        <el-button type="primary" @click="passsubmit">{{ $l.submit }}</el-button>
       </div>
     </el-dialog>
 
-    <CustomDialog :title="$l.editInformation" :visible.sync="editVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
-      <template #content>
-        <div class="flex flex-col gap-6">
-          <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-
-          <el-form :model="editForm" ref="editForm" :rules="editRules" :label-width="formLabelWidth">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.issueType }}</label>
-                <el-select v-model="editForm.issue_type" :placeholder="$l.inputIssue" class="rounded-md w-full">
-                  <el-option v-for="item in issueType" :key="item.name_zh" :label="item.name_label" :value="item.name_zh"></el-option>
-                </el-select>
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.subheader }}</label>
-                <el-input v-model="editForm.subheader" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2 col-span-full">
-                <label class="font-light text-sm text-black">{{ $l.code_provision }}</label>
-                <el-input v-model="editForm.code_provision" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.audit_explanation }}</label>
-                <el-input type="textarea" v-model="editForm.audit_explanation" :placeholder="$l.inputAuditExplanation" :autosize="{ minRows: 4 }" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.corrective_action_plan }}</label>
-                <el-input type="textarea" v-model="editForm.corrective_action_plan" :placeholder="$l.inputCorrectiveActionPlan" :autosize="{ minRows: 4 }" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.corrective_date }}</label>
-                <el-date-picker v-model="editForm.corrective_date" type="date" :placeholder="$l.corrective_date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" style="width: 100%" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.pic }}</label>
-                <el-input v-model="editForm.corrective_principal" class="rounded-md" />
-              </div>
-
-              <div class="flex flex-col gap-2">
-                <label class="font-light text-sm text-black">{{ $l.status }}</label>
-                <el-select v-model="editForm.status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
-                  <el-option :label="$l.on_track" value="on_track"></el-option>
-                  <el-option :label="$l.off_track" value="off_track"></el-option>
-                  <el-option :label="$l.closed" value="closed"></el-option>
-                </el-select>
-              </div>
-            </div>
-          </el-form>
-        </div>
-      </template>
-
-      <template slot="footer">
-        <div class="flex gap-3 justify-end">
-          <el-button @click="editVisible = false" :disabled="isEditSubmitting" class="rounded-md">{{ $l.cancel }}</el-button>
-          <el-button type="primary" @click="submitEdit" :loading="isEditSubmitting" class="rounded-md">{{ $l.submit }}</el-button>
-        </div>
-      </template>
-    </CustomDialog>
+    <el-dialog :title="$l.editInformation" :visible.sync="editVisible" width="50%">
+      <el-form :model="editForm">
+        <el-form-item :label="$l.issueType">
+          <el-select v-model="editForm.issue_type" :placeholder="$l.inputIssue" style="width: 100%">
+            asda
+            <el-option v-for="item in issueType" :key="item.name_zh" :label="item.name_label" :value="item.name_zh"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$l.issueDesc">
+          <el-input type="textarea" v-model="editForm.issue_desc" :placeholder="$l.inputDesc"></el-input>
+        </el-form-item>
+        <el-form-item :label="$l.suggest">
+          <el-input type="textarea" v-model="editForm.issue_suggest" :placeholder="$l.inputSuggest"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editVisible = false">{{ $l.cancel }}</el-button>
+        <el-button type="primary" @click="submitEdit">{{ $l.submit }}</el-button>
+      </span>
+    </el-dialog>
 
     <!-- 文件查看 -->
     <el-dialog :visible.sync="fileTableVisable" :title="$l.viewDocument">
@@ -451,17 +449,13 @@ import { getToken } from '@/utils/auth'
 import dayjs from 'dayjs'
 import filePreviews from '../../_common/filePreviews.vue'
 import CustomDialog from '../../_common/CustomDialog.vue'
-import ImproveManagementTable from './improveManagement-table.vue'
-import ImproveManagementDetailsTable from './improveManagement-details-table.vue'
 
 export default {
-  name: 'improveManagement',
+  name: 'issuesType',
   components: {
     filePreviews,
     zPagination,
     CustomDialog,
-    ImproveManagementTable,
-    ImproveManagementDetailsTable,
   },
   data() {
     return {
@@ -471,8 +465,6 @@ export default {
       recEmailVisible: false,
       issueType: [],
       userAuth: [], //保存用户权限
-      isSubmitting: false, // Trạng thái loading cho button submit dialog thêm mới
-      isEditSubmitting: false, // Trạng thái loading cho button submit dialog chỉnh sửa
       visabled: {
         uploadFile: false,
       },
@@ -531,7 +523,6 @@ export default {
       detailtable: {
         list: [],
         total: 0,
-        isLoading: false,
       },
       is_his: 0,
       forminit: {},
@@ -567,10 +558,10 @@ export default {
             key: 'manufacture_id',
             label: 'manufacture_id',
           },
-          // {
-          //   key: 'name_zh',
-          //   label: this.$l.CNname,
-          // },
+          {
+            key: 'name_zh',
+            label: this.$l.CNname,
+          },
           {
             key: 'name_en',
             label: this.$l.ENname,
@@ -662,15 +653,8 @@ export default {
       formLabelWidth: '130px',
       form: {
         issue_type: '',
-        audit_explanation: '',
-        corrective_action_plan: '',
-        corrective_plan: '',
-        corrective_date: '',
-        subheader: '',
-        code_provision: '',
-        corrective_principal: '',
-        deadline: '',
-        status: '',
+        issue_desc: '',
+        issue_suggest: '',
         rec_status: '1',
         is_valid: 'Y',
         manufacture_id: '',
@@ -704,15 +688,8 @@ export default {
       },
       editForm: {
         issueType: '',
-        audit_explanation: '',
-        corrective_action_plan: '',
-        corrective_plan: '',
-        corrective_date: '',
-        subheader: '',
-        code_provision: '',
-        corrective_principal: '',
-        deadline: '',
-        status: '',
+        issue_desc: '',
+        issue_suggest: '',
       },
       rules: {
         issue_type: [
@@ -722,145 +699,24 @@ export default {
             trigger: 'change',
           },
         ],
-        subheader: [
+        issue_desc: [
           {
             required: true,
-            message: this.$l.pleaseSubheader,
+            message: this.$l.pleaseDescription,
             trigger: 'blur',
           },
         ],
-        code_provision: [
+        issue_suggest: [
           {
             required: true,
-            message: this.$l.pleaseCodeProvision,
+            message: this.$l.pleaseSuggest,
             trigger: 'blur',
-          },
-        ],
-        audit_explanation: [
-          {
-            required: true,
-            message: this.$l.pleaseAuditExplanation,
-            trigger: 'blur',
-          },
-        ],
-        corrective_action_plan: [
-          {
-            required: true,
-            message: this.$l.pleaseCorrectiveActionPlan,
-            trigger: 'blur',
-          },
-        ],
-        corrective_plan: [
-          {
-            required: true,
-            message: this.$l.pleaseCorrectivePlan,
-            trigger: 'blur',
-          },
-        ],
-        corrective_date: [
-          {
-            required: true,
-            message: this.$l.pleaseCorrectiveDate,
-            trigger: 'change',
-          },
-        ],
-        corrective_principal: [
-          {
-            required: true,
-            message: this.$l.pleasePIC,
-            trigger: 'blur',
-          },
-        ],
-        deadline: [
-          {
-            required: true,
-            message: this.$l.pleaseDeadline,
-            trigger: 'change',
-          },
-        ],
-        status: [
-          {
-            required: true,
-            message: this.$l.pleaseStatus,
-            trigger: 'change',
-          },
-        ],
-      },
-      editRules: {
-        issue_type: [
-          {
-            required: true,
-            message: this.$l.pleaseTypeIssue,
-            trigger: 'change',
-          },
-        ],
-        subheader: [
-          {
-            required: true,
-            message: this.$l.pleaseSubheader,
-            trigger: 'blur',
-          },
-        ],
-        code_provision: [
-          {
-            required: true,
-            message: this.$l.pleaseCodeProvision,
-            trigger: 'blur',
-          },
-        ],
-        audit_explanation: [
-          {
-            required: true,
-            message: this.$l.pleaseAuditExplanation,
-            trigger: 'blur',
-          },
-        ],
-        corrective_action_plan: [
-          {
-            required: true,
-            message: this.$l.pleaseCorrectiveActionPlan,
-            trigger: 'blur',
-          },
-        ],
-        corrective_plan: [
-          {
-            required: true,
-            message: this.$l.pleaseCorrectivePlan,
-            trigger: 'blur',
-          },
-        ],
-        corrective_date: [
-          {
-            required: true,
-            message: this.$l.pleaseCorrectiveDate,
-            trigger: 'change',
-          },
-        ],
-        corrective_principal: [
-          {
-            required: true,
-            message: this.$l.pleasePIC,
-            trigger: 'blur',
-          },
-        ],
-        deadline: [
-          {
-            required: true,
-            message: this.$l.pleaseDeadline,
-            trigger: 'change',
-          },
-        ],
-        status: [
-          {
-            required: true,
-            message: this.$l.pleaseStatus,
-            trigger: 'change',
           },
         ],
       },
       getDetailsQuery: {
         page: 1,
-        pageSize: 10,
+        pageSize: 6,
         id: '',
         is_his: '0',
       },
@@ -935,21 +791,6 @@ export default {
     this.getUserAuth()
   },
   methods: {
-    handleTableAction({ action, row }) {
-      console.log(action, row)
-      if (action === 'detail') {
-        this.getDetails(null, row)
-      }
-    },
-    handleDetailsTableAction({ action, row }) {
-      console.log(action, row)
-      if (action === 'edit') {
-        this.editDetail(null, row)
-      }
-      if (action === 'delete') {
-        this.deleteIssue(row)
-      }
-    },
     getIssueType() {
       this.$request(
         api.baseUrl + '/Requirements/Publiccode/getListdetailed',
@@ -1051,7 +892,6 @@ export default {
       this.getDetail()
     },
     getDetail() {
-      this.detailtable.isLoading = true
       this.$request(api.baseUrl + '/Compliance/complianceIssues/getIssuesDetail', this.getDetailsQuery, 'get').then((response) => {
         this.data = response.data
         console.log(this.data)
@@ -1063,17 +903,19 @@ export default {
           detail.manufacture_id = response.data.list.manufacture_id
         })
         console.log(details)
-        this.detailtable.isLoading = false
       })
     },
     showHisList(is_his) {
       const id = this.clickRow.id
       console.log(id)
+      this.is_his = this.is_his == 1 ? 0 : 1
       this.$request(
         api.baseUrl + '/Compliance/complianceIssues/getIssuesDetail',
         {
-          ...this.getDetailsQuery,
-          id: id
+          id: id,
+          page: 1,
+          pageSize: 12,
+          is_his: is_his,
         },
         'get'
       ).then((response) => {
@@ -1097,38 +939,8 @@ export default {
       console.log(this.editForm)
       this.editVisible = true
     },
-    
-    // 删除问题
-    deleteIssue(row) {
-      this.$confirm(this.$l.confirmDelete, this.$c.oprConfirm, {
-        confirmButtonText: this.$c.confirm,
-        cancelButtonText: this.$c.cancel,
-        type: 'warning'
-      }).then(() => {
-        this.$request(
-          api.baseUrl + '/Compliance/complianceIssues/deleteIssue',
-          { issueId: row.id },
-          'post'
-        ).then((response) => {
-          if (response.httpCode === 200) {
-            this.$message.success(this.$l.deleteSuccess)
-            // Refresh the detail table
-            this.getDetail()
-          } else {
-            this.$message.error(response.message || this.$l.deleteFailed)
-          }
-        }).catch((error) => {
-          this.$message.error(error.response?.data?.message || this.$l.deleteFailed)
-        })
-      }).catch(() => {
-        // User cancelled
-      })
-    },
     //提交修改结果
     submitEdit() {
-      // Bắt đầu loading state
-      this.isEditSubmitting = true
-
       this.$request(
         api.baseUrl + '/Compliance/complianceIssues/addOrModifyIssues',
         {
@@ -1136,15 +948,8 @@ export default {
           detail: [
             {
               issue_type: this.editForm.issue_type,
-              audit_explanation: this.editForm.audit_explanation,
-              corrective_action_plan: this.editForm.corrective_action_plan,
-              corrective_plan: this.editForm.corrective_plan,
-              corrective_date: this.editForm.corrective_date,
-              subheader: this.editForm.subheader,
-              code_provision: this.editForm.code_provision,
-              corrective_principal: this.editForm.corrective_principal,
-              deadline: this.editForm.deadline,
-              status: this.editForm.status,
+              issue_desc: this.editForm.issue_desc,
+              issue_suggest: this.editForm.issue_suggest,
               is_valid: this.editForm.is_valid,
               rec_status: this.editForm.rec_status,
               id: this.editForm.id,
@@ -1153,131 +958,60 @@ export default {
           ],
         },
         'post'
-      )
-        .then((response) => {
-          this.data = response.data
-          this.getList()
-          this.editVisible = false
-          this.$message.success(this.$l.editSuccess)
-        })
-        .catch((error) => {
-          console.error('Error updating form:', error)
-          this.$message.error(error.response.data.message || this.$l.updateFailed)
-        })
-        .finally(() => {
-          // Kết thúc loading state
-          this.isEditSubmitting = false
-        })
+      ).then((response) => {
+        this.data = response.data
+        this.getList()
+        this.editVisible = false
+      })
     },
     addForm() {
       this.addFormVisible = true
     },
-
-    resetFormAdd() {
-      this.form = {
-        issue_type: '',
-        audit_explanation: '',
-        corrective_action_plan: '',
-        corrective_plan: '',
-        corrective_date: '',
-        subheader: '',
-        code_provision: '',
-        corrective_principal: '',
-        deadline: '',
-        status: '',
-        rec_status: '1',
-        is_valid: 'Y',
-        manufacture_id: '',
-        fileList: [],
-        addfile: {},
-        addFileList: [],
-      }
-      this.form.manufacture_id = ''
-      this.form.name_en = ''
-      this.dialogSelectManufacture = false
-      this.addFormVisible = false
-
-    },
-
     //创建取消
     addCancel(form) {
       this.addFormVisible = false
-      this.resetFormAdd()
+      this.form = _.cloneDeep(this.forminit)
+      this.$refs[form].resetFields()
     },
     //创建
     submit(form) {
-      const issue_type = this.form.issue_type
-      const audit_explanation = this.form.audit_explanation
-      const corrective_action_plan = this.form.corrective_action_plan
-      const corrective_date = this.form.corrective_date
-      const subheader = this.form.subheader
-      const code_provision = this.form.code_provision
-      const corrective_principal = this.form.corrective_principal
-      const status = this.form.status
-      const rec_status = this.form.rec_status
-      const is_valid = this.form.is_valid
-      const manufacture_id = this.form.manufacture_id
-
-      if (!issue_type || !audit_explanation || !corrective_action_plan || !corrective_date || !subheader || !code_provision || !corrective_principal || !status) {
-        this.$message.error(this.$l.pleaseCompleteAllFields)
-        return
-      }
-
-      if (!manufacture_id) {
-        this.$message.error(this.$l.pleaseSelectManufacture)
-        return
-      }
-
-      if (this.form.addFileList.length > 0) {
-        this.form.addFileList.forEach((file) => {
-          this.form.attachments.push({
-            file_name: file.name,
-            file_suffix: file.name.split('.').pop(),
-            file_url: file.url,
-          })
-        })
-      }
-
-      // Bắt đầu loading state
-      this.isSubmitting = true
-
-      this.$request(
-        api.baseUrl + '/Compliance/complianceIssues/addOrModifyIssues',
-        {
-          manufacture_id: manufacture_id,
-          detail: [
-            {
-              issue_type: issue_type,
-              audit_explanation: audit_explanation,
-              corrective_action_plan: corrective_action_plan,
-              corrective_date: corrective_date,
-              subheader: subheader,
-              code_provision: code_provision,
-              corrective_principal: corrective_principal,
-              status: status,
-              is_valid: is_valid,
-              rec_status: rec_status,
-            },
-          ],
-        },
-        'post',
-        true
-      )
-        .then((response) => {
-          this.data = response.data
-          this.getList()
-          this.resetFormAdd()
+      this.$refs.form.validate((valid) => {
+        console.log(valid)
+        if (valid) {
+          const issue_type = this.form.issue_type
+          const issue_desc = this.form.issue_desc
+          const issue_suggest = this.form.issue_suggest
+          const rec_status = this.form.rec_status
+          const is_valid = this.form.is_valid
+          const manufacture_id = this.form.manufacture_id
+          this.form = _.cloneDeep(this.forminit)
           this.addFormVisible = false
-          this.$message.success(this.$l.addSuccess)
-        })
-        .catch((error) => {
-          console.error('Error submitting form:', error)
-          this.$message.error(error.response.data.message || this.$l.submitFailed)
-        })
-        .finally(() => {
-          // Kết thúc loading state
-          this.isSubmitting = false
-        })
+          this.$request(
+            api.baseUrl + '/Compliance/complianceIssues/addOrModifyIssues',
+            {
+              manufacture_id: manufacture_id,
+              detail: [
+                {
+                  issue_type: issue_type,
+                  issue_desc: issue_desc,
+                  issue_suggest: issue_suggest,
+                  is_valid: is_valid,
+                  rec_status: rec_status,
+                },
+              ],
+            },
+            'post'
+          )
+            .then((response) => {
+              this.data = response.data
+              this.getList()
+            })
+            .catch((error) => {
+              console.error("Error submitting form:", error)
+            })
+          // this.getList()
+        }
+      })
     },
     checkField, //多级表头渲染组件
     showManufacture() {
@@ -1292,7 +1026,7 @@ export default {
     },
     selectManufacture(index, item) {
       this.form.manufacture_id = item.manufacture_id
-      this.form.name_en = item.name_en
+      this.form.name_zh = item.name_zh
       this.dialogSelectManufacture = false
     },
     //下载导出
@@ -1677,51 +1411,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// Modern table styling
-.modern-table {
-  border: none;
-
-  :deep(.el-table__header-wrapper) {
-    th {
-      background-color: #f9fafb;
-      color: #374151;
-      font-weight: 500;
-      border: none;
-    }
-  }
-
-  :deep(.el-table__body-wrapper) {
-    td {
-      border: none;
-      border-bottom: 1px solid #f3f4f6;
-    }
-
-    tr:hover {
-      background-color: #f9fafb;
-    }
-  }
-}
-
-// Modern dialog styling
-.modern-dialog {
-  :deep(.el-dialog) {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  }
-
-  :deep(.el-dialog__header) {
-    border-bottom: 1px solid #f3f4f6;
-    padding-bottom: 16px;
-    margin-bottom: 0;
-  }
-
-  :deep(.el-dialog__body) {
-    padding-top: 24px;
-  }
-}
-
-// Legacy styles (keeping for compatibility)
 .check {
   position: relative;
   top: 20px;
@@ -1748,7 +1437,7 @@ export default {
 .truncate-lines {
   display: -webkit-box;
   -webkit-line-clamp: 1;
-  line-clamp: 1;
+  /* 限制为3行 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

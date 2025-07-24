@@ -6,7 +6,7 @@
         <i class="el-icon-document"></i>
       </div>
       <div class="text-base font-medium text-gray-600 mb-2">{{ $c.table_empty }}</div>
-      <div class="text-sm text-gray-400">Chưa có dữ liệu nhà sản xuất nào được tải</div>
+      <div class="text-sm text-gray-400">{{ $t('improveManagement_table.no_data') }}</div>
     </div>
 
     <!-- Table Content -->
@@ -15,8 +15,8 @@
         <thead>
           <tr>
             <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']">
-              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $t('manufacturer_table.' + col.title)">
-                {{ col.title === '#' ? '#' : $t('manufacturer_table.' + col.title) }}
+              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $t('improveManagement_table.' + col.title)">
+                {{ col.title === '#' ? '#' : $t('improveManagement_table.' + col.title) }}
               </div>
             </th>
           </tr>
@@ -34,108 +34,33 @@
               <td v-for="col in columns" :key="col.id" :class="[col.className, col.freeze ? 'sticky-' + col.freeze : '', 'border-b border-gray-100 px-2 py-3 bg-white text-left whitespace-nowrap transition-colors relative dark:border-gray-700 dark:bg-black']">
                 <!-- Index Column -->
                 <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 }}</span>
-                
+
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="max-w-[280px]">
                   <el-tooltip effect="dark" :content="item[col.id]" placement="top" :disabled="!item[col.id] || item[col.id].length < 30">
-                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap font-semibold text-black font-bold dark:text-gray-300">{{ item[col.id] || $c.empty }}</div>
+                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap text-black font-bold dark:text-gray-300">{{ item[col.id] || $c.empty }}</div>
                   </el-tooltip>
                 </div>
-                
-                <!-- Address Column -->
-                <template v-else-if="col.id === 'address'">
-                  <div class="flex items-center gap-2">
-                    <el-popover trigger="hover" placement="top" width="280">
-                      <div class="max-h-48 overflow-y-auto">
-                        <div v-if="item.address && item.address.length > 0" class="flex flex-col gap-2">
-                          <div v-for="addr in item.address" :key="addr.id" class="flex items-start gap-2 py-1.5 border-b border-gray-100 text-xs leading-5 last:border-b-0">
-                            <i class="el-icon-location-outline text-black mt-0.5 text-sm"></i>
-                            <span>{{ addr.address_en }}</span>
-                          </div>
-                        </div>
-                        <div v-else class="text-center text-gray-300 italic py-4">{{ $c.empty }}</div>
-                      </div>
-                      <template slot="reference">
-                        <el-button type="text" size="mini" class="!p-1 !px-2 !text-xs !text-blue-500 !border-0 hover:!text-blue-400 hover:!bg-blue-50 dark:hover:!bg-blue-900/20">
-                          <i class="el-icon-view mr-1 text-xs"></i>
-                          {{ $c.view_address }}
-                        </el-button>
-                      </template>
-                    </el-popover>
-                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="!text-xs !h-4.5 !leading-4 !px-1.5 !rounded-full">
-                      {{ item.address.length }}
-                    </el-tag>
-                  </div>
-                </template>
-                
-                <!-- Capabilities Column -->
-                <template v-else-if="col.id === 'capabilities'">
-                  <div class="flex items-center gap-2">
-                    <el-popover trigger="hover" placement="top" width="280">
-                      <div class="max-h-48 overflow-y-auto">
-                        <div v-if="item.address && item.address.length > 0" class="flex flex-col gap-2">
-                          <div v-for="capability in item.address" :key="capability.id" class="flex items-start gap-2 py-1.5 border-b border-gray-100 text-xs leading-5 last:border-b-0">
-                            <i class="el-icon-cpu text-gray-400 mt-0.5 text-sm"></i>
-                            <span>{{ capability.own_processes }}</span>
-                          </div>
-                        </div>
-                        <div v-else class="text-center text-gray-300 italic py-4">{{ $c.empty }}</div>
-                      </div>
-                      <template slot="reference">
-                        <el-button type="text" size="mini" class="!p-1 !px-2 !text-xs !text-blue-500 !border-0 hover:!text-blue-400 hover:!bg-blue-50 dark:hover:!bg-blue-900/20">
-                          <i class="el-icon-view mr-1 text-xs"></i>
-                          {{ $c.view_capabilities }}
-                        </el-button>
-                      </template>
-                    </el-popover>
-                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="!text-xs !h-4.5 !leading-4 !px-1.5 !rounded-full">
-                      {{ item.address.length }}
-                    </el-tag>
-                  </div>
-                </template>
-                
+
                 <!-- Status Column -->
-                <template v-else-if="col.id === 'authorization_status'">
-                  <div class="flex items-center">
-                    <el-tag v-if="item[col.id]" 
-                            :type="getStatusType(item[col.id])" 
-                            size="small"
-                            class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
-                      {{ getStatusText(item[col.id]) }}
-                    </el-tag>
-                    <span v-else class="text-gray-300 italic text-xs">{{ $c.empty }}</span>
-                  </div>
+                <template v-else-if="col.id === 'percent_closed_ti'">
+                  <div class="flex items-center">{{ item['finish'] > 0 ? ((item['finish'] / item['total_issue']) * 100).toFixed(2) : 0 }}%</div>
                 </template>
-                
+
                 <!-- Action Column -->
                 <template v-else-if="col.id === 'action'">
                   <div class="flex justify-end items-center">
-                    <el-dropdown @command="(cmd) => handleAction(cmd, item)" trigger="click" size="small">
-                      <el-button type="text" class="!p-2 !text-gray-500 !border-0 !rounded hover:!text-blue-500 hover:!bg-blue-50 !transition-all dark:hover:!bg-blue-900/20">
-                        <i class="el-icon-more"></i>
-                      </el-button>
-                      <el-dropdown-menu slot="dropdown" class="!rounded-xl !shadow-lg !p-1.5">
-                        <el-dropdown-item command="detail">
-                          <i class="el-icon-view w-3.5 text-sm"></i>
-                          {{ $t('common.detail') }}
-                        </el-dropdown-item>
-                        <el-dropdown-item command="edit">
-                          <i class="el-icon-edit w-3.5 text-sm"></i>
-                          {{ $t('common.edit') }}
-                        </el-dropdown-item>
-                        <el-dropdown-item command="export">
-                          <i class="el-icon-download w-3.5 text-sm"></i>
-                          {{ $t('common.export') }}
-                        </el-dropdown-item>
-                        <el-dropdown-item command="delete" class="!text-red-500 hover:!bg-red-50">
-                          <i class="el-icon-delete w-3.5 text-sm"></i>
-                          {{ $t('common.delete') }}
-                        </el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
+                    <button type="button" class="rounded-full px-3 py-1 flex items-center gap-2 bg-blue-500 text-white hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300 font-normal text-xs" @click="handleAction('detail', item)">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+
+                      <span>{{ $l.view_detail || 'Xem' }}</span>
+                    </button>
                   </div>
                 </template>
-                
+
                 <!-- Default Columns -->
                 <template v-else>
                   <div class="text-black dark:text-gray-400">
@@ -161,7 +86,7 @@
 */
 
 export default {
-  name: 'manufacturer_table',
+  name: 'improveManagement_table',
   props: {
     data: {
       type: Array,
@@ -176,16 +101,14 @@ export default {
     return {
       columns: [
         { id: 'index', title: '#', width: 60, textAlign: 'left' },
-        { id: 'name_en', title: 'partner_english_name', width: 300, textAlign: 'left' },
-        { id: 'vendor_code', title: 'vendor_code', width: 140, textAlign: 'left' },
-        { id: 'sap_code', title: 'sap_code', width: 140, textAlign: 'left' },
-        { id: 'address', title: 'address', width: 220, textAlign: 'left' },
-        { id: 'types_of_orders', title: 'types_of_orders', width: 180, textAlign: 'left' },
-        { id: 'capabilities', title: 'overall_capabilities', width: 220, textAlign: 'left' },
-        { id: 'biz_license_number', title: 'business_registration_number', width: 250, textAlign: 'left' },
-        { id: 'authorization_status', title: 'authorization_status', width: 200, textAlign: 'left' },
-        { id: 'requestor_facility_code', title: 'leading_t1', width: 140, textAlign: 'left' },
-        { id: 'action', title: 'action', width: 80, textAlign: 'right', freeze: 'right' },
+        { id: 'name_en', title: 'factory_name', width: 260, textAlign: 'left' },
+        { id: 'vendor_code', title: 'vendor_code', width: 160, textAlign: 'left' },
+        { id: 'audit_time', title: 'audit_date', width: 160, textAlign: 'left' },
+        { id: 'total_issue', title: 'total_threshold_issues', width: 180, textAlign: 'left' },
+        { id: 'finish', title: 'number_of_closed_ti', width: 180, textAlign: 'left' },
+        { id: 'percent_closed_ti', title: 'percent_closed_ti', width: 140, textAlign: 'left' },
+        { id: 'last_date', title: 'last_updated', width: 160, textAlign: 'left' },
+        { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
       ],
       rowHeight: 44,
       scrollTop: 0,
@@ -200,12 +123,12 @@ export default {
     },
     getStickyStyle(col, colIdx, isHeader) {
       if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = { 
-        width: col.width + 'px', 
-        textAlign: col.textAlign, 
-        position: 'sticky', 
+      let style = {
+        width: col.width + 'px',
+        textAlign: col.textAlign,
+        position: 'sticky',
         zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff'
+        background: isHeader ? '#f9fafb' : '#ffffff',
       }
       if (col.freeze === 'left') {
         let left = 0
@@ -236,17 +159,17 @@ export default {
     },
     getStatusType(status) {
       const statusMap = {
-        'onboarding': 'warning',
-        'discontinued': 'info', 
-        'in_use': 'success'
+        onboarding: 'warning',
+        discontinued: 'info',
+        in_use: 'success',
       }
       return statusMap[status] || 'default'
     },
     getStatusText(status) {
       const textMap = {
-        'onboarding': this.$t('manufacturer_table.onboarding'),
-        'discontinued': this.$t('manufacturer_table.discontinued'),
-        'in_use': this.$t('manufacturer_table.in_use')
+        onboarding: this.$t('improveManagement_table.onboarding'),
+        discontinued: this.$t('improveManagement_table.discontinued'),
+        in_use: this.$t('improveManagement_table.in_use'),
       }
       return textMap[status] || status
     },
@@ -361,7 +284,7 @@ tr:hover .sticky-right {
   table {
     font-size: 13px;
   }
-  
+
   th,
   td {
     padding: 8px;

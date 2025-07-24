@@ -6,7 +6,7 @@
         <i class="el-icon-document"></i>
       </div>
       <div class="text-base font-medium text-gray-600 mb-2">{{ $c.table_empty }}</div>
-      <div class="text-sm text-gray-400">Chưa có dữ liệu nhà sản xuất nào được tải</div>
+      <div class="text-sm text-gray-400">{{ $t('no_data') }}</div>
     </div>
 
     <!-- Table Content -->
@@ -14,9 +14,9 @@
       <table class="w-full border-collapse min-w-[1200px] table-fixed bg-white dark:bg-black">
         <thead>
           <tr>
-            <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']">
-              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $t('manufacturer_table.' + col.title)">
-                {{ col.title === '#' ? '#' : $t('manufacturer_table.' + col.title) }}
+            <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']">
+              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $l[col.title]">
+                {{ col.title === '#' ? '#' : $l[col.title] }}
               </div>
             </th>
           </tr>
@@ -31,82 +31,58 @@
           </template>
           <template v-else>
             <tr v-for="(item, idx) in data" :key="item.id || idx" class="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-900" @click="handleRowClick(item)" @mouseenter="handleRowHover(item, true)" @mouseleave="handleRowHover(item, false)">
-              <td v-for="col in columns" :key="col.id" :class="[col.className, col.freeze ? 'sticky-' + col.freeze : '', 'border-b border-gray-100 px-2 py-3 bg-white text-left whitespace-nowrap transition-colors relative dark:border-gray-700 dark:bg-black']">
+              <td v-for="col in columns" :key="col.id" :class="[col.className, col.freeze ? 'sticky-' + col.freeze : '', 'border-b border-gray-100 px-2 py-3 bg-white text-left whitespace-nowrap transition-colors relative dark:border-gray-700 dark:bg-black text-xs']">
                 <!-- Index Column -->
-                <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 }}</span>
-                
+                <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 + (page.page - 1) * page.pageSize }}</span>
+
                 <!-- Name Column with Tooltip -->
-                <div v-else-if="col.id === 'name_en'" class="max-w-[280px]">
-                  <el-tooltip effect="dark" :content="item[col.id]" placement="top" :disabled="!item[col.id] || item[col.id].length < 30">
-                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap font-semibold text-black font-bold dark:text-gray-300">{{ item[col.id] || $c.empty }}</div>
-                  </el-tooltip>
+                <div v-else-if="col.id === 'issue_type'" class="max-w-[500px]" :title="item[col.id]">
+                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] || $c.empty }}</div>
                 </div>
-                
-                <!-- Address Column -->
-                <template v-else-if="col.id === 'address'">
-                  <div class="flex items-center gap-2">
-                    <el-popover trigger="hover" placement="top" width="280">
-                      <div class="max-h-48 overflow-y-auto">
-                        <div v-if="item.address && item.address.length > 0" class="flex flex-col gap-2">
-                          <div v-for="addr in item.address" :key="addr.id" class="flex items-start gap-2 py-1.5 border-b border-gray-100 text-xs leading-5 last:border-b-0">
-                            <i class="el-icon-location-outline text-black mt-0.5 text-sm"></i>
-                            <span>{{ addr.address_en }}</span>
-                          </div>
-                        </div>
-                        <div v-else class="text-center text-gray-300 italic py-4">{{ $c.empty }}</div>
-                      </div>
-                      <template slot="reference">
-                        <el-button type="text" size="mini" class="!p-1 !px-2 !text-xs !text-blue-500 !border-0 hover:!text-blue-400 hover:!bg-blue-50 dark:hover:!bg-blue-900/20">
-                          <i class="el-icon-view mr-1 text-xs"></i>
-                          {{ $c.view_address }}
-                        </el-button>
-                      </template>
-                    </el-popover>
-                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="!text-xs !h-4.5 !leading-4 !px-1.5 !rounded-full">
-                      {{ item.address.length }}
-                    </el-tag>
+
+                <div v-else-if="col.id === 'subheader'" class="max-w-[500px]" :title="item[col.id]">
+                  <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
                   </div>
-                </template>
-                
-                <!-- Capabilities Column -->
-                <template v-else-if="col.id === 'capabilities'">
-                  <div class="flex items-center gap-2">
-                    <el-popover trigger="hover" placement="top" width="280">
-                      <div class="max-h-48 overflow-y-auto">
-                        <div v-if="item.address && item.address.length > 0" class="flex flex-col gap-2">
-                          <div v-for="capability in item.address" :key="capability.id" class="flex items-start gap-2 py-1.5 border-b border-gray-100 text-xs leading-5 last:border-b-0">
-                            <i class="el-icon-cpu text-gray-400 mt-0.5 text-sm"></i>
-                            <span>{{ capability.own_processes }}</span>
-                          </div>
-                        </div>
-                        <div v-else class="text-center text-gray-300 italic py-4">{{ $c.empty }}</div>
-                      </div>
-                      <template slot="reference">
-                        <el-button type="text" size="mini" class="!p-1 !px-2 !text-xs !text-blue-500 !border-0 hover:!text-blue-400 hover:!bg-blue-50 dark:hover:!bg-blue-900/20">
-                          <i class="el-icon-view mr-1 text-xs"></i>
-                          {{ $c.view_capabilities }}
-                        </el-button>
-                      </template>
-                    </el-popover>
-                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="!text-xs !h-4.5 !leading-4 !px-1.5 !rounded-full">
-                      {{ item.address.length }}
-                    </el-tag>
+                </div>
+                <div v-else-if="col.id === 'code_provision'" class="max-w-[500px]" :title="item[col.id]">
+                  <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
                   </div>
+                </div>
+                <div v-else-if="col.id === 'audit_explanation'" class="max-w-[500px]" :title="item[col.id]">
+                  <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </div>
+                </div>
+                <div v-else-if="col.id === 'corrective_action_plan'" class="max-w-[500px]" :title="item[col.id]">
+                  <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </div>
+                </div>
+
+                <!-- Deadline Column -->
+                <template v-else-if="col.id === 'corrective_date'">
+                  <span v-if="item[col.id]" class="text-xs whitespace-normal">{{ formatDate(item[col.id]) }}</span>
+                  <span v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </span>
                 </template>
-                
+
                 <!-- Status Column -->
-                <template v-else-if="col.id === 'authorization_status'">
-                  <div class="flex items-center">
-                    <el-tag v-if="item[col.id]" 
-                            :type="getStatusType(item[col.id])" 
-                            size="small"
-                            class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
-                      {{ getStatusText(item[col.id]) }}
-                    </el-tag>
-                    <span v-else class="text-gray-300 italic text-xs">{{ $c.empty }}</span>
-                  </div>
+                <template v-else-if="col.id === 'status'">
+                  <el-tag v-if="item[col.id]" :type="getStatusType(item[col.id])" size="small" class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
+                    {{ getStatusText(item[col.id]) }}
+                  </el-tag>
+                  <span v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </span>
                 </template>
-                
+
                 <!-- Action Column -->
                 <template v-else-if="col.id === 'action'">
                   <div class="flex justify-end items-center">
@@ -115,34 +91,26 @@
                         <i class="el-icon-more"></i>
                       </el-button>
                       <el-dropdown-menu slot="dropdown" class="!rounded-xl !shadow-lg !p-1.5">
-                        <el-dropdown-item command="detail">
-                          <i class="el-icon-view w-3.5 text-sm"></i>
-                          {{ $t('common.detail') }}
-                        </el-dropdown-item>
                         <el-dropdown-item command="edit">
                           <i class="el-icon-edit w-3.5 text-sm"></i>
-                          {{ $t('common.edit') }}
-                        </el-dropdown-item>
-                        <el-dropdown-item command="export">
-                          <i class="el-icon-download w-3.5 text-sm"></i>
-                          {{ $t('common.export') }}
+                          {{ $c.edit }}
                         </el-dropdown-item>
                         <el-dropdown-item command="delete" class="!text-red-500 hover:!bg-red-50">
                           <i class="el-icon-delete w-3.5 text-sm"></i>
-                          {{ $t('common.delete') }}
+                          {{ $c.delete }}
                         </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
                   </div>
                 </template>
-                
+
                 <!-- Default Columns -->
                 <template v-else>
-                  <div class="text-black dark:text-gray-400">
+                  <div class="text-black dark:text-gray-400 line-clamp-2">
                     <span v-if="item[col.id] === undefined || item[col.id] === null || item[col.id] === ''" class="text-gray-300 italic text-xs">
                       {{ $c.empty }}
                     </span>
-                    <span v-else class="text-sm">{{ item[col.id] }}</span>
+                    <span v-else class="text-xs whitespace-normal">{{ item[col.id] }}</span>
                   </div>
                 </template>
               </td>
@@ -161,7 +129,7 @@
 */
 
 export default {
-  name: 'manufacturer_table',
+  name: 'improveManagement_details_table',
   props: {
     data: {
       type: Array,
@@ -171,28 +139,32 @@ export default {
       type: Boolean,
       default: false,
     },
+    page: {
+      type: Object,
+      default: () => ({
+        page: 1,
+        pageSize: 10,
+      }),
+    },
   },
   data() {
     return {
       columns: [
         { id: 'index', title: '#', width: 60, textAlign: 'left' },
-        { id: 'name_en', title: 'partner_english_name', width: 300, textAlign: 'left' },
-        { id: 'vendor_code', title: 'vendor_code', width: 140, textAlign: 'left' },
-        { id: 'sap_code', title: 'sap_code', width: 140, textAlign: 'left' },
-        { id: 'address', title: 'address', width: 220, textAlign: 'left' },
-        { id: 'types_of_orders', title: 'types_of_orders', width: 180, textAlign: 'left' },
-        { id: 'capabilities', title: 'overall_capabilities', width: 220, textAlign: 'left' },
-        { id: 'biz_license_number', title: 'business_registration_number', width: 250, textAlign: 'left' },
-        { id: 'authorization_status', title: 'authorization_status', width: 200, textAlign: 'left' },
-        { id: 'requestor_facility_code', title: 'leading_t1', width: 140, textAlign: 'left' },
-        { id: 'action', title: 'action', width: 80, textAlign: 'right', freeze: 'right' },
+        { id: 'issue_type', title: 'issue_type', width: 180, textAlign: 'left' },
+        { id: 'subheader', title: 'subheader', width: 180, textAlign: 'left' },
+        { id: 'code_provision', title: 'code_provision', width: 300, textAlign: 'left' },
+        { id: 'audit_explanation', title: 'audit_explanation', width: 300, textAlign: 'left' },
+        { id: 'corrective_action_plan', title: 'corrective_action_plan', width: 300, textAlign: 'left' },
+        { id: 'corrective_principal', title: 'pic', width: 200, textAlign: 'left' },
+        { id: 'corrective_date', title: 'deadline_date', width: 120, textAlign: 'left' },
+        { id: 'status', title: 'status', width: 120, textAlign: 'left' },
+        { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
       ],
       rowHeight: 44,
       scrollTop: 0,
       height: 400, // mặc định, có thể truyền prop hoặc tính toán động
     }
-  },
-  computed: {
   },
   methods: {
     handleScroll(e) {
@@ -200,12 +172,12 @@ export default {
     },
     getStickyStyle(col, colIdx, isHeader) {
       if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = { 
-        width: col.width + 'px', 
-        textAlign: col.textAlign, 
-        position: 'sticky', 
+      let style = {
+        width: col.width + 'px',
+        textAlign: col.textAlign,
+        position: 'sticky',
         zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff'
+        background: isHeader ? '#f9fafb' : '#ffffff',
       }
       if (col.freeze === 'left') {
         let left = 0
@@ -236,19 +208,28 @@ export default {
     },
     getStatusType(status) {
       const statusMap = {
-        'onboarding': 'warning',
-        'discontinued': 'info', 
-        'in_use': 'success'
+        on_track: 'warning',
+        off_track: 'info',
+        closed: 'success',
       }
       return statusMap[status] || 'default'
     },
     getStatusText(status) {
       const textMap = {
-        'onboarding': this.$t('manufacturer_table.onboarding'),
-        'discontinued': this.$t('manufacturer_table.discontinued'),
-        'in_use': this.$t('manufacturer_table.in_use')
+        on_track: this.$l.on_track,
+        off_track: this.$l.off_track,
+        closed: this.$l.closed,
       }
       return textMap[status] || status
+    },
+    formatDate(date) {
+      if (!date) return ''
+      const d = new Date(date)
+      return d.toLocaleDateString(this.$i18n.locale, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
     },
   },
 }
@@ -361,10 +342,17 @@ tr:hover .sticky-right {
   table {
     font-size: 13px;
   }
-  
+
   th,
   td {
     padding: 8px;
   }
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 </style>

@@ -31,30 +31,30 @@
               </div>
             </div>
             <div class="flex flex-col my-1 py-1 border-t border-b border-[#ebebeb] dark:border-gray-600">
-              <div @click="passwordFormVisible = true" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{$l.changePwd}}</div>
+              <div @click="passwordFormVisible = true" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{ $l.changePwd }}</div>
             </div>
             <div class="flex flex-col">
-              <div @click="logout" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{$l.logout}}</div>
+              <div @click="logout" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{ $l.logout }}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <el-dialog :title="$l.changePwd" :visible.sync="passwordFormVisible">
-      <div style="padding-right: 120px">
-        <!--表单-->
-        <el-form :model="pass" :hide-required-asterisk="false" label-width="120px">
-          <el-form-item :label="$l.oldPwd">
-            <el-input type="password" v-model="pass.oldPwd"></el-input>
-          </el-form-item>
-          <el-form-item :label="$l.newPwd1">
-            <el-input type="password" v-model="pass.newPwd1"></el-input>
-          </el-form-item>
-          <el-form-item :label="$l.newPwd2">
-            <el-input type="password" v-model="pass.newPwd2"></el-input>
-          </el-form-item>
-        </el-form>
+    <CustomDialog :title="$l.changePwd" :visible.sync="passwordFormVisible" :maxWidth="'500px'" :closeOnClickModal="false">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-light text-gray-700 dark:text-gray-300">{{ $l.oldPwd }}</label>
+          <el-input type="password" v-model="pass.oldPwd" autocomplete="current-password" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-light text-gray-700 dark:text-gray-300">{{ $l.newPwd1 }}</label>
+          <el-input type="password" v-model="pass.newPwd1" autocomplete="new-password" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-light text-gray-700 dark:text-gray-300">{{ $l.newPwd2 }}</label>
+          <el-input type="password" v-model="pass.newPwd2" autocomplete="new-password" />
+        </div>
         <!--表单-->
       </div>
       <div slot="footer" class="dialog-footer">
@@ -63,7 +63,7 @@
           {{ $c.confirm }}
         </el-button>
       </div>
-    </el-dialog>
+    </CustomDialog>
   </div>
 </template>
 
@@ -78,6 +78,7 @@ import LangSelect from './LangSelect'
 import ThemePicker from './ThemePicker'
 import avatar from '@/assets/default_avatar.png'
 import myUpload from 'vue-image-crop-upload/upload-2'
+import CustomDialog from '../../_common/CustomDialog.vue'
 import { getToken } from '@/utils/auth'
 import screenfull, { toggle } from 'screenfull'
 
@@ -94,6 +95,7 @@ export default {
     LangSelect,
     ThemePicker,
     myUpload,
+    CustomDialog,
   },
   data: function () {
     return {

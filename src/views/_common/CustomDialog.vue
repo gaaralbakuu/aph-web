@@ -40,6 +40,10 @@ export default {
       type: String,
       default: '50%',
     },
+    height: {
+      type: String,
+      default: 'auto',
+    },
     maxWidth: {
       type: String,
       default: '80vw',
@@ -61,6 +65,7 @@ export default {
     dialogStyle() {
       return {
         width: this.width,
+        height: this.height || 'auto',
         maxWidth: this.maxWidth,
         maxHeight: '90vh',
       }
@@ -118,7 +123,6 @@ export default {
   transition: background 0.15s, color 0.15s;
 }
 .shadcn-btn-icon:hover {
-  background: #f3f4f6;
   color: #111827;
 }
 </style>

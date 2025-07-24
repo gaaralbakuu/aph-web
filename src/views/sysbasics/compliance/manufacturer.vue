@@ -2,8 +2,8 @@
   <div class="h-full flex flex-col">
     <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
     <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
-      <div class="text-2xl font-bold text-black">Tệp tin cơ bản</div>
-      <div class="text-gray-500 text-sm">Danh sách các hồ sơ của đối tác</div>
+      <div class="text-2xl font-bold text-black">{{ $l.title }}</div>
+      <div class="text-gray-500 text-sm">{{ $l.description }}</div>
     </div>
     <!-- Search Section -->
     <div class="flex gap-3 flex-wrap justify-between p-3">
@@ -11,13 +11,13 @@
         <div class="relative h-9 flex items-center gap-2 mr-5">
           <div class="flex bg-gray-100 p-0.5 rounded h-9">
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === '' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = ''">
-              {{ $c.all || 'All' }}
+              {{ $c.all }}
             </button>
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T1SC' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T1SC'">
-              {{ $l.requestor_facility_type_T1SC || 'T1SC' }}
+              {{ $l.requestor_facility_type_T1SC }}
             </button>
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T2' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T2'">
-              {{ $l.requestor_facility_type_T2 || 'T2' }}
+              {{ $l.requestor_facility_type_T2 }}
             </button>
           </div>
           <div class="h-full py-2">
@@ -78,37 +78,37 @@
     <!-- Action Bar -->
     <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100">
       <div class="flex items-center gap-3">
-        <button v-show="showAuth.m_add" @click="add" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm transition duration-200 ease-in-out transform hover:scale-105">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button v-show="showAuth.m_add" @click="add" class="inline-flex items-center h-8 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
           {{ $c.create }}
         </button>
-
-        <button v-show="showAuth.m_export" @click="exportExcel" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded shadow-sm transition duration-200 ease-in-out transform hover:scale-105">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<!-- 
+        <button v-show="showAuth.m_export" @click="exportExcel" class="inline-flex items-center h-8 bg-green-600 hover:bg-green-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           {{ $c.export }}
         </button>
 
-        <button @click="visabled.uploadFile = true" class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded shadow-sm transition duration-200 ease-in-out transform hover:scale-105">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button @click="visabled.uploadFile = true" class="inline-flex items-center h-8 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
           {{ $c.m_upload }}
         </button>
 
-        <button @click="exportTemplate" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded shadow-sm transition duration-200 ease-in-out transform hover:scale-105">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button @click="exportTemplate" class="inline-flex items-center h-8 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          {{ $l.downloadTemplate || 'Download Template' }}
-        </button>
+          {{ $l.downloadTemplate }}
+        </button> -->
       </div>
     </div>
     <!-- Table Section -->
-    <div class="flex-1 p-3">
+    <div class="flex-1 px-3">
       <manufacturer-table :data="manufacturer.list" :isLoading="manufacturer.loading" @action="handleTableAction" @row-click="handleRowClick" class="main-table" />
     </div>
 
@@ -123,7 +123,7 @@
           <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basic }}</div>
           <!-- Basic Information Section -->
           <div class="">
-            <div class="text-base font-semibold text-black">Partner Information</div>
+            <div class="text-base font-semibold text-black">{{ $l.partner_information }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
@@ -148,7 +148,7 @@
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">Registration & Legal</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.registration_legal }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
@@ -161,7 +161,7 @@
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">Cooperation & Authorization</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.cooperation_authorization }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
@@ -201,7 +201,7 @@
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">Production & Operations</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.production_operations }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
@@ -222,7 +222,7 @@
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">Codes & Identifiers</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.codes_identifiers }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
@@ -243,7 +243,7 @@
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">Classification & Orders</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.classification_orders }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
@@ -256,7 +256,7 @@
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">Warnings & Compliance</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.warnings_compliance }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">

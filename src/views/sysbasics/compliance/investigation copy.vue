@@ -126,85 +126,106 @@
         <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList"></z-pagination>
 
         <!-- 修改 -->
-        <CustomDialog :title="$l.modify" :clickOutside="false" width="100%" :lock-scroll="true" @submmit="submmitedit" :visible.sync="editFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
-          <template #content>
-            <div class="flex flex-col gap-2">
-              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700 mr-2">{{ $l.basicArchives }}</label>
-                  <el-input v-model="editSurvey.list.name_en" :placeholder="$l.pleaseSelectBaseArchive" :disabled="true" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
-                  <el-input v-model="checkSurvey.list.survey_year" :disabled="true" class="w-full"></el-input>
-                </div>
-              </div>
+        <el-dialog width="80%" :lock-scroll="true" @submmit="submmitedit" :visible.sync="editFormVisible" top="1vh" custom-class="custom-dialog">
+          <div style="padding: 0 50px">
+            <div>
+              <el-form :model="editSurvey.list" label-position="top" label-width="180px">
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.basicInformation"></el-form-item>
+                </el-col>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.latestSeaAudit }}</div>
+                <el-form-item :label="this.$l.basicArchives">
+                  <el-col :span="8">
+                    <el-input v-model="editSurvey.list.name_zh" :placeholder="this.$l.pleaseSelectBaseArchive" :disabled="true"></el-input>
+                  </el-col>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditTime }}</label>
-                  <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
-                  <el-input v-model="editSurvey.list.third_party_org" :placeholder="$l.pleaseEnterThirdPartyOrganization" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
-                  <el-input v-model="editSurvey.list.audit_result" :placeholder="$l.pleaseEnterTheAuditResult" class="w-full"></el-input>
-                </div>
-              </div>
+                  <!-- <el-button @click="editselectClick()" type="primary"
+                      >查看</el-button
+                    > -->
+                </el-form-item>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.latestSeaAudit"></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.auditTime">
+                    <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="this.$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.nameOfTheThirdPartyOrganization">
+                    <el-input v-model="editSurvey.list.third_party_org" :placeholder="this.$l.pleaseEnterThirdPartyOrganization"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.auditResult">
+                    <el-input v-model="editSurvey.list.audit_result" :placeholder="this.$l.pleaseEnterTheAuditResult"></el-input>
+                  </el-form-item>
+                </el-col>
 
-              <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.dueAuditDate }}</label>
-                  <el-date-picker v-model="editSurvey.list.due_audit_date" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.costPayProgress }}</label>
-                  <el-slider v-model="editSurvey.list.cost_pay_progress" class="w-full"></el-slider>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.realAuditDate }}</label>
-                  <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-              </div> -->
-
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <div class="flex flex-col gap-4">
-                  <label class="font-light text-sm text-gray-700">{{ $l.isSubmitCap }}</label>
-                  <div class="flex gap-2">
-                    <el-radio v-model="editSurvey.list.is_submit_cap" label="Y">{{ $l.yes }}</el-radio>
-                    <el-radio v-model="editSurvey.list.is_submit_cap" label="N">{{ $l.no }}</el-radio>
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
-
-              <div class="grid grid-cols-1 gap-4 mt-2">
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.annualSeaAudit"></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.dueAuditDate">
+                    <el-date-picker v-model="editSurvey.list.due_audit_date" type="date" :placeholder="this.$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.costPayProgress">
+                    <el-slider v-model="editSurvey.list.cost_pay_progress"></el-slider>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.realAuditDate">
+                    <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="this.$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.isSubmitCap">
+                    <el-radio v-model="editSurvey.list.is_submit_cap" label="Y">{{ this.$l.yes }}</el-radio>
+                    <el-radio v-model="editSurvey.list.is_submit_cap" label="N">{{ this.$l.no }}</el-radio>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.auditFile"></el-form-item>
+                </el-col>
                 <input type="file" multiple @change="editFile" ref="editfileinput" style="display: none" />
-                <el-button type="primary" @click="$refs.editfileinput.click()" class="w-fit">{{ $l.selectFile }}</el-button>
-              </div>
-
-              <div>
-                <!-- 文件表格 -->
-                <el-table :data="editSurvey.fileList">
-                  <el-table-column v-for="(item, index) in editSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                  <el-table-column fixed="right" :label="$c.operation" width="145">
-                    <template slot-scope="scope">
-                      <el-button @click="editDeleteFile(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
+                <el-col :span="24">
+                  <el-button type="primary" @click="$refs.editfileinput.click()">{{ this.$l.selectFile }}</el-button>
+                </el-col>
+              </el-form>
             </div>
-          </template>
+            <div>
+              <!-- 文件表格 -->
+              <el-table :data="editSurvey.fileList" style="width: 90%">
+                <el-table-column v-for="(item, index) in editSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="this.$c.operation" width="145">
+                  <template slot-scope="scope">
+                    <!-- <el-button
+                        @click="getFilePreview(scope.row.file_url)"
+                        type="text"
+                        size="small"
+                        >查看</el-button
+                      > -->
+                    <el-button @click="editDeleteFile(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="editFormVisible = false">{{ $t('common').cancel }}</el-button>
             <el-button type="primary" @click="submmitedit">
@@ -212,84 +233,102 @@
             </el-button>
             <slot name="operation"></slot>
           </span>
-        </CustomDialog>
+        </el-dialog>
 
         <!-- 查看 -->
-        <CustomDialog :title="$c.check" :clickOutside="false" width="100%" :lock-scroll="true" :visible.sync="checkFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
-          <template #content>
-            <div class="flex flex-col gap-2">
-              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.basicArchives }}</label>
-                  <el-input v-model="checkSurvey.list.name_zh" :disabled="true" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
-                  <el-input v-model="checkSurvey.list.survey_year" :disabled="true" class="w-full"></el-input>
-                </div>
-              </div>
+        <el-dialog width="80%" :lock-scroll="true" :visible.sync="checkFormVisible" top="1vh" custom-class="custom-dialog">
+          <div style="padding: 0 50px">
+            <div>
+              <el-form :model="checkSurvey.list" label-position="top" label-width="180px">
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.basicInformation"></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.basicArchives">
+                    <el-input v-model="checkSurvey.list.name_zh"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24"></el-col>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.latestSeaAudit }}</div>
+                <el-col :span="6">
+                  <el-form-item :label="$l.surveyYear">
+                    <el-input v-model="checkSurvey.list.survey_year"></el-input>
+                  </el-form-item>
+                </el-col>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditDate }}</label>
-                  <el-date-picker disabled v-model="checkSurvey.list.near_audit_time" type="date" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
-                  <el-input disabled v-model="checkSurvey.list.near_third_party_org" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
-                  <el-input disabled v-model="checkSurvey.list.near_audit_result" class="w-full"></el-input>
-                </div>
-              </div>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.latestSeaAudit"></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.auditDate">
+                    <el-date-picker disabled v-model="checkSurvey.list.near_audit_time" type="date" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.nameOfTheThirdPartyOrganization">
+                    <el-input disabled v-model="checkSurvey.list.near_third_party_org"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.auditResult">
+                    <el-input disabled v-model="checkSurvey.list.near_audit_result"></el-input>
+                  </el-form-item>
+                </el-col>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
-
-              <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.dueAuditDate }}</label>
-                  <el-date-picker v-model="checkSurvey.list.due_audit_date" type="date" value-format="yyyy-MM-dd" :disabled="true" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.costPayProgress }}</label>
-                  <el-slider v-model="checkSurvey.list.cost_pay_progress" :disabled="true" class="w-full"></el-slider>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.realAuditDate }}</label>
-                  <el-date-picker v-model="checkSurvey.list.audit_time" type="date" value-format="yyyy-MM-dd" :disabled="true" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-              </div> -->
-
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <div class="flex flex-col gap-4">
-                  <label class="font-light text-sm text-gray-700">{{ $l.isSubmitCap }}</label>
-                  <div class="flex gap-2">
-                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="Y" :disabled="true">{{ $l.yes }}</el-radio>
-                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="N" :disabled="true">{{ $l.no }}</el-radio>
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
-
-              <div>
-                <!-- 文件表格 -->
-                <el-table :data="checkSurvey.fileList">
-                  <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                  <el-table-column fixed="right" :label="$c.operation" width="145">
-                    <template slot-scope="scope">
-                      <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.annualSeaAudit"></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.dueAuditDate">
+                    <el-date-picker v-model="checkSurvey.list.due_audit_date" type="date" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.costPayProgress">
+                    <el-slider v-model="checkSurvey.list.cost_pay_progress"></el-slider>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label=""></el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.realAuditDate">
+                    <el-date-picker v-model="checkSurvey.list.audit_time" type="date" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.isSubmitCap">
+                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="Y">{{ this.$l.yes }}</el-radio>
+                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="N">{{ this.$l.no }}</el-radio>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item :label="this.$l.auditFile"></el-form-item>
+                </el-col>
+              </el-form>
             </div>
-          </template>
-        </CustomDialog>
+            <div>
+              <!-- 文件表格 -->
+              <el-table :data="checkSurvey.fileList" style="width: 90%">
+                <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="this.$c.operation" width="145">
+                  <template slot-scope="scope">
+                    <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-dialog>
 
         <!-- 审核 -->
         <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields" @submmit="submitAudit" :visible.sync="auditFormVisible"></z-form-dialog>
@@ -301,14 +340,14 @@
           <template #content>
             <div class="flex flex-col gap-2">
               <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
+              <div class="grid grid-cols-1 gap-4">
+                <div class="flex flex-col gap-1">
                   <label class="font-light text-sm text-gray-700 mr-2">
                     {{ $l.basicArchives }}
                     <span class="text-red-500">*</span>
                   </label>
                   <div class="flex gap-2">
-                    <el-input v-model="addSurvey.addList.name_en" :placeholder="$l.basicArchives" class="w-full" style="width: 100%"></el-input>
+                    <el-input v-model="addSurvey.addList.name_en" :placeholder="$l.basicArchives" class="w-full"></el-input>
                     <el-button @click="addselectClick()" type="primary" class="ml-2">{{ $c.check }}</el-button>
                   </div>
                 </div>
@@ -317,7 +356,7 @@
                     {{ $l.surveyYear }}
                     <span class="text-red-500">*</span>
                   </label>
-                  <el-date-picker v-model="addSurvey.addList.survey_year" type="year" :placeholder="$l.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="w-full" style="width: 100%"></el-date-picker>
+                  <el-date-picker v-model="addSurvey.addList.survey_year" type="year" :placeholder="$l.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="w-full"></el-date-picker>
                 </div>
               </div>
 
@@ -340,7 +379,7 @@
 
               <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
 
-              <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                 <div class="flex flex-col gap-2">
                   <label class="font-light text-sm text-gray-700">
                     {{ $l.dueAuditDate }}
@@ -356,7 +395,7 @@
                   <label class="font-light text-sm text-gray-700">{{ $l.realAuditDate }}</label>
                   <el-date-picker v-model="addSurvey.addList.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
                 </div>
-              </div> -->
+              </div>
 
               <div class="grid grid-cols-1 gap-4 mt-2">
                 <div class="flex flex-col gap-4">
