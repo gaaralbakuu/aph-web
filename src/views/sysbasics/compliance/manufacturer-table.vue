@@ -14,7 +14,7 @@
       <table class="w-full border-collapse min-w-[1200px] table-fixed bg-white dark:bg-black">
         <thead>
           <tr>
-            <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']">
+            <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide bg-white', col.freeze ? 'sticky-' + col.freeze : '']">
               <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $t('manufacturer_table.' + col.title)">
                 {{ col.title === '#' ? '#' : $t('manufacturer_table.' + col.title) }}
               </div>
@@ -33,15 +33,15 @@
             <tr v-for="(item, idx) in data" :key="item.id || idx" class="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-900" @click="handleRowClick(item)" @mouseenter="handleRowHover(item, true)" @mouseleave="handleRowHover(item, false)">
               <td v-for="col in columns" :key="col.id" :class="[col.className, col.freeze ? 'sticky-' + col.freeze : '', 'border-b border-gray-100 px-2 py-3 bg-white text-left whitespace-nowrap transition-colors relative dark:border-gray-700 dark:bg-black']">
                 <!-- Index Column -->
-                <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 }}</span>
-                
+                <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 + (page.page - 1) * page.pageSize }}</span>
+
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="max-w-[280px]">
                   <el-tooltip effect="dark" :content="item[col.id]" placement="top" :disabled="!item[col.id] || item[col.id].length < 30">
                     <div class="overflow-hidden overflow-ellipsis whitespace-nowrap font-semibold text-black font-bold dark:text-gray-300">{{ item[col.id] || $c.empty }}</div>
                   </el-tooltip>
                 </div>
-                
+
                 <!-- Address Column -->
                 <template v-else-if="col.id === 'address'">
                   <div class="flex items-center gap-2">
@@ -67,7 +67,7 @@
                     </el-tag>
                   </div>
                 </template>
-                
+
                 <!-- Capabilities Column -->
                 <template v-else-if="col.id === 'capabilities'">
                   <div class="flex items-center gap-2">
@@ -93,20 +93,17 @@
                     </el-tag>
                   </div>
                 </template>
-                
+
                 <!-- Status Column -->
                 <template v-else-if="col.id === 'authorization_status'">
                   <div class="flex items-center">
-                    <el-tag v-if="item[col.id]" 
-                            :type="getStatusType(item[col.id])" 
-                            size="small"
-                            class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
+                    <el-tag v-if="item[col.id]" :type="getStatusType(item[col.id])" size="small" class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
                       {{ getStatusText(item[col.id]) }}
                     </el-tag>
                     <span v-else class="text-gray-300 italic text-xs">{{ $c.empty }}</span>
                   </div>
                 </template>
-                
+
                 <!-- Action Column -->
                 <template v-else-if="col.id === 'action'">
                   <div class="flex justify-end items-center">
@@ -135,7 +132,7 @@
                     </el-dropdown>
                   </div>
                 </template>
-                
+
                 <!-- Default Columns -->
                 <template v-else>
                   <div class="text-black dark:text-gray-400">
@@ -171,6 +168,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    page: {
+      type: Object,
+      default: () => ({
+        page: 1,
+        pageSize: 10,
+      }),
+    },
   },
   data() {
     return {
@@ -192,20 +196,19 @@ export default {
       height: 400, // mặc định, có thể truyền prop hoặc tính toán động
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     handleScroll(e) {
       this.scrollTop = e.target.scrollTop
     },
     getStickyStyle(col, colIdx, isHeader) {
       if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = { 
-        width: col.width + 'px', 
-        textAlign: col.textAlign, 
-        position: 'sticky', 
+      let style = {
+        width: col.width + 'px',
+        textAlign: col.textAlign,
+        position: 'sticky',
         zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff'
+        background: isHeader ? '#f9fafb' : '#ffffff',
       }
       if (col.freeze === 'left') {
         let left = 0
@@ -236,17 +239,17 @@ export default {
     },
     getStatusType(status) {
       const statusMap = {
-        'onboarding': 'warning',
-        'discontinued': 'info', 
-        'in_use': 'success'
+        onboarding: 'warning',
+        discontinued: 'info',
+        in_use: 'success',
       }
       return statusMap[status] || 'default'
     },
     getStatusText(status) {
       const textMap = {
-        'onboarding': this.$t('manufacturer_table.onboarding'),
-        'discontinued': this.$t('manufacturer_table.discontinued'),
-        'in_use': this.$t('manufacturer_table.in_use')
+        onboarding: this.$t('manufacturer_table.onboarding'),
+        discontinued: this.$t('manufacturer_table.discontinued'),
+        in_use: this.$t('manufacturer_table.in_use'),
       }
       return textMap[status] || status
     },
@@ -361,7 +364,7 @@ tr:hover .sticky-right {
   table {
     font-size: 13px;
   }
-  
+
   th,
   td {
     padding: 8px;

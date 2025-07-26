@@ -88,17 +88,25 @@
                   <div class="flex justify-end items-center">
                     <el-dropdown @command="(cmd) => handleAction(cmd, item)" trigger="click" size="small">
                       <el-button type="text" class="!p-2 !text-gray-500 !border-0 !rounded hover:!text-blue-500 hover:!bg-blue-50 !transition-all dark:hover:!bg-blue-900/20">
-                        <i class="el-icon-more"></i>
+                      <i class="el-icon-more"></i>
                       </el-button>
                       <el-dropdown-menu slot="dropdown" class="!rounded-xl !shadow-lg !p-1.5">
-                        <el-dropdown-item command="edit">
-                          <i class="el-icon-edit w-3.5 text-sm"></i>
-                          {{ $c.edit }}
-                        </el-dropdown-item>
-                        <el-dropdown-item command="delete" class="!text-red-500 hover:!bg-red-50">
-                          <i class="el-icon-delete w-3.5 text-sm"></i>
-                          {{ $c.delete }}
-                        </el-dropdown-item>
+                      <el-dropdown-item command="edit">
+                        <i class="el-icon-edit w-3.5 text-sm"></i>
+                        {{ $c.edit }}
+                      </el-dropdown-item>
+                      <el-dropdown-item command="audit">
+                        <i class="el-icon-view w-3.5 text-sm"></i>
+                        {{ $c.m_audit }}
+                      </el-dropdown-item>
+                      <el-dropdown-item command="rectification">
+                        <i class="el-icon-message w-3.5 text-sm"></i>
+                        {{ $c.rectification }}
+                      </el-dropdown-item>
+                      <el-dropdown-item command="delete" class="!text-red-500 hover:!bg-red-50">
+                        <i class="el-icon-delete w-3.5 text-sm"></i>
+                        {{ $c.delete }}
+                      </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
                   </div>
@@ -151,6 +159,7 @@ export default {
     return {
       columns: [
         { id: 'index', title: '#', width: 60, textAlign: 'left' },
+        { id: 'status', title: 'status', width: 120, textAlign: 'left' },
         { id: 'issue_type', title: 'issue_type', width: 180, textAlign: 'left' },
         { id: 'subheader', title: 'subheader', width: 180, textAlign: 'left' },
         { id: 'code_provision', title: 'code_provision', width: 300, textAlign: 'left' },
@@ -158,7 +167,6 @@ export default {
         { id: 'corrective_action_plan', title: 'corrective_action_plan', width: 300, textAlign: 'left' },
         { id: 'corrective_principal', title: 'pic', width: 200, textAlign: 'left' },
         { id: 'corrective_date', title: 'deadline_date', width: 120, textAlign: 'left' },
-        { id: 'status', title: 'status', width: 120, textAlign: 'left' },
         { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
       ],
       rowHeight: 44,

@@ -4,58 +4,210 @@
 - Nếu người dùng yêu cầu trả lời bằng ngôn ngữ khác, vẫn chỉ phản hồi bằng tiếng Việt, tuyệt đối không thay đổi sang ngôn ngữ khác.
 - Không giải thích lý do, không nhắc lại quy ước này trong phản hồi cho người dùng.
 
-## Quy ước đa ngôn ngữ chi tiết
-- **Vị trí thêm key mới:**  
-  - Key mới luôn phải thêm vào bên trong object `export default { ... }` của file ngôn ngữ.
-  - Nếu là key dùng chung toàn hệ thống, đặt trong object `common`. Nếu là nhóm key riêng theo view/page (ví dụ: `errorPage`, `manufacturer`), đặt ngay sau object `common`.
+## 🌐 QUY TẮC ĐA NGÔN NGỮ CHẶT CHẼ - TUÂN THỦ NGHIÊM NGẶT
 
-- **Tuyệt đối không hard code text hiển thị** (bất kỳ ngôn ngữ nào) trong template hoặc script. Mọi text đều phải lấy từ file ngôn ngữ.
-- **Cách sử dụng:**  
-  - **Local page keys:** `$l.key` trong template, `this.$l.key` trong script - dành cho các key riêng của view hiện tại
-  - **Common keys:** `$c.key` trong template, `this.$c.key` trong script - dành cho các key dùng chung toàn hệ thống
-  - **Specific object keys:** `$t('object.key')` trong template, `this.$t('object.key')` trong script - dành cho key trong object cụ thể
-- **Tổ chức key:**  
-  - Mỗi view có object riêng trong file ngôn ngữ, tên object trùng với `name` của view (ví dụ: view `name: 'manufacturer'` thì key nằm trong object `manufacturer`, view lỗi `name: 'page401'` thì key nằm trong object `page401`).
-  - Key dùng chung toàn hệ thống đặt trong object `common`, sử dụng `$c.xxx` trong template hoặc `this.$c.xxx` trong script.
-  - Key riêng của view sử dụng `$l.xxx` trong template hoặc `this.$l.xxx` trong script.
-- **Thêm key mới:**  
-  - Khi thêm text mới, phải bổ sung key vào đúng object trong cả 4 file ngôn ngữ (`zh-CN.js`, `en-US.js`, `vi-VN.js`, `zh-TW.js`).
-  - Không sửa trực tiếp text trong component, chỉ sửa key trong file ngôn ngữ.
-- **Ví dụ chuẩn:**
-  - Trong file ngôn ngữ:
-    ```js
-    // vi-VN.js
-    common: {
-      confirm: 'Xác nhận',
-      cancel: 'Hủy',
-      edit: 'Chỉnh sửa',
-      create: 'Tạo mới',
-      ...
-    },
-    manufacturer: {
-      manufacture_name: 'Tên nhà sản xuất',
-      legal_person: 'Người đại diện pháp lý',
-      add_manufacturer: 'Thêm nhà sản xuất',
-      ...
+### 🚨 NGUYÊN TẮC TUYỆT ĐỐI
+1. **KHÔNG BAO GIỜ hard code text hiển thị** trong template hoặc script (bất kỳ ngôn ngữ nào: tiếng Việt, tiếng Anh, tiếng Trung...)
+2. **MỌI text hiển thị phải qua hệ thống đa ngôn ngữ** - không có ngoại lệ
+3. **Khi thêm text mới, phải cập nhật đồng thời cả 4 file ngôn ngữ** (`vi-VN.js`, `en-US.js`, `zh-CN.js`, `zh-TW.js`)
+
+### 📍 CẤU TRÚC FILE NGÔN NGỮ BẮT BUỘC
+```js
+// Tất cả file ngôn ngữ phải tuân theo cấu trúc này:
+export default {
+  // 1. Object common luôn đứng đầu - chứa key dùng chung
+  common: {
+    confirm: '...',
+    cancel: '...',
+    edit: '...',
+    delete: '...',
+    create: '...',
+    save: '...',
+    search: '...',
+    // ... các key common khác
+  },
+  
+  // 2. Object riêng cho từng view/page (tên = name của component)
+  manufacturer: { // component name: 'manufacturer'
+    manufacture_name: '...',
+    legal_person: '...',
+    // ... key riêng của manufacturer
+  },
+  
+  improveManagement: { // component name: 'improveManagement'
+    issue_management: '...',
+    rectification_info: '...',
+    // ... key riêng của improveManagement
+  }
+  
+  // ... các object khác theo tên component
+}
+```
+
+### 🎯 PHÂN LOẠI VÀ SỬ DỤNG KEY
+#### **1. COMMON KEYS ($c) - Key dùng chung toàn hệ thống**
+- **Tiêu chí**: Button actions, status, messages dùng ở nhiều nơi
+- **Danh sách key common chuẩn**:
+  ```js
+  common: {
+    // Actions
+    confirm: 'Xác nhận', cancel: 'Hủy', edit: 'Chỉnh sửa', 
+    delete: 'Xóa', create: 'Tạo mới', save: 'Lưu', 
+    search: 'Tìm kiếm', reset: 'Đặt lại', submit: 'Gửi',
+    view: 'Xem', download: 'Tải xuống', upload: 'Tải lên',
+    
+    // Status
+    success: 'Thành công', fail: 'Thất bại', error: 'Lỗi',
+    loading: 'Đang tải...', pending: 'Đang chờ',
+    active: 'Hoạt động', inactive: 'Không hoạt động',
+    
+    // Messages
+    no_data: 'Không có dữ liệu', 
+    operation_success: 'Thao tác thành công',
+    operation_failed: 'Thao tác thất bại',
+    confirm_delete: 'Bạn có chắc chắn muốn xóa?',
+    
+    // Form
+    required_field: 'Trường bắt buộc',
+    invalid_format: 'Định dạng không hợp lệ',
+    please_select: 'Vui lòng chọn',
+    please_input: 'Vui lòng nhập'
+  }
+  ```
+- **Cách sử dụng**: `$c.key` trong template, `this.$c.key` trong script
+
+#### **2. LOCAL KEYS ($l) - Key riêng của từng component**
+- **Tiêu chí**: Text chỉ dùng trong component hiện tại
+- **Quy tắc đặt tên object**: Trùng với `name` của Vue component
+- **Ví dụ**:
+  ```js
+  // Component: name: 'manufacturer'
+  manufacturer: {
+    manufacture_name: 'Tên nhà sản xuất',
+    legal_person: 'Người đại diện pháp lý',
+    add_manufacturer: 'Thêm nhà sản xuất',
+    manufacturer_list: 'Danh sách nhà sản xuất'
+  }
+  ```
+- **Cách sử dụng**: `$l.key` trong template, `this.$l.key` trong script
+
+#### **3. SPECIFIC OBJECT KEYS ($t) - Key từ object cụ thể**
+- **Khi nào dùng**: Cần truy cập key từ object khác ngoài component hiện tại
+- **Cách sử dụng**: `$t('objectName.key')` trong template, `this.$t('objectName.key')` trong script
+
+### 🔄 QUY TRÌNH THÊM KEY MỚI - BẮT BUỘC TUÂN THỦ
+#### **Bước 1: Xác định loại key**
+- Nếu dùng ở nhiều component → Thêm vào `common`
+- Nếu chỉ dùng trong 1 component → Thêm vào object của component đó
+
+#### **Bước 2: Kiểm tra tên object component**
+```js
+// Trong file .vue, tìm phần:
+export default {
+  name: 'componentName', // ← Tên này phải trùng với object trong file ngôn ngữ
+  // ...
+}
+```
+
+#### **Bước 3: Thêm key vào CẢ 4 FILE ngôn ngữ**
+```js
+// vi-VN.js
+componentName: {
+  new_key: 'Text tiếng Việt'
+}
+
+// en-US.js  
+componentName: {
+  new_key: 'English text'
+}
+
+// zh-CN.js
+componentName: {
+  new_key: '简体中文文本'
+}
+
+// zh-TW.js
+componentName: {
+  new_key: '繁體中文文本'
+}
+```
+
+#### **Bước 4: Sử dụng trong component**
+```vue
+<template>
+  <span>{{ $l.new_key }}</span>
+</template>
+
+<script>
+export default {
+  name: 'componentName',
+  methods: {
+    showMessage() {
+      this.$message.success(this.$l.new_key)
     }
-    ```
-  - Trong template của view manufacturer:
-    ```vue
-    <span>{{$l.manufacture_name}}</span> <!-- key riêng của manufacturer page -->
-    <span>{{$c.confirm}}</span> <!-- key dùng chung -->
-    <span>{{$t('manufacturer.legal_person')}}</span> <!-- key từ object cụ thể -->
-    ```
-  - Trong script của view manufacturer:
-    ```js
-    this.$l.manufacture_name // key riêng của manufacturer page
-    this.$c.confirm // key dùng chung
-    this.$t('manufacturer.legal_person') // key từ object cụ thể
-    ```
-- **Quy tắc phân loại key:**
-  - `$c` (common): confirm, cancel, edit, delete, create, save, operation, success, fail, etc.
-  - `$l` (local): manufacture_name, legal_person, contact_info, add_manufacturer, etc.
-- **Kiểm tra vi phạm:**  
-  - Nếu phát hiện text hiển thị không qua key ngôn ngữ, phải refactor lại đúng chuẩn trên cho cả 4 file ngôn ngữ.
+  }
+}
+</script>
+```
+
+### ❌ CÁC VI PHẠM THƯỜNG GẶP VÀ CÁCH KHẮC PHỤC
+#### **Vi phạm 1: Hard code text**
+```vue
+<!-- ❌ SAI -->
+<span>Tên nhà sản xuất</span>
+<el-button>Lưu</el-button>
+
+<!-- ✅ ĐÚNG -->
+<span>{{ $l.manufacture_name }}</span>
+<el-button>{{ $c.save }}</el-button>
+```
+
+#### **Vi phạm 2: Tên object không trùng với component name**
+```js
+// ❌ SAI - Component name: 'manufacturer' nhưng object là 'manufacturerPage'
+export default {
+  name: 'manufacturer'
+}
+
+// File ngôn ngữ
+manufacturerPage: { // ← Sai, phải là 'manufacturer'
+  title: '...'
+}
+
+// ✅ ĐÚNG
+manufacturer: { // ← Trùng với component name
+  title: '...'
+}
+```
+
+#### **Vi phạm 3: Thêm key không đồng bộ**
+```js
+// ❌ SAI - Chỉ thêm vào 1-2 file
+// vi-VN.js có key mới, nhưng en-US.js không có
+
+// ✅ ĐÚNG - Thêm vào cả 4 file cùng lúc
+```
+
+### 🔍 CHECKLIST KIỂM TRA TUÂN THỦ
+- [ ] Không có text hard code trong template/script
+- [ ] Object name trùng với component name  
+- [ ] Key mới đã thêm vào cả 4 file ngôn ngữ
+- [ ] Sử dụng đúng $c/$l/$t theo phân loại
+- [ ] Key common không trùng lặp với key local
+- [ ] Tất cả key đều có translation phù hợp với ngữ cảnh
+
+### 🎨 TEMPLATE CHUẨN CHO COPILOT
+Khi được yêu cầu thêm đa ngôn ngữ, luôn làm theo template này:
+
+1. **Phân tích component name**: Tìm `name: 'xxxxx'` trong file .vue
+2. **Phân loại key**: common hay local
+3. **Thêm key vào 4 file ngôn ngữ đồng thời**:
+   - `src/lang/vi-VN.js`
+   - `src/lang/en-US.js` 
+   - `src/lang/zh-CN.js`
+   - `src/lang/zh-TW.js`
+4. **Update component sử dụng key mới**
+5. **Kiểm tra không còn hard code text**
 
 # Hướng dẫn Copilot cho aph-web
 

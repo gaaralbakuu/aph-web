@@ -10,6 +10,8 @@
           </svg>
         </button>
       </div>
+      <slot name="notice">
+      </slot>
       <!-- Body -->
       <div class="px-6 py-6 text-gray-700 text-base overflow-y-auto flex-1 bg-white">
         <slot name="content">

@@ -14,7 +14,7 @@
       <table class="w-full border-collapse min-w-[1200px] table-fixed bg-white dark:bg-black">
         <thead>
           <tr>
-            <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']">
+            <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide bg-white', col.freeze ? 'sticky-' + col.freeze : '']">
               <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $t('improveManagement_table.' + col.title)">
                 {{ col.title === '#' ? '#' : $t('improveManagement_table.' + col.title) }}
               </div>
@@ -33,7 +33,7 @@
             <tr v-for="(item, idx) in data" :key="item.id || idx" class="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-900" @click="handleRowClick(item)" @mouseenter="handleRowHover(item, true)" @mouseleave="handleRowHover(item, false)">
               <td v-for="col in columns" :key="col.id" :class="[col.className, col.freeze ? 'sticky-' + col.freeze : '', 'border-b border-gray-100 px-2 py-3 bg-white text-left whitespace-nowrap transition-colors relative dark:border-gray-700 dark:bg-black']">
                 <!-- Index Column -->
-                <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 }}</span>
+                <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 + (page.page - 1) * page.pageSize }}</span>
 
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="max-w-[280px]">
@@ -96,6 +96,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    page: {
+      type: Object,
+      default: () => ({
+        page: 1,
+        pageSize: 15,
+      }),
+    },
   },
   data() {
     return {
@@ -115,8 +122,7 @@ export default {
       height: 400, // mặc định, có thể truyền prop hoặc tính toán động
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     handleScroll(e) {
       this.scrollTop = e.target.scrollTop

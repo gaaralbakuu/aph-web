@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col">
+  <div class="h-full flex flex-col overflow-hidden">
     <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
     <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
       <div class="text-2xl font-bold text-black">{{ $l.title }}</div>
@@ -84,7 +84,7 @@
           </svg>
           {{ $c.create }}
         </button>
-<!-- 
+        <!-- 
         <button v-show="showAuth.m_export" @click="exportExcel" class="inline-flex items-center h-8 bg-green-600 hover:bg-green-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -108,13 +108,13 @@
       </div>
     </div>
     <!-- Table Section -->
-    <div class="flex-1 px-3">
-      <manufacturer-table :data="manufacturer.list" :isLoading="manufacturer.loading" @action="handleTableAction" @row-click="handleRowClick" class="main-table" />
+    <div class="flex-1 px-3 overflow-auto">
+      <manufacturer-table :data="manufacturer.list" :isLoading="manufacturer.loading" @action="handleTableAction" @row-click="handleRowClick" :page="manufacturer.query" class="main-table" />
     </div>
 
     <!-- Pagination -->
     <div class="p-3">
-      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.curPage" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
+      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
     <!-- Create/Edit Dialog -->
     <CustomDialog :title="manufacturer.data.id ? $c.edit : $c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
@@ -166,24 +166,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-light">{{ $l.requestor_facility_type }}</label>
-                <el-radio-group v-model="manufacturer.data.requestor_facility_type" class="flex gap-4 h-9 items-center h-9 items-center">
+                <el-radio-group v-model="manufacturer.data.requestor_facility_type" class="flex gap-4 h-9 items-center">
                   <el-radio label="T1SC">T1SC</el-radio>
                   <el-radio label="T2">T2</el-radio>
                 </el-radio-group>
               </div>
+
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.cooperation_start_date }}</label>
-                <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
-              </div>
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.cooperation_end_date }}</label>
-                <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
-              </div>
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.is_alidas_producer }}</label>
-                <el-radio-group v-model="manufacturer.data.is_alidas_producer" class="flex gap-4 h-9 items-center">
-                  <el-radio label="Y">{{ $c.Y }}</el-radio>
-                  <el-radio label="N">{{ $c.N }}</el-radio>
+                <label class="text-sm font-light">{{ $l.is_involve_product }}</label>
+
+                <el-radio-group v-model="manufacturer.data.is_involve_product" class="flex gap-4 h-9 items-center">
+                  <el-radio label="Y">{{ $l.product }}</el-radio>
+                  <el-radio label="N">{{ $l.exploit }}</el-radio>
                 </el-radio-group>
               </div>
               <div class="flex flex-col gap-2">
@@ -192,6 +186,15 @@
                   <el-radio label="Y">{{ $c.Y }}</el-radio>
                   <el-radio label="N">{{ $c.N }}</el-radio>
                 </el-radio-group>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-sm font-light">{{ $l.cooperation_start_date }}</label>
+                <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="text-sm font-light">{{ $l.cooperation_end_date }}</label>
+                <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-light">{{ $l.authorization_status }}</label>
@@ -357,7 +360,7 @@
       </span>
     </CustomDialog>
     <!-- 确认信息窗口 -->
-    <el-dialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" width="40%">
+    <CustomDialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'800px'" :width="'100%'">
       <el-descriptions :title="$l.basic">
         <el-descriptions-item :label="$l.manufacture_name_CN">
           {{ manufacturer.data.name_zh }}
@@ -469,49 +472,108 @@
           {{ $c.confirm }}
         </el-button>
       </span>
-    </el-dialog>
+    </CustomDialog>
 
     <!-- 合规联系人信息 -->
-    <el-dialog :title="$l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" width="50%">
-      <el-form :model="contactInfo.data" label-position="top" inline style="border-radius: 2px" :rules="rulesRules">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$l.contact_name">
-              <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_name" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$l.contact_job_title">
-              <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_job_title" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$l.contact_phone" prop="contactPhone">
-              <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_phone" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$l.contact_email" prop="contactEmail">
-              <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_email" clearable />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
+    <CustomDialog :title="$l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" :maxWidth="'600px'">
+      <template #notice>
+        <div class="text-sm text-gray-500 py-3 px-6 bg-gray-50 leading-4">
+          {{ $l.contact_info_notice || 'contact_info_notice' }}
+        </div>
+      </template>
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.contact_name }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_name" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.contact_job_title }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_job_title" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.contact_phone }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_phone" clearable />
+            <p class="text-xs text-gray-400">{{ $l.contact_phone_note || 'contact_phone_note' }}</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.contact_email }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_email" clearable />
+            <p class="text-xs text-gray-400">{{ $l.contact_email_note || 'contact_email_note' }}</p>
+          </div>
+        </div>
+      </template>
+      <template #footer>
         <el-button @click="contactInfo.dialogFormVisible = false">
-          {{ $t('common').cancel }}
+          {{ $c.cancel }}
         </el-button>
         <el-button type="primary" @click="contactInfoSubmmit">
-          {{ $t('common').confirm }}
+          {{ $c.confirm }}
         </el-button>
         <slot name="operation"></slot>
-      </span>
-    </el-dialog>
+      </template>
+    </CustomDialog>
 
-    <!-- 地址窗口 -->
-    <z-form-dialog :name="$l.addr_and_processes" :data="address.data" :formProps="formProps" :fields="address.fields" @submmit="addressSubmmit" :submmitLoading="submmitLoading" :visible.sync="address.dialogFormVisible"></z-form-dialog>
+    <!-- Địa chỉ - CustomDialog -->
+    <CustomDialog :title="$l.addr_and_processes" @submmit="addressSubmmit" :visible.sync="address.dialogFormVisible" :maxWidth="'600px'">
+      <template #notice>
+        <div class="text-sm text-gray-500 py-3 px-6 bg-gray-50 leading-4">Thông tin địa chỉ và quy trình sản xuất là bắt buộc. Vui lòng điền đầy đủ thông tin.</div>
+      </template>
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.address_zh }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="address.data.address_zh" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.address_en }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="address.data.address_en" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.own_processes }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="address.data.own_processes" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.match_processes }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-input :placeholder="$l.input" v-model="address.data.match_processes" clearable />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <el-button @click="address.dialogFormVisible = false">
+          {{ $c.cancel }}
+        </el-button>
+        <el-button type="primary" @click="addressSubmmit">
+          {{ $c.confirm }}
+        </el-button>
+      </template>
+    </CustomDialog>
     <!-- 附件窗口 -->
-    <el-dialog :title="$l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
+    <CustomDialog :title="$l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
       <el-form ref="form">
         <el-form-item label="">
           <el-button type="primary" @click="selectFile">
@@ -543,18 +605,18 @@
           </div>
         </el-form-item>
       </el-form>
-    </el-dialog>
+    </CustomDialog>
     <!-- 地址信息 -->
-    <el-dialog :title="$l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
+    <CustomDialog :title="$l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
       <el-table :data="address.list">
         <el-table-column property="address_zh" :label="$l.address_zh"></el-table-column>
         <el-table-column property="address_en" :label="$l.address_en"></el-table-column>
         <el-table-column property="own_processes" :label="$l.own_processes"></el-table-column>
         <el-table-column property="match_processes" :label="$l.own_processes"></el-table-column>
       </el-table>
-    </el-dialog>
+    </CustomDialog>
     <!-- 附件信息 -->
-    <el-dialog :title="$l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
+    <CustomDialog :title="$l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
       <el-table :data="attachment.list">
         <el-table-column property="file_name" :label="$l.fileName"></el-table-column>
         <el-table-column property="create_user" :label="$l.create_people"></el-table-column>
@@ -570,9 +632,9 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-dialog>
+    </CustomDialog>
 
-    <el-dialog :visible.sync="visabled.uploadFile" width="30%">
+    <CustomDialog :visible.sync="visabled.uploadFile" width="30%">
       <div>
         <el-form style="margin-top: 20px">
           <el-form-item :label="$l.upload_file" required>
@@ -588,7 +650,7 @@
           </el-button>
         </div>
       </div>
-    </el-dialog>
+    </CustomDialog>
     <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3" @update:visible="attachment.dialogFormVisible3 = $event"></filePreviews>
 
     <!-- Chi tiết modal -->
@@ -884,8 +946,8 @@ export default {
           produce_processes: '',
           requestor_facility_type: '',
           requestor_facility_name: '',
-          pageSize: 15,
-          curPage: 1,
+          pageSize: 10,
+          page: 1,
           total: 0,
         },
         addOrEditFormVisible: false,
@@ -1097,7 +1159,7 @@ export default {
           requestor_facility_type: this.manufacturer.query.requestor_facility_type,
           requestor_facility_name: this.manufacturer.query.requestor_facility_name,
           pageSize: this.manufacturer.query.pageSize,
-          curPage: this.manufacturer.query.curPage,
+          page: this.manufacturer.query.page,
         },
         'get'
       )
@@ -1172,7 +1234,7 @@ export default {
         requestor_facility_type: '',
         requestor_facility_name: '',
         pageSize: 15,
-        curPage: 1,
+        page: 1,
         total: 0,
       }
       this.getList()
@@ -1230,16 +1292,7 @@ export default {
     OPenManufacturer() {
       console.log(this.manufacturer.data)
       if (this.manufacturer.data.id == undefined) {
-        if (this.rulesRules.isPhone && this.rulesRules.isEmail) {
-          this.manufacturer.inforFormVisible = true
-        } else {
-          console.log(this.rulesRules.isPhone)
-          console.log(this.rulesRules.isEmail)
-          this.$message({
-            message: this.$l.compliance_contact_error,
-            type: 'info',
-          })
-        }
+        this.manufacturer.inforFormVisible = true
       } else {
         this.manufacturer.inforFormVisible = true
       }
@@ -1249,7 +1302,7 @@ export default {
       this.manufacturer.data.addressList = this.address.list
       this.manufacturer.data.attachment = this.attachment.list
       console.log(this.manufacturer.data)
-      this.$request(this.apiUpdate, this.manufacturer.data, 'post')
+      this.$request(this.apiUpdate, this.manufacturer.data, 'post', false)
         .then((r) => {
           console.log(r)
           this.$message({
@@ -1262,10 +1315,10 @@ export default {
         })
         .catch((e) => {
           console.log(e)
-          this.$message({
-            message: info,
-            type: 'info',
-          })
+          // this.$message({
+          //   message: e.message || this.$l.error,
+          //   type: 'error',
+          // })
         })
     },
     deleteItem(index, data) {
@@ -1466,20 +1519,29 @@ export default {
         })
         return
       }
-      if (this.rulesRules.isPhone && this.rulesRules.isEmail) {
-        this.contactInfo.list.push(this.contactInfo.data)
-        this.contactInfo.data = {}
-        this.contactInfo.dialogFormVisible = false
+      // Regex kiểm tra số điện thoại Việt Nam: bắt đầu bằng 0 hoặc +84, theo sau là 9 số (không bắt đầu bằng 0)
+      const phoneRegex = /^(0|\+84)[1-9][0-9]{8}$/
+      // Regex kiểm tra email chuẩn
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-        console.log(this.contactInfo.list)
-      } else {
-        console.log(this.rulesRules.isPhone)
-        console.log(this.rulesRules.isEmail)
+      if (!phoneRegex.test(this.contactInfo.data.contact_phone)) {
         this.$message({
-          message: this.$l.phone_email_error,
+          message: this.$l.input_confirm_phone,
           type: 'error',
         })
+        return
       }
+      if (!emailRegex.test(this.contactInfo.data.contact_email)) {
+        this.$message({
+          message: this.$l.ininput_confirm_email,
+          type: 'error',
+        })
+        return
+      }
+      this.contactInfo.list.push(this.contactInfo.data)
+      this.contactInfo.data = {}
+      this.contactInfo.dialogFormVisible = false
+      console.log(this.contactInfo.list)
     },
     contactInfoDeleteItem(row, index) {
       console.log(row)
@@ -1492,11 +1554,24 @@ export default {
       this.address.dialogFormVisible = true
     },
     addressSubmmit() {
+      const address_en = this.address.data.address_en
+      const address_zh = this.address.data.address_zh
+      const own_processes = this.address.data.own_processes
+      const match_processes = this.address.data.match_processes
+
+      if (!address_en || !address_zh || !own_processes || !match_processes) {
+        this.$message({
+          type: 'info',
+          message: this.$l.info_empty_error,
+        })
+        return
+      }
+
       if (this.manufacturer.data.id != undefined) {
         this.address.data.manufacture_id = this.manufacturer.data.id
       }
       this.address.list.push(this.address.data)
-      console.log(this.address.list)
+      console.log(this.address.list, this.address.data)
       this.address.data = {}
       this.address.dialogFormVisible = false
     },

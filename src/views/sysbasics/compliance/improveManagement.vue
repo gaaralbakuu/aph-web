@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col">
+  <div class="h-full flex flex-col overflow-hidden">
     <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
       <div class="text-2xl font-bold text-black">{{ $l.thresholdIssueManagement }}</div>
       <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
@@ -81,8 +81,8 @@
     </div>
 
     <!-- Table Section -->
-    <div class="flex-1 px-3">
-      <improve-management-table :data="tableData.list" :isLoading="tableData.loading" @action="handleTableAction" class="main-table" />
+    <div class="flex-1 px-3 overflow-y-auto">
+      <improve-management-table :data="tableData.list" :isLoading="tableData.loading" @action="handleTableAction" class="main-table" :page="query" />
     </div>
 
     <!-- Pagination -->
@@ -146,14 +146,14 @@
                 <el-input v-model="form.corrective_principal" class="rounded-md" />
               </div>
 
-              <div class="flex flex-col gap-2">
+              <!-- <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $l.status }}</label>
                 <el-select v-model="form.status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
                   <el-option :label="$l.on_track" value="on_track"></el-option>
                   <el-option :label="$l.off_track" value="off_track"></el-option>
                   <el-option :label="$l.closed" value="closed"></el-option>
                 </el-select>
-              </div>
+              </div> -->
 
               <div class="flex flex-col col-span-full gap-2">
                 <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.supportInfo }}</div>
@@ -265,31 +265,49 @@
       </template>
     </CustomDialog>
 
-    <el-dialog :title="$l.result" :visible.sync="passFormVisible" width="40%" class="modern-dialog">
-      <el-form>
-        <el-form-item :label="$l.results" :label-width="formLabelWidth">
-          <el-radio-group v-model="check.rec_status">
-            <el-radio v-model="check.rec_status" label="7">{{ $l.pass }}</el-radio>
-            <el-radio v-model="check.rec_status" label="-1">{{ $l.noPass }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+    <CustomDialog :title="$l.result" :visible.sync="passFormVisible" width="100%" :maxWidth="'600px'" class="modern-dialog">
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="font-light text-sm text-black">{{ $l.verification_status }}</label>
+            <el-select v-model="check.verification_status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
+              <el-option :label="$l.on_track" value="on_track"></el-option>
+              <el-option :label="$l.off_track" value="off_track"></el-option>
+              <el-option :label="$l.closed" value="closed"></el-option>
+            </el-select>
+          </div>
 
-        <el-form-item :label="$l.isFinish" :label-width="formLabelWidth">
-          <el-radio-group v-model="check.is_finish">
-            <el-radio v-model="check.is_finish" label="Y">{{ $l.finish }}</el-radio>
-            <el-radio v-model="check.is_finish" label="N">{{ $l.unfinished }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+          <div class="flex flex-col gap-2">
+            <label class="font-light text-sm text-black">{{ $l.reviewed_by }}</label>
+            <el-input v-model="check.reviewed_by" :placeholder="$l.input_reviewed_by" class="rounded-md" />
+          </div>
 
-        <el-form-item :label="$l.verifyDetail" :label-width="formLabelWidth">
-          <el-input type="textarea" v-model="check.verify_detail" :placeholder="$l.verifyDetail"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="passFormVisible = false" class="rounded-md">{{ $l.cancel }}</el-button>
-        <el-button type="primary" @click="passsubmit" class="rounded-md">{{ $l.submit }}</el-button>
-      </div>
-    </el-dialog>
+          <div class="flex flex-col gap-2">
+            <label class="font-light text-sm text-black">{{ $l.verification_date }}</label>
+            <el-date-picker v-model="check.verification_date" type="date" :placeholder="$l.verification_date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" style="width: 100%" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-light text-sm text-black">{{ $l.comments }}</label>
+            <el-input type="textarea" v-model="check.comments" :placeholder="$l.input_comments" :autosize="{ minRows: 4 }" class="rounded-md" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-light text-sm text-black">{{ $l.follow_up_action_required }}</label>
+            <el-radio-group v-model="check.follow_up_required">
+              <el-radio label="N">{{ $l.no }}</el-radio>
+              <el-radio label="Y">{{ $l.yes_include_in_next_internal_audit }}</el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+      </template>
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="passFormVisible = false" class="rounded-md">{{ $l.cancel }}</el-button>
+          <el-button type="primary" @click="passsubmit" class="rounded-md">{{ $l.submit }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
 
     <CustomDialog :title="$l.editInformation" :visible.sync="editVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
@@ -334,7 +352,7 @@
                 <label class="font-light text-sm text-black">{{ $l.pic }}</label>
                 <el-input v-model="editForm.corrective_principal" class="rounded-md" />
               </div>
-
+<!-- 
               <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $l.status }}</label>
                 <el-select v-model="editForm.status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
@@ -342,7 +360,7 @@
                   <el-option :label="$l.off_track" value="off_track"></el-option>
                   <el-option :label="$l.closed" value="closed"></el-option>
                 </el-select>
-              </div>
+              </div> -->
             </div>
           </el-form>
         </div>
@@ -352,6 +370,116 @@
         <div class="flex gap-3 justify-end">
           <el-button @click="editVisible = false" :disabled="isEditSubmitting" class="rounded-md">{{ $l.cancel }}</el-button>
           <el-button type="primary" @click="submitEdit" :loading="isEditSubmitting" class="rounded-md">{{ $l.submit }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- Rectification Dialog -->
+    <CustomDialog :title="$l.rectificationInfo" :visible.sync="rectificationVisible" width="90%" :maxWidth="'1200px'">
+      <template #content>
+        <div class="flex flex-col gap-6 max-h-[70vh] overflow-y-auto">
+          <!-- 问题信息 -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800">{{ $l.issueInformation }}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $l.issueType }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.issue_type }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $l.subheader }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.subheader }}</p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $l.codeProvision }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.code_provision }}</p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $l.auditExplanation }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.audit_explanation }}</p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $l.correctiveActionPlan }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.corrective_action_plan }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 整改信息 -->
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-blue-800">{{ $l.rectificationInformation }}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-blue-700 mb-1">{{ $l.correctivePlan }}</label>
+                <div class="bg-white p-3 rounded border">
+                  <p class="text-sm text-gray-900 whitespace-pre-wrap">{{ rectificationData.corrective_plan }}</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-blue-700 mb-1">{{ $l.correctivePrincipal }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.corrective_principal }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-blue-700 mb-1">{{ $l.correctiveDate }}</label>
+                <p class="text-sm text-gray-900">{{ rectificationData.corrective_date ? new Date(rectificationData.corrective_date).toLocaleDateString() : '' }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-blue-700 mb-1">{{ $l.status }}</label>
+                <el-tag :type="getStatusType(rectificationData.status)">{{ getStatusText(rectificationData.status) }}</el-tag>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-blue-700 mb-1">{{ $l.isFinish }}</label>
+                <el-tag :type="rectificationData.is_finish === 'Y' ? 'success' : 'warning'">
+                  {{ rectificationData.is_finish === 'Y' ? $l.finish : $l.unfinished }}
+                </el-tag>
+              </div>
+            </div>
+          </div>
+
+          <!-- 附件信息 -->
+          <div class="bg-green-50 p-4 rounded-lg" v-if="rectificationData.attachments && rectificationData.attachments.length > 0">
+            <h3 class="text-lg font-semibold mb-4 text-green-800">{{ $l.attachments }}</h3>
+            <div class="space-y-2">
+              <div v-for="(attachment, index) in rectificationData.attachments" :key="index" 
+                   class="flex items-center justify-between bg-white p-3 rounded border hover:bg-gray-50">
+                <div class="flex items-center space-x-3">
+                  <i class="fa fa-file-o text-gray-500"></i>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">{{ attachment.file_name }}</p>
+                    <p class="text-xs text-gray-500">
+                      {{ attachment.file_type }} • {{ formatFileSize(attachment.file_size) }} • 
+                      {{ attachment.create_time ? new Date(attachment.create_time).toLocaleDateString() : '' }}
+                    </p>
+                  </div>
+                </div>
+                <el-button size="mini" type="primary" @click="previewFile(attachment)" class="rounded">
+                  {{ $l.preview }}
+                </el-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 验证信息 -->
+          <div class="bg-yellow-50 p-4 rounded-lg" v-if="rectificationData.verification_date || rectificationData.comments">
+            <h3 class="text-lg font-semibold mb-4 text-yellow-800">{{ $l.verificationInformation }}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-if="rectificationData.verification_date">
+                <label class="block text-sm font-medium text-yellow-700 mb-1">{{ $l.verificationDate }}</label>
+                <p class="text-sm text-gray-900">{{ new Date(rectificationData.verification_date).toLocaleDateString() }}</p>
+              </div>
+              <div v-if="rectificationData.comments" class="md:col-span-2">
+                <label class="block text-sm font-medium text-yellow-700 mb-1">{{ $l.comments }}</label>
+                <div class="bg-white p-3 rounded border">
+                  <p class="text-sm text-gray-900 whitespace-pre-wrap">{{ rectificationData.comments }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="rectificationVisible = false" class="rounded-md">{{ $l.close }}</el-button>
         </div>
       </template>
     </CustomDialog>
@@ -523,6 +651,11 @@ export default {
         ],
       },
       check: {
+        verification_status: '',
+        reviewed_by: '',
+        verification_date: '',
+        comments: '',
+        follow_up_required: 'N',
         rec_status: '',
       },
       clickRow: [],
@@ -543,7 +676,7 @@ export default {
         type: '',
         name: '',
         page: 1,
-        pageSize: 15,
+        pageSize: 10,
         total: 0,
       },
       list: [],
@@ -659,6 +792,8 @@ export default {
       dialogFormVisible: false,
       dialogSelectManufacture: false,
       editVisible: false,
+      rectificationVisible: false,
+      rectificationData: {},
       formLabelWidth: '130px',
       form: {
         issue_type: '',
@@ -949,6 +1084,12 @@ export default {
       if (action === 'delete') {
         this.deleteIssue(row)
       }
+      if (action === 'audit') {
+        this.passornot(row)
+      }
+      if(action === 'rectification'){
+        this.viewRectification(row)
+      }
     },
     getIssueType() {
       this.$request(
@@ -988,9 +1129,11 @@ export default {
         api.baseUrl + '/Compliance/complianceIssues/auditIssues',
         {
           issuesId: issuesId,
-          rec_status: rec_status,
-          is_finish: this.check.is_finish,
-          verify_detail: this.check.verify_detail,
+          status: this.check.verification_status,
+          reviewed_by: this.check.reviewed_by,
+          verification_date: this.check.verification_date,
+          comments: this.check.comments,
+          follow_up_required: this.check.follow_up_required,
         },
         'post'
       ).then((response) => {
@@ -1015,13 +1158,13 @@ export default {
       this.$request(
         api.baseUrl + '/Compliance/complianceIssues/getList',
         {
+          ...this.query,
           manufacture_name: this.formInline.manufacture_name,
           issues_type: this.formInline.issues_type,
           issues_desc: this.formInline.issues_desc,
           suggest: this.formInline.suggest,
           corrective_date: this.formInline.corrective_date,
           corrective_principal: this.formInline.corrective_principal,
-          query: this.query,
         },
         'get'
       ).then((r) => {
@@ -1213,12 +1356,12 @@ export default {
       const subheader = this.form.subheader
       const code_provision = this.form.code_provision
       const corrective_principal = this.form.corrective_principal
-      const status = this.form.status
+      // const status = this.form.status
       const rec_status = this.form.rec_status
       const is_valid = this.form.is_valid
       const manufacture_id = this.form.manufacture_id
 
-      if (!issue_type || !audit_explanation || !corrective_action_plan || !corrective_date || !subheader || !code_provision || !corrective_principal || !status) {
+      if (!issue_type || !audit_explanation || !corrective_action_plan || !corrective_date || !subheader || !code_provision || !corrective_principal) {
         this.$message.error(this.$l.pleaseCompleteAllFields)
         return
       }
@@ -1279,6 +1422,74 @@ export default {
           this.isSubmitting = false
         })
     },
+    
+    // 查看整改信息
+    viewRectification(row) {
+      this.$request(
+        api.baseUrl + '/Compliance/complianceIssues/getRectificationInfo',
+        {
+          issueId: row.id
+        },
+        'get'
+      ).then((response) => {
+        if (response.httpCode === 200) {
+          this.rectificationData = response.data
+          this.rectificationVisible = true
+        } else {
+          this.$message.error(response.message || this.$l.loadDataFailed)
+        }
+      }).catch((error) => {
+        this.$message.error(error.response?.data?.message || this.$l.loadDataFailed)
+      })
+    },
+
+    // 获取状态类型
+    getStatusType(status) {
+      switch (status) {
+        case 'open':
+          return 'info'
+        case 'in_progress':
+          return 'warning'
+        case 'completed':
+          return 'success'
+        case 'closed':
+          return 'success'
+        default:
+          return 'info'
+      }
+    },
+
+    // 获取状态文本
+    getStatusText(status) {
+      switch (status) {
+        case 'open':
+          return this.$l.statusOpen
+        case 'in_progress':
+          return this.$l.statusInProgress
+        case 'completed':
+          return this.$l.statusCompleted
+        case 'closed':
+          return this.$l.statusClosed
+        default:
+          return status
+      }
+    },
+
+    // 格式化文件大小
+    formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes'
+      const k = 1024
+      const sizes = ['Bytes', 'KB', 'MB', 'GB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    },
+
+    // 预览文件
+    previewFile(attachment) {
+      this.file.fileUrl = api.baseUrl + '/' + attachment.file_url
+      this.fileDialogVisible = true
+    },
+    
     checkField, //多级表头渲染组件
     showManufacture() {
       this.dialogSelectManufacture = true

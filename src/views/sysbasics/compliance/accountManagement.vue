@@ -6,29 +6,29 @@
         <!-- Left: 6 search fields in one column -->
         <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
           <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.account }}</label>
               <el-input :placeholder="$l.input_accou" v-model="account.query.account" clearable style="width: 100%" />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.manufacture_name }}</label>
               <el-input :placeholder="$l.input_manufacture_name" v-model="account.query.manufacture_name" clearable style="width: 100%" />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.account_type }}</label>
               <el-input :placeholder="$l.input_account_type" v-model="account.query.account_type" clearable style="width: 100%" />
             </div>
           </div>
           <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.email }}</label>
               <el-input :placeholder="$l.input_email" v-model="account.query.email" clearable style="width: 100%" />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.create_time }}</label>
               <el-input :placeholder="$l.input_create_time" v-model="account.query.create_time" clearable style="width: 100%" />
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
               <label>{{ $l.status }}</label>
               <el-select v-model="account.query.is_valid" :placeholder="$l.choose" clearable style="width: 100%">
                 <el-option v-for="item in account.options" :key="item.value" :label="item.label" :value="item.value" />
@@ -37,7 +37,7 @@
           </div>
         </div>
         <!-- Right: 2 buttons aligned at the bottom -->
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px;">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
           <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getUser" style="margin-right: 8px">{{ $c.queryButton }}</el-button>
           <el-button v-show="showAuth.m_search" type="info" size="medium" @click="reset">{{ $l.reset }}</el-button>
         </div>
@@ -67,9 +67,73 @@
     <!-- 分页 -->
     <z-pagination :pagination="pagination" :total="account.total" :page.sync="account.query.page" :limit.sync="account.query.pageSize" @change="getUser"></z-pagination>
     <!-- 创建、编辑表单 -->
-    <z-form-dialog :name="$l.account" :data="account.data" :formProps="account.formProps" :fields="account.fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="account.editFormVisible"></z-form-dialog>
+    <CustomDialog :title="$l.account" :visible.sync="account.editFormVisible" :maxWidth="'500px'" :clickOutside="false">
+      <template #notice>
+        <div class="text-sm text-gray-500 bg-gray-50 px-6 py-3">Tạo tài khoản mới dành cho đối tác sử dụng</div>
+      </template>
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.account }}
+              <span class="text-red-500" v-if="true">*</span>
+            </label>
+            <el-input :placeholder="$l.account" v-model="account.data.account" :disabled="false" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.password }}
+              <span class="text-red-500" v-if="true">*</span>
+            </label>
+            <el-input :placeholder="$l.password" v-model="account.data.password" type="password" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.email }}
+            </label>
+            <el-input :placeholder="$l.email" v-model="account.data.email" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.phone }}
+              <span class="text-red-500" v-if="true">*</span>
+            </label>
+            <el-input :placeholder="$l.phone" v-model="account.data.phone" :disabled="false" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.account_name }}
+              <span class="text-red-500" v-if="true">*</span>
+            </label>
+            <el-input :placeholder="$l.account_name" v-model="account.data.account_name" clearable />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-light flex">
+              {{ $l.manufacture_name }}
+              <span class="text-red-500" v-if="true">*</span>
+            </label>
+            <div class="flex gap-2">
+              <el-input :placeholder="$l.manufacture_name" v-model="account.data.company_name" :disabled="true" clearable />
+
+              <el-button type="primary" :disabled="false" @click="openDept">{{ $l.baseFile_select }}</el-button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2" style="display: none">
+            <el-input v-model="account.data.manufacturer_id" :disabled="true" style="visibility: hidden" />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <el-button @click="account.editFormVisible = false">
+          {{ $c.cancel }}
+        </el-button>
+        <el-button type="primary" @click="submmit">
+          {{ $c.confirm }}
+        </el-button>
+      </template>
+    </CustomDialog>
     <!-- 选择分类对话框 -->
-    <el-dialog :title="$l.baseFile_select" :visible.sync="manufacturer.dialogVisible" width="35%">
+    <CustomDialog :title="$l.baseFile_select" :visible.sync="manufacturer.dialogVisible" width="100%" :maxWidth="'600px'">
       <el-input style="width: 200px; margin-bottom: 10px" prefix-icon="el-icon-search" :placeholder="$l.manufacture_name" clearable class="filter-item" @keyup.enter.native="getManufacturer" @clear="getManufacturer" @blur="getManufacturer" v-model="manufacturer.manufacture_name"></el-input>
       <z-table :list="manufacturer.list" :tableProps="tableProps" :columns="manufacturer.columns" @row-dblclick="sendManufacturerItem">
         <template v-slot:operation="v">
@@ -79,13 +143,15 @@
           &nbsp;
         </template>
       </z-table>
-      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.curPage" :limit.sync="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
-    </el-dialog>
+      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
+    </CustomDialog>
   </div>
 </template>
 
 <script>
 import { _, api, zTable, zForm, zPagination, zFormDialog, initFuncs, eTable, defaultConfig } from '@/views/_common'
+import CustomDialog from '../../_common/CustomDialog.vue'
+
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.ComplianceUser,
   apiList: api.ComplianceUser + 'getlist',
@@ -104,6 +170,7 @@ export default {
     zTable,
     zFormDialog,
     zPagination,
+    CustomDialog,
   },
   data() {
     return {
@@ -140,7 +207,7 @@ export default {
           create_time: '',
           status: '',
           is_valid: 'Y',
-          pageSize: 15,
+          pageSize: 10,
           page: 1,
         },
         options: [
@@ -267,27 +334,27 @@ export default {
         data: {},
         query: {
           manufacture_name: '',
-          pageSize: 15,
-          curPage: 1,
+          pageSize: 10,
+          page: 1,
           total: 0,
         },
         columns: [
           {
             title: this.$l.manufacture_name,
-            key: 'name_zh',
+            key: 'name_en',
             fixed: true,
-            width: 110,
+            width: 500,
           },
-          {
-            title: this.$l.legal_person,
-            key: 'legal_person',
-            fixed: true,
-            width: 110,
-          },
-          {
-            title: this.$l.requestor_facility_name,
-            key: 'requestor_facility_name',
-          },
+          // {
+          //   title: this.$l.legal_person,
+          //   key: 'legal_person',
+          //   fixed: true,
+          //   width: 110,
+          // },
+          // {
+          //   title: this.$l.requestor_facility_name,
+          //   key: 'requestor_facility_name',
+          // },
         ],
         dialogVisible: false,
       },
@@ -387,8 +454,8 @@ export default {
     },
     sendManufacturerItem(data) {
       this.$set(this.account.data, 'manufacturer_id', data.manufacture_id)
-      this.$set(this.account.data, 'account_name', data.name_zh)
-      this.$set(this.account.data, 'company_name', data.name_zh)
+      this.$set(this.account.data, 'account_name', data.name_en)
+      this.$set(this.account.data, 'company_name', data.name_en)
       this.manufacturer.dialogVisible = false
     },
     // 获取当前页面用户拥有的操作权限的函数
