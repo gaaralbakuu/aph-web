@@ -1,71 +1,84 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <!-- 查询区域 -->
-    <div>
-      <div style="display: flex; gap: 16px; margin-bottom: 10px">
-        <!-- Left: search fields in columns -->
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
-          <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.manufactureName }}</label>
-              <el-input :placeholder="$l.pleaseEnterAPartnerName" v-model="queryList.manufacture_name" style="width: 100%" clearable />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.address }}</label>
-              <el-input :placeholder="$l.PleaseEnterTheAddress" v-model="queryList.address" style="width: 100%" clearable />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.requestorFacilityType }}</label>
-              <el-select v-model="queryList.requestor_facility_type" :placeholder="$l.pleaseSelect" clearable style="width: 100%">
-                <el-option label="T1" value="T1"></el-option>
-                <el-option label="T2" value="T2"></el-option>
-              </el-select>
-            </div>
+  <div class="h-full flex flex-col overflow-hidden">
+    <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
+      <div class="text-2xl font-bold text-black">{{ $l.dueDiligenceInvestigation }}</div>
+      <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="flex gap-3 flex-wrap justify-between p-3">
+      <div class="flex gap-3 flex-wrap">
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+              <path d="m8 13 4-7 4 7" />
+              <path d="M9.1 11h5.7" />
+            </svg>
           </div>
-          <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.name }}</label>
-              <el-input :placeholder="$l.pleaseEnterAName" v-model="queryList.name" style="width: 100%" clearable />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.auditTime }}</label>
-              <el-date-picker v-model="queryList.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 100%" clearable />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.recStatus }}</label>
-              <el-select v-model="queryList.rec_status" :placeholder="$l.pleaseEnterTheAuditResult" clearable style="width: 100%">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option v-for="(item, index) in rec_status" :label="item.label" :value="item.value" :key="index"></el-option>
-              </el-select>
-            </div>
-          </div>
+          <input type="text" :placeholder="$l.manufactureName" v-model="queryList.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
-        <!-- Right: buttons -->
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
-          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="submitForm" style="margin-right: 8px">{{ $c.queryButton }}</el-button>
-          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 1115 0z" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.address" v-model="queryList.address" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+        </div>
+        <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.name" v-model="queryList.name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
       </div>
+
+      <div class="flex gap-3">
+        <button v-show="showAuth.m_search" @click="submitForm" class="h-9 rounded flex items-center bg-black text-white px-4 hover:bg-gray-800 transition-colors duration-150">
+          {{ $c.queryButton }}
+        </button>
+        <button v-show="showAuth.m_search" @click="resetForm" class="h-9 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-150">
+          {{ $l.reset }}
+        </button>
+      </div>
     </div>
-    <el-divider></el-divider>
 
-    <!-- 内容 -->
-    <div>
-      <el-button v-show="showAuth.m_add" @click="addForm()" icon="el-icon-search" type="primary">{{ $l.cAdd }}</el-button>
+    <!-- Action Bar -->
+    <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100">
+      <div class="flex items-center gap-3">
+        <button v-show="showAuth.m_add" @click="addForm" class="inline-flex items-center h-8 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          {{ $l.cAdd }}
+        </button>
+      </div>
 
-      <el-button v-show="showAuth.m_export" @click="exportInfo()" icon="el-icon-download" type="info" class="fr">{{ $l.down }}</el-button>
+      <div class="flex items-center gap-3">
+        <button v-show="showAuth.m_export" @click="exportInfo" class="inline-flex items-center h-8 bg-green-600 hover:bg-green-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          {{ $l.down }}
+        </button>
 
-      <el-button @click="recEmail()" icon="el-icon-message" type="info" class="fr">{{ $l.emailNotification }}</el-button>
-
-      <div style="margin-top: 10px">
-        <!-- 表格 -->
-        <el-table :data="tableList.list" :row-style="tableRowClassName" border stripe style="width: 100%;border" highlight-current-row max-height="575">
-          <el-table-column width="460" :label="this.$l.basicInformation" fixed="left">
+        <button @click="recEmail" class="inline-flex items-center h-8 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          {{ $l.emailNotification }}
+        </button>
+      </div>
+    </div>
+    <!-- 表格 -->
+    <!-- <el-table :data="tableList.list" :row-style="tableRowClassName" border stripe style="width: 100%;border" highlight-current-row max-height="575">
+          <el-table-column width="460" :label="$l.basicInformation" fixed="left">
             <el-table-column v-for="(item, index) in tableList.columns1" :key="index" :prop="item.key" :label="item.title || item.key" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
-                <!-- <span v-if="item.key === 'serialNumbers'">
-                  {{ scope.$index + 1 }}
-                </span> -->
                 <span v-if="item.key === 'address'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
                 <span v-else>
                   {{ scope.row[item.key] }}
@@ -73,7 +86,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column :label="this.$l.complianceContactInfor">
+          <el-table-column :label="$l.complianceContactInfor">
             <el-table-column v-for="(item, index) in tableList.columns2" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span v-if="item.key === 'contact_name'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
@@ -85,7 +98,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column :label="this.$l.latestSeaAudit">
+          <el-table-column :label="$l.latestSeaAudit">
             <el-table-column v-for="(item, index) in tableList.columns3" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span v-if="item.formatter" v-html="item.formatter(scope.row[item.key])"></span>
@@ -95,7 +108,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column :label="this.$l.annualSeaAudit">
+          <el-table-column :label="$l.annualSeaAudit">
             <el-table-column v-for="(item, index) in tableList.columns4" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-button v-if="item.key === 'audit_file'" type="text" size="small" @click="clickViewFile(scope.row)" style="color: orange">
@@ -110,7 +123,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column fixed="right" :label="this.$c.operation" width="270">
+          <el-table-column fixed="right" :label="$c.operation" width="270">
             <template slot-scope="scope">
               <el-button @click="checkClick(scope.row, scope.$index)" type="text" size="small">{{ $c.check }}</el-button>
               <el-button v-show="showAuth.m_updata" @click="editClick(scope.row, scope.$index)" type="text" size="small" class="text-yellow">{{ $l.modify }}</el-button>
@@ -121,135 +134,140 @@
               <el-button v-show="showAuth.m_audit && scope.row.rec_status === 7" @click="auditClose(scope.row, scope.$index)" type="text" size="small" style="color: green">{{ $l.end }}</el-button>
             </template>
           </el-table-column>
-        </el-table>
+        </el-table> -->
 
-        <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList"></z-pagination>
+    <!-- Table Section -->
+    <div class="flex-1 px-3 overflow-y-auto">
+      <investigation-table :data="tableList.list" :isLoading="false" @action="handleTableAction" @row-click="handleRowClick" :page="{ page: tableList.curPage, pageSize: tableList.pageSize }" :showAuth="showAuth" class="main-table" />
+    </div>
 
-        <!-- 修改 -->
-        <CustomDialog :title="$l.modify" :clickOutside="false" width="100%" :lock-scroll="true" @submmit="submmitedit" :visible.sync="editFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
-          <template #content>
-            <div class="flex flex-col gap-2">
-              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700 mr-2">{{ $l.basicArchives }}</label>
-                  <el-input v-model="editSurvey.list.name_en" :placeholder="$l.pleaseSelectBaseArchive" :disabled="true" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
-                  <el-input v-model="checkSurvey.list.survey_year" :disabled="true" class="w-full"></el-input>
-                </div>
-              </div>
+    <!-- Pagination -->
+    <div class="p-3">
+      <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList" class="custom-pagination" />
+    </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.latestSeaAudit }}</div>
+    <!-- Edit Dialog -->
+    <CustomDialog :title="$l.modify" :visible.sync="editFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+      <template #content>
+        <div class="flex flex-col gap-6">
+          <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditTime }}</label>
-                  <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
-                  <el-input v-model="editSurvey.list.third_party_org" :placeholder="$l.pleaseEnterThirdPartyOrganization" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
-                  <el-input v-model="editSurvey.list.audit_result" :placeholder="$l.pleaseEnterTheAuditResult" class="w-full"></el-input>
+          <el-form :model="editSurvey.list" ref="editForm" :label-width="formLabelWidth">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.basicArchives }}</label>
+                <div class="flex gap-2">
+                  <el-input v-model="editSurvey.list.name_en" :disabled="true" :placeholder="$l.pleaseSelectBaseArchive" class="rounded-md" />
+                  <el-button type="primary" plain @click="editselectClick" class="rounded-md">{{ $l.selectBaseArchive }}</el-button>
                 </div>
               </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
-
-              <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.dueAuditDate }}</label>
-                  <el-date-picker v-model="editSurvey.list.due_audit_date" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.costPayProgress }}</label>
-                  <el-slider v-model="editSurvey.list.cost_pay_progress" class="w-full"></el-slider>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.realAuditDate }}</label>
-                  <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-              </div> -->
-
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <div class="flex flex-col gap-4">
-                  <label class="font-light text-sm text-gray-700">{{ $l.isSubmitCap }}</label>
-                  <div class="flex gap-2">
-                    <el-radio v-model="editSurvey.list.is_submit_cap" label="Y">{{ $l.yes }}</el-radio>
-                    <el-radio v-model="editSurvey.list.is_submit_cap" label="N">{{ $l.no }}</el-radio>
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
-
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <input type="file" multiple @change="editFile" ref="editfileinput" style="display: none" />
-                <el-button type="primary" @click="$refs.editfileinput.click()" class="w-fit">{{ $l.selectFile }}</el-button>
-              </div>
-
-              <div>
-                <!-- 文件表格 -->
-                <el-table :data="editSurvey.fileList">
-                  <el-table-column v-for="(item, index) in editSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                  <el-table-column fixed="right" :label="$c.operation" width="145">
-                    <template slot-scope="scope">
-                      <el-button @click="editDeleteFile(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.surveyYear }}</label>
+                <el-input v-model="editSurvey.list.survey_year" class="rounded-md" />
               </div>
             </div>
-          </template>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="editFormVisible = false">{{ $t('common').cancel }}</el-button>
-            <el-button type="primary" @click="submmitedit">
-              {{ $t('common').confirm }}
-            </el-button>
-            <slot name="operation"></slot>
-          </span>
-        </CustomDialog>
 
-        <!-- 查看 -->
-        <CustomDialog :title="$c.check" :clickOutside="false" width="100%" :lock-scroll="true" :visible.sync="checkFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
-          <template #content>
+            <div class="text-xl font-black text-gray-900 dark:text-white mt-6">{{ $l.latestSeaAudit }}</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.auditTime }}</label>
+                <el-date-picker v-model="editSurvey.list.audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.nameOfTheThirdPartyOrganization }}</label>
+                <el-input v-model="editSurvey.list.near_third_party_org" :placeholder="$l.pleaseEnterThirdPartyOrganization" class="rounded-md" />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.auditResult }}</label>
+                <el-input v-model="editSurvey.list.audit_result" :placeholder="$l.pleaseEnterTheAuditResult" class="rounded-md" />
+              </div>
+            </div>
+
+            <div class="text-xl font-black text-gray-900 dark:text-white mt-6">{{ $l.annualSeaAudit }}</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.dueAuditDate }}</label>
+                <el-date-picker v-model="editSurvey.list.due_audit_date" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.realAuditDate }}</label>
+                <el-date-picker v-model="editSurvey.list.real_audit_date" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" />
+              </div>
+            </div>
+
+            <div class="flex flex-col col-span-full gap-2 mt-6">
+              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.supportInfo }}</div>
+              <input type="file" @change="editFile" ref="editfileinput" style="display: none" />
+              <div>
+                <el-button type="primary" @click="$refs.editfileinput.click()" class="rounded-md w-full">{{ $l.fileUpload }}</el-button>
+              </div>
+            </div>
+
+            <div class="col-span-full mt-4" v-if="editSurvey.fileList.length > 0">
+              <el-table :data="editSurvey.fileList" class="rounded-lg">
+                <el-table-column v-for="(item, index) in editSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="$c.operation" width="145">
+                  <template slot-scope="scope">
+                    <el-button @click="editDeleteFile(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ $c.delete }}</el-button>
+                    <el-button @click="removeEditFile(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ $l.deleteFile }}</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-form>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="editFormVisible = false" class="rounded-md">{{ $c.cancel }}</el-button>
+          <el-button type="primary" @click="submmitedit" class="rounded-md">{{ $c.confirm }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- 查看 -->
+    <CustomDialog :title="$c.check" :clickOutside="false" width="100%" :lock-scroll="true" :visible.sync="checkFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
+      <template #content>
+        <div class="flex flex-col gap-2">
+          <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
-              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.basicArchives }}</label>
-                  <el-input v-model="checkSurvey.list.name_zh" :disabled="true" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
-                  <el-input v-model="checkSurvey.list.survey_year" :disabled="true" class="w-full"></el-input>
-                </div>
-              </div>
+              <label class="font-light text-sm text-gray-700">{{ $l.basicArchives }}</label>
+              <el-input v-model="checkSurvey.list.name_zh" :disabled="true" class="w-full"></el-input>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
+              <el-input v-model="checkSurvey.list.survey_year" :disabled="true" class="w-full"></el-input>
+            </div>
+          </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.latestSeaAudit }}</div>
+          <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.latestSeaAudit }}</div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditDate }}</label>
-                  <el-date-picker disabled v-model="checkSurvey.list.near_audit_time" type="date" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
-                  <el-input disabled v-model="checkSurvey.list.near_third_party_org" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
-                  <el-input disabled v-model="checkSurvey.list.near_audit_result" class="w-full"></el-input>
-                </div>
-              </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+            <div class="flex flex-col gap-2">
+              <label class="font-light text-sm text-gray-700">{{ $l.auditDate }}</label>
+              <el-date-picker disabled v-model="checkSurvey.list.near_audit_time" type="date" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
+              <el-input disabled v-model="checkSurvey.list.near_third_party_org" class="w-full"></el-input>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
+              <el-input disabled v-model="checkSurvey.list.near_audit_result" class="w-full"></el-input>
+            </div>
+          </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
+          <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
 
-              <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+          <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                 <div class="flex flex-col gap-2">
                   <label class="font-light text-sm text-gray-700">{{ $l.dueAuditDate }}</label>
                   <el-date-picker v-model="checkSurvey.list.due_audit_date" type="date" value-format="yyyy-MM-dd" :disabled="true" class="w-full" style="width: 100%"></el-date-picker>
@@ -264,83 +282,165 @@
                 </div>
               </div> -->
 
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <div class="flex flex-col gap-4">
-                  <label class="font-light text-sm text-gray-700">{{ $l.isSubmitCap }}</label>
-                  <div class="flex gap-2">
-                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="Y" :disabled="true">{{ $l.yes }}</el-radio>
-                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="N" :disabled="true">{{ $l.no }}</el-radio>
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
-
-              <div>
-                <!-- 文件表格 -->
-                <el-table :data="checkSurvey.fileList">
-                  <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                  <el-table-column fixed="right" :label="$c.operation" width="145">
-                    <template slot-scope="scope">
-                      <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
+          <div class="grid grid-cols-1 gap-4 mt-2">
+            <div class="flex flex-col gap-4">
+              <label class="font-light text-sm text-gray-700">{{ $l.isSubmitCap }}</label>
+              <div class="flex gap-2">
+                <el-radio v-model="checkSurvey.list.is_submit_cap" label="Y" :disabled="true">{{ $l.yes }}</el-radio>
+                <el-radio v-model="checkSurvey.list.is_submit_cap" label="N" :disabled="true">{{ $l.no }}</el-radio>
               </div>
             </div>
-          </template>
-        </CustomDialog>
+          </div>
 
-        <!-- 审核 -->
-        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields" @submmit="submitAudit" :visible.sync="auditFormVisible"></z-form-dialog>
+          <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
 
-        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields1" @submmit="submitAudit" :visible.sync="auditFormsVisible"></z-form-dialog>
+          <div>
+            <!-- 文件表格 -->
+            <el-table :data="checkSurvey.fileList">
+              <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+              <el-table-column fixed="right" :label="$c.operation" width="145">
+                <template slot-scope="scope">
+                  <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </template>
+    </CustomDialog>
 
-        <!-- 新增 -->
-        <CustomDialog :title="'Add'" :clickOutside="false" width="100%" :lock-scroll="true" @submmit="submmitadd" :visible.sync="addFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
-          <template #content>
-            <div class="flex flex-col gap-2">
-              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700 mr-2">
-                    {{ $l.basicArchives }}
-                    <span class="text-red-500">*</span>
-                  </label>
-                  <div class="flex gap-2">
-                    <el-input v-model="addSurvey.addList.name_en" :placeholder="$l.basicArchives" class="w-full" style="width: 100%"></el-input>
-                    <el-button @click="addselectClick()" type="primary" class="ml-2">{{ $c.check }}</el-button>
-                  </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">
-                    {{ $l.surveyYear }}
-                    <span class="text-red-500">*</span>
-                  </label>
-                  <el-date-picker v-model="addSurvey.addList.survey_year" type="year" :placeholder="$l.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="w-full" style="width: 100%"></el-date-picker>
+    <!-- 审核 -->
+    <CustomDialog :title="$l.audit" :visible.sync="auditFormVisible" :clickOutside="false" width="40%" :maxWidth="'600px'">
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="font-medium text-sm text-gray-700 dark:text-gray-300">
+              {{ $l.auditResult }}
+              <span class="text-red-500">*</span>
+            </label>
+            <el-select v-model="auditSurvey.list.rec_status" :placeholder="$c.please_select" class="w-full">
+              <el-option
+                v-for="option in [
+                  { value: 7, label: $l.pass },
+                  { value: -1, label: $l.fail },
+                ]"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"></el-option>
+            </el-select>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.auditRemarks }}</label>
+            <el-input v-model="auditSurvey.list.audit_result" type="textarea" :rows="4" :placeholder="$c.please_input" class="w-full"></el-input>
+          </div>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="auditFormVisible = false" class="rounded-md">{{ $c.cancel }}</el-button>
+          <el-button type="primary" @click="submitAudit" class="rounded-md">{{ $c.confirm }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <CustomDialog :title="$l.audit" :visible.sync="auditFormsVisible" :clickOutside="false" width="40%" :maxWidth="'600px'">
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.auditRemarks }}</label>
+            <el-input v-model="auditSurvey.list.audit_result" type="textarea" :rows="4" :placeholder="$c.please_input" class="w-full"></el-input>
+          </div>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="auditFormsVisible = false" class="rounded-md">{{ $c.cancel }}</el-button>
+          <el-button type="primary" @click="submitAudit" class="rounded-md">{{ $c.confirm }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- 新增 -->
+    <CustomDialog :title="$l.cAdd" :visible.sync="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+      <template #content>
+        <div class="flex flex-col gap-6">
+          <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basicInformation }}</div>
+
+          <el-form :model="addSurvey.addList" ref="addForm" :label-width="formLabelWidth">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">
+                  {{ $l.basicArchives }}
+                  <span class="text-red-500">*</span>
+                </label>
+                <div class="flex gap-2">
+                  <el-input v-model="addSurvey.addList.name_en" :placeholder="$l.basicArchives" :disabled="true" class="rounded-md" />
+                  <el-button type="primary" plain @click="addselectClick" class="rounded-md">{{ $l.selectBaseArchive }}</el-button>
                 </div>
               </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.latestSeaAudit }}</div>
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">
+                  {{ $l.surveyYear }}
+                  <span class="text-red-500">*</span>
+                </label>
+                <el-date-picker v-model="addSurvey.addList.survey_year" type="year" :placeholder="$l.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
+              </div>
+            </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditDate }}</label>
-                  <el-date-picker disabled v-model="addSurvey.addList.near_audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
-                  <el-input disabled v-model="addSurvey.addList.near_third_party_org" :placeholder="$l.pleaseEnterThirdPartyOrganization" class="w-full"></el-input>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
-                  <el-input disabled v-model="addSurvey.addList.near_audit_result" :placeholder="$l.pleaseEnterTheAuditResult" class="w-full"></el-input>
-                </div>
+            <div class="text-xl font-black text-gray-900 dark:text-white mt-6">{{ $l.latestSeaAudit }}</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.auditDate }}</label>
+                <el-date-picker v-model="addSurvey.addList.near_audit_time" type="date" :placeholder="$l.pleaseSelectAnApprovalDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :disabled="true" class="rounded-md w-full" />
               </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.annualSeaAudit }}</div>
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.nameOfTheThirdPartyOrganization }}</label>
+                <el-input v-model="addSurvey.addList.near_third_party_org" :placeholder="$l.pleaseEnterThirdPartyOrganization" :disabled="true" class="rounded-md" />
+              </div>
 
-              <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.auditResult }}</label>
+                <el-input v-model="addSurvey.addList.near_audit_result" :placeholder="$l.pleaseEnterTheAuditResult" class="rounded-md" />
+              </div>
+            </div>
+
+            <div class="flex flex-col col-span-full gap-2 mt-6">
+              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.supportInfo }}</div>
+              <input type="file" @change="addFile" ref="addfileinput" style="display: none" />
+              <div>
+                <el-button type="primary" @click="$refs.addfileinput.click()" class="rounded-md w-full">{{ $l.fileUpload }}</el-button>
+              </div>
+            </div>
+
+            <div class="col-span-full mt-4" v-if="addSurvey.fileList.length > 0">
+              <el-table :data="addSurvey.fileList" class="rounded-lg">
+                <el-table-column v-for="(item, index) in addSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="$c.operation" width="145">
+                  <template slot-scope="scope">
+                    <el-button @click="removeAddClick(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ $c.delete }}</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-form>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="addFormVisible = false" class="rounded-md">{{ $c.cancel }}</el-button>
+          <el-button type="primary" @click="submmitadd" class="rounded-md">{{ $c.confirm }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                 <div class="flex flex-col gap-2">
                   <label class="font-light text-sm text-gray-700">
                     {{ $l.dueAuditDate }}
@@ -358,184 +458,167 @@
                 </div>
               </div> -->
 
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <div class="flex flex-col gap-4">
-                  <label class="font-light text-sm text-gray-700">{{ $l.isSubmitCap }}</label>
-                  <div class="flex gap-2">
-                    <el-radio v-model="addSurvey.addList.is_submit_cap" label="Y">{{ $l.yes }}</el-radio>
-                    <el-radio v-model="addSurvey.addList.is_submit_cap" label="N">{{ $l.no }}</el-radio>
-                  </div>
-                </div>
-              </div>
+    <!-- 新增 选择基础档案 -->
+    <CustomDialog :formProps="formProps" :visible.sync="addselectFormVisible" :title="$l.selectTheBaseFile" :maxWidth="'800px'" :width="'100%'">
+      <template #content>
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-2 items-center">
+            <el-input v-model="manufacture.queryString" :placeholder="$l.search"></el-input>
+            <el-button type="primary" @click="getManufacturerList">{{ $l.search }}</el-button>
+          </div>
 
-              <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
+          <el-table :data="manufacture.list" style="width: 100%; height: 700px" max-height="550">
+            <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+            <el-table-column fixed="right" :label="$c.operation" width="100">
+              <template slot-scope="scope">
+                <el-button @click="addselectItem(scope.row)" type="text" size="small">{{ $l.choose }}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-              <div class="grid grid-cols-1 gap-4 mt-2">
-                <input type="file" @change="addFile" ref="addfileinput" style="display: none" />
-                <el-button type="primary" @click="$refs.addfileinput.click()" class="w-fit">{{ $l.selectFile }}</el-button>
-              </div>
-              <div>
-                <!-- 文件表格 -->
-                <el-table :data="addSurvey.fileList">
-                  <el-table-column v-for="(item, index) in addSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                  <el-table-column fixed="right" :label="$c.operation" width="145">
-                    <template slot-scope="scope">
-                      <el-button @click="removeAddClick(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
+          <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.curPage" :limit.sync="manufacture.pageSize" @change="getHistoryListCurrent"></z-pagination>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- 修改 选择基础档案 -->
+    <CustomDialog :formProps="formProps" :visible.sync="editselectFormVisible">
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex gap-2 items-center">
+            <div class="flex-1">
+              <el-input v-model="manufacture.queryString" :placeholder="$l.search" class="w-full"></el-input>
             </div>
-          </template>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="addFormVisible = false">{{ $t('common').cancel }}</el-button>
-            <el-button type="primary" @click="submmitadd">
-              {{ $t('common').confirm }}
-            </el-button>
-            <slot name="operation"></slot>
-          </span>
-        </CustomDialog>
+            <el-button type="primary" @click="getManufacturerList">{{ $l.search }}</el-button>
+          </div>
+          
+          <el-table :data="manufacture.list" style="width: 100%">
+            <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+            <el-table-column fixed="right" :label="$c.operation" width="145">
+              <template slot-scope="scope">
+                <el-button @click="editselectItem(scope.row)" type="text" size="small">{{ $l.choose }}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </template>
+    </CustomDialog>
 
-        <!-- 新增 选择基础档案 -->
-        <CustomDialog :formProps="formProps" :visible.sync="addselectFormVisible" :title="$l.selectTheBaseFile" :maxWidth="'800px'" :width="'100%'">
-          <template #content>
+    <CustomDialog width="80%" :visible.sync="recEmailVisible" :height="'100%'">
+      <template #content>
+        <div class="flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Roles Section -->
             <div class="flex flex-col gap-2">
-              <div class="flex gap-2 items-center">
-                <el-input v-model="manufacture.queryString" :placeholder="$l.search"></el-input>
-                <el-button type="primary" @click="getManufacturerList">{{ $l.search }}</el-button>
-              </div>
-
-              <el-table :data="manufacture.list" style="width: 100%; height: 700px" max-height="550">
-                <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                <el-table-column fixed="right" :label="$c.operation" width="100">
+              <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.roles }}</label>
+              <el-table :data="roleList.list" style="width: 100%">
+                <el-table-column v-for="(item, index) in roleList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="$c.operation" width="145">
                   <template slot-scope="scope">
-                    <el-button @click="addselectItem(scope.row)" type="text" size="small">{{ $l.choose }}</el-button>
+                    <el-button @click="addRoleItem(scope.row)" type="text" size="small">{{ $l.addNotification }}</el-button>
                   </template>
                 </el-table-column>
               </el-table>
-
-              <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.curPage" :limit.sync="manufacture.pageSize" @change="getManufacturerList"></z-pagination>
             </div>
-          </template>
-        </CustomDialog>
 
-        <!-- 修改 选择基础档案 -->
-        <el-dialog :formProps="formProps" :visible.sync="editselectFormVisible">
-          <div>
-            <el-col :span="14">
-              <el-input v-model="manufacture.queryString" :placeholder="this.$l.search"></el-input>
-            </el-col>
-            <el-col :span="4">
-              <el-button type="primary" @click="getManufacturerList">{{ $l.search }}</el-button>
-            </el-col>
-            <el-table :data="manufacture.list" style="width: 90%">
-              <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-              <el-table-column fixed="right" :label="this.$c.operation" width="145">
-                <template slot-scope="scope">
-                  <el-button @click="editselectItem(scope.row)" type="text" size="small">{{ $l.choose }}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <!-- Email Notification Role Section -->
+            <div class="flex flex-col gap-2">
+              <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.emailNotificationRole }}</label>
+              <el-table :data="recEmailList.list" style="width: 100%">
+                <el-table-column v-for="(item, index) in recEmailList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="$c.operation" width="145">
+                  <template slot-scope="scope">
+                    <el-button @click="deleteRoleItem(scope.row)" type="text" size="small" style="color: red">{{ $l.cancellationNotice }}</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
-        </el-dialog>
 
-        <el-dialog width="80% " :visible.sync="recEmailVisible">
-          <div>
-            <el-form style="border-radius: 2px">
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item :label="$l.roles"></el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item :label="$l.emailNotificationRole"></el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-table :data="roleList.list" style="width: 90%">
-                    <el-table-column v-for="(item, index) in roleList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                    <el-table-column fixed="right" :label="this.$c.operation" width="145">
-                      <template slot-scope="scope">
-                        <el-button @click="addRoleItem(scope.row)" type="text" size="small">{{ $l.addNotification }}</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-col>
-
-                <el-col :span="12">
-                  <el-table :data="recEmailList.list" style="width: 90%">
-                    <el-table-column v-for="(item, index) in recEmailList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                    <el-table-column fixed="right" :label="this.$c.operation" width="145">
-                      <template slot-scope="scope">
-                        <el-button @click="deleteRoleItem(scope.row)" type="text" size="small" style="color: red">{{ $l.cancellationNotice }}</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-col>
-
-                <el-col :span="24">
-                  <el-form-item :label="$l.sendEmail"></el-form-item>
-                </el-col>
-
-                <el-col :span="8">
-                  <el-form-item :label="$l.approachingReviewDate">
-                    <el-date-picker v-model="recEmailList.distanceTime" type="date" :placeholder="this.$l.selectDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-
-                <el-col :span="4">
-                  <el-form-item>
-                    <el-button type="primary" @click="sendRoleEmail">{{ $l.sendEmail }}</el-button>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
+          <!-- Send Email Section -->
+          <div class="flex flex-col gap-4">
+            <label class="font-medium text-lg text-gray-800 dark:text-gray-200">{{ $l.sendEmail }}</label>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.approachingReviewDate }}</label>
+                <el-date-picker v-model="recEmailList.distanceTime" type="date" :placeholder="$l.selectDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="w-full"></el-date-picker>
+              </div>
+              
+              <div class="flex items-end">
+                <el-button type="primary" @click="sendRoleEmail" class="w-full h-9">{{ $l.sendEmail }}</el-button>
+              </div>
+            </div>
           </div>
-        </el-dialog>
+        </div>
+      </template>
+    </CustomDialog>
 
-        <!-- 查看附件 -->
-        <el-dialog width="50%" :title="this.$l.viewAttachment" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
-          <div style="padding: 0 50px">
-            <!-- 文件表格 -->
-            <el-table :data="checkFile.fileList" style="width: 100%">
-              <el-table-column v-for="(item, index) in checkFile.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-              <el-table-column v-if="true" :label="$c.operation" :width="86" fixed="right">
-                <template slot-scope="scope">
-                  <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </el-dialog>
+    <!-- 查看附件 -->
+    <CustomDialog width="50%" :title="$l.viewAttachment" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
+      <div style="padding: 0 50px">
+        <!-- 文件表格 -->
+        <el-table :data="checkFile.fileList" style="width: 100%">
+          <el-table-column v-for="(item, index) in checkFile.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+          <el-table-column v-if="true" :label="$c.operation" :width="86" fixed="right">
+            <template slot-scope="scope">
+              <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-    </div>
+    </CustomDialog>
+
+    <!-- 查看历史 -->
+    <CustomDialog :title="$l.history" :visible.sync="historyFormVisible" width="95%" :maxWidth="'1500px'" :height="'100%'">
+      <template #content>
+        <div class="flex flex-col gap-6 h-full">
+          <!-- History Table -->
+          <div class="flex-1 overflow-hidden">
+            <investigation-history-table :data="historyList.list" :isLoading="historyList.loading" @action="handleHistoryAction" @view-attachments="handleViewHistoryAttachments" @row-click="handleHistoryRowClick" :page="{ page: historyList.curPage, pageSize: historyList.pageSize }" :showAuth="showAuth" class="main-table" />
+          </div>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="p-3">
+          <z-pagination :pagination="pagination" :total="historyList.total" :page.sync="historyList.curPage" :limit.sync="historyList.pageSize" @change="getHistoryListCurrent" class="custom-pagination" />
+        </div>
+      </template>
+    </CustomDialog>
 
     <!-- 预览 -->
     <filePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible" @update:visible="dialogVisible = $event" />
   </div>
 </template>
 <script>
-import { _, api, zTable, zPagination, zFormDialog, initFuncs, zForm, dayjs } from '@/views/_common'
+import { _, api, zTable, zPagination, initFuncs, zForm, dayjs } from '@/views/_common'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import filePreviews from '../../_common/filePreviews.vue'
 import CustomDialog from '../../_common/CustomDialog.vue'
 import exportExcel from '../../../utils/exportExcel'
+import InvestigationTable from './investigation-table.vue'
+import InvestigationHistoryTable from './investigation-history-table.vue'
 
 export default {
   name: 'investigation',
   components: {
     zTable,
     zPagination,
-    zFormDialog,
     initFuncs,
     zForm,
     filePreviews,
     CustomDialog,
+    InvestigationTable,
+    InvestigationHistoryTable,
   },
   data() {
     return {
       name: 'investigation',
       api: api.role,
       pageLoading: false,
+      formLabelWidth: '120px',
       addFormVisible: false,
       checkFormVisible: false,
       editFormVisible: false,
@@ -545,6 +628,7 @@ export default {
       addselectFormVisible: false,
       editselectFormVisible: false,
       viewFileFormVisible: false,
+      historyFormVisible: false,
       dialogVisible: false,
       recEmailVisible: false,
       file_url: '',
@@ -556,6 +640,7 @@ export default {
       isText: false,
       fileContent: '',
       deleteFalg: 'N',
+      currentManufacturerId: null, // 当前查看历史的manufacture_id
       fileInfo: {},
       userAuth: [], //保存用户权限
       showAuth: {
@@ -587,7 +672,7 @@ export default {
       },
       query: {
         params: {},
-        size: 15,
+        pageSize: 15,
         page: 1,
         role_type: 'cis',
       },
@@ -898,6 +983,82 @@ export default {
           {
             title: this.$l.modifyTime,
             key: 'modify_time',
+            width: 140,
+          },
+        ],
+      },
+
+      // 查看历史
+      historyList: {
+        list: [],
+        pageSize: 15,
+        curPage: 1,
+        total: 0,
+        loading: false,
+        columns: [
+          {
+            title: this.$l.surveyYear,
+            key: 'survey_year',
+            width: 100,
+          },
+          {
+            title: this.$l.nameZh,
+            key: 'name_zh',
+            width: 120,
+          },
+          {
+            title: this.$l.address,
+            key: 'address',
+            width: 150,
+          },
+          {
+            title: this.$l.requestorFacilityType,
+            key: 'requestor_facility_type',
+            width: 130,
+          },
+          {
+            title: this.$l.name,
+            key: 'contact_name',
+            width: 80,
+          },
+          {
+            title: this.$l.contactPhone,
+            key: 'contact_phone',
+            width: 100,
+          },
+          {
+            title: this.$l.contactEmail,
+            key: 'contact_email',
+            width: 190,
+          },
+          {
+            title: this.$l.dueAuditDate,
+            key: 'due_audit_date',
+            width: 140,
+          },
+          {
+            title: this.$l.costPayProgress,
+            key: 'cost_pay_progress',
+            width: 120,
+          },
+          {
+            title: this.$l.realAuditDate,
+            key: 'real_audit_date',
+            width: 140,
+          },
+          {
+            title: this.$l.recStatus,
+            key: 'rec_status',
+            width: 100,
+          },
+          {
+            title: this.$l.auditFile,
+            key: 'audit_file',
+            width: 80,
+          },
+          {
+            title: this.$l.isSubmitCap,
+            key: 'is_submit_cap',
             width: 140,
           },
         ],
@@ -1275,11 +1436,48 @@ export default {
     }
   },
   methods: {
+    handleTableAction({ action, row }) {
+      console.log(action)
+
+      if (action === 'check') {
+        this.checkClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'edit') {
+        this.editClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'history') {
+        if (row.audit_count === 0) {
+          this.$message.error(this.$l.noHistoryData || 'No history data available')
+          return
+        }
+
+        this.historyClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'auditNew') {
+        this.auditNew(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'auditClick') {
+        this.auditClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'invalid') {
+        this.invalid(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'auditClose') {
+        this.auditClose(row, row._index !== undefined ? row._index : null)
+      }
+    },
+
+    handleRowClick(row) {
+      // Handle row click if needed
+      console.log('Row clicked:', row)
+    },
     /* 查询 */
+
+    getHistoryListCurrent() {
+      this.getHistoryList()
+    },
 
     // 尽职调查列表
     getList() {
-      this.$request(api.baseUrl + '/Compliance/comPlianceSurvey/getList', this.queryList)
+      this.$request(api.baseUrl + '/Compliance/comPlianceSurvey/getList', {
+        ...this.queryList,
+        page: this.tableList.curPage,
+        pageSize: this.tableList.pageSize,
+      })
         .then((r) => {
           this.tableList.list = r.data.list
           this.tableList.total = r.data.total
@@ -1364,6 +1562,7 @@ export default {
       this.addSurvey.addList.manufacture_record_id = row.id
       this.addSurvey.addList.name_en = row.name_en
       this.addSurvey.addList.third_party_org = row.third_party_org
+      console.log('r.data.list', row)
 
       this.addselectFormVisible = false
     },
@@ -1478,7 +1677,7 @@ export default {
                   type: 'info',
                   message: this.$l.attachmentAddFailed,
                 })
-                throw new Error('附件上传失败') // 确保有错误时不会继续执行
+                throw new Error(this.$l.attachmentUploadError) // 确保有错误时不会继续执行
               })
           })
 
@@ -1493,7 +1692,7 @@ export default {
         }
       } catch (error) {
         // 用户点击取消或上传过程中出错
-        if (error.message !== '附件上传失败') {
+        if (error.message !== this.$l.attachmentUploadError) {
           this.$message({
             type: 'info',
             message: this.$l.operationCanceled,
@@ -1585,7 +1784,7 @@ export default {
     // 点击修改 打开窗口 获取附件
     editClick(row, index) {
       // this.pageLoading = true
-      ////console.log(row)
+      console.log(row)
       let rowList = _.cloneDeep(row)
       this.$set(rowList, 'id', row.survey_id)
       this.$set(rowList, 'manufacture_id', row.bindManufacturerid)
@@ -1698,7 +1897,7 @@ export default {
                   type: 'info',
                   message: this.$l.attachmentAddFailed,
                 })
-                throw new Error('附件上传失败') // 确保有错误时不会继续执行
+                throw new Error(this.$l.attachmentUploadError) // 确保有错误时不会继续执行
               })
           })
 
@@ -1710,7 +1909,7 @@ export default {
         }
       } catch (e) {
         // 用户点击取消或上传过程中出错
-        if (error.message !== '附件上传失败') {
+        if (error.message !== this.$l.attachmentUploadError) {
           this.$message({
             type: 'info',
             message: this.$l.operationCanceled,
@@ -1722,7 +1921,7 @@ export default {
     editSurveys() {
       //console.log(this.editSurvey.list)
       // this.editSurvey.list.id = ''
-      this.$request(api.baseUrl + '/Compliance/complianceSurvey/addSurvey', this.editSurvey.list, 'post')
+      this.$request(api.baseUrl + '/Compliance/complianceSurvey/addSurvey', { ...this.editSurvey.list, third_party_org: this.editSurvey.list.near_third_party_org }, 'post')
         .then(() => {
           this.$message({
             type: 'success',
@@ -1741,10 +1940,82 @@ export default {
 
     /* 查看历史 */
     historyClick(row, index) {
-      this.$router.push({
-        path: '/compliance/InvestigationInfo',
-        query: { manufacture_id: row.manufacturer_id },
+      console.log(row)
+      this.historyFormVisible = true
+      this.historyList.curPage = 1
+      this.getHistoryList(row.manufacturer_id)
+    },
+
+    // 获取历史列表
+    getHistoryList(manufactureId = null) {
+      // 如果没有传入manufactureId，使用当前存储的ID
+      const id = manufactureId || this.currentManufacturerId
+
+      console.log('Getting history list for manufacturer ID:', id)
+
+      if (!id) return
+
+      this.currentManufacturerId = id
+      this.historyList.loading = true
+
+      this.$request(api.baseUrl + '/Compliance/complianceSurvey/getManufacturerHisList', {
+        manufacture_id: id,
+        page: this.historyList.curPage,
+        pageSize: this.historyList.pageSize,
       })
+        .then((r) => {
+          // 处理数据，添加附件数量信息
+          const list = r.data || []
+          list.forEach((item) => {
+            // 如果API返回的数据中没有attachment_count，可以设置默认值或通过其他方式获取
+            if (item.attachment_count === undefined) {
+              item.attachment_count = 0 // 默认值，可以根据实际情况调整
+            }
+          })
+
+          this.historyList.list = list
+          this.historyList.total = r.total || 0
+          this.historyList.loading = false
+        })
+        .catch(() => {
+          this.historyList.loading = false
+          this.$message.error(this.$l.dataLoadFailed)
+        })
+    },
+
+    // 查看历史中的某一项详细信息
+    checkHistoryItem(row) {
+      this.checkClick(row)
+    },
+
+    // 处理历史表格的操作事件
+    handleHistoryAction({ action, row }) {
+      console.log('History action:', action, row)
+
+      if (action === 'check') {
+        this.checkHistoryItem(row)
+      } else if (action === 'edit') {
+        this.editClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'auditNew') {
+        this.auditNew(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'auditClick') {
+        this.auditClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'invalid') {
+        this.invalid(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'auditClose') {
+        this.auditClose(row, row._index !== undefined ? row._index : null)
+      }
+    },
+
+    // 处理历史表格行点击事件
+    handleHistoryRowClick(row) {
+      // 可以在这里添加行点击逻辑，比如高亮选中行
+      console.log('History row clicked:', row)
+    },
+
+    // 处理查看历史附件
+    handleViewHistoryAttachments(row) {
+      this.viewFile(row.survey_id)
     },
 
     /* 审核 */
@@ -1805,7 +2076,7 @@ export default {
                 type: 'success',
                 message: this.$l.auditSuccess,
               })
-              this.getList()
+              this.getHistoryList()
               this.auditSurvey.list = {}
               this.auditFormVisible = false
               this.auditFormsVisible = false
@@ -1858,7 +2129,7 @@ export default {
     // 删除附件
     removeEditFile(row, index) {
       let i = index + 1
-      this.$confirm('此操作将删除第' + i + '条数据, 是否继续?', this.$l.deleteHelpManual, {
+      this.$confirm(this.$l.confirmDeleteFileData.replace('{index}', i), this.$l.deleteHelpManual, {
         confirmButtonText: this.$c.confirm,
         cancelButtonText: this.$c.cancel,
         type: 'warning',
@@ -2304,6 +2575,7 @@ export default {
     userAuth: {
       deep: true,
       handler(newV) {
+        console.log(newV)
         this.showAuth.m_add = newV.m_add == 'Y' ? true : false
         this.showAuth.m_search = newV.m_search == 'Y' ? true : false
         this.showAuth.m_del = newV.m_del == 'Y' ? true : false
@@ -2325,6 +2597,7 @@ export default {
 .truncate-lines {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   /* 限制为3行 */
   -webkit-box-orient: vertical;
   overflow: hidden;

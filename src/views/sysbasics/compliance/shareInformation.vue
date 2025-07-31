@@ -1,140 +1,207 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <!-- 查询 -->
-    <div>
-      <el-form :inline="true" :model="queryList" label-position="right" label-width="140px">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item :label="this.$l.helpManual"></el-form-item>
-            <el-form-item>
-              <!-- <el-button
-                v-show="showAuth.m_search"
-                @click="getList()"
-                type="primary"
-                >{{ $c.queryButton }}</el-button
-              > -->
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="4">
-            <el-form-item>
-              <el-button v-show="showAuth.m_add" @click="addClickHelp()" type="primary">{{ $l.cAdd }}</el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item :label="this.$l.seamainContact"></el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item>
-              <el-button v-show="showAuth.m_add" @click="addClickCis()" type="primary">{{ $l.cAdd }}</el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <div style="padding: 0 50px">
-              <el-table :data="helpManualList.list" style="width: 100%; height: 700px" max-height="650" highlight-current-row>
-                <el-table-column v-for="(item, index) in helpManualList.columns" :key="index" :prop="item.key" :label="item.title || item.key" :width="item.width" show-overflow-tooltip>
-                  <template slot-scope="scope">
-                    <span v-if="item.key === 'file_name'">
-                      <a href="javascript:void(0);" @click="getFilePreview(scope.row.file_url)">{{ scope.row.file_name }}</a>
-                    </span>
-                    <span v-else-if="item.key === 'serialNumbers'">
-                      {{ scope.$index + 1 }}
-                    </span>
-                    <span v-else>
-                      {{ scope.row[item.key] }}
-                    </span>
-                  </template>
-                </el-table-column>
-                <el-table-column fixed="right" :label="this.$c.operation" width="120">
-                  <template slot-scope="scope">
-                    <el-button v-show="showAuth.m_del" @click="deleteClick(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <z-pagination :pagination="pagination" :total="helpManualList.total" :page.sync="helpManualList.curPage" :limit.sync="helpManualList.pageSize" @change="getList"></z-pagination>
-            </div>
-          </el-col>
-          <el-col :span="11">
-            <div style="padding: 0 50px">
-              <el-table :data="CisCContacterList.list" style="width: 100%; height: 700px" max-height="650" highlight-current-row>
-                <el-table-column v-for="(item, index) in CisCContacterList.columns" :key="index" :prop="item.key" :label="item.title || item.key" :width="item.width" show-overflow-tooltip>
-                  <template slot-scope="scope">
-                    <span v-if="item.key === 'serialNumbers'">
-                      {{ scope.$index + 1 }}
-                    </span>
-                    <span v-else>
-                      {{ scope.row[item.key] }}
-                    </span>
-                  </template>
-                </el-table-column>
-                <el-table-column fixed="right" :label="this.$c.operation" width="120">
-                  <template slot-scope="scope">
-                    <el-button v-show="showAuth.m_del" @click="deleteCisClick(scope.row, scope.$index)" type="text" size="small">{{ $c.delete }}</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <z-pagination :pagination="pagination" :total="CisCContacterList.total" :page.sync="CisCContacterList.curPage" :limit.sync="CisCContacterList.pageSize" @change="getCisList"></z-pagination>
-            </div>
-          </el-col>
-        </el-row>
-      </el-form>
-
-      <el-dialog title="aaa" width="60%" :lock-scroll="true" :visible.sync="addHelpFormVisible">
-        <div style="padding: 0 50px">
-          <input type="file" @change="file" ref="fileinput" style="display: none" />
-          <el-col :span="24">
-            <el-button type="primary" @click="$refs.fileinput.click()">{{ $l.selectFile }}</el-button>
-          </el-col>
-          <el-table :data="addHelpManual.fileList" style="width: 90%">
-            <el-table-column v-for="(item, index) in addHelpManual.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-            <el-table-column fixed="right" :label="this.$c.operation" width="145">
-              <template slot-scope="scope">
-                <el-button @click="removeClick(scope.row)" type="text" size="small">{{ $c.delete }}</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <span slot="footer" style="padding: 0 50px">
-          <el-button @click="addHelpFormVisible = false">{{ $t('common').cancel }}</el-button>
-          <el-button type="primary" @click="submmitaddHelp">
-            {{ $t('common').confirm }}
-          </el-button>
-          <slot name="operation"></slot>
-        </span>
-      </el-dialog>
-
-      <el-dialog title="aaa" width="60%" :lock-scroll="true" :visible.sync="addCisFormVisible">
-        <div style="padding: 0 50px">
-          <el-form :model="addCisCCtacter.list" :inline="true" label-position="left" label-width="160px">
-            <el-col v-for="(item, index) in addCisCCtacter.fields" :key="index" :span="item.span">
-              <el-form-item :label="item.title" :prop="item.key">
-                <component :is="getComponentType(item.type)" v-model="addCisCCtacter.list[item.key]" :placeholder="item.placeholder" :rules="item.rules"></component>
-              </el-form-item>
-            </el-col>
-          </el-form>
-        </div>
-        <span slot="footer" style="padding: 0 50px">
-          <el-button @click="addCisFormVisible = false">{{ $t('common').cancel }}</el-button>
-          <el-button type="primary" @click="submmitaddCis">
-            {{ $t('common').confirm }}
-          </el-button>
-          <slot name="operation"></slot>
-        </span>
-      </el-dialog>
-
-      <filePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible" @update:visible="dialogVisible = $event" />
+  <div class="h-full flex flex-col overflow-hidden">
+    <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
+      <div class="text-2xl font-bold text-black">{{ $l.helpManual }} & {{ $l.seamainContact }}</div>
+      <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
     </div>
+
+    <!-- Content Section with Tables -->
+    <div class="flex-1 p-3 overflow-y-auto">
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 h-full">
+        
+        <!-- Help Manual Section -->
+        <div class="flex flex-col">
+          <ShareHelpManualTable 
+            :data="helpManualList.list" 
+            :isLoading="pageLoading"
+            :showAuth="showAuth"
+            :page="{ page: helpManualList.curPage, pageSize: helpManualList.pageSize }"
+            :total="helpManualList.total"
+            :pagination="pagination"
+            @action="handleHelpManualAction"
+            @row-click="handleHelpManualRowClick"
+            @add-click="addClickHelp"
+            @file-preview="getFilePreview"
+            @page-change="getList"
+            class="main-table"
+          />
+        </div>
+
+        <!-- Contact Section -->
+        <div class="flex flex-col">
+          <ShareContactTable 
+            :data="CisCContacterList.list" 
+            :isLoading="pageLoading"
+            :showAuth="showAuth"
+            :page="{ page: CisCContacterList.curPage, pageSize: CisCContacterList.pageSize }"
+            :total="CisCContacterList.total"
+            :pagination="pagination"
+            @action="handleContactAction"
+            @row-click="handleContactRowClick"
+            @add-click="addClickCis"
+            @page-change="getCisList"
+            class="main-table"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload File Dialog -->
+    <CustomDialog 
+      :title="$l.selectFile" 
+      width="70%" 
+      :lock-scroll="true" 
+      :visible.sync="addHelpFormVisible"
+      class="modern-dialog"
+    >
+      <template #content>
+        <div class="flex flex-col gap-6">
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                  <i class="fa fa-cloud-upload text-white"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">Tải lên tài liệu hướng dẫn</h4>
+                  <p class="text-sm text-gray-600">Chọn file PDF, DOC, DOCX để tải lên</p>
+                </div>
+              </div>
+              <button 
+                @click="$refs.fileinput.click()" 
+                class="inline-flex items-center h-10 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full px-4 shadow-sm transition duration-200 ease-in-out transform hover:scale-105 gap-2"
+              >
+                <i class="fa fa-folder-open text-sm"></i>
+                <span>{{ $l.selectFile }}</span>
+              </button>
+            </div>
+          </div>
+
+          <input type="file" @change="file" ref="fileinput" style="display: none" />
+          
+          <div v-if="addHelpManual.fileList.length > 0" class="bg-gray-50 rounded-lg p-4">
+            <h5 class="font-medium text-gray-900 mb-3">File đã chọn:</h5>
+            <el-table :data="addHelpManual.fileList" class="modern-table">
+              <el-table-column v-for="(item, index) in addHelpManual.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width">
+                <template slot-scope="scope">
+                  <span v-if="item.key === 'file_name'" class="font-medium text-gray-900">
+                    {{ scope.row[item.key] }}
+                  </span>
+                  <span v-else-if="item.key === 'file_suffix'" class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs font-mono">
+                    {{ scope.row[item.key] }}
+                  </span>
+                  <span v-else>{{ scope.row[item.key] }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" :label="$c.operation" width="100">
+                <template slot-scope="scope">
+                  <button 
+                    @click="removeClick(scope.row)" 
+                    class="h-8 w-8 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 rounded-full transition-colors duration-200"
+                  >
+                    <i class="fa fa-trash text-sm"></i>
+                  </button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </template>
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <button 
+            @click="addHelpFormVisible = false" 
+            class="h-10 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200"
+          >
+            {{ $c.cancel }}
+          </button>
+          <button 
+            @click="submmitaddHelp" 
+            class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            {{ $c.confirm }}
+          </button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- Add Contact Dialog -->
+    <CustomDialog 
+      :title="$l.addContact" 
+      width="70%" 
+      :lock-scroll="true" 
+      :visible.sync="addCisFormVisible"
+      class="modern-dialog"
+    >
+      <template #content>
+        <div class="flex flex-col gap-6">
+          <div class="bg-green-50 p-4 rounded-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <i class="fa fa-user-plus text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900">Thêm người liên hệ mới</h4>
+                <p class="text-sm text-gray-600">Vui lòng điền đầy đủ thông tin liên hệ</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-lg p-6">
+            <el-form :model="addCisCCtacter.list" :inline="false" label-position="top" class="modern-form">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div v-for="(item, index) in addCisCCtacter.fields" :key="index" class="form-group">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ item.title }}
+                    <span v-if="item.required" class="text-red-500">*</span>
+                  </label>
+                  <component 
+                    :is="getComponentType(item.type)" 
+                    v-model="addCisCCtacter.list[item.key]" 
+                    :placeholder="item.placeholder" 
+                    class="w-full h-10 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                  />
+                </div>
+              </div>
+            </el-form>
+          </div>
+        </div>
+      </template>
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <button 
+            @click="addCisFormVisible = false" 
+            class="h-10 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200"
+          >
+            {{ $c.cancel }}
+          </button>
+          <button 
+            @click="submmitaddCis" 
+            class="h-10 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            {{ $c.confirm }}
+          </button>
+        </div>
+      </template>
+    </CustomDialog>
+
+    <!-- File Preview Dialog -->
+    <filePreviews 
+      v-if="fileUrl" 
+      :file-url="fileUrl" 
+      :visible="dialogVisible" 
+      @update:visible="dialogVisible = $event" 
+    />
   </div>
 </template>
 <script>
 import { _, api, zTable, zPagination, zFormDialog, initFuncs, zForm } from '@/views/_common'
 import axios from 'axios'
 import filePreviews from '../../_common/filePreviews.vue'
-// import FilePreview from 'vue-file-preview'
-//引入VueOfficeDocx组件
-// import VueOfficeDocx from '@vue-office/docx'
-//引入相关样式
-// import '@vue-office/docx/lib/index.css'
+import CustomDialog from '../../_common/CustomDialog.vue'
+import ShareHelpManualTable from './share-help-manual-table.vue'
+import ShareContactTable from './share-contact-table.vue'
+
 export default {
   name: 'shareInformation',
   components: {
@@ -144,6 +211,9 @@ export default {
     initFuncs,
     zForm,
     filePreviews,
+    CustomDialog,
+    ShareHelpManualTable,
+    ShareContactTable,
   },
   data() {
     return {
@@ -197,7 +267,7 @@ export default {
           {
             title: this.$l.serialNumbers,
             key: 'serialNumbers',
-            width: 100,
+            width: 200,
           },
           {
             title: this.$l.manualName,
@@ -216,7 +286,7 @@ export default {
           {
             title: this.$l.serialNumbers,
             key: 'serialNumbers',
-            width: 50,
+            width: 200,
           },
           {
             title: this.$l.name,
@@ -296,6 +366,7 @@ export default {
             type: 'el-input',
             placeholder: this.$l.pleaseEnterAName,
             span: 8,
+            required: true,
             // rules: [{ required: true, message: '姓名不能为空', trigger: 'blur' }]
           },
           {
@@ -304,6 +375,7 @@ export default {
             type: 'el-input',
             placeholder: this.$l.pleaseEnterAMailbox,
             span: 8,
+            required: true,
           },
           {
             title: this.$l.contactPhone,
@@ -311,12 +383,49 @@ export default {
             type: 'el-input',
             placeholder: this.$l.pleaseEnterThePhone,
             span: 8,
+            required: false,
           },
         ],
       },
     }
   },
   methods: {
+    // Handle actions from Help Manual Table
+    handleHelpManualAction({ action, row }) {
+      console.log('Help Manual action:', action, row)
+      
+      if (action === 'view') {
+        this.getFilePreview(row.file_url)
+      } else if (action === 'delete') {
+        this.deleteClick(row, row._index !== undefined ? row._index : null)
+      }
+    },
+
+    handleHelpManualRowClick(row) {
+      // Handle row click if needed
+      console.log('Help Manual row clicked:', row)
+      this.getFilePreview(row.file_url)
+    },
+
+    // Handle actions from Contact Table
+    handleContactAction({ action, row }) {
+      console.log('Contact action:', action, row)
+      
+      if (action === 'view') {
+        // Implement view contact details if needed
+        console.log('View contact:', row)
+      } else if (action === 'edit') {
+        // Implement edit contact if needed
+        console.log('Edit contact:', row)
+      } else if (action === 'delete') {
+        this.deleteCisClick(row, row._index !== undefined ? row._index : null)
+      }
+    },
+
+    handleContactRowClick(row) {
+      // Handle row click if needed
+      console.log('Contact row clicked:', row)
+    },
     // 获取帮助手册
     getList() {
       this.$request(api.baseUrl + '/Compliance/complianceAttachments/getStudyFile', {
@@ -369,8 +478,9 @@ export default {
       if (this.fileList && this.fileList.length == 0) {
         this.$message({
           type: 'info',
-          message: '附件添加失败',
+          message: this.$l.attachmentAddFail,
         })
+        return
       }
       const formData = new FormData()
       formData.append('file', this.fileList[0])
@@ -380,7 +490,7 @@ export default {
           console.log(r)
           this.$message({
             type: 'success',
-            message: this.$c.success,
+            message: this.$l.attachmentAddSuccess,
           })
           this.addHelpFormVisible = false
           this.addHelpManual.fileList = []
@@ -390,7 +500,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '附件添加失败',
+            message: this.$l.attachmentAddFail,
           })
         })
     },
@@ -400,9 +510,9 @@ export default {
     },
     submmitaddCis() {
       console.log(this.addCisCCtacter.list)
-      this.$confirm('此操作将新增该数据, 是否继续?', '新增联系人', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$l.confirmAddRow, this.$l.addContact, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
         type: 'warning',
       })
         .then(() => {
@@ -419,14 +529,14 @@ export default {
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: '添加失败',
+                message: this.$l.addFail,
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '添加失败',
+            message: this.$l.addFail,
           })
         })
     },
@@ -540,7 +650,7 @@ export default {
             .catch(() => {
               this.$message({
                 type: 'error',
-                message: '删除失败',
+                message: this.$l.deleteFail,
               })
             })
         })
@@ -593,16 +703,187 @@ export default {
   },
 }
 </script>
-<style scoped>
-/* .preview-container {
-    width: 100%;
-    height: 600px;
-    border: 1px solid #ccc;
-    overflow: hidden;
-  } */
-/* iframe {
-    width: 100%;
-    height: 100%;
-    display: block;
-  } */
+<style lang="scss" scoped>
+// Modern table styling
+.modern-table {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+
+  :deep(.el-table__header-wrapper) {
+    th {
+      background-color: #f9fafb;
+      color: #374151;
+      font-weight: 600;
+      border: none;
+      font-size: 14px;
+      padding: 16px 12px;
+    }
+  }
+
+  :deep(.el-table__body-wrapper) {
+    td {
+      border: none;
+      border-bottom: 1px solid #f3f4f6;
+      padding: 16px 12px;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background-color: #f9fafb;
+    }
+  }
+
+  :deep(.el-table__empty-block) {
+    background-color: #f9fafb;
+  }
+}
+
+// Modern dialog styling
+.modern-dialog {
+  :deep(.el-dialog) {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  :deep(.el-dialog__header) {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 24px 24px 16px;
+    margin-bottom: 0;
+  }
+
+  :deep(.el-dialog__title) {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 24px;
+  }
+
+  :deep(.el-dialog__footer) {
+    border-top: 1px solid #f3f4f6;
+    padding: 16px 24px 24px;
+  }
+}
+
+// Modern form styling
+.modern-form {
+  .form-group {
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    :deep(.el-input__inner) {
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      height: 40px;
+      font-size: 14px;
+      transition: all 0.2s ease-in-out;
+
+      &:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+    }
+  }
+}
+
+// Custom pagination styling
+.custom-pagination {
+  :deep(.el-pagination) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    .el-pager li {
+      border-radius: 6px;
+      min-width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      transition: all 0.2s ease-in-out;
+
+      &.active {
+        background-color: #3b82f6;
+        color: white;
+      }
+
+      &:hover:not(.active) {
+        background-color: #f3f4f6;
+      }
+    }
+
+    .btn-prev,
+    .btn-next {
+      border-radius: 6px;
+      min-width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #f3f4f6;
+      }
+    }
+  }
+}
+
+.main-table {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-table .modern-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.main-table .modern-table .el-table__header-wrapper {
+  background: #f8fafc;
+}
+
+.main-table .modern-table .el-table__header th {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #374151;
+}
+
+.main-table .modern-table .el-table__row:hover {
+  background-color: #f8fafc;
+}
+
+// Animation classes
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-up-enter,
+.slide-up-leave-to {
+  transform: translateY(20px);
+  opacity: 0;
+}
 </style>

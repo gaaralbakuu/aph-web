@@ -1,83 +1,41 @@
 <template>
-  <el-dialog
-    :visible.sync="dialogVisible"
-    :title="$l.filePreview"
-    width="80%"
-    center
-    @contextmenu.prevent
-    @selectstart.prevent
-    @dragstart.prevent
-    top="0.5vh"
-  >
-    <div>
-      <div
-        v-if="isTextFile"
-        @contextmenu.prevent
-        @selectstart.prevent
-        @dragstart.prevent
-      >
-        <textarea
-          v-model="fileContent"
-          readonly
-          @contextmenu.prevent
-          @selectstart.prevent
-          @dragstart.prevent
-          v-disable-selection
-        ></textarea>
+  <CustomDialog :visible.sync="dialogVisible" :title="$l.filePreview" width="80%" center @contextmenu.prevent @selectstart.prevent @dragstart.prevent top="0.5vh" :height="'100%'">
+    <template #content>
+      <div style="height: 100%;" v-if="isTextFile" @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
+        <textarea v-model="fileContent" readonly @contextmenu.prevent @selectstart.prevent @dragstart.prevent v-disable-selection></textarea>
       </div>
-      <div
-        v-else-if="isImageFile"
-        @contextmenu.prevent
-        @selectstart.prevent
-        @dragstart.prevent
-        style="height: 85vh"
-      >
-        <img
-          :src="fileUrl"
-          alt="预览图片"
-          @contextmenu.prevent
-          @selectstart.prevent
-          @dragstart.prevent
-        />
+      <div style="height: 100%;" v-else-if="isImageFile" @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
+        <img :src="fileUrl" alt="预览图片" @contextmenu.prevent @selectstart.prevent @dragstart.prevent />
       </div>
-      <div v-else-if="isXlsFile">
-        <vue-excel-viewer
-          :src="fileUrl"
-          :options="options"
-          style="height: 85vh"
-        />
+      <div style="height: 100%;" v-else-if="isXlsFile">
+        <vue-excel-viewer height="100%" style="height: 100%;" :src="fileUrl" :options="options" />
       </div>
-      <div v-else-if="isDocxFile">
-        <vue-docx-viewer :src="fileUrl" style="height: 85vh" />
+      <div style="height: 100%;" v-else-if="isDocxFile">
+        <vue-docx-viewer :src="fileUrl" />
       </div>
-      <div v-else-if="isXlsxFile">
-        <vue-excel-viewer :src="fileUrl" style="height: 85vh" />
+      <div style="height: 100%;" v-else-if="isXlsxFile">
+        <vue-excel-viewer :src="fileUrl" />
       </div>
-      <div v-else-if="isPptxFile">
-        <vue-pptx-viewer :src="fileUrl" style="height: 85vh" />
+      <div style="height: 100%;" v-else-if="isPptxFile">
+        <vue-pptx-viewer :src="fileUrl" />
       </div>
-      <div v-else-if="isPdfFile">
-        <vue-pdf-viewer
-          :src="fileUrl"
-          @contextmenu.prevent
-          @selectstart.prevent
-          @dragstart.prevent
-          style="height: 85vh"
-        />
+      <div style="height: 100%;" v-else-if="isPdfFile">
+        <vue-pdf-viewer :src="fileUrl" @contextmenu.prevent @selectstart.prevent @dragstart.prevent />
       </div>
-      <div v-else @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
+      <div style="height: 100%;" v-else @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
         <p>{{ $l.fileDontSupport }}</p>
       </div>
-    </div>
-  </el-dialog>
+    </template>
+  </CustomDialog>
 </template>
-  
-  <script>
+
+<script>
 import VueDocxViewer from '@vue-office/docx'
 import VueExcelViewer from '@vue-office/excel'
 import VuePdfViewer from '@vue-office/pdf'
 import VuePptxViewer from '@vue-office/pptx'
 import '@vue-office/excel/lib/index.css'
+import CustomDialog from './CustomDialog.vue'
 import XLSX from 'xlsx'
 export default {
   name: 'FilePreview',
@@ -86,6 +44,7 @@ export default {
     VueExcelViewer,
     VuePdfViewer,
     VuePptxViewer,
+    CustomDialog,
   },
   directives: {
     disableSelection: {
@@ -135,7 +94,7 @@ export default {
       return this.fileUrl.endsWith('.xls')
     },
     isDocxFile() {
-      return this.fileUrl.endsWith('.docx')
+      return this.fileUrl.endsWith('.docx') || this.fileUrl.endsWith('.doc')
     },
     isXlsxFile() {
       return this.fileUrl.endsWith('.xlsx')
@@ -185,9 +144,8 @@ export default {
   },
 }
 </script>
-  
-  
-  <style scoped>
+
+<style scoped>
 textarea {
   width: 100%;
   height: 800px;

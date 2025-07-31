@@ -26,6 +26,7 @@ import zhTW from '@/lang/zh-TW.js'
 import viVN from './lang/vi-VN'
 
 import mixinCommon from '@/mixin/mixin.js'
+import dialogEscPlugin from '@/utils/dialogEscPlugin.js'
 
 import '@/utils/filter'
 
@@ -43,6 +44,7 @@ const i18n = new VueI18n({
   silentTranslationWarn: true,
 })
 Vue.mixin(mixinCommon)
+Vue.use(dialogEscPlugin)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'small', // set element-ui default size [medium,small,mini]

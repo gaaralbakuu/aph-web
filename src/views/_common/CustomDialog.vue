@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-200" @click="handleOverlayClick">
+  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-200" :style="{ zIndex: currentZIndex }" @click="handleOverlayClick">
     <div :class="['relative bg-white border border-solid border-transparent rounded-[6px] shadow-[rgba(0,0,0,0.1)_0px_20px_25px_-5px,rgba(0,0,0,0.04)_0px_10px_10px_-5px] flex flex-col box-border font-[\'HarmonyOS Sans\',_\'PingFang SC\',_\'Microsoft Yahei\',_\'Heiti SC\',_\'WenQuanYi Micro Hei\',_\'Helvetica Neue\',_Helvetica,_Arial,_sans-serif] text-[14px] leading-[14px] min-w-[392px] w-[600px] max-h-[calc(100%_-_48px)] p-0 animate-dialogIn', customClass]" :style="dialogStyle" @click.stop>
       <!-- Header -->
       <div class="flex justify-between items-center px-6 py-3 border-b border-gray-100 bg-white/95">
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'CustomDialog',
   props: {
@@ -62,8 +64,19 @@ export default {
       type: Boolean,
       default: true,
     },
+    // ID duy nhất cho dialog, nếu không cung cấp sẽ tự động tạo
+    dialogId: {
+      type: String,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      internalDialogId: null,
+    }
   },
   computed: {
+    ...mapGetters('dialogStack', ['getDialogZIndex', 'topDialog']),
     dialogStyle() {
       return {
         width: this.width,
@@ -72,29 +85,76 @@ export default {
         maxHeight: '90vh',
       }
     },
-  },
-  methods: {
-    handleClose() {
-      this.$emit('update:visible', false)
-      this.$emit('close')
+    currentZIndex() {
+      return this.getDialogZIndex(this.internalDialogId)
     },
-    handleOverlayClick() {
-      if (this.closeOnClickModal && this.clickOutside) {
-        this.handleClose()
-      }
+    isTopDialog() {
+      return this.topDialog && this.topDialog.id === this.internalDialogId
     },
   },
   watch: {
     visible(newVal) {
       if (newVal) {
-        document.body.style.overflow = 'hidden'
+        this.openDialog()
       } else {
-        document.body.style.overflow = ''
+        this.closeDialog()
       }
     },
   },
+  created() {
+    // Tạo ID duy nhất cho dialog nếu không được cung cấp
+    this.internalDialogId = this.dialogId || `dialog-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    
+    // Lắng nghe sự kiện đóng dialog từ ESC key
+    this.$root.$on('close-top-dialog', this.handleEscClose)
+  },
   beforeDestroy() {
+    // Xóa dialog khỏi stack khi component bị destroy
+    this.removeDialog(this.internalDialogId)
+    
+    // Xóa event listener
+    this.$root.$off('close-top-dialog', this.handleEscClose)
+    
+    // Khôi phục scroll của body
     document.body.style.overflow = ''
+  },
+  methods: {
+    ...mapActions('dialogStack', ['pushDialog', 'removeDialog']),
+    openDialog() {
+      // Thêm dialog vào stack
+      this.pushDialog({
+        id: this.internalDialogId,
+        component: this.$options.name,
+      })
+      
+      // Khóa scroll của body
+      document.body.style.overflow = 'hidden'
+    },
+    closeDialog() {
+      // Xóa dialog khỏi stack
+      this.removeDialog(this.internalDialogId)
+      
+      // Khôi phục scroll của body nếu không còn dialog nào
+      const dialogCount = this.$store.getters['dialogStack/dialogCount']
+      if (dialogCount === 0) {
+        document.body.style.overflow = ''
+      }
+    },
+    handleClose() {
+      this.$emit('update:visible', false)
+      this.$emit('close')
+    },
+    handleOverlayClick() {
+      if (this.closeOnClickModal && this.clickOutside && this.isTopDialog) {
+        this.handleClose()
+      }
+    },
+    handleEscClose(dialogId) {
+      // Chỉ đóng nếu đây là dialog được yêu cầu đóng
+      if (dialogId === this.internalDialogId) {
+        this.handleClose()
+      }
+    },
   },
 }
 </script>

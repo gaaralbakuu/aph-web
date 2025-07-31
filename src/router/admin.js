@@ -83,6 +83,12 @@ export default {
 		  component: () => import('@/views/demo/demo'),
 		  name: 'userfeedback',
 		  meta: { noCache: true }
+		},
+		{
+		  path: 'dialog-stack-demo',
+		  component: () => import('@/views/_common/DialogStackDemo'),
+		  name: 'DialogStackDemo',
+		  meta: { noCache: true, title: 'Dialog Stack Demo' }
 		}
   ]
 }
