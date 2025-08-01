@@ -1118,7 +1118,11 @@ export default {
       console.log(row)
       this.passFormVisible = true
       this.check.id = row.id
-      console.log(this.check.id)
+      this.check.verification_status = row.status
+      this.check.reviewed_by = row.audit_user
+      this.check.verification_date = row.verification_date
+      this.check.comments = row.comments
+      this.check.follow_up_required = row.follow_up_required
     },
     //提交审核结果
     passsubmit() {
