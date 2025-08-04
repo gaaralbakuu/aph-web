@@ -857,7 +857,7 @@ export default {
     contact_email: 'Email',
     address_zh: 'Chinese Address',
     address_en: 'English Address',
-    own_processes: 'Cooperative Processes',
+    own_processes: 'Overall Capabilities',
     match_processes: 'Own Processes',
     fileType: 'File Type',
     business_license: 'Business License',

@@ -144,7 +144,7 @@ export default {
     choose: 'Chọn',
     address_zh: 'Địa chỉ (Tiếng Trung)',
     address_en: 'Địa chỉ (Tiếng Anh)',
-    own_processes: 'Quy trình riêng',
+    own_processes: 'Năng lực tổng thể',
     match_processes: 'Quy trình khớp',
     attachment_info: 'Thông tin tệp đính kèm',
     create_people: 'Người tạo',

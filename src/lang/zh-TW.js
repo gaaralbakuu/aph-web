@@ -851,7 +851,7 @@ export default {
     contact_email: '聯絡人郵箱',
     address_zh: '地址（中文）',
     address_en: '地址（英文）',
-    own_processes: '自有工藝',
+    own_processes: '整體能力',
     match_processes: '匹配工藝',
     fileType: '檔案類型',
     business_license: '營業執照',
