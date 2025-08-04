@@ -240,7 +240,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <label class="font-light text-sm text-gray-700">{{ $l.basicArchives }}</label>
-              <el-input v-model="checkSurvey.list.name_zh" :disabled="true" class="w-full"></el-input>
+              <el-input v-model="checkSurvey.list.name_en" :disabled="true" class="w-full"></el-input>
             </div>
             <div class="flex flex-col gap-2">
               <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
@@ -253,7 +253,7 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
             <div class="flex flex-col gap-2">
               <label class="font-light text-sm text-gray-700">{{ $l.auditDate }}</label>
-              <el-date-picker disabled v-model="checkSurvey.list.near_audit_time" type="date" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
+              <el-date-picker disabled v-model="checkSurvey.list.audit_time" type="date" value-format="yyyy-MM-dd" class="w-full" style="width: 100%"></el-date-picker>
             </div>
             <div class="flex flex-col gap-2">
               <label class="font-light text-sm text-gray-700">{{ $l.nameOfTheThirdPartyOrganization }}</label>
@@ -261,7 +261,7 @@
             </div>
             <div class="flex flex-col gap-2">
               <label class="font-light text-sm text-gray-700">{{ $l.auditResult }}</label>
-              <el-input disabled v-model="checkSurvey.list.near_audit_result" class="w-full"></el-input>
+              <el-input disabled v-model="checkSurvey.list.audit_result" class="w-full"></el-input>
             </div>
           </div>
 
@@ -491,7 +491,7 @@
             </div>
             <el-button type="primary" @click="getManufacturerList">{{ $l.search }}</el-button>
           </div>
-          
+
           <el-table :data="manufacture.list" style="width: 100%">
             <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
             <el-table-column fixed="right" :label="$c.operation" width="145">
@@ -538,13 +538,13 @@
           <!-- Send Email Section -->
           <div class="flex flex-col gap-4">
             <label class="font-medium text-lg text-gray-800 dark:text-gray-200">{{ $l.sendEmail }}</label>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
                 <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.approachingReviewDate }}</label>
                 <el-date-picker v-model="recEmailList.distanceTime" type="date" :placeholder="$l.selectDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="w-full"></el-date-picker>
               </div>
-              
+
               <div class="flex items-end">
                 <el-button type="primary" @click="sendRoleEmail" class="w-full h-9">{{ $l.sendEmail }}</el-button>
               </div>
@@ -1988,12 +1988,53 @@ export default {
       this.checkClick(row)
     },
 
+    checkClickHistory(row) {
+
+      // this.pageLoading = true
+      console.log(row)
+      let rowList = _.cloneDeep(row)
+      this.$set(rowList, 'id', row.survey_id)
+      this.$set(rowList, 'manufacture_id', row.bindManufacturerid)
+      this.$set(rowList, 'manufacture_record_id', row.manufacturer_permary_id)
+      if (Number(rowList.cost_pay_progress)) {
+        rowList.cost_pay_progress = Number(rowList.cost_pay_progress)
+      } else {
+        rowList.cost_pay_progress = 0
+      }
+      this.checkSurvey.list = rowList
+      this.checkviewFile(row.survey_id)
+        .then((r) => {
+          this.checkFormVisible = true
+          const processedFiles = r.data.map((file) => {
+            const { file_url, file_name, file_type } = file
+            this.file_name = file_name
+            this.file_url = file_url
+            this.file_type = file_type
+            const fileExtension = this.getFileExtension(file_name)
+            // 创建新对象并添加额外属性
+            return {
+              ...file, // 拷贝原文件的所有属性
+              file_suffix: fileExtension,
+              attachment_type: '1',
+            }
+          })
+          this.checkSurvey.fileList = _.cloneDeep(processedFiles)
+          this.checkSurvey.editFileList = []
+          this.checkSurvey.editList.attachments = _.cloneDeep(processedFiles)
+
+          this.pageLoading = false
+        })
+        .catch(() => {
+          this.pageLoading = false
+        })
+    },
+
     // 处理历史表格的操作事件
     handleHistoryAction({ action, row }) {
       console.log('History action:', action, row)
 
       if (action === 'check') {
-        this.checkHistoryItem(row)
+        this.checkClickHistory(row)
       } else if (action === 'edit') {
         this.editClick(row, row._index !== undefined ? row._index : null)
       } else if (action === 'auditNew') {

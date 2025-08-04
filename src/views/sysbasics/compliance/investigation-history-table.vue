@@ -43,7 +43,7 @@
 
                 <!-- Address Column -->
                 <div v-else-if="col.id === 'address'" class="max-w-[250px]" :title="item[col.id]">
-                  <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
+                  <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-pre h-8">{{ item[col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">{{ $c.empty }}</div>
                 </div>
 
