@@ -476,7 +476,7 @@
             </el-table-column>
           </el-table>
 
-          <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.curPage" :limit.sync="manufacture.pageSize" @change="getHistoryListCurrent"></z-pagination>
+          <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.curPage" :limit.sync="manufacture.pageSize" @change="getManufacturerList"></z-pagination>
         </div>
       </template>
     </CustomDialog>

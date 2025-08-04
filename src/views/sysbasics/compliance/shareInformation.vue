@@ -5,43 +5,56 @@
       <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
     </div>
 
-    <!-- Content Section with Tables -->
-    <div class="flex-1 p-3 overflow-y-auto">
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 h-full">
+    <!-- Content Section with Folder Tree + File List Layout -->
+    <div class="flex-1 p-3 overflow-hidden">
+      <div class="grid grid-cols-12 gap-6 h-full">
         
-        <!-- Help Manual Section -->
-        <div class="flex flex-col">
-          <ShareHelpManualTable 
-            :data="helpManualList.list" 
-            :isLoading="pageLoading"
+        <!-- Folder Tree Sidebar -->
+        <div class="col-span-3">
+          <FolderTree 
             :showAuth="showAuth"
-            :page="{ page: helpManualList.curPage, pageSize: helpManualList.pageSize }"
-            :total="helpManualList.total"
-            :pagination="pagination"
-            @action="handleHelpManualAction"
-            @row-click="handleHelpManualRowClick"
-            @add-click="addClickHelp"
-            @file-preview="getFilePreview"
-            @page-change="getList"
-            class="main-table"
+            @folder-selected="handleFolderSelected"
           />
         </div>
 
-        <!-- Contact Section -->
-        <div class="flex flex-col">
-          <ShareContactTable 
-            :data="CisCContacterList.list" 
-            :isLoading="pageLoading"
-            :showAuth="showAuth"
-            :page="{ page: CisCContacterList.curPage, pageSize: CisCContacterList.pageSize }"
-            :total="CisCContacterList.total"
-            :pagination="pagination"
-            @action="handleContactAction"
-            @row-click="handleContactRowClick"
-            @add-click="addClickCis"
-            @page-change="getCisList"
-            class="main-table"
-          />
+        <!-- Main Content Area -->
+        <div class="col-span-9 flex flex-col gap-6">
+          
+          <!-- Help Manual Section -->
+          <div class="flex-1 flex flex-col">
+            <ShareHelpManualTable 
+              :data="helpManualList.list" 
+              :isLoading="pageLoading"
+              :showAuth="showAuth"
+              :page="{ page: helpManualList.curPage, pageSize: helpManualList.pageSize }"
+              :total="helpManualList.total"
+              :pagination="pagination"
+              :selectedFolder="selectedFolder"
+              @action="handleHelpManualAction"
+              @row-click="handleHelpManualRowClick"
+              @add-click="addClickHelp"
+              @file-preview="getFilePreview"
+              @page-change="getList"
+              class="main-table"
+            />
+          </div>
+
+          <!-- Contact Section -->
+          <div class="flex-1 flex flex-col">
+            <ShareContactTable 
+              :data="CisCContacterList.list" 
+              :isLoading="pageLoading"
+              :showAuth="showAuth"
+              :page="{ page: CisCContacterList.curPage, pageSize: CisCContacterList.pageSize }"
+              :total="CisCContacterList.total"
+              :pagination="pagination"
+              @action="handleContactAction"
+              @row-click="handleContactRowClick"
+              @add-click="addClickCis"
+              @page-change="getCisList"
+              class="main-table"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -56,6 +69,40 @@
     >
       <template #content>
         <div class="flex flex-col gap-6">
+          <!-- Folder Selection -->
+          <div class="bg-green-50 p-4 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                  <i class="fa fa-folder text-white"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">{{ $l.selectFolder }}</h4>
+                  <p class="text-sm text-gray-600">Chọn thư mục để lưu trữ tài liệu</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <el-select 
+                v-model="addHelpManual.selectedFolderId" 
+                :placeholder="$l.selectFolder"
+                class="w-full"
+              >
+                <el-option
+                  v-for="folder in availableFolders"
+                  :key="folder.id"
+                  :label="folder.folder_name"
+                  :value="folder.id"
+                >
+                  <div class="flex items-center gap-2">
+                    <i :class="folder.folder_icon" :style="{ color: folder.folder_color }"></i>
+                    <span>{{ folder.folder_name }}</span>
+                  </div>
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+
           <div class="bg-blue-50 p-4 rounded-lg">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -201,6 +248,7 @@ import filePreviews from '../../_common/filePreviews.vue'
 import CustomDialog from '../../_common/CustomDialog.vue'
 import ShareHelpManualTable from './share-help-manual-table.vue'
 import ShareContactTable from './share-contact-table.vue'
+import FolderTree from './components/FolderTree.vue'
 
 export default {
   name: 'shareInformation',
@@ -214,6 +262,7 @@ export default {
     CustomDialog,
     ShareHelpManualTable,
     ShareContactTable,
+    FolderTree,
   },
   data() {
     return {
@@ -226,6 +275,8 @@ export default {
       showPreview: false,
       fileList: [],
       fileUrl: null,
+      selectedFolder: null,
+      availableFolders: [],
       userAuth: [], //保存用户权限
       showAuth: {
         //用于权限控制，搭配v-show控制界面上的操作按钮是否展示
@@ -268,6 +319,11 @@ export default {
             title: this.$l.serialNumbers,
             key: 'serialNumbers',
             width: 200,
+          },
+          {
+            title: this.$l.mainHeader,
+            key: 'main_header',
+            width: 280,
           },
           {
             title: this.$l.manualName,
@@ -330,11 +386,18 @@ export default {
       addHelpManual: {
         list: [],
         fileList: [],
+        mainHeader: '',
+        selectedFolderId: null, // Thêm field để chọn folder
         optionsList: '',
         pageSize: 15,
         curPage: 1,
         total: 0,
         columns: [
+          {
+            title: this.$l.mainHeader,
+            key: 'main_header',
+            width: 280,
+          },
           {
             title: this.$l.manualName,
             key: 'file_name',
@@ -390,6 +453,13 @@ export default {
     }
   },
   methods: {
+    // Handle folder selection from FolderTree
+    handleFolderSelected(folder) {
+      console.log('Folder selected:', folder)
+      this.selectedFolder = folder
+      this.getList() // Reload data with folder filter
+    },
+
     // Handle actions from Help Manual Table
     handleHelpManualAction({ action, row }) {
       console.log('Help Manual action:', action, row)
@@ -428,10 +498,17 @@ export default {
     },
     // 获取帮助手册
     getList() {
-      this.$request(api.baseUrl + '/Compliance/complianceAttachments/getStudyFile', {
+      const params = {
         page: this.helpManualList.curPage,
         pageSize: this.helpManualList.pageSize,
-      })
+      }
+      
+      // Thêm filter theo folder nếu có folder được chọn
+      if (this.selectedFolder && this.selectedFolder.id) {
+        params.folderId = this.selectedFolder.id
+      }
+      
+      this.$request(api.baseUrl + '/Compliance/complianceAttachments/getStudyFile', params)
         .then((r) => {
           console.log(r)
           this.helpManualList.list = r.data.list
@@ -440,6 +517,19 @@ export default {
         })
         .catch(() => {
           this.pageLoading = false
+        })
+    },
+
+    // Load available folders for dropdown
+    loadFolders() {
+      this.$request(api.baseUrl + '/Compliance/complianceFolders/getFolders', {}, 'get')
+        .then((r) => {
+          if (r.success) {
+            this.availableFolders = r.data || []
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to load folders:', error)
         })
     },
 
@@ -482,9 +572,17 @@ export default {
         })
         return
       }
+      if (!this.addHelpManual.selectedFolderId) {
+        this.$message({
+          type: 'info',
+          message: this.$l.selectFolder,
+        })
+        return
+      }
       const formData = new FormData()
       formData.append('file', this.fileList[0])
       formData.append('attachment_type', this.addHelpManual.fileList[0].attachment_type)
+      formData.append('folder_id', this.addHelpManual.selectedFolderId) // Thay thế main_header bằng folder_id
       this.$request(api.baseUrl + '/Compliance/complianceAttachments/uploadAttachment', formData, 'post')
         .then((r) => {
           console.log(r)
@@ -494,6 +592,7 @@ export default {
           })
           this.addHelpFormVisible = false
           this.addHelpManual.fileList = []
+          this.addHelpManual.selectedFolderId = null // Reset folder selection
           this.clearFileInput()
           this.getList()
         })
@@ -591,6 +690,7 @@ export default {
           let fileInfo = {
             file_name: this.fileList[i].name,
             file_suffix: fileExtension,
+            main_header: this.addHelpManual.mainHeader,
             attachment_type: 3,
             fileContent: base64String,
           }
@@ -607,6 +707,7 @@ export default {
     removeClick() {
       console.log(this.addHelpManual.fileList)
       this.addHelpManual.fileList = []
+      this.addHelpManual.mainHeader = ''
       this.clearFileInput()
       console.log(this.fileList)
     },
@@ -684,6 +785,7 @@ export default {
     this.getList()
     this.getCisList()
     this.getUserAuth()
+    this.loadFolders() // Load available folders
   },
   watch: {
     userAuth: {

@@ -160,6 +160,7 @@ export default {
       columns: [
         { id: 'index', title: '#', width: 60, textAlign: 'left' },
         { id: 'status', title: 'status', width: 120, textAlign: 'left' },
+        { id: 'survey_year', title: 'year', width: 120, textAlign: 'left' },
         { id: 'issue_type', title: 'issue_type', width: 180, textAlign: 'left' },
         { id: 'subheader', title: 'subheader', width: 180, textAlign: 'left' },
         { id: 'code_provision', title: 'code_provision', width: 300, textAlign: 'left' },

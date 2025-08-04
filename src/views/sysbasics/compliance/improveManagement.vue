@@ -146,6 +146,11 @@
                 <el-input v-model="form.corrective_principal" class="rounded-md" />
               </div>
 
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.surveyYear }}</label>
+                <el-date-picker v-model="form.survey_year" type="year" :placeholder="$c.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
+              </div>
+
               <!-- <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $l.status }}</label>
                 <el-select v-model="form.status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
@@ -351,6 +356,11 @@
               <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $l.pic }}</label>
                 <el-input v-model="editForm.corrective_principal" class="rounded-md" />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $c.surveyYear }}</label>
+                <el-date-picker v-model="editForm.survey_year" type="year" :placeholder="$c.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
               </div>
 <!-- 
               <div class="flex flex-col gap-2">
@@ -804,6 +814,7 @@ export default {
         subheader: '',
         code_provision: '',
         corrective_principal: '',
+        survey_year: '',
         deadline: '',
         status: '',
         rec_status: '1',
@@ -846,6 +857,7 @@ export default {
         subheader: '',
         code_provision: '',
         corrective_principal: '',
+        survey_year: '',
         deadline: '',
         status: '',
       },
@@ -1290,6 +1302,7 @@ export default {
               subheader: this.editForm.subheader,
               code_provision: this.editForm.code_provision,
               corrective_principal: this.editForm.corrective_principal,
+              survey_year: this.editForm.survey_year,
               deadline: this.editForm.deadline,
               status: this.editForm.status,
               is_valid: this.editForm.is_valid,
@@ -1330,6 +1343,7 @@ export default {
         subheader: '',
         code_provision: '',
         corrective_principal: '',
+        survey_year: '',
         deadline: '',
         status: '',
         rec_status: '1',
@@ -1360,6 +1374,7 @@ export default {
       const subheader = this.form.subheader
       const code_provision = this.form.code_provision
       const corrective_principal = this.form.corrective_principal
+      const survey_year = this.form.survey_year
       // const status = this.form.status
       const rec_status = this.form.rec_status
       const is_valid = this.form.is_valid
@@ -1401,6 +1416,7 @@ export default {
               subheader: subheader,
               code_provision: code_provision,
               corrective_principal: corrective_principal,
+              survey_year: survey_year,
               status: status,
               is_valid: is_valid,
               rec_status: rec_status,

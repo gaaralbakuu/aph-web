@@ -47,6 +47,20 @@
             </template>
           </el-table-column>
 
+          <!-- Main Header Column -->
+          <el-table-column 
+            prop="main_header" 
+            :label="$l.mainHeader" 
+            min-width="180"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span class="text-gray-900 font-medium">
+                {{ scope.row.main_header || $c.empty }}
+              </span>
+            </template>
+          </el-table-column>
+
           <!-- File Name Column -->
           <el-table-column 
             prop="file_name" 
