@@ -103,9 +103,9 @@
                 <!-- Attachments Column -->
                 <template v-else-if="col.id === 'attachments'">
                   <div class="flex items-center gap-2">
-                    <button v-if="item.attachment_count && item.attachment_count > 0" @click.stop="handleViewAttachments(item)" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs transition-colors">
+                    <button v-if="item[col.id].length > 0" class="flex items-center gap-1 text-xs transition-colors">
                       <i class="el-icon-paperclip"></i>
-                      <span>{{ item.attachment_count }} {{ $l.files }}</span>
+                      <span>{{ item[col.id].length }} {{ $l.files }}</span>
                     </button>
                     <span v-else class="text-gray-300 italic text-xs">{{ $l.noAttachments }}</span>
                   </div>

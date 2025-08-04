@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-1 flex flex-col">
     <!-- Header -->
     <div class="px-6 py-4 border-b border-gray-100">
       <div class="flex items-center justify-between">
@@ -25,7 +25,7 @@
 
     <!-- Table Container -->
     <div class="flex-1 overflow-hidden">
-      <div class="overflow-y-auto" style="max-height: 500px;">
+      <div class="overflow-y-auto h-full">
         <el-table 
           :data="data" 
           v-loading="isLoading"

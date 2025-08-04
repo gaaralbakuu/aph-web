@@ -12,16 +12,18 @@
         <!-- Folder Tree Sidebar -->
         <div class="col-span-3">
           <FolderTree 
+            ref="folderTree"
             :showAuth="showAuth"
             @folder-selected="handleFolderSelected"
+            :action-refresh="refreshAfterFolderChange"
           />
         </div>
 
         <!-- Main Content Area -->
-        <div class="col-span-9 flex flex-col gap-6">
+        <div class="col-span-9 flex flex-col gap-6 flex-1 overflow-hidden">
           
           <!-- Help Manual Section -->
-          <div class="flex-1 flex flex-col">
+          <div class="flex-1 flex flex-col overflow-hidden">
             <ShareHelpManualTable 
               :data="helpManualList.list" 
               :isLoading="pageLoading"
@@ -40,7 +42,7 @@
           </div>
 
           <!-- Contact Section -->
-          <div class="flex-1 flex flex-col">
+          <div class="flex-1 flex flex-col overflow-hidden">
             <ShareContactTable 
               :data="CisCContacterList.list" 
               :isLoading="pageLoading"
@@ -522,15 +524,27 @@ export default {
 
     // Load available folders for dropdown
     loadFolders() {
+      console.log('Loading folders...')
       this.$request(api.baseUrl + '/Compliance/complianceFolders/getFolders', {}, 'get')
         .then((r) => {
-          if (r.success) {
             this.availableFolders = r.data || []
-          }
         })
         .catch((error) => {
           console.error('Failed to load folders:', error)
         })
+    },
+
+    // Refresh folder stats in FolderTree component
+    refreshFolderStats() {
+      if (this.$refs.folderTree && this.$refs.folderTree.getFolderStats) {
+        this.$refs.folderTree.getFolderStats()
+      }
+    },
+
+    // Function to call when folder is created/deleted/updated
+    refreshAfterFolderChange() {
+      this.loadFolders() // Refresh dropdown options
+      this.getList() // Refresh file list
     },
 
     // APE SEA主要联系人
@@ -595,6 +609,7 @@ export default {
           this.addHelpManual.selectedFolderId = null // Reset folder selection
           this.clearFileInput()
           this.getList()
+          this.refreshFolderStats() // Refresh folder stats after successful upload
         })
         .catch(() => {
           this.$message({
@@ -747,6 +762,7 @@ export default {
                 message: this.$c.success,
               })
               this.getList()
+              this.refreshFolderStats() // Refresh folder stats after deletion
             })
             .catch(() => {
               this.$message({
