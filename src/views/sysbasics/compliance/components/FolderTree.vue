@@ -189,7 +189,7 @@ export default {
     }
   },
   created() {
-    this.fetchFolders()
+    // this.fetchFolders()
     this.getFolderStats()
   },
   methods: {
@@ -212,6 +212,7 @@ export default {
         if (response.data) {
           this.folders = response.data
           this.totalFiles = response.data.reduce((sum, folder) => sum + (folder.file_count || 0), 0)
+
         }
       } catch (error) {
         console.error('Error fetching folder stats:', error)
