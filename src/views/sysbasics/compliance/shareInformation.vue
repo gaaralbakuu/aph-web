@@ -234,19 +234,11 @@
       </template>
     </CustomDialog>
 
-    <!-- File Preview Dialog -->
-    <filePreviews 
-      v-if="fileUrl" 
-      :file-url="fileUrl" 
-      :visible="dialogVisible" 
-      @update:visible="dialogVisible = $event" 
-    />
   </div>
 </template>
 <script>
 import { _, api, zTable, zPagination, zFormDialog, initFuncs, zForm } from '@/views/_common'
 import axios from 'axios'
-import filePreviews from '../../_common/filePreviews.vue'
 import CustomDialog from '../../_common/CustomDialog.vue'
 import ShareHelpManualTable from './share-help-manual-table.vue'
 import ShareContactTable from './share-contact-table.vue'
@@ -260,7 +252,6 @@ export default {
     zFormDialog,
     initFuncs,
     zForm,
-    filePreviews,
     CustomDialog,
     ShareHelpManualTable,
     ShareContactTable,
@@ -272,11 +263,8 @@ export default {
       pageLoading: false,
       addHelpFormVisible: false,
       addCisFormVisible: false,
-      dialogVisible: false,
       selectedFile: null,
-      showPreview: false,
       fileList: [],
-      fileUrl: null,
       selectedFolder: null,
       availableFolders: [],
       userAuth: [], //保存用户权限
@@ -467,7 +455,7 @@ export default {
       console.log('Help Manual action:', action, row)
       
       if (action === 'view') {
-        this.getFilePreview(row.file_url)
+        this.downloadFile(row.file_url, row.file_name)
       } else if (action === 'delete') {
         this.deleteClick(row, row._index !== undefined ? row._index : null)
       }
@@ -476,7 +464,7 @@ export default {
     handleHelpManualRowClick(row) {
       // Handle row click if needed
       console.log('Help Manual row clicked:', row)
-      this.getFilePreview(row.file_url)
+      this.downloadFile(row.file_url, row.file_name)
     },
 
     // Handle actions from Contact Table
@@ -730,13 +718,22 @@ export default {
       this.$refs.fileinput.value = '' // 清空文件输入框
     },
 
-    // 预览文件
-    getFilePreview(url) {
-      this.pageLoading = true
-      const urls = api.baseUrl + '/' + url
-      this.fileUrl = urls
-      this.dialogVisible = true
-      this.pageLoading = false
+    // Tải xuống file
+    downloadFile(url, fileName) {
+      const fullUrl = api.baseUrl + '/' + url
+      
+      // Tạo element a ẩn để trigger download
+      const link = document.createElement('a')
+      link.href = fullUrl
+      link.download = fileName || 'download'
+      link.style.display = 'none'
+      
+      // Thêm vào DOM và click
+      document.body.appendChild(link)
+      link.click()
+      
+      // Cleanup
+      document.body.removeChild(link)
     },
     // 删除附件
     deleteClick(row, index) {
@@ -788,14 +785,6 @@ export default {
         this.userAuth = r.data[0]
       })
     },
-  },
-  beforeDestroy() {
-    // 清除事件监听器
-    if (this.$refs.previewContainer) {
-      this.$refs.previewContainer.removeEventListener('contextmenu', () => {})
-      this.$refs.previewContainer.removeEventListener('touchstart', () => {})
-      this.$refs.previewContainer.removeEventListener('touchend', () => {})
-    }
   },
   created() {
     this.getList()

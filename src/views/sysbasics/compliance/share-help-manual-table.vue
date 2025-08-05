@@ -86,9 +86,9 @@
           <el-table-column fixed="right" :label="$c.operation" width="120">
             <template slot-scope="scope">
               <div class="flex items-center gap-2">
-                <!-- View Button -->
-                <button @click.stop="handleAction('view', scope.row)" class="h-8 w-8 flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full transition-colors duration-200" :title="$c.view">
-                  <i class="fa fa-eye text-sm"></i>
+                <!-- Download Button -->
+                <button @click.stop="handleAction('view', scope.row)" class="h-8 w-8 flex items-center justify-center bg-green-50 hover:bg-green-100 text-green-600 rounded-full transition-colors duration-200" :title="$l.download">
+                  <i class="fa fa-download text-sm"></i>
                 </button>
 
                 <!-- Delete Button -->
