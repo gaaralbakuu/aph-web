@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueCompositionAPI from '@vue/composition-api'
 import Cookies from 'js-cookie'
 import router from '@/router'
 import store from '@/store'
@@ -30,6 +31,8 @@ import dialogEscPlugin from '@/utils/dialogEscPlugin.js'
 
 import '@/utils/filter'
 
+
+Vue.use(VueCompositionAPI)
 Vue.use(VueI18n)
 const i18n = new VueI18n({
   // 默认语言
