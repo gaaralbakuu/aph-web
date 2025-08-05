@@ -727,6 +727,7 @@ export default {
       link.href = fullUrl
       link.download = fileName || 'download'
       link.style.display = 'none'
+      link.target = '_blank' // Mở trong tab mới nếu cần
       
       // Thêm vào DOM và click
       document.body.appendChild(link)
