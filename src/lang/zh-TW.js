@@ -461,6 +461,9 @@ export default {
     pwdSuccess: '修改成功，下次請使用新密碼登錄',
   },
   investigation: {
+    edit_notices_title: '編輯提醒/警告函號',
+    edit_notices_official_reminder: '正式提醒函號',
+    edit_notices_warning_letter: '警告函號',
     dueDiligenceInvestigation: '盡職調查',
     manage: '管理',
     backToPreviousPage: '返回上一頁',
@@ -1276,6 +1279,7 @@ export default {
     closed: '已關閉',
     investigationHistory: '調查歷史',
     dataLoadFailed: '數據加載失敗',
+  edit_notices: '編輯提醒/警告數量',
   },
   chooseUser: {
     title: '選擇用戶',

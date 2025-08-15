@@ -587,6 +587,30 @@
       </template>
     </CustomDialog>
 
+    <!-- 编辑提醒/警告函号 -->
+    <CustomDialog :title="$l.edit_notices || 'Edit Notices'" :visible.sync="editNoticesVisible" :clickOutside="false" width="100%" :maxWidth="'500px'">
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.edit_notices_official_reminder }}</label>
+            <el-input v-model="editNoticesForm.official_reminder_number" :placeholder="$l.official_reminder_number" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-medium text-sm text-gray-700 dark:text-gray-300">{{ $l.edit_notices_warning_letter }}</label>
+            <el-input v-model="editNoticesForm.warning_letter_number" :placeholder="$l.warning_letter_number" />
+          </div>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="flex gap-3 justify-end">
+          <el-button @click="editNoticesVisible = false" class="rounded-md">{{ $c.cancel }}</el-button>
+          <el-button type="primary" @click="submitEditNotices" class="rounded-md">{{ $c.confirm }}</el-button>
+        </div>
+      </template>
+    </CustomDialog>
+
     <!-- 预览 -->
     <filePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible" @update:visible="dialogVisible = $event" />
   </div>
@@ -639,6 +663,14 @@ export default {
       isPdf: false,
       isText: false,
       fileContent: '',
+      // Edit notices dialog state
+      editNoticesVisible: false,
+      editNoticesForm: {
+        manufacturer_id: '',
+        official_reminder_number: '',
+        warning_letter_number: '',
+      },
+      editNoticesIndex: null,
       deleteFalg: 'N',
       currentManufacturerId: null, // 当前查看历史的manufacture_id
       fileInfo: {},
@@ -1450,6 +1482,8 @@ export default {
         }
 
         this.historyClick(row, row._index !== undefined ? row._index : null)
+      } else if (action === 'edit_notices') {
+        this.editNotices(row, row._index !== undefined ? row._index : null)
       } else if (action === 'auditNew') {
         this.auditNew(row, row._index !== undefined ? row._index : null)
       } else if (action === 'auditClick') {
@@ -1936,6 +1970,52 @@ export default {
             message: this.$l.modifyFailed,
           })
         })
+    },
+
+    // 打开编辑提醒/警告函号对话框
+    editNotices(row, index) {
+      if (!row) return
+      this.editNoticesForm.manufacturer_id = row.manufacturer_id || ''
+      // Use existing property names if present on row
+      this.editNoticesForm.official_reminder_number = row.official_reminder_number || row.official_reminder_number || ''
+      this.editNoticesForm.warning_letter_number = row.warning_letter_number || row.warning_letter_number || ''
+      this.editNoticesIndex = index
+      this.editNoticesVisible = true
+    },
+
+    // 提交编辑提醒/警告函号
+    submitEditNotices() {
+      const payload = {
+        manufacture_id: this.editNoticesForm.manufacturer_id,
+        official_reminder_number: this.editNoticesForm.official_reminder_number,
+        warning_letter_number: this.editNoticesForm.warning_letter_number,
+      }
+
+      this.$confirm(this.$l.confirmEdit, this.$l.title, {
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
+        type: 'warning',
+      })
+        .then(() => {
+          // reuse addSurvey endpoint which handles update
+          this.$request(api.baseUrl + '/Compliance/complianceSurvey/editNotices', payload, 'post')
+            .then(() => {
+              this.$message({ type: 'success', message: this.$l.modifySuccees })
+              // update local list if index known
+              if (this.editNoticesIndex !== null && this.tableList.list[this.editNoticesIndex]) {
+                this.$set(this.tableList.list[this.editNoticesIndex], 'official_reminder_number', payload.official_reminder_number)
+                this.$set(this.tableList.list[this.editNoticesIndex], 'warning_letter_number', payload.warning_letter_number)
+              } else {
+                // fallback: refresh list
+                this.getList()
+              }
+              this.editNoticesVisible = false
+            })
+            .catch(() => {
+              this.$message({ type: 'info', message: this.$l.modifyFailed })
+            })
+        })
+        .catch(() => {})
     },
 
     /* 查看历史 */

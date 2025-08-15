@@ -587,6 +587,9 @@ export default {
     pwdSuccess: 'Sửa đổi thành công. Vui lòng đăng nhập bằng mật khẩu mới lần sau',
   },
   investigation: {
+    edit_notices_title: 'Chỉnh sửa số thư',
+    edit_notices_official_reminder: 'Số thư nhắc nhở chính thức',
+    edit_notices_warning_letter: 'Số thư cảnh báo',
     dueDiligenceInvestigation: 'Điều tra thẩm định',
     manage: 'Quản lý',
     backToPreviousPage: 'Quay lại trang trước',
@@ -1122,6 +1125,7 @@ export default {
     closed: 'Đã đóng',
     investigationHistory: 'Lịch sử điều tra',
     dataLoadFailed: 'Tải dữ liệu thất bại',
+  edit_notices: 'Chỉnh sửa số thư',
   },
   ShareHelpManualTable: {
     manageDocumentGuides: 'Quản lý tài liệu hướng dẫn',

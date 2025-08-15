@@ -466,6 +466,9 @@ export default {
     remark: '备注',
   },
   investigation: {
+    edit_notices_title: '编辑提醒/警告函号',
+    edit_notices_official_reminder: '正式提醒函号',
+    edit_notices_warning_letter: '警告函号',
     backToPreviousPage: '返回上一页',
     manufactureName: '合作伙伴名称',
     address: '地址',
@@ -1300,6 +1303,7 @@ export default {
     closed: '已关闭',
     investigationHistory: '调查历史',
     dataLoadFailed: '数据加载失败',
+  edit_notices: '编辑提醒/警告数量',
   },
   chooseUser: {
     title: '选择用户',

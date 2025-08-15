@@ -123,15 +123,20 @@
 
                 <!-- Action Column -->
                 <template v-else-if="(col.originalId || col.id) === 'action'">
-                  <div class="flex justify-end items-center">
-                    <el-button
-                      type="text"
-                      class="!p-2 !text-gray-500 !border-0 !rounded hover:!text-blue-500 hover:!bg-blue-50 !transition-all dark:hover:!bg-blue-900/20"
-                      @click="handleAction('history', item)"
-                    >
-                      <i class="el-icon-date w-3.5 text-sm text-gray-400"></i>
-                    </el-button>
-                  </div>
+                    <div class="flex justify-end items-center">
+                      <el-dropdown trigger="click">
+                        <el-button
+                          type="text"
+                          class="!p-2 !text-gray-500 !border-0 !rounded hover:!text-blue-500 hover:!bg-blue-50 !transition-all dark:hover:!bg-blue-900/20"
+                        >
+                          <i class="el-icon-more w-3.5 text-sm text-gray-400"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item @click.native="handleAction('history', item)">{{ $l.history }}</el-dropdown-item>
+                          <el-dropdown-item @click.native="handleAction('edit_notices', item)">{{ $l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                    </div>
                 </template>
 
                 <!-- Default Columns -->
@@ -415,7 +420,7 @@ export default {
       if (value < 0.3) {
         return { main: 'bg-red-500', sub: 'bg-red-50' }
       } else if (value < 0.8) {
-        return { main: 'bg-orange-500', sub: 'bg-orange-50' }
+        return { main: 'bg-yellow-500', sub: 'bg-yellow-50' }
       } else {
         return { main: 'bg-green-500', sub: 'bg-green-50' }
       }

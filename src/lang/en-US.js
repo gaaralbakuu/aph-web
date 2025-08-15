@@ -474,6 +474,9 @@ export default {
     auditResult: 'Audit Result',
     isValid: 'Is Activated',
     title: 'Investigation',
+    edit_notices_title: 'Edit Notices',
+    edit_notices_official_reminder: 'Official Reminder Number',
+    edit_notices_warning_letter: 'Warning Letter Number',
     confirmAdd: 'Are you sure you want to add this data?',
     confirmEdit: 'Are you sure you want to edit this data?',
     confirmAudit: 'Are you sure you want to audit this data?',
@@ -703,7 +706,7 @@ export default {
     pleaseEnterAName: 'Please enter a name',
     pleaseEnterAMailbox: 'Please enter an email',
     pleaseEnterThePhone: 'Please enter the phone number',
-    
+
     // Folder Management
     folders: 'Folders',
     createFolder: 'Create Folder',
@@ -721,7 +724,7 @@ export default {
     emptyFolder: 'Empty folder',
     defaultFolder: 'Default folder',
     allFiles: 'All files',
-    
+
     // Table specific keys
     manageDocumentGuides: 'Manage Document Guides',
     mainContactDirectory: 'Main Contact Directory',
@@ -1200,6 +1203,7 @@ export default {
     closed: 'Closed',
     investigationHistory: 'Investigation History',
     dataLoadFailed: 'Data load failed',
+    edit_notices: 'Edit Notices',
   },
   chooseUser: {
     title: 'Choose User',
