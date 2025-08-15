@@ -255,18 +255,27 @@
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="'Select Manufacturer'" :visible.sync="dialogSelectManufacture">
+    <CustomDialog :title="'Select Manufacturer'" :visible.sync="dialogSelectManufacture" :height="'100%'">
       <template #content>
-        <el-input v-show="false" v-model="manufacture.query.manufacture_name"></el-input>
-        <el-button v-show="false" @click="getManufactureList"></el-button>
-        <el-table :data="manufacture.tableData">
-          <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key"></el-table-column>
-          <el-table-column align="right">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="flex flex-col overflow-hidden h-full">
+          <div class="flex-1 overflow-auto">
+            <el-input v-show="false" v-model="manufacture.query.manufacture_name"></el-input>
+            <el-button v-show="false" @click="getManufactureList"></el-button>
+            <el-table :data="manufacture.tableData">
+              <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key"></el-table-column>
+              <el-table-column align="right">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+
+          <!-- Pagination for manufacturer list -->
+          <div class="mt-3">
+            <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.query.page" :limit.sync="manufacture.query.pageSize" @change="getManufactureList" />
+          </div>
+        </div>
       </template>
     </CustomDialog>
 
@@ -362,7 +371,7 @@
                 <label class="font-light text-sm text-black">{{ $c.surveyYear }}</label>
                 <el-date-picker v-model="editForm.survey_year" type="year" :placeholder="$c.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
               </div>
-<!-- 
+              <!-- 
               <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $l.status }}</label>
                 <el-select v-model="editForm.status" :placeholder="$l.pleaseSelect" class="rounded-md w-full">
@@ -450,14 +459,13 @@
           <div class="bg-green-50 p-4 rounded-lg" v-if="rectificationData.attachments && rectificationData.attachments.length > 0">
             <h3 class="text-lg font-semibold mb-4 text-green-800">{{ $l.attachments }}</h3>
             <div class="space-y-2">
-              <div v-for="(attachment, index) in rectificationData.attachments" :key="index" 
-                   class="flex items-center justify-between bg-white p-3 rounded border hover:bg-gray-50">
+              <div v-for="(attachment, index) in rectificationData.attachments" :key="index" class="flex items-center justify-between bg-white p-3 rounded border hover:bg-gray-50">
                 <div class="flex items-center space-x-3">
                   <i class="fa fa-file-o text-gray-500"></i>
                   <div>
                     <p class="text-sm font-medium text-gray-900">{{ attachment.file_name }}</p>
                     <p class="text-xs text-gray-500">
-                      {{ attachment.file_type }} • {{ formatFileSize(attachment.file_size) }} • 
+                      {{ attachment.file_type }} • {{ formatFileSize(attachment.file_size) }} •
                       {{ attachment.create_time ? new Date(attachment.create_time).toLocaleDateString() : '' }}
                     </p>
                   </div>
@@ -720,6 +728,7 @@ export default {
           },
         ],
         tableData: [],
+        total: 0,
         query: {
           page: 1,
           pageSize: 15,
@@ -1099,7 +1108,7 @@ export default {
       if (action === 'audit') {
         this.passornot(row)
       }
-      if(action === 'rectification'){
+      if (action === 'rectification') {
         this.viewRectification(row)
       }
     },
@@ -1118,6 +1127,12 @@ export default {
         this.issueType = r.data.list
         console.log(this.issueType)
       })
+    },
+    showManufacture() {
+      // Reset to first page and open dialog
+      this.manufacture.query.page = 1
+      this.dialogSelectManufacture = true
+      this.getManufactureList()
     },
     formatIsFinish(row, column, cellValue, index) {
       return cellValue === 'N' ? this.$l.unfinished : cellValue === 'Y' ? this.$l.finish : ''
@@ -1232,7 +1247,7 @@ export default {
         api.baseUrl + '/Compliance/complianceIssues/getIssuesDetail',
         {
           ...this.getDetailsQuery,
-          id: id
+          id: id,
         },
         'get'
       ).then((response) => {
@@ -1256,32 +1271,32 @@ export default {
       console.log(this.editForm)
       this.editVisible = true
     },
-    
+
     // 删除问题
     deleteIssue(row) {
       this.$confirm(this.$l.confirmDelete, this.$c.oprConfirm, {
         confirmButtonText: this.$c.confirm,
         cancelButtonText: this.$c.cancel,
-        type: 'warning'
-      }).then(() => {
-        this.$request(
-          api.baseUrl + '/Compliance/complianceIssues/deleteIssue',
-          { issueId: row.id },
-          'post'
-        ).then((response) => {
-          if (response.httpCode === 200) {
-            this.$message.success(this.$l.deleteSuccess)
-            // Refresh the detail table
-            this.getDetail()
-          } else {
-            this.$message.error(response.message || this.$l.deleteFailed)
-          }
-        }).catch((error) => {
-          this.$message.error(error.response?.data?.message || this.$l.deleteFailed)
-        })
-      }).catch(() => {
-        // User cancelled
+        type: 'warning',
       })
+        .then(() => {
+          this.$request(api.baseUrl + '/Compliance/complianceIssues/deleteIssue', { issueId: row.id }, 'post')
+            .then((response) => {
+              if (response.httpCode === 200) {
+                this.$message.success(this.$l.deleteSuccess)
+                // Refresh the detail table
+                this.getDetail()
+              } else {
+                this.$message.error(response.message || this.$l.deleteFailed)
+              }
+            })
+            .catch((error) => {
+              this.$message.error(error.response?.data?.message || this.$l.deleteFailed)
+            })
+        })
+        .catch(() => {
+          // User cancelled
+        })
     },
     //提交修改结果
     submitEdit() {
@@ -1357,7 +1372,6 @@ export default {
       this.form.name_en = ''
       this.dialogSelectManufacture = false
       this.addFormVisible = false
-
     },
 
     //创建取消
@@ -1442,25 +1456,27 @@ export default {
           this.isSubmitting = false
         })
     },
-    
+
     // 查看整改信息
     viewRectification(row) {
       this.$request(
         api.baseUrl + '/Compliance/complianceIssues/getRectificationInfo',
         {
-          issueId: row.id
+          issueId: row.id,
         },
         'get'
-      ).then((response) => {
-        if (response.httpCode === 200) {
-          this.rectificationData = response.data
-          this.rectificationVisible = true
-        } else {
-          this.$message.error(response.message || this.$l.loadDataFailed)
-        }
-      }).catch((error) => {
-        this.$message.error(error.response?.data?.message || this.$l.loadDataFailed)
-      })
+      )
+        .then((response) => {
+          if (response.httpCode === 200) {
+            this.rectificationData = response.data
+            this.rectificationVisible = true
+          } else {
+            this.$message.error(response.message || this.$l.loadDataFailed)
+          }
+        })
+        .catch((error) => {
+          this.$message.error(error.response?.data?.message || this.$l.loadDataFailed)
+        })
     },
 
     // 获取状态类型
@@ -1509,16 +1525,23 @@ export default {
       this.file.fileUrl = api.baseUrl + '/' + attachment.file_url
       this.fileDialogVisible = true
     },
-    
+
     checkField, //多级表头渲染组件
     showManufacture() {
       this.dialogSelectManufacture = true
       this.getManufactureList()
     },
     getManufactureList() {
-      this.$request(api.baseUrl + '/Compliance/complianceManufacturer/getlist').then((response) => {
-        this.manufacture.tableData = response.data.list
-        console.log(this.manufacture.tableData)
+      const params = {
+        page: this.manufacture.query.page,
+        pageSize: this.manufacture.query.pageSize,
+        manufacture_name: this.manufacture.query.manufacture_name,
+      }
+      this.$request(api.baseUrl + '/Compliance/complianceManufacturer/getlist', params, 'get').then((response) => {
+        // Assume API returns { list: [...], total: number }
+        this.manufacture.tableData = response.data.list || []
+        this.manufacture.total = response.data.total || (response.data.list ? response.data.list.length : 0)
+        console.log('manufacture list', this.manufacture.tableData, 'total', this.manufacture.total)
       })
     },
     selectManufacture(index, item) {
