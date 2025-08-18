@@ -1036,6 +1036,7 @@ export default {
     corrective_principal: 'Người chịu trách nhiệm khắc phục',
     pic: 'Người phụ trách',
     deadline_date: 'Hạn chót',
+  survey_year: 'Năm khảo sát',
 
     // Trạng thái
     status: 'Trạng thái',

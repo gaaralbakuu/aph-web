@@ -1199,6 +1199,8 @@ export default {
     pic: '負責人',
     deadlin_date: '截止日期',
 
+  survey_year: '調查年份',
+
     // 狀態
     status: '狀態',
     on_track: '按計劃',

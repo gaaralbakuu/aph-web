@@ -1223,6 +1223,8 @@ export default {
     pic: '负责人',
     deadline_date: '截止日期',
 
+  survey_year: '调查年份',
+
     // 状态
     status: '状态',
     on_track: '按计划',

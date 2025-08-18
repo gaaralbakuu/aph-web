@@ -1122,6 +1122,7 @@ export default {
     pic: 'Person in Charge',
     deadline_date: 'Deadline',
     year: 'Year',
+  survey_year: 'Survey Year',
 
     // Status
     status: 'Status',

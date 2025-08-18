@@ -72,6 +72,22 @@
                     {{ $c.empty }}
                   </span>
                 </template>
+                
+                <!-- Year Column -->
+                <template v-else-if="col.id === 'short_year'">
+                  <span v-if="item['survey_year']" class="text-xs whitespace-normal">{{ new Date(item['survey_year']).getFullYear() }}</span>
+                  <span v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </span>
+                </template>
+
+                <!-- Survey Year Column -->
+                <template v-else-if="col.id === 'survey_year'">
+                  <span v-if="item[col.id]" class="text-xs whitespace-normal">{{ formatDate(item[col.id]) }}</span>
+                  <span v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </span>
+                </template>
 
                 <!-- Status Column -->
                 <template v-else-if="col.id === 'status'">
@@ -160,7 +176,8 @@ export default {
       columns: [
         { id: 'index', title: '#', width: 60, textAlign: 'left' },
         { id: 'status', title: 'status', width: 120, textAlign: 'left' },
-        { id: 'survey_year', title: 'year', width: 120, textAlign: 'left' },
+        { id: 'short_year', title: 'year', width: 120, textAlign: 'left' },
+        { id: 'survey_year', title: 'survey_year', width: 120, textAlign: 'left' },
         { id: 'issue_type', title: 'issue_type', width: 180, textAlign: 'left' },
         { id: 'subheader', title: 'subheader', width: 180, textAlign: 'left' },
         { id: 'code_provision', title: 'code_provision', width: 300, textAlign: 'left' },
