@@ -349,3 +349,44 @@ this.$request(url, data, 'post')
 - 新建页面组件
 - 编写组件内容
 - 定义路由
+
+## 📚 Documentation - Tài liệu dự án
+
+### 📁 Thư mục docs/
+```
+docs/
+├── CHANGELOG.md          # Lịch sử chi tiết các thay đổi và fix bugs
+├── BUG_TRACKER.md        # Theo dõi lỗi theo danh mục
+├── README.md            # Hướng dẫn sử dụng hệ thống ghi lỗi
+└── templates/           # Templates cho việc ghi lỗi
+    └── BUG_TEMPLATE.md  # Template ghi lỗi mới
+```
+
+### 🐛 Hệ thống ghi lỗi
+Dự án sử dụng hệ thống ghi lỗi có tổ chức để:
+- Theo dõi lịch sử sửa lỗi
+- Phân loại lỗi theo danh mục (API, UI, Database)
+- Tạo báo cáo thống kê
+- Đảm bảo tính minh bạch
+
+#### Cách sử dụng:
+1. **Phát hiện lỗi**: Ghi vào `docs/BUG_TRACKER.md`
+2. **Sửa lỗi**: Cập nhật trạng thái và chi tiết vào `docs/CHANGELOG.md`
+3. **Commit**: Sử dụng format `fix: BUG-XXX - mô tả lỗi`
+
+#### Template commit:
+```
+fix: BUG-001 - DeserializeData overload 5 arguments
+
+- Thêm overload mới cho DeserializeData với 5 tham số
+- Đồng bộ logic với VideoApiSourceCode
+- Files: Apache.Uniapp.Core/Helpers/DbContext.cs
+```
+
+### 📊 Báo cáo thống kê
+- Hàng tháng: Cập nhật thống kê trong `BUG_TRACKER.md`
+- Hàng quý: Phân tích xu hướng và cải thiện chất lượng
+
+---
+
+*Tài liệu được cập nhật thường xuyên để phản ánh tình trạng dự án mới nhất.*

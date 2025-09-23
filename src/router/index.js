@@ -9,6 +9,7 @@ import admin from './admin'
 import sysbasics from './sysbasics'
 import compliance from './compliance'
 import compliance2 from './compliance2'
+import video from './video' // Thêm import video routes
 // import compliance from './compliance'
 
 Vue.use(Router)
@@ -86,8 +87,10 @@ var constantRouterMap = [
 
 export { constantRouterMap }
 
-export const asyncRouterMap = [admin, sysbasics, compliance, compliance2]
+export const asyncRouterMap = [admin, sysbasics, compliance, compliance2] // Thêm video vào asyncRouterMap
 //export const asyncRouterMap = [sysbasics]
+
+export const routerVideo = video // Xuất khẩu riêng lẻ cho các tuyến video
 
 export const noPageRoute = { path: '*', redirect: { name: '404' } }
 

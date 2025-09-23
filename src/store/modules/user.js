@@ -5,12 +5,24 @@ import request from '@/utils/request'
 
 const user = {
   state: {
-    user: {}
+    user: {},
+    videoMenu: [], //video的菜单
+    isAdmin: '',
+    college_id: ''
   },
 
   mutations: {
     SET_USER: (state, user) => {
       state.user = user
+    },
+    SET_VIDEOMENU: (state, videoMenu) => {
+      state.videoMenu = videoMenu
+    },
+    SET_ISADMIN: (state, isAdmin) => {
+      state.isAdmin = isAdmin
+    },
+    SET_COLLEGE_ID: (state, college_id) => {
+      state.college_id = college_id
     }
   },
 
@@ -120,10 +132,26 @@ const user = {
         commit('SET_USER', {})
         resolve()
       })
+    },
+    
+    // Video Menu Actions
+    SetVideoMenu({ commit }, videoMenu) {
+      commit('SET_VIDEOMENU', videoMenu)
+    },
+    
+    SetIsAdmin({ commit }, isAdmin) {
+      commit('SET_ISADMIN', isAdmin)
+    },
+    
+    SetCollegeId({ commit }, collegeId) {
+      commit('SET_COLLEGE_ID', collegeId)
     }
   },
   getters: {
-    user: state => state.user
+    user: state => state.user,
+    videoMenu: state => state.videoMenu,
+    isAdmin: state => state.isAdmin,
+    college_id: state => state.college_id
   }
 }
 
