@@ -9,6 +9,7 @@ let videoUrl = videoBaseUrl + '/'
 const api = {
   baseUrl,
   auth: url + 'platform/auth/',
+  authCaptcha: url + 'platform/auth/captcha',
   user: url + 'platform/user/',
   menu: url + 'platform/menu/',
   role: url + 'platform/role/',

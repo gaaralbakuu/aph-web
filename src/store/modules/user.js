@@ -31,10 +31,18 @@ const user = {
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
       const password = userInfo.password.trim()
+      const code = (userInfo.code || '').trim()
+      const captchaId = userInfo.captchaId
       return new Promise((resolve, reject) => {
         request(
           api.auth + 'login',
-          { username: username, password: password ,client:'WEB'},
+          {
+            username: username,
+            password: password,
+            code,
+            captchaId,
+            client: 'WEB'
+          },
           'post'
         )
           .then(r => {

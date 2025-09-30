@@ -229,6 +229,7 @@ Khi được yêu cầu thêm đa ngôn ngữ, luôn làm theo template này:
 - **Chạy dev server:** `npm run serve`
 - **Build production:** `npm run build`
 - **File khởi động:** `src/main.js` (mount App.vue, cấu hình router/store)
+- **Shell chạy lệnh:** Luôn dùng `cmd.exe` trên Windows để thực thi lệnh. **Tuyệt đối không khởi chạy hoặc đề xuất PowerShell/pwsh** vì môi trường này đã bị chặn.
 - **Thêm trang mới:**
   1. Tạo file `.vue` trong `src/views/`.
   2. Thêm route ở `src/router/` (chia module theo tính năng).

@@ -21,6 +21,9 @@
             <el-form-item :label="$l.englishName">
               <el-input v-model="examObj.form.name_en"></el-input>
             </el-form-item>
+            <el-form-item :label="$l.vietnameseName">
+              <el-input v-model="examObj.form.name_vi"></el-input>
+            </el-form-item>
             <el-form-item :label="$l.bindQuestionnaire">
               <el-input v-model="examObj.form.exam_name_zh" disabled>
                 <template slot="append">
@@ -85,6 +88,7 @@
           <el-table-column :label="$l.nameZhColumn" prop="name_zh"></el-table-column>
           <el-table-column :label="$l.nameTwColumn" prop="name_tw"></el-table-column>
           <el-table-column :label="$l.nameEnColumn" prop="name_en"></el-table-column>
+          <el-table-column :label="$l.nameViColumn" prop="name_vi"></el-table-column>
           <el-table-column :label="$l.createTimeColumn" prop="create_time"></el-table-column>
           <el-table-column :label="$l.updateTimeColumn" prop="modify_time"></el-table-column>
           <el-table-column :label="$l.statusColumn" prop="is_valid">
@@ -269,6 +273,7 @@
       name_zh: "",
       name_tw: "",
       name_en: "",
+      name_vi: "",
       start_time: "",
       end_time: "",
       max_reply_num: "",

@@ -159,6 +159,9 @@
             <el-form-item :label="$l.name_en">
               <el-input v-model="catalogObj.form.name_en"></el-input>
             </el-form-item>
+            <el-form-item :label="$l.name_vi">
+              <el-input v-model="catalogObj.form.name_vi"></el-input>
+            </el-form-item>
             <el-form-item :label="$l.belongCollege" required>
               <el-select v-model="catalogObj.form.college_id" style="width: 100%;" @change="collegeChange">
                 <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"

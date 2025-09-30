@@ -100,6 +100,10 @@
               <el-input v-model="questionnaireObj.form.name_en">
               </el-input>
             </el-form-item>
+            <el-form-item :label="$l.nameVi">
+              <el-input v-model="questionnaireObj.form.name_vi">
+              </el-input>
+            </el-form-item>
             <el-form-item :label="$l.addQuestion">
               <div ref="question_title">
                 <el-button type="danger" plain @click="templateObj.question = []">{{ $l.clear }}</el-button>
@@ -164,6 +168,14 @@
                                       style="width: 100%;height: 40px;display: flex; align-items: center;">
                                       <el-input v-model="o.name_tw" disabled>
                                         <template slot="prepend">{{ $l.tw }}</template>
+                                      </el-input>
+                                    </div>
+                                  </el-col>
+                                  <el-col :span='7'>
+                                    <div class="input-box"
+                                      style="width: 100%;height: 40px;display: flex; align-items: center;">
+                                      <el-input v-model="o.name_vi" disabled>
+                                        <template slot="prepend">{{ $l.vi }}</template>
                                       </el-input>
                                     </div>
                                   </el-col>
@@ -248,6 +260,7 @@
               <el-table-column :label="$l.nameZh" prop="name_zh"></el-table-column>
               <el-table-column :label="$l.nameTw" prop="name_tw"></el-table-column>
               <el-table-column :label="$l.nameEn" prop="name_en"></el-table-column>
+              <el-table-column :label="$l.nameVi" prop="name_vi"></el-table-column>
               <el-table-column :label="$l.createTime" prop="create_time"></el-table-column>
               <el-table-column :label="$l.updateTime" prop="create_time"></el-table-column>
               <el-table-column :label="$l.status" prop="is_valid">
@@ -354,6 +367,7 @@
             qid: "",
             name_zh: "",
             name_en: "",
+            name_vi: "",
             name_tw: "",
             question: []
           },

@@ -19,6 +19,9 @@
           <el-form-item label="英文名字">
             <el-input v-model="attachmentObj.file_name_en"></el-input>
           </el-form-item>
+          <el-form-item label="越南名字">
+            <el-input v-model="attachmentObj.file_name_vi"></el-input>
+          </el-form-item>
         </el-form>
         <div slot="footer">
           <el-button @click="showObj.attachment = false">取 消</el-button>
@@ -363,19 +366,24 @@
 
 
               <el-row>
-                <el-col :span="8">
+                <el-col :span="6">
                   <el-form-item :label="$l.name_zh" required>
                     <el-input v-model="courseObj.newForm.name_zh"></el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="6">
                   <el-form-item :label="$l.name_tw">
                     <el-input v-model="courseObj.newForm.name_tw"></el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="6">
                   <el-form-item :label="$l.name_en">
                     <el-input v-model="courseObj.newForm.name_en"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item :label="$l.name_vi">
+                    <el-input v-model="courseObj.newForm.name_vi"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -814,6 +822,7 @@
           file_name_zh: '',
           file_name_tw: '',
           file_name_en: '',
+          file_name_vi: '',
           file: ''
         },
         cssObj: {
@@ -844,6 +853,7 @@
             name_zh: "",
             name_tw: "",
             name_en: "",
+            name_vi: "",
             description: "",
             college_id: '',
             is_public: "",
@@ -1009,6 +1019,7 @@
         formData.append('file_name_zh', this.attachmentObj.file_name_zh);
         formData.append('file_name_tw', this.attachmentObj.file_name_tw);
         formData.append('file_name_en', this.attachmentObj.file_name_en);
+        formData.append('file_name_vi', this.attachmentObj.file_name_vi);
         formData.append('file', this.attachmentObj.file);
         this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/uploadAttachment', formData, 'post')
           .then(r => {
@@ -1019,6 +1030,7 @@
                 name_zh: r.data.file_name_zh,
                 name_tw: r.data.file_name_tw,
                 name_en: r.data.file_name_en,
+                name_vi: r.data.file_name_vi,
                 name_label: "",
                 file_type: r.data.file_type,
                 file_size: r.data.file_size,
@@ -1030,6 +1042,7 @@
                 file_name_zh: '',
                 file_name_tw: '',
                 file_name_en: '',
+                file_name_vi: '',
                 file: ''
               }
               this.showObj.attachment = false
@@ -1578,6 +1591,7 @@
           name_zh: "",
           name_tw: "",
           name_en: "",
+          name_vi: "",
           description: "",
           college_id: this.isAdmin ? '' : this.publicCodeObj.collegeList[0].id,
           is_public: this.isAdmin ? 1 : 0,
@@ -1753,6 +1767,7 @@
           name_zh: "",
           name_tw: "",
           name_en: "",
+          name_vi: "",
           description: "",
           college_id: "",
           org_id: "",

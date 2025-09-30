@@ -19,7 +19,7 @@
         </el-form-item>
         <el-form-item prop="password">
           <el-input :type="passwordType" v-model="loginForm.password" :placeholder="$l.password" name="password"
-            auto-complete="on" @keyup.enter.native="handleLogin">
+            auto-complete="on" @keyup.enter.native="validateCode">
             <template slot="suffix">
               <div class="svg-container pointer" @click="showPwd">
                 <svg-icon :icon-class="eyeClass" />
@@ -28,8 +28,18 @@
           </el-input>
         </el-form-item>
 
+        <el-form-item prop="code" v-show="identify.codeShow">
+          <div class="code-wrapper">
+            <el-input v-model="loginForm.code" :placeholder="$l.code" name="code" type="text"
+              :maxlength="identify.maxLength"></el-input>
+            <div class="login-code" :title="$l.captchaRefresh" @click="refreshCaptcha">
+              <img v-if="identify.image" :src="identify.image" class="captcha-image" :alt="$l.captchaAlt" />
+            </div>
+          </div>
+        </el-form-item>
+
         <el-button :loading="loading" type="primary" round style="width: 100%; margin-top: 20px; margin-bottom: 30px"
-          @click.native.prevent="handleLogin">{{ $l.login }}
+          @click.native.prevent="validateCode">{{ $l.login }}
         </el-button>
         <div style="text-align:right;margin-bottom:30px">
           <el-link :underline="false"  @click="register(2)" type="primary" style="font-size:12px;float:left">{{$l.forgetPass}}</el-link>
@@ -57,6 +67,8 @@ export default {
       loginForm: {
         username: '',
         password: '',
+        code: '',
+        captchaId: '',
       },
       loginRules: {
         username: [
@@ -73,6 +85,13 @@ export default {
             trigger: 'blur',
           },
         ],
+      },
+      identify: {
+        codeShow: false,
+        image: '',
+        captchaId: '',
+        expiresAt: null,
+        maxLength: 6,
       },
       background: bg,
       passwordType: 'password',
@@ -119,6 +138,8 @@ export default {
             .dispatch('LoginByUsername', this.loginForm)
             .then(() => {
               this.loading = false
+              this.hideCaptcha()
+              this.loginForm.code = ''
               this.$message({
                 message: this.$l.success,
                 type: 'success',
@@ -127,6 +148,7 @@ export default {
             })
             .catch(() => {
               this.loading = false
+              this.ensureCaptcha(true)
             })
         } else {
           console.log('error submit!!')
@@ -137,6 +159,73 @@ export default {
     register(type) {
       this.$router.push({ name: 'loginRegister',params:{flag:type}})
     },
+    hideCaptcha() {
+      this.identify.codeShow = false
+      this.identify.image = ''
+      this.identify.captchaId = ''
+      this.identify.expiresAt = null
+      this.loginForm.captchaId = ''
+      this.loginForm.code = ''
+    },
+    async ensureCaptcha(force = false) {
+      this.identify.codeShow = true
+      const needRefresh =
+        force ||
+        !this.identify.captchaId ||
+        !this.identify.image ||
+        this.isCaptchaExpired()
+
+      if (needRefresh) {
+        await this.refreshCaptcha()
+      }
+    },
+    async refreshCaptcha() {
+      try {
+        const res = await this.$request(this.$api.authCaptcha)
+        if (res && res.status) {
+          this.identify.image = res.data.image
+          this.identify.captchaId = res.data.id
+          this.identify.expiresAt = res.data.expiresAt
+          this.loginForm.captchaId = res.data.id
+          this.loginForm.code = ''
+        }
+      } catch (error) {
+        this.$message({
+          message: this.$l.captchaLoadFailed,
+          type: 'error',
+        })
+      }
+    },
+    validateCode() {
+      if (this.identify.codeShow && !this.loginForm.code) {
+        this.$message({
+          message: this.$l.code,
+          type: 'error',
+        })
+        return
+      }
+      this.handleLogin()
+    },
+    async getCodeLength() {
+      try {
+        const r = await this.$request(this.$api.param + 'getparametervalue', {
+          type: 'AppSettings',
+          name: 'verificationCodeLength',
+        })
+        const length = parseInt(r?.data?.[0]?.param_value, 10)
+        if (!Number.isNaN(length) && length > 0) {
+          this.identify.maxLength = length
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    isCaptchaExpired() {
+      if (!this.identify.expiresAt) {
+        return true
+      }
+      return dayjs().isAfter(dayjs(this.identify.expiresAt))
+    },
   },
   computed: {
     loginLang() {
@@ -146,7 +235,9 @@ export default {
       return this.passwordType ? 'eye-close' : 'eye-open'
     },
   },
-  created: function () {},
+  async created() {
+    await this.getCodeLength()
+  },
 }
 </script>
 
@@ -190,5 +281,21 @@ export default {
   font-size: 12px;
   color: darkgrey;
   text-align: center;
+}
+
+.code-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.login-code {
+  margin-left: 5px;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.captcha-image {
+  height: 32px;
+  display: block;
 }
 </style>

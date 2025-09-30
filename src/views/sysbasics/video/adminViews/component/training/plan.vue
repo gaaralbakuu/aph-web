@@ -209,6 +209,9 @@
               <el-form-item :label="$l.englishTitle">
                 <el-input v-model="trainingObj.form.name_en"></el-input>
               </el-form-item>
+              <el-form-item :label="$l.vietnameseTitle">
+                <el-input v-model="trainingObj.form.name_vi"></el-input>
+              </el-form-item>
               <el-form-item :label="$l.description" required>
                 <el-input v-model="trainingObj.form.description" type="textarea" :rows="4"></el-input>
               </el-form-item>
@@ -372,6 +375,7 @@
             id: "",
             name_zh: "",
             name_en: "",
+            name_vi: "",
             name_tw: "",
             college_id: "",
             thumbnail_path: '',
@@ -657,6 +661,7 @@
             id: "",
             name_zh: "",
             name_en: "",
+            name_vi: "",
             name_tw: "",
             description: "",
             person_num: "",

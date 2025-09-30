@@ -18,6 +18,9 @@
             <el-form-item :label="$l.englishName">
               <el-input v-model="addLecturerList.list.name_en"></el-input>
             </el-form-item>
+            <el-form-item :label="$l.vietnameseName">
+              <el-input v-model="addLecturerList.list.name_vi"></el-input>
+            </el-form-item>
             <el-form-item :label="$l.gender" required>
               <el-radio v-model="addLecturerList.list.sex" label="1">{{$l.male}}</el-radio>
               <el-radio v-model="addLecturerList.list.sex" label="0">{{$l.female}}</el-radio>
@@ -65,6 +68,9 @@
             </el-form-item>
             <el-form-item :label="$l.englishName">
               <el-input v-model="editLecturerList.list.name_en"></el-input>
+            </el-form-item>
+            <el-form-item :label="$l.vietnameseName">
+              <el-input v-model="editLecturerList.list.name_vi"></el-input>
             </el-form-item>
             <el-form-item :label="$l.gender">
               <el-radio v-model="editLecturerList.list.sex" label="1">{{$l.male}}</el-radio>

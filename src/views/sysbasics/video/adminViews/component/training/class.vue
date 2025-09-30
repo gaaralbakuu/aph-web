@@ -6,13 +6,13 @@
         <div class="form-container">
           <div class="form">
             <el-form label-width="80px" size="medium">
-              <el-form-item :label="$l.college">
+              <el-form-item :label="$l.college" required>
                 <el-select v-model="classObj.form.college_id" requird style="width: 100%;">
                   <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
                     :value="i.id"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item :label="$l.simplifiedChineseTitle">
+              <el-form-item :label="$l.simplifiedChineseTitle" required>
                 <el-input v-model="classObj.form.name_zh" requird></el-input>
               </el-form-item>
               <el-form-item :label="$l.traditionalChineseTitle">
@@ -21,16 +21,19 @@
               <el-form-item :label="$l.englishTitle">
                 <el-input v-model="classObj.form.name_en"></el-input>
               </el-form-item>
-              <el-form-item :label="$l.trainingContent">
+              <el-form-item :label="$l.vietnameseTitle">
+                <el-input v-model="classObj.form.name_vi"></el-input>
+              </el-form-item>
+              <el-form-item :label="$l.trainingContent" required>
                 <el-input v-model="classObj.form.train_content"></el-input>
               </el-form-item>
-              <el-form-item :label="$l.trainingObjective">
+              <el-form-item :label="$l.trainingObjective" required>
                 <el-input v-model="classObj.form.train_target"></el-input>
               </el-form-item>
-              <el-form-item :label="$l.trainingTarget">
+              <el-form-item :label="$l.trainingTarget" required>
                 <el-input v-model="classObj.form.train_object"></el-input>
               </el-form-item>
-              <el-form-item :label="$l.affiliatedPlan">
+              <el-form-item :label="$l.affiliatedPlan" required>
                 <el-input v-model="classObj.form.train_name_label" disabled>
                   <template slot="append">
                     <el-button @click="showObj.selectTraining=true"
@@ -38,7 +41,7 @@
                   </template>
                 </el-input>
               </el-form-item>
-              <el-form-item :label="$l.classTeacher">
+              <el-form-item :label="$l.classTeacher" required>
                 <el-input v-model="classObj.form.teacher_name" disabled>
                   <template slot="append">
                     <el-button @click="showObj.selectUser = true"
@@ -46,12 +49,12 @@
                   </template>
                 </el-input>
               </el-form-item>
-              <el-form-item :label="$l.startTime">
+              <el-form-item :label="$l.startTime" required>
                 <el-date-picker v-model="classObj.form.start_date" type="datetime" :placeholder="$l.selectStartTime"
                   style="width: 100%;">
                 </el-date-picker>
               </el-form-item>
-              <el-form-item :label="$l.endTime">
+              <el-form-item :label="$l.endTime" required>
                 <el-date-picker v-model="classObj.form.end_date" type="datetime" :placeholder="$l.selectEndTime"
                   style="width: 100%;">
                 </el-date-picker>
@@ -233,6 +236,9 @@
               </el-form-item>
               <el-form-item :label="$l.englishTitle">
                 <el-input v-model="classObj.form.name_en"></el-input>
+              </el-form-item>
+              <el-form-item :label="$l.vietnameseTitle">
+                <el-input v-model="classObj.form.name_vi"></el-input>
               </el-form-item>
               <el-form-item :label="$l.trainingContent">
                 <el-input v-model="classObj.form.train_content"></el-input>
@@ -571,6 +577,7 @@
             train_name_label: "",
             name_zh: "",
             name_en: "",
+            name_vi: "",
             name_tw: "",
             start_date: "",
             end_date: "",
@@ -619,6 +626,7 @@
             exam_name_zh: "",
             name_zh: "",
             name_tw: "",
+            name_vi: "",
             name_en: "",
             start_time: "",
             end_time: "",
@@ -973,6 +981,7 @@
           id: "",
           name_zh: "",
           name_en: "",
+          name_vi: "",
           name_tw: "",
           start_date: "",
           end_date: "",
@@ -1012,7 +1021,7 @@
         }
 
         this.$prompt(
-          `${this.$l.confirmOperation}${oprate}《${i.name_zh||i.name_tw||i.name_en}》？${this.$l.inputYToConfirm}`, {
+          `${this.$l.confirmOperation}${oprate}《${i.name_zh||i.name_tw||i.name_en||i.name_vi}》？${this.$l.inputYToConfirm}`, {
             type: 'warning',
             inputPattern: /^[Y]{1}$/i,
             inputErrorMessage: this.$l.inputValidationFailed,
@@ -1035,6 +1044,67 @@
       },
 
       handleSubmit() {
+        // Validation cho các trường required
+        const validationErrors = []
+
+        // Kiểm tra college_id (required)
+        if (!this.classObj.form.college_id) {
+          validationErrors.push(this.$l.collegeRequired)
+        }
+
+        // Kiểm tra name_zh (required)
+        if (!this.classObj.form.name_zh || this.classObj.form.name_zh.trim() === '') {
+          validationErrors.push(this.$l.simplifiedChineseTitleRequired)
+        }
+
+        // Kiểm tra train_content (required)
+        if (!this.classObj.form.train_content || this.classObj.form.train_content.trim() === '') {
+          validationErrors.push(this.$l.trainingContentRequired)
+        }
+
+        // Kiểm tra train_target (required)
+        if (!this.classObj.form.train_target || this.classObj.form.train_target.trim() === '') {
+          validationErrors.push(this.$l.trainingObjectiveRequired)
+        }
+
+        // Kiểm tra train_object (required)
+        if (!this.classObj.form.train_object || this.classObj.form.train_object.trim() === '') {
+          validationErrors.push(this.$l.trainingTargetRequired)
+        }
+
+        // Kiểm tra train_id thông qua train_name_label (required)
+        if (!this.classObj.form.train_id || !this.classObj.form.train_name_label) {
+          validationErrors.push(this.$l.affiliatedPlanRequired)
+        }
+
+        // Kiểm tra class_teachers (required)
+        if (!this.classObj.form.class_teachers || !this.classObj.form.class_teachers[0] || !this.classObj.form.teacher_name) {
+          validationErrors.push(this.$l.classTeacherRequired)
+        }
+
+        // Kiểm tra start_date (required)
+        if (!this.classObj.form.start_date) {
+          validationErrors.push(this.$l.startTimeRequired)
+        }
+
+        // Kiểm tra end_date (required)
+        if (!this.classObj.form.end_date) {
+          validationErrors.push(this.$l.endTimeRequired)
+        }
+
+        // Nếu có lỗi validation, hiển thị thông báo và dừng
+        if (validationErrors.length > 0) {
+          const errorMessage = validationErrors.join('<br>')
+          this.$message({
+            type: 'error',
+            dangerouslyUseHTMLString: true,
+            message: errorMessage,
+            duration: 5000
+          })
+          return
+        }
+
+        // Nếu validation thành công, tiếp tục submit
         this.$request(this.$api.videoServer + '/Video/VideoTrain/addOrModifyClass', this.classObj.form, 'post')
           .then(r => {
             if (r.httpCode == 200) {

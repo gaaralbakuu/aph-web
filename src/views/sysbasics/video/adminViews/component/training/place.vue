@@ -15,6 +15,9 @@
             <el-form-item :label="$l.englishName">
               <el-input v-model="addTrainPlaceList.list.name_en"></el-input>
             </el-form-item>
+            <el-form-item :label="$l.vietnameseName">
+              <el-input v-model="addTrainPlaceList.list.name_vi"></el-input>
+            </el-form-item>
             <el-form-item :label="$l.location" required>
               <el-input v-model="addTrainPlaceList.list.place"></el-input>
             </el-form-item>
@@ -52,6 +55,9 @@
             </el-form-item>
             <el-form-item :label="$l.englishName">
               <el-input v-model="editTrainPlaceList.list.name_en"></el-input>
+            </el-form-item>
+            <el-form-item :label="$l.vietnameseName">
+              <el-input v-model="editTrainPlaceList.list.name_vi"></el-input>
             </el-form-item>
             <el-form-item :label="$l.location" required>
               <el-input v-model="editTrainPlaceList.list.place"></el-input>

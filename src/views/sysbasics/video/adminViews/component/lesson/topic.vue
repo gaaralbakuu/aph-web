@@ -31,6 +31,9 @@
             <el-form-item :label="$l.titleEn">
               <el-input v-model="topicObj.form.title_en"></el-input>
             </el-form-item>
+            <el-form-item :label="$l.titleVi">
+              <el-input v-model="topicObj.form.title_vi"></el-input>
+            </el-form-item>
           </el-form>
         </div>
         <div class="buttonBar">
@@ -71,7 +74,7 @@
             highlight-current-row highlight-selection-row stripe border max-height="500px"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column type="index" width="50" label='序号'></el-table-column>
+            <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
             <el-table-column prop="thumbnail_path" :label="$l.cover">
               <template slot-scope="scope">
                 <div class="img" v-if="scope.row.thumbnail_path">
@@ -148,7 +151,7 @@
       <div style="width: 38%;">
         <el-table ref="topicTable" :data="topicObj.list" row-key='id' tooltip-effect="dark" highlight-current-row
           highlight-selection-row stripe border @row-click="getDetailList">
-          <el-table-column type="index" width="50" label='序号'></el-table-column>
+          <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
           <el-table-column :label="$l.topicName" prop="title_label"></el-table-column>
           <el-table-column :label="$l.lastModifier" prop="modify_user"></el-table-column>
           <el-table-column :label="$l.displayPage" prop="page"></el-table-column>
@@ -171,7 +174,7 @@
       <div style="width: 60%;">
         <el-table ref="topicTable" :data="detailObj.list" row-key='course_id' tooltip-effect="dark"
           highlight-current-row highlight-selection-row stripe border>
-          <el-table-column type="index" width="50" label='序号'></el-table-column>
+          <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
           <el-table-column prop="thumbnail_path" :label="$l.cover">
             <template slot-scope="scope">
               <div class="img" v-if="scope.row.thumbnail_path">
@@ -225,6 +228,7 @@
             title_zh: "",
             title_en: "",
             title_tw: "",
+            title_vi: "",
             page: "",
             sort: "",
             type: "",
@@ -237,6 +241,7 @@
               title_zh: "",
               title_en: "",
               title_tw: "",
+              title_vi: "",
               icon_app: "",
               icon_web: "",
               url: "",
@@ -387,17 +392,21 @@
           title_zh: "",
           title_en: "",
           title_tw: "",
+          title_vi: "",
           page: "",
-          sort: 10,
+          sort: "10",
           type: "topic",
           is_valid: "Y",
           rec_status: 1,
           detail: []
         }
+        console.log("addTopic", this.topicObj.form)
         this.showObj.topicShow = true
       },
 
       editTopic(i) {
+        
+        console.log("editTopic", i)
         this.topicObj.form = i
         this.showObj.topicShow = true
       },
@@ -446,6 +455,8 @@
           return this.$message.error(this.$l.pleaseSelectCollege)
         }
 
+        console.log(this.topicObj.form)
+
         this.$request(this.$api.videoServer + "/Video/VideoPageTag/addOrModifyPageTag", this.topicObj.form, 'post')
           .then(r => {
             this.showObj.topicShow = false
@@ -462,6 +473,7 @@
       },
 
       addSingleCourseToTopic(i) {
+        console.log(this.topicObj.form)
         if (this.isCourseIdExists(this.topicObj.form.detail, i.course_id)) {
           return this.$message({
             type: 'error',
@@ -473,8 +485,9 @@
           course_id: i.course_id,
           pid: this.topicObj.form.id,
           title_zh: i.title_zh,
-          title_en: i.title_tw,
-          title_tw: i.title_en,
+          title_en: i.title_en,
+          title_tw: i.title_tw,
+          title_vi: i.title_vi,
           icon_app: "",
           icon_web: "",
           url: "",
@@ -499,8 +512,9 @@
                 course_id: i.course_id,
                 pid: this.topicObj.form.id,
                 title_zh: i.title_zh,
-                title_en: i.title_tw,
-                title_tw: i.title_en,
+                title_en: i.title_en,
+                title_tw: i.title_tw,
+                title_vi: i.title_vi,
                 icon_app: "",
                 icon_web: "",
                 url: "",
@@ -520,7 +534,8 @@
       },
 
       getDetailList(i) {
-        this.topicObj.form = i
+        console.log("getDetailList", i)
+        this.topicObj.form = {...i, sort: Number(i.sort) }
         this.detailObj.currentId = i.id
         this.detailObj.list = _.cloneDeep(i.detail)
         this.courseObj.selectedList = []
@@ -534,8 +549,9 @@
             course_id: i.course_id,
             pid: this.topicObj.form.id,
             title_zh: i.title_zh,
-            title_en: i.title_tw,
-            title_tw: i.title_en,
+            title_en: i.title_en,
+            title_tw: i.title_tw,
+            title_vi: i.title_vi,
             icon_app: "",
             icon_web: "",
             url: "",
