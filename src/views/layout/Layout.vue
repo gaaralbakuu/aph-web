@@ -37,7 +37,7 @@
       </div>
     </aside>
     <div class="app-aside-right no-scroll-x flex h-full flex-1 flex-col bg-gray-50 dark:bg-black">
-      <header class="flex h-auto flex-col border-b border-gray-100/60 bg-white/70 backdrop-blur dark:border-white/10 dark:bg-black/40 relative z-50">
+      <header class="flex h-auto flex-col border-b border-gray-100/60 bg-white/70 dark:border-white/10 dark:bg-black/40">
         <navbar />
         <!-- <tags-view v-if="showTagBar"></tags-view> -->
       </header>
