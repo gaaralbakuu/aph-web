@@ -583,6 +583,7 @@ export default {
     },
 
     editCatalog(data) {
+      console.log(data)
       assignObject(this.catalogObj.form, data)
       this.getCatalogListById(data.college_id)
       this.showObj.catalogDrawer = true
@@ -712,6 +713,7 @@ export default {
     },
 
     editQuestion(data) {
+      console.log(data)
       assignObject(this.questionObj.form, data)
       this.getCatalogListById(data.college_id)
       if (this.questionObj.form.question_type === 0) {
@@ -722,36 +724,6 @@ export default {
         this.$set(this.templateObj, 'radio', data.options)
       }
       this.showObj.questionDrawer = true
-    },
-
-    submitCatalog() {
-      if (this.catalogObj.form.college_id == '') {
-        return this.$message.error(this.$l.pleaseSelectCollege)
-      }
-
-      if (this.catalogObj.form.name_zh == '') {
-        return this.$message.error(this.$l.pleaseInputNameZh)
-      }
-      if (this.catalogObj.form.pid == '') {
-        this.catalogObj.form.pid == '0'
-      }
-      this.$request(this.$api.videoServer + '/Video/VideoExam/addQuestionCatagory', this.catalogObj.form, 'post')
-        .then((r) => {
-          if (r.httpCode == 200) {
-            this.$message({
-              type: 'success',
-              message: this.$l.submitSuccess,
-            })
-            let timer = setTimeout(() => {
-              this.showObj.catalogDrawer = false
-              this.getCatalogList()
-              clearTimeout(timer)
-            }, 1500)
-          }
-        })
-        .catch((e) => {
-          console.log(e)
-        })
     },
 
     submitQuestion() {
@@ -790,6 +762,50 @@ export default {
         })
         .catch((e) => {
           console.log(e)
+        })
+    },
+
+    toggleQuestionStatus(data) {
+      let message
+      let value
+      if (data.is_valid == 'Y') {
+        message = this.$l.disableQuestionConfirm.replace('{name}', data.name_label)
+        value = 'N'
+      } else {
+        message = this.$l.enableQuestionConfirm.replace('{name}', data.name_label)
+        value = 'Y'
+      }
+
+      this.$prompt(message, {
+        type: 'warning',
+        inputPattern: /^[Y]{1}$/i,
+        inputErrorMessage: this.$l.inputError,
+        confirmButtonText: this.$l.confirm,
+        cancelButtonText: this.$l.cancel,
+      })
+        .then(() => {
+          return this.$request(
+            this.$api.videoServer + '/Video/VideoExam/toggleQuestionStatus',
+            {
+              id: data.id,
+              value,
+            },
+            'post'
+          )
+        })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: this.$l.modifySuccess,
+          })
+          this.getQuestionList()
+        })
+        .catch((err) => {
+          if (err && err !== 'cancel' && err !== 'close') {
+            console.error(err)
+          } else {
+            console.log('取消操作')
+          }
         })
     },
 

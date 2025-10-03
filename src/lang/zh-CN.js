@@ -2392,6 +2392,10 @@ export default {
     userInfo: '用户信息',
     viewDetails: '查看详情',
   },
+  videoAdminLayout: {
+    changePwd: '修改密码',
+    logout: '退出登录',
+  },
   videoAdminCollege: {
     addCollege: '添加学院',
     addEditCollege: '新增/编辑学院',

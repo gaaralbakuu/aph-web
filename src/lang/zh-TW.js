@@ -3159,6 +3159,10 @@ export default {
     confirmOperation: '您確定要',
     submitSuccess: '提交成功',
   },
+  videoAdminLayout: {
+    changePwd: '修改密碼',
+    logout: '登出',
+  },
   videoAdminLecturer: {
     lecturerManagement: '講師管理',
     addLecturer: '新增講師',

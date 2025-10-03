@@ -1,3 +1,11 @@
+export function assignObject(target,source){
+  for (let key in target) {
+    if (source.hasOwnProperty(key)) {
+     target[key] = source[key]
+    }
+  }
+}
+
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
     return null

@@ -3143,6 +3143,10 @@ export default {
     confirmOperation: 'Confirm operation',
     submitSuccess: 'Submit Successful',
   },
+  videoAdminLayout: {
+    changePwd: 'Change password',
+    logout: 'Log out',
+  },
   videoAdminLecturer: {
     lecturerManagement: 'Lecturer Management',
     addLecturer: 'Add Lecturer',

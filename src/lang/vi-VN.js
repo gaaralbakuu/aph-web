@@ -2393,6 +2393,10 @@ export default {
     vietnameseTitle: 'Tiêu đề tiếng Việt',
     viewDetails: 'Xem chi tiết',
   },
+  videoAdminLayout: {
+    changePwd: 'Đổi mật khẩu',
+    logout: 'Đăng xuất',
+  },
   videoAdminCollege: {
     addCollege: 'Thêm học viện',
     addEditCollege: 'Thêm/Chỉnh sửa học viện',
