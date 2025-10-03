@@ -48,9 +48,9 @@
                   <router-link to="/home/welcome" class="px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
                     {{ $c.apacheHome }}
                   </router-link>
-                  <div @click="passwordFormVisible = true" class="cursor-pointer px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+                  <!-- <div @click="passwordFormVisible = true" class="cursor-pointer px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
                     {{ $l.changePwd }}
-                  </div>
+                  </div> -->
                 </div>
                 <div class="flex flex-col pt-1">
                   <div @click="logout" class="cursor-pointer px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
