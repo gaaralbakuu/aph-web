@@ -1276,6 +1276,7 @@ export default {
     verifyDetail: '合作伙伴改善行动验证细节',
   },
   layoutNavbar: {
+    adminCourseManage: '管理员课程管理',
     changePwd: '修改密码',
     language: '语言',
     logout: '注销',
@@ -1288,6 +1289,7 @@ export default {
     screenfull: '全屏',
     size: '尺寸',
     theme: '主题色',
+    viewCourse: '查看课程',
   },
   license: {
     Enddate: '结束日期',

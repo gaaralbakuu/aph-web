@@ -116,6 +116,8 @@
     <div class="p-3">
       <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
+
+    
     <!-- Create/Edit Dialog -->
     <CustomDialog :title="manufacturer.data.id ? $c.edit : $c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>

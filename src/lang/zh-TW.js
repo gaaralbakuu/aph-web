@@ -473,6 +473,7 @@ export default {
     otherpz: '其他信息',
   },
   layoutNavbar: {
+    adminCourseManage: '管理員課程管理',
     screenfull: '全屏',
     size: '尺寸',
     language: '語言',
@@ -485,6 +486,7 @@ export default {
     pwdCheck: '填寫內容不完整',
     pwdNoEqual: '兩次密碼輸入不一致',
     pwdSuccess: '修改成功，下次請使用新密碼登錄',
+    viewCourse: '查看課程',
   },
   adminAstrictAuth: {
     title: '权限限制',

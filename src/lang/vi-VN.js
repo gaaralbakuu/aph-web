@@ -1274,6 +1274,7 @@ export default {
     verifyDetail: 'Chi tiết xác minh hành động cải thiện của đối tác',
   },
   layoutNavbar: {
+    adminCourseManage: 'Admin quản lý khóa học',
     changePwd: 'Đổi mật khẩu',
     language: 'Ngôn ngữ',
     logout: 'Đăng xuất',
@@ -1286,6 +1287,7 @@ export default {
     screenfull: 'Toàn màn hình',
     size: 'Kích thước',
     theme: 'Chủ đề',
+    viewCourse: 'Xem khóa học',
   },
   license: {
     Enddate: 'Ngày kết thúc',

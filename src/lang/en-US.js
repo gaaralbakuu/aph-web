@@ -459,6 +459,7 @@ export default {
     otherpz: 'other information',
   },
   layoutNavbar: {
+    adminCourseManage: 'Admin course management',
     screenfull: 'Full screen',
     size: 'Size',
     language: 'Language',
@@ -471,6 +472,7 @@ export default {
     pwdCheck: 'Incomplete contents',
     pwdNoEqual: 'The two passwords are inconsistent',
     pwdSuccess: 'The modification is successful. Please log in with a new password next time',
+    viewCourse: 'View courses',
   },
   adminAstrictAuth: {
     title: '权限限制',
