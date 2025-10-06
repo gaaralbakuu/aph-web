@@ -11,8 +11,8 @@
       :class="{ hideSidebar: isCollapse }"
     >
       <div class="flex h-full flex-col">
-        <div class="flex h-14 items-center justify-center border-b border-white/10 px-4">
-          <template v-if="!isCollapse">
+        <div :class="['flex h-14 items-center justify-center border-b border-white/10', {'px-4': !isCollapse, 'px-1': isCollapse}]" >
+          <template v-if=" !isCollapse ">
             <span class="truncate text-lg font-semibold tracking-wide">{{ sysname }}</span>
           </template>
           <template v-else>
@@ -21,7 +21,7 @@
             </div>
           </template>
         </div>
-        <nav class="flex-1 overflow-y-auto px-3 py-4">
+        <nav :class="['flex-1 overflow-y-auto py-1', {'px-1': isCollapse, 'px-3': !isCollapse}]" >
           <ul class="space-y-1">
             <sidebar-item
               v-for="item in user.menus"

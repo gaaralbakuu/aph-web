@@ -99,7 +99,7 @@
         height: calc(100% - 60px);
 
         .link {
-          display: block;
+          // display: block;
           width: 100%;
           height: 100%;
           color: #000;

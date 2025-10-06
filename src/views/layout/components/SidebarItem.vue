@@ -8,7 +8,7 @@
         @click="toggleOpen"
         :title="collapse ? item.title : ''"
       >
-        <div class="flex flex-1 items-center gap-3" :style="contentStyle">
+        <div :class="['flex flex-1 items-center', {'gap-3': !collapse}, {'justify-center': collapse}]" :style="contentStyle">
           <i
             v-if="isFontIcon"
             :class="['fa', iconName, 'text-base']"
@@ -50,7 +50,7 @@
         @click="handleLeafClick"
         :title="collapse ? item.title : ''"
       >
-        <div class="flex flex-1 items-center gap-3" :style="contentStyle">
+        <div :class="['flex flex-1 items-center', {'gap-3': !collapse}, {'justify-center': collapse}]" :style="contentStyle">
           <i
             v-if="isFontIcon"
             :class="['fa', iconName, 'text-base']"

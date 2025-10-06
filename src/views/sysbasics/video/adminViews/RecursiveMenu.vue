@@ -28,7 +28,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .link {
     display: block;
     width: 100%;

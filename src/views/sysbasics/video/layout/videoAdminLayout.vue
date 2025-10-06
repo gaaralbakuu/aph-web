@@ -1,13 +1,13 @@
 <template>
   <el-container style="height: 100%; width: 100%">
     <div class="videoAdminLayout-wrapper">
-      <div class="navi">
+      <div class="navi h-[64px]">
         <div class="logo-wrapper">
           <img src="@/assets/logo.png" />
         </div>
         <div class="menu-wrapper flex-1">
           <div class="menu" v-for="i in navigator" :key="i.to">
-            <router-link :class="{ customActive: isPathActive(i.to) }" class="link" :to="i.to">
+            <router-link :class="{ customActive: isPathActive(i.to) }" class="link px-3 flex justify-center items-center" :to="i.to">
               {{ i.label }}
             </router-link>
           </div>
@@ -227,7 +227,7 @@ export default {
   .navi {
     width: 100%;
     min-width: 1200px;
-    height: 50px;
+//    height: 50px;
     background-color: white;
     border-bottom: 1px solid #e1e1e1;
     display: flex;
@@ -262,7 +262,7 @@ export default {
 
       .menu {
         display: block;
-        width: 120px;
+        min-width: 120px;
         height: 100%;
         text-align: center;
         // margin: 0px 30px;
@@ -273,15 +273,15 @@ export default {
         }
 
         .link {
-          display: block;
+          // display: block;
+          display: flex;
           width: 100%;
-          min-width: 100px;
           height: 100%;
           color: #000;
         }
 
         .router-link-active {
-          display: block;
+          // display: block;
           width: 100%;
           min-width: 100px;
           height: 100%;

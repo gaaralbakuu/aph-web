@@ -279,6 +279,7 @@
             name_zh: "",
             name_en: "",
             name_tw: "",
+            name_vi: "",
             sort: 0
           },
 
@@ -416,6 +417,7 @@
           name_zh: "",
           name_en: "",
           name_tw: "",
+          name_vi: "",
         })
         this.showObj.catalog_show = true
         this.$forceUpdate()
