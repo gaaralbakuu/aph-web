@@ -258,7 +258,7 @@ export default {
           type: 'AppSettings',
           name: 'verificationCodeLength',
         })
-        const length = parseInt(r?.data?.[0]?.param_value, 10)
+        const length = parseInt(r && r.data && r.data[0] && r.data[0].param_value, 10)
         if (!Number.isNaN(length) && length > 0) {
           this.identify.maxLength = length
         }

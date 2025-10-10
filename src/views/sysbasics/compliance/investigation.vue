@@ -1261,6 +1261,7 @@ export default {
         addList: {
           manufacture_id: '',
           manufacture_record_id: '',
+          survey_year: '',
           audit_time: '',
           due_audit_date: '',
           name_zh: '',
