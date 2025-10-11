@@ -1,4 +1,4 @@
-import viLocale from 'element-ui/lib/locale/lang/vi'
+import viLocale from 'element-plus/es/locale/lang/vi'
 export default {
   ...viLocale,
   FilePreview: {
