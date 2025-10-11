@@ -1,43 +1,34 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import VueCompositionAPI from '@vue/composition-api'
-import Cookies from 'js-cookie'
 import router from '@/router'
 import store from '@/store'
-import request from '@/utils/request'
-import api from '@/api'
-import '@/assets/css/tailwind.css'
+import { createI18n } from 'vue-i18n'
 
-import Element from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-
+// UI and Styling
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import './assets/css/main.css' // Main css entry with Tailwind
 import '@fontsource-variable/inter'
-import 'font-awesome/css/font-awesome.min.css' // font-awesome
-import '@/styles/index.scss' // global css
-import '@/router/permission' // permission control
-import '@/icons' // icon
-import '@/utils/errorLog'
+import 'font-awesome/css/font-awesome.min.css'
 
-import { setCookie, localGet, localSet } from '@/utils/auth'
-
-import VueI18n from 'vue-i18n'
+// i18n Languages
 import zhCn from '@/lang/zh-CN.js'
 import enUS from '@/lang/en-US.js'
 import zhTW from '@/lang/zh-TW.js'
 import viVN from './lang/vi-VN'
 
-import mixinCommon from '@/mixin/mixin.js'
-import dialogEscPlugin from '@/utils/dialogEscPlugin.js'
+// App-specific Plugins
+import apiPlugin from '@/plugins/api'
 
-import '@/utils/filter'
+// The following imports will be addressed in a later step
+// import '@/router/permission' // permission control
+// import '@/icons' // icon
+// import '@/utils/errorLog'
 
-
-Vue.use(VueCompositionAPI)
-Vue.use(VueI18n)
-const i18n = new VueI18n({
-  // 默认语言
+const i18n = createI18n({
+  legacy: false, // Use Composition API
   locale: 'vi-VN',
-  // 引入语言文件
+  fallbackLocale: 'en-US',
   messages: {
     'zh-CN': zhCn,
     'en-US': enUS,
@@ -46,33 +37,13 @@ const i18n = new VueI18n({
   },
   silentTranslationWarn: true,
 })
-Vue.mixin(mixinCommon)
-Vue.use(dialogEscPlugin)
 
-Vue.use(Element, {
-  size: Cookies.get('size') || 'small', // set element-ui default size [medium,small,mini]
-  i18n: (key, value) => {
-    console.log(key, value)
+const app = createApp(App)
 
-    return i18n.t(key, value)
-  },
-})
-Vue.config.productionTip = false
+app.use(store)
+app.use(router)
+app.use(i18n)
+app.use(ElementPlus)
+app.use(apiPlugin)
 
-Vue.prototype.$request = request
-Vue.prototype.$api = api
-
-let language = localGet('lang')
-if (!language) {
-  language = navigator.language || navigator.browserLanguage
-  if (language) localSet('lang', language)
-}
-if (language) i18n.locale = language
-
-Vue.prototype._i18n = i18n
-new Vue({
-  i18n,
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount('#app')
+app.mount('#app')

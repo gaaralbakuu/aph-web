@@ -1,98 +1,88 @@
 import axios from 'axios'
-import Vue from 'vue'
-import { getToken, getCookie, localGet } from '@/utils/auth'
+import { getToken, localGet } from '@/utils/auth'
 
-// create an axios instance
+// Create a new axios instance
 const service = axios.create({
-  // baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 300000 // request timeout
+  timeout: 300000, // request timeout
 })
 
-// request interceptor
-
+// Request interceptor
 service.interceptors.request.use(
-  config => {
-    // Do something before request is sent
-    if (getToken()) {
-      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers.token = getToken()
-      config.headers.client = "WEB"
-
+  (config) => {
+    // Add token to headers if it exists
+    const token = getToken()
+    if (token) {
+      config.headers.token = token
+      config.headers.client = 'WEB'
     }
-    let lang = localGet('lang')
+
+    // Add language preference to headers
+    const lang = localGet('lang')
     if (lang) {
-      let array = lang.split('-')
-      let tmp = lang + ',' + array[0] + ';q=0.9'
-      config.headers['Accept-Language'] = tmp
+      const langParts = lang.split('-')
+      config.headers['Accept-Language'] = `${lang},${langParts[0]};q=0.9`
     }
 
     return config
   },
-  error => {
-    // Do something with request error
-    console.log(error) // for debug
-    Promise.reject(error)
-  }
-)
-
-// response interceptor
-service.interceptors.response.use(
-  /**
-   * 下面的注释为通过在response里，自定义code来标示请求状态
-   * 如想通过 xmlhttprequest 来状态码标识 逻辑可写在下面error中
-   */
-  response => {
-    const res = response.data
-    if (typeof res !== 'object') {
-      console.info(res)
-      Vue.prototype.$message({
-        message: 'An unknown error occured.',
-        type: 'error',
-        duration: 5 * 1000
-      })
-      return Promise.reject()
-    }
-    if (res.status) {
-      return res
-    } else {
-      return Promise.reject(res)
-    }
-  },
-  error => {
-    /* Vue.prototype.$message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    }) */
+  (error) => {
+    // Log request errors
+    console.error('Request Error:', error)
     return Promise.reject(error)
   }
 )
 
-export default function request(url, data, method, donotAutoShowError) {
-  data = data || {};
-  method = method || 'get';
-  method = method.toLowerCase();
-  var config = {
-    url,
-    method
-  };
-  if (method === 'get') {
-    config.params = data;
-  } else {
-    config.data = data;
+// Response interceptor
+service.interceptors.response.use(
+  (response) => {
+    const res = response.data
+
+    // Check if the response is a blob (file download)
+    if (response.request.responseType === 'blob') {
+      return response
+    }
+
+    // Check for expected response structure
+    if (typeof res !== 'object' || res === null) {
+      console.error('Unknown response format:', res)
+      return Promise.reject(new Error('An unknown error occurred.'))
+    }
+
+    // Pass through successful responses
+    if (res.status) {
+      return res
+    } else {
+      // Reject responses that have a status of false
+      return Promise.reject(res)
+    }
+  },
+  (error) => {
+    console.error('Response Error:', error)
+    return Promise.reject(error)
   }
+)
+
+/**
+ * A flexible and framework-agnostic request function.
+ *
+ * @param {string} url - The request URL.
+ * @param {object} [data={}] - The data for the request.
+ * @param {string} [method='get'] - The HTTP method.
+ * @param {object} [options={}] - Additional axios config options.
+ * @returns {Promise} A promise that resolves with the response or rejects with an error.
+ */
+export default function request(url, data = {}, method = 'get', options = {}) {
+  const config = {
+    url,
+    method: method.toLowerCase(),
+    ...options,
+  }
+
+  if (config.method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+
   return service(config)
-    .then(r => r)
-    .catch(e => {
-      // debugger;
-      if (!donotAutoShowError) {
-        Vue.prototype.$message({
-          message: (e && e.message) ? e.message : 'Unknown Error',
-          type: 'error',
-          duration: 5 * 1000
-        });
-      }
-      // Re-throw error so .catch outside can receive it and message is shown
-      throw e;
-    });
 }
