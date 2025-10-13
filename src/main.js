@@ -20,10 +20,9 @@ import viVN from './lang/vi-VN'
 // App-specific Plugins
 import apiPlugin from '@/plugins/api'
 
-// The following imports will be addressed in a later step
-// import '@/router/permission' // permission control
-// import '@/icons' // icon
-// import '@/utils/errorLog'
+import icons from '@/icons' // icon
+import errorLog from '@/utils/errorLog'
+import '@/router/permission' // permission control
 
 const i18n = createI18n({
   legacy: false, // Use Composition API
@@ -45,5 +44,7 @@ app.use(router)
 app.use(i18n)
 app.use(ElementPlus)
 app.use(apiPlugin)
+app.use(icons)
+app.use(errorLog)
 
 app.mount('#app')

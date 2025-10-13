@@ -106,14 +106,14 @@ export default {
     this.internalDialogId = this.dialogId || `dialog-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     
     // Lắng nghe sự kiện đóng dialog từ ESC key
-    this.$root.$on('close-top-dialog', this.handleEscClose)
+    this.$dialogEventBus.on('close-top-dialog', this.handleEscClose)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     // Xóa dialog khỏi stack khi component bị destroy
     this.removeDialog(this.internalDialogId)
     
     // Xóa event listener
-    this.$root.$off('close-top-dialog', this.handleEscClose)
+    this.$dialogEventBus.off('close-top-dialog', this.handleEscClose)
     
     // Khôi phục scroll của body
     document.body.style.overflow = ''
