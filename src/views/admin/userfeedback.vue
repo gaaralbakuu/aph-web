@@ -108,16 +108,6 @@
 <script>
 import { _, api, zTable, zPagination, zFormDialog, initFuncs, defaultConfig } from '@/views/_common';
 //import api from '@/api'
-import 'viewerjs/dist/viewer.css';
-import Viewer from 'v-viewer';
-import Vue from 'vue';
-import { createLogger } from 'vuex';
-
-Vue.use(Viewer, {
-	defaultOptions: {
-		zIndex: 999999
-	}
-});
 
 export default {
 	name: 'userfeedback',

@@ -288,6 +288,7 @@ export default {
 </script>
 
 <style>
+@reference "@/assets/css/main.css";
 .el-form-item--small .el-form-item__error {
   padding-top: 4px;
 }
@@ -298,6 +299,7 @@ export default {
 </style>
 
 <style rel="stylesheet/css" scoped>
+@reference "@/assets/css/main.css";
 .login-code {
   /* position: absolute;
   right: 0px;

@@ -1,9 +1,11 @@
 /*! videojs-markers - v0.6.1 - 2016-10-24
  * Copyright (c) 2016 ; Licensed  */
 'use strict';
-import jq from '@/utils/jquery.js'
-import videojs from "./video.min.js"
+import $ from 'jquery'
+import videojs from './videojs-loader.js'
 // import videojs from "./video.js"
+
+const jq = $
 
 var defaultSetting = {
   markerStyle: {

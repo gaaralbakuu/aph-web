@@ -89,13 +89,15 @@
 
 <script>
   // import videojs from "./video.js"
-  import videojs from "./video.min.js"
+  import videojs from './videojs-loader.js'
   import {
     getToken,
   } from '@/utils/auth'
-  import jq from '@/utils/jquery.js'
+  import $ from 'jquery'
   import "./videojs.watermark.min.js"
   import "./videojs-markers.js"
+
+  const jq = $
 
   export default {
     name: "videoPlayerCom",

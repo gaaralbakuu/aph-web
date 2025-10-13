@@ -18,34 +18,46 @@
 </template>
 
 <script>
-import { getLangOptions } from '@/mixin/componet'
+import { defineComponent, nextTick, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { useLangOptions } from '@/composables/useLangOptions'
 import { localSet, localGet } from '@/utils/auth'
-export default {
-  mixins: [getLangOptions],
-  data: function () {
-    return {
-      curLang: localGet('lang'),
-    }
-  },
-  methods: {
-    handleSetLang(v) {
-      if (v.param_value == this.curLang) return
-      this.curLang = v.param_value
-      localSet('lang', v.param_value)
+
+export default defineComponent({
+  name: 'LangSelect',
+  setup() {
+    const store = useStore()
+    const route = useRoute()
+    const router = useRouter()
+    const { langOptions } = useLangOptions()
+    const curLang = ref(localGet('lang'))
+
+    const handleSetLang = (option) => {
+      if (option.param_value === curLang.value) return
+      curLang.value = option.param_value
+      localSet('lang', option.param_value)
       location.reload()
-    },
-    refreshView() {
-      // In order to make the cached page re-rendered
-      this.$store.dispatch('delAllCachedViews', this.$route)
-      const { fullPath } = this.$route
-      this.$nextTick(() => {
-        this.$router.replace({
+    }
+
+    const refreshView = () => {
+      store.dispatch('delAllCachedViews', route)
+      const { fullPath } = route
+      nextTick(() => {
+        router.replace({
           path: '/redirect' + fullPath,
         })
       })
-    },
+    }
+
+    return {
+      langOptions,
+      curLang,
+      handleSetLang,
+      refreshView,
+    }
   },
-}
+})
 </script>
 
 <style scoped>

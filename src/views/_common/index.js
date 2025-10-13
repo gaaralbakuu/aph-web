@@ -6,6 +6,8 @@ import zFormDialog from './formDialog'
 import zTable from './table'
 import dayjs from 'dayjs'
 
+const eTable = zTable
+
 var defaultConfig = {
   // apiList,
   // apiSingle,
@@ -237,6 +239,7 @@ export {
   dayjs,
   api,
   zTable,
+  eTable,
   zPagination,
   zForm,
   zFormDialog,
