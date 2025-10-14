@@ -293,7 +293,7 @@ export default {
 }
 
 .link-forgot {
-  @apply font-semibold;
+  font-weight: 600;
 }
 </style>
 
@@ -306,13 +306,15 @@ export default {
   /* transform: translateY(-50%); */
   cursor: pointer;
   line-height: 0;
-  @apply rounded h-10;
+  border-radius: 0.25rem;
+  height: 2.5rem;
 }
 
 .captcha-image {
   height: 100%;
   display: block;
-  @apply rounded border border-solid border-gray-400;
+  border-radius: 0.25rem;
+  border: 1px solid #9ca3af;
 }
 
 .input-virtual input:hover + div,
@@ -327,11 +329,20 @@ export default {
 .input-virtual input:hover + div > div.input-eye,
 .input-virtual input:focus + div > div.input-eye {
   display: block;
-  @apply w-4 h-4 cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 pointer-events-auto;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: auto;
 }
 
 .input-virtual input + div > div.input-label > div {
-  @apply text-sm relative top-0 left-0;
+  position: relative;
+  top: 0;
+  left: 0;
   color: rgb(112, 112, 112);
   font-size: 14px;
   line-height: 14px;
@@ -343,17 +354,23 @@ export default {
 
 .input-virtual input:focus + div > div.input-label > div,
 .input-virtual input:not(:placeholder-shown) + div > div.input-label > div {
-  @apply -top-5 bg-white px-1 -left-2 transition-all;
+  top: -20px;
+  left: -8px;
+  background-color: #ffffff;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  transition: all 0.2s ease;
   font-size: 10px;
   line-height: 10px;
 }
 
 .input-virtual input + div > div.input-border > div > div {
-  @apply w-0;
+  width: 0;
+  transition: width 0.2s ease;
 }
 
 .input-virtual input:focus + div > div.input-border > div > div {
-  @apply w-full transition-all;
+  width: 100%;
 }
 
 input[type='password']::-ms-reveal,
@@ -368,7 +385,12 @@ input[type='password']::-ms-clear {
 }
 
 .button-login {
-  @apply w-full h-[38px] text-white rounded transition-colors font-semibold;
+  width: 100%;
+  height: 38px;
+  color: #ffffff;
+  border-radius: 0.25rem;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  font-weight: 600;
   background-color: #0f6cbd;
 }
 

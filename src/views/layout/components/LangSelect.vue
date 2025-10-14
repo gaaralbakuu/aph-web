@@ -18,11 +18,15 @@
 </template>
 
 <script>
-import { getLangOptions } from '@/mixin/componet'
+import { useLangOptions } from '@/composables/useLangOptions'
 import { localSet, localGet } from '@/utils/auth'
+
 export default {
-  mixins: [getLangOptions],
-  data: function () {
+  setup() {
+    const { langOptions } = useLangOptions()
+    return { langOptions }
+  },
+  data() {
     return {
       curLang: localGet('lang'),
     }

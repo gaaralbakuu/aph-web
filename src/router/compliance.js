@@ -1,4 +1,4 @@
-import Layout from '@/views/layout/Layout'
+import Layout from '@/views/layout/Layout.vue'
 let isDevelopMode = process.env.NODE_ENV === 'development' ? true : false//保存当前环境是否为开发环境
 export default {
     path: '/compliance',
@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'Investigation',
-            component: () => import('@/views/sysbasics/compliance/investigation'),
+            component: () => import('@/views/sysbasics/compliance/investigation.vue'),
             name: 'Investigation',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'ShareInformation',
-            component: () => import('@/views/sysbasics/compliance/shareInformation'),
+            component: () => import('@/views/sysbasics/compliance/shareInformation.vue'),
             name: 'ShareInformation',
             meta: {
                 noCache: isDevelopMode
@@ -22,7 +22,7 @@ export default {
         },
         {
             path: 'InvestigationInfo',
-            component: () => import('@/views/sysbasics/compliance/investigationInfo'),
+            component: () => import('@/views/sysbasics/compliance/investigationInfo.vue'),
             name: 'InvestigationInfo',
             meta: {
                 noCache: isDevelopMode
@@ -30,7 +30,7 @@ export default {
         },
         {
             path: 'AccountManagement',
-            component: () => import('@/views/sysbasics/compliance/accountManagement'),
+            component: () => import('@/views/sysbasics/compliance/accountManagement.vue'),
             name: 'AccountManagement',
             meta: {
                 noCache: isDevelopMode
@@ -39,7 +39,7 @@ export default {
 
         {
             path: 'Manufacturer',
-            component: () => import('@/views/sysbasics/compliance/manufacturer'),
+            component: () => import('@/views/sysbasics/compliance/manufacturer.vue'),
             name: 'Manufacturer',
             meta: {
                 noCache: isDevelopMode
@@ -47,7 +47,7 @@ export default {
         },
         {
             path: 'Manufacturer2',
-            component: () => import('@/views/sysbasics/compliance/manufacturer2'),
+            component: () => import('@/views/sysbasics/compliance/manufacturer2.vue'),
             name: 'Manufacturer2',
             meta: {
                 noCache: isDevelopMode
@@ -55,7 +55,7 @@ export default {
         },
         {
             path: 'Demo3',
-            component: () => import('@/views/sysbasics/compliance/demo3'),
+            component: () => import('@/views/sysbasics/compliance/demo3.vue'),
             name: 'Demo3',
             meta: {
                 noCache: isDevelopMode
@@ -63,7 +63,7 @@ export default {
         },
         {
             path: 'ImproveAnalysis',
-            component: () => import('@/views/sysbasics/compliance/improveAnalysis'),
+            component: () => import('@/views/sysbasics/compliance/improveAnalysis.vue'),
             name: 'ImproveAnalysis',
             meta: {
                 noCache: isDevelopMode
@@ -71,7 +71,7 @@ export default {
         },
         {
             path: 'ImproveManagement',
-            component: () => import('@/views/sysbasics/compliance/improveManagement'),
+            component: () => import('@/views/sysbasics/compliance/improveManagement.vue'),
             name: 'ImproveManagement',
             meta: {
                 noCache: isDevelopMode
@@ -79,7 +79,7 @@ export default {
         },
         {
           path: 'ImproveManagementInfo',
-          component: () => import('@/views/sysbasics/compliance/improveManagementInfo'),
+          component: () => import('@/views/sysbasics/compliance/improveManagementInfo.vue'),
           name: 'improveManagementInfo',
           meta: {
               noCache: isDevelopMode
@@ -87,7 +87,7 @@ export default {
       },
         {
           path: 'cisbanner',
-          component: () => import('@/views/sysbasics/compliance/banner'),
+          component: () => import('@/views/sysbasics/compliance/banner.vue'),
           name: 'sysbasicscompliancebanner',
           meta: {
             noCache: true
@@ -95,7 +95,7 @@ export default {
         },
         {
           path: 'cisRole',
-          component: () => import('@/views/sysbasics/compliance/role'),
+          component: () => import('@/views/sysbasics/compliance/role.vue'),
           name: 'sysbasicscompliancerole',
           meta: {
             noCache: true

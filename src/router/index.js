@@ -1,42 +1,27 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 /* Layout */
-import Layout from '@/views/layout/Layout'
-import SubLayout from '@/views/layout/SubLayout'
+import Layout from '@/views/layout/Layout.vue'
 
 import admin from './admin'
 import sysbasics from './sysbasics'
 import compliance from './compliance'
 import compliance2 from './compliance2'
-import video from './video' // Thêm import video routes
-// import compliance from './compliance'
+import video from './video'
 
-Vue.use(Router)
-
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-  return originalPush.call(this, location).catch((err) => err)
-}
-
-/**
- * 注意三级以上路由需要使用 SubLayout 无法 keeps-alive 缓存
- * 路由只建议构建两层，建议与菜单分离处理
- */
-var constantRouterMap = [
+const constantRouterMap = [
   {
     path: '/',
     redirect: '/home/welcome',
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/login/index.vue'),
   },
   {
     name: 'loginRegister',
     path: '/register',
-    component: () => import('@/views/login/register'),
+    component: () => import('@/views/login/register.vue'),
   },
   {
     path: '/redirect',
@@ -44,20 +29,20 @@ var constantRouterMap = [
     hidden: true,
     children: [
       {
-        path: ':path*',
-        component: () => import('@/views/redirect/index'),
+        path: ':path(.*)',
+        component: () => import('@/views/redirect/index.vue'),
       },
     ],
   },
   {
     path: '/401',
-    component: () => import('@/views/errorPage/401'),
+    component: () => import('@/views/errorPage/401.vue'),
     name: '401',
   },
   {
     path: '/404',
     name: '404',
-    component: () => import('@/views/errorPage/404'),
+    component: () => import('@/views/errorPage/404.vue'),
   },
   {
     path: '/home',
@@ -65,7 +50,7 @@ var constantRouterMap = [
     children: [
       {
         path: 'welcome',
-        component: () => import('@/views/home/welcome'),
+        component: () => import('@/views/home/welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },
@@ -77,7 +62,7 @@ var constantRouterMap = [
     children: [
       {
         path: 'icon',
-        component: () => import('@/views/example/svg-icons'),
+        component: () => import('@/views/example/svg-icons/index.vue'),
         name: 'exampleIcons',
         meta: { title: '图标' },
       },
@@ -87,15 +72,21 @@ var constantRouterMap = [
 
 export { constantRouterMap }
 
-export const asyncRouterMap = [admin, sysbasics, compliance, compliance2] // Thêm video vào asyncRouterMap
-//export const asyncRouterMap = [sysbasics]
+export const asyncRouterMap = [admin, sysbasics, compliance, compliance2]
 
-export const routerVideo = video // Xuất khẩu riêng lẻ cho các tuyến video
+export const routerVideo = video
 
-export const noPageRoute = { path: '*', redirect: { name: '404' } }
+export const noPageRoute = { path: '/:pathMatch(.*)*', redirect: { name: '404' } }
 
-export default new Router({
+const router = createRouter({
+  history: createWebHashHistory(),
   routes: constantRouterMap,
-  mode: 'hash',
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({ left: 0, top: 0 }),
 })
+
+const originalPush = router.push
+router.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err)
+}
+
+export default router

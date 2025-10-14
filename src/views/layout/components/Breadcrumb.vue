@@ -2,8 +2,8 @@
   <div class="app-breadcrumb">
     <el-breadcrumb separator="/">
       <transition-group name="breadcrumb">
-        <template v-for="(item,index) in levelList">
-          <el-breadcrumb-item :key="item.id||index">
+        <template v-for="(item, index) in levelList" :key="item.id || index">
+          <el-breadcrumb-item>
             <span class="no-redirect">{{ item.name }}</span>
           </el-breadcrumb-item>
           <!-- <el-breadcrumb-item v-if="item.meta.title" :key="item.path">
