@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 /* Layout */
-import Layout from '@/views/layout/Layout.vue'
+import Layout from '@/views/layout/Layout'
 
 import admin from './admin'
 import sysbasics from './sysbasics'
@@ -30,7 +30,7 @@ const constantRouterMap = [
     children: [
       {
         path: ':path(.*)',
-        component: () => import('@/views/redirect/index.vue'),
+        component: () => import('@/views/redirect/index'),
       },
     ],
   },
