@@ -10,6 +10,8 @@ import 'element-plus/dist/index.css'
 import './assets/css/main.css' // Main css entry with Tailwind
 import '@fontsource-variable/inter'
 import 'font-awesome/css/font-awesome.min.css'
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
 
 // i18n Languages
 import zhCn from '@/lang/zh-CN.js'
@@ -46,5 +48,10 @@ app.use(ElementPlus)
 app.use(apiPlugin)
 app.use(icons)
 app.use(errorLog)
+app.use(Viewer, {
+  defaultOptions: {
+    zIndex: 999999,
+  },
+})
 
 app.mount('#app')

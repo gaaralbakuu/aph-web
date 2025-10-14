@@ -16,12 +16,12 @@ const constantRouterMap = [
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/login/index.vue'),
   },
   {
     name: 'loginRegister',
     path: '/register',
-    component: () => import('@/views/login/register'),
+    component: () => import('@/views/login/register.vue'),
   },
   {
     path: '/redirect',
@@ -36,13 +36,13 @@ const constantRouterMap = [
   },
   {
     path: '/401',
-    component: () => import('@/views/errorPage/401'),
+    component: () => import('@/views/errorPage/401.vue'),
     name: '401',
   },
   {
     path: '/404',
     name: '404',
-    component: () => import('@/views/errorPage/404'),
+    component: () => import('@/views/errorPage/404.vue'),
   },
   {
     path: '/home',
@@ -50,7 +50,7 @@ const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-        component: () => import('@/views/home/welcome'),
+        component: () => import('@/views/home/welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },
@@ -62,7 +62,7 @@ const constantRouterMap = [
     children: [
       {
         path: 'icon',
-        component: () => import('@/views/example/svg-icons'),
+        component: () => import('@/views/example/svg-icons/index.vue'),
         name: 'exampleIcons',
         meta: { title: '图标' },
       },

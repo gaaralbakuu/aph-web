@@ -136,7 +136,6 @@
 
 <script>
 import { expendsTree } from '@/utils'
-import { locale } from 'core-js'
 export default {
   name: 'videoAdminMenu',
   data() {

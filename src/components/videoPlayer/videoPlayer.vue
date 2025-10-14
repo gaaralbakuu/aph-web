@@ -88,14 +88,17 @@
 </template>
 
 <script>
-  // import videojs from "./video.js"
-  import videojs from "./video.min.js"
+  // import "./video.js"
+  import "./video.min.js"
   import {
     getToken,
   } from '@/utils/auth'
-  import jq from '@/utils/jquery.js'
+  import '@/utils/jquery.js'
   import "./videojs.watermark.min.js"
   import "./videojs-markers.js"
+
+  const videojs = typeof window !== 'undefined' && window.videojs ? window.videojs : globalThis.videojs
+  const jq = typeof window !== 'undefined' && window.jQuery ? window.jQuery : globalThis.jQuery
 
   export default {
     name: "videoPlayerCom",
