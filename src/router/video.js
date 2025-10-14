@@ -1,5 +1,5 @@
-import Layout from '@/views/layout/Layout'
-import SubLayout from '@/views/layout/SubLayout'
+import Layout from '@/views/layout/Layout.vue'
+import SubLayout from '@/views/layout/SubLayout.vue'
 
 let isDevelopMode = process.env.NODE_ENV === 'development'
 
@@ -7,7 +7,7 @@ export default [
   // Exam detail route
   {
     path: '/examDetail',
-    component: () => import('@/views/sysbasics/video/userViews/examDetail'),
+    component: () => import('@/views/sysbasics/video/userViews/examDetail.vue'),
     name: 'examDetail',
     meta: { noCache: isDevelopMode }
   },
@@ -15,67 +15,67 @@ export default [
   // User Video Layout
   {
     path: '/videoLayout',
-    component: () => import('@/views/sysbasics/video/layout/videoUserLayout'),
+    component: () => import('@/views/sysbasics/video/layout/videoUserLayout.vue'),
     name: 'videoLayout',
     meta: { noCache: isDevelopMode },
     children: [
       {
         path: 'home',
-        component: () => import('@/views/sysbasics/video/userViews/home'),
+        component: () => import('@/views/sysbasics/video/userViews/home.vue'),
         name: 'videoHome',
         meta: { noCache: isDevelopMode, title: 'Video Dashboard' }
       },
       {
         path: 'trainingDetail',
-        component: () => import('@/views/sysbasics/video/userViews/trainingDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/trainingDetail.vue'),
         name: 'trainingDetail',
         meta: { noCache: isDevelopMode, title: 'Training Details' }
       },
       {
         path: 'topicDetail',
-        component: () => import('@/views/sysbasics/video/userViews/topicDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/topicDetail.vue'),
         name: 'topicDetail',
         meta: { noCache: isDevelopMode, title: 'Topic Details' }
       },
       {
         path: 'play',
-        component: () => import('@/views/sysbasics/video/userViews/play'),
+        component: () => import('@/views/sysbasics/video/userViews/play.vue'),
         name: 'videoPlay',
         meta: { noCache: isDevelopMode, title: 'Video Player' }
       },
       {
         path: 'topic',
-        component: () => import('@/views/sysbasics/video/userViews/topic'),
+        component: () => import('@/views/sysbasics/video/userViews/topic.vue'),
         name: 'videoTopic',
         meta: { noCache: isDevelopMode, title: 'Topics' }
       },
       {
         path: 'course',
-        component: () => import('@/views/sysbasics/video/userViews/course'),
+        component: () => import('@/views/sysbasics/video/userViews/course.vue'),
         name: 'videoCourse',
         meta: { noCache: isDevelopMode, title: 'Courses' }
       },
       {
         path: 'mine',
-        component: () => import('@/views/sysbasics/video/userViews/mine'),
+        component: () => import('@/views/sysbasics/video/userViews/mine.vue'),
         name: 'videoMine',
         meta: { noCache: isDevelopMode, title: 'My Videos' },
         children: [
           {
             path: 'training',
-            component: () => import('@/views/sysbasics/video/userViews/component/training'),
+            component: () => import('@/views/sysbasics/video/userViews/component/training.vue'),
             name: 'myTraining',
             meta: { noCache: isDevelopMode, title: 'My Training' }
           },
           {
             path: 'favorite',
-            component: () => import('@/views/sysbasics/video/userViews/component/favorite'),
+            component: () => import('@/views/sysbasics/video/userViews/component/favorite.vue'),
             name: 'myFavorite',
             meta: { noCache: isDevelopMode, title: 'Favorites' }
           },
           {
             path: 'history',
-            component: () => import('@/views/sysbasics/video/userViews/component/history'),
+            component: () => import('@/views/sysbasics/video/userViews/component/history.vue'),
             name: 'myHistory',
             meta: { noCache: isDevelopMode, title: 'Watch History' }
           }
@@ -87,44 +87,44 @@ export default [
   // Admin Video Layout
   {
     path: '/videoAdminLayout',
-    component: () => import('@/views/sysbasics/video/layout/videoAdminLayout'),
+    component: () => import('@/views/sysbasics/video/layout/videoAdminLayout.vue'),
     name: 'videoAdminLayout',
     meta: { noCache: isDevelopMode },
     children: [
       // Lesson Management
       {
         path: 'lesson',
-        component: () => import('@/views/sysbasics/video/adminViews/lesson'),
+        component: () => import('@/views/sysbasics/video/adminViews/lesson.vue'),
         name: 'adminLesson',
         meta: { noCache: isDevelopMode, title: 'Lesson Management' },
         children: [
           {
             path: 'contentManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/content'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/content.vue'),
             name: 'contentManage',
             meta: { noCache: isDevelopMode, title: 'Content Management' }
           },
           {
             path: 'tagManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/tag'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/tag.vue'),
             name: 'tagManage',
             meta: { noCache: isDevelopMode, title: 'Tag Management' }
           },
           {
             path: 'catalogueManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/catalogue'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/catalogue.vue'),
             name: 'catalogueManage',
             meta: { noCache: isDevelopMode, title: 'Catalog Management' }
           },
           {
             path: 'courseManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/course'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/course.vue'),
             name: 'courseManage',
             meta: { noCache: isDevelopMode, title: 'Course Management' }
           },
           {
             path: 'topicManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/topic'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/lesson/topic.vue'),
             name: 'topicManage',
             meta: { noCache: isDevelopMode, title: 'Topic Management' }
           }
@@ -134,31 +134,31 @@ export default [
       // Training Management
       {
         path: 'training',
-        component: () => import('@/views/sysbasics/video/adminViews/training'),
+        component: () => import('@/views/sysbasics/video/adminViews/training.vue'),
         name: 'training',
         meta: { noCache: isDevelopMode, title: 'Training Management' },
         children: [
           {
             path: 'planManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/training/plan'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/training/plan.vue'),
             name: 'planManage',
             meta: { noCache: isDevelopMode, title: 'Training Plans' }
           },
           {
             path: 'classManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/training/class'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/training/class.vue'),
             name: 'classManage',
             meta: { noCache: isDevelopMode, title: 'Class Management' }
           },
           {
             path: 'lecturerManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/training/lecturer'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/training/lecturer.vue'),
             name: 'lecturerManage',
             meta: { noCache: isDevelopMode, title: 'Lecturer Management' }
           },
           {
             path: 'placeManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/training/place'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/training/place.vue'),
             name: 'placeManage',
             meta: { noCache: isDevelopMode, title: 'Training Places' }
           }
@@ -168,25 +168,25 @@ export default [
       // Exam Management
       {
         path: 'exam',
-        component: () => import('@/views/sysbasics/video/adminViews/exam'),
+        component: () => import('@/views/sysbasics/video/adminViews/exam.vue'),
         name: 'exam',
         meta: { noCache: isDevelopMode, title: 'Exam Management' },
         children: [
           {
             path: 'questionManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/exam/question'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/exam/question.vue'),
             name: 'questionManage',
             meta: { noCache: isDevelopMode, title: 'Question Bank' }
           },
           {
             path: 'questionnaireManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/exam/questionnaire'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/exam/questionnaire.vue'),
             name: 'questionnaireManage',
             meta: { noCache: isDevelopMode, title: 'Questionnaires' }
           },
           {
             path: 'examManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/exam/exam'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/exam/exam.vue'),
             name: 'examManage',
             meta: { noCache: isDevelopMode, title: 'Exam Management' }
           }
@@ -196,19 +196,19 @@ export default [
       // Analytics
       {
         path: 'analyze',
-        component: () => import('@/views/sysbasics/video/adminViews/analyze'),
+        component: () => import('@/views/sysbasics/video/adminViews/analyze.vue'),
         name: 'analyze',
         meta: { noCache: isDevelopMode, title: 'Analytics' },
         children: [
           {
             path: 'index',
-            component: () => import('@/views/sysbasics/video/adminViews/component/analyze/index'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/analyze/index.vue'),
             name: 'analyzeIndex',
             meta: { noCache: isDevelopMode, title: 'System Overview' }
           },
           {
             path: 'collegeTraining',
-            component: () => import('@/views/sysbasics/video/adminViews/component/analyze/collegeTraining'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/analyze/collegeTraining.vue'),
             name: 'collegeTraining',
             meta: { noCache: isDevelopMode, title: 'College Training Stats' }
           }
@@ -218,37 +218,37 @@ export default [
       // System Management
       {
         path: 'system',
-        component: () => import('@/views/sysbasics/video/adminViews/system'),
+        component: () => import('@/views/sysbasics/video/adminViews/system.vue'),
         name: 'system',
         meta: { noCache: isDevelopMode, title: 'System Settings' },
         children: [
           {
             path: 'bannerManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/system/banner'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/system/banner.vue'),
             name: 'bannerManage',
             meta: { noCache: isDevelopMode, title: 'Banner Management' }
           },
           {
             path: 'menuManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/system/menu'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/system/menu.vue'),
             name: 'menuManage',
             meta: { noCache: isDevelopMode, title: 'Menu Management' }
           },
           {
             path: 'roleManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/system/role'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/system/role.vue'),
             name: 'roleManage',
             meta: { noCache: isDevelopMode, title: 'Role Management' }
           },
           {
             path: 'collegeManage',
-            component: () => import('@/views/sysbasics/video/adminViews/component/system/college'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/system/college.vue'),
             name: 'collegeManage',
             meta: { noCache: isDevelopMode, title: 'College Management' }
           },
           {
             path: 'setting',
-            component: () => import('@/views/sysbasics/video/adminViews/component/system/setting'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/system/setting.vue'),
             name: 'setting',
             meta: { noCache: isDevelopMode, title: 'System Settings' }
           }

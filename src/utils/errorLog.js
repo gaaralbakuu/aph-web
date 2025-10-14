@@ -1,17 +1,17 @@
-import Vue from 'vue'
 import store from '../store'
 
-// you can set only in production env show the error-log
-// if (process.env.NODE_ENV === 'production') {
-Vue.config.errorHandler = function(err, vm, info, a) {
-  Vue.nextTick(() => {
-    store.dispatch('addErrorLog', {
-      err,
-      vm,
-      info,
-      url: window.location.href
-    })
-    console.error(err, info)
-  })
+export default {
+  install(app) {
+    app.config.errorHandler = (err, vm, info) => {
+      // In Vue 3, `vm` is the component instance, and `info` is the error type.
+      // We can dispatch the error to the store as before.
+      store.dispatch('addErrorLog', {
+        err,
+        vm, // This will be the component instance
+        info, // Additional info about the error
+        url: window.location.href,
+      })
+      console.error(err, info)
+    }
+  },
 }
-// }

@@ -12,11 +12,15 @@ export default {
   },
   mounted() {
     // Khởi tạo dialog ESC handler
-    this.$initDialogEscHandler()
+    if (this.$initDialogEscHandler) {
+      this.$initDialogEscHandler()
+    }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     // Cleanup ESC handler
-    this.$removeDialogEscHandler()
+    if (this.$removeDialogEscHandler) {
+      this.$removeDialogEscHandler()
+    }
   },
 }
 </script>

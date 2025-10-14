@@ -1,9 +1,12 @@
 /*! videojs-markers - v0.6.1 - 2016-10-24
  * Copyright (c) 2016 ; Licensed  */
 'use strict';
-import jq from '@/utils/jquery.js'
-import videojs from "./video.min.js"
-// import videojs from "./video.js"
+import '@/utils/jquery.js'
+import './video.min.js'
+// import "./video.js"
+
+const jq = typeof window !== 'undefined' && window.jQuery ? window.jQuery : globalThis.jQuery
+const videojs = typeof window !== 'undefined' && window.videojs ? window.videojs : globalThis.videojs
 
 var defaultSetting = {
   markerStyle: {

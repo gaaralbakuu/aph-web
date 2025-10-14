@@ -242,6 +242,7 @@ export {
   zFormDialog,
   initFuncs,
   defaultConfig,
+  zTable as eTable,
   // getfeedback
-  
+
 }

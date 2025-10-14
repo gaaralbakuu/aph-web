@@ -1,24 +1,24 @@
-// Plugin để quản lý dialog stack ESC key handling
+import mitt from 'mitt'
+const emitter = mitt()
+
 export default {
-  install(Vue, options = {}) {
-    // Tạo instance duy nhất để quản lý ESC key
+  install(app, options = {}) {
     let isListenerAdded = false
-    
-    const handleEscKey = function(event) {
+    const store = app.config.globalProperties.$store
+
+    const handleEscKey = function (event) {
       if (event.key === 'Escape') {
-        // Tìm Vue instance có store
-        const app = document.querySelector('#app').__vue__
-        if (app && app.$store && app.$store.getters) {
+        if (store && store.getters) {
           try {
-            const dialogCount = app.$store.getters['dialogStack/dialogCount']
-            
+            const dialogCount = store.getters['dialogStack/dialogCount']
+
             if (dialogCount > 0) {
               event.preventDefault()
               event.stopPropagation()
-              
-              const topDialog = app.$store.getters['dialogStack/topDialog']
+
+              const topDialog = store.getters['dialogStack/topDialog']
               if (topDialog) {
-                app.$root.$emit('close-top-dialog', topDialog.id)
+                emitter.emit('close-top-dialog', topDialog.id)
               }
             }
           } catch (error) {
@@ -27,20 +27,21 @@ export default {
         }
       }
     }
-    
-    // Thêm method vào Vue prototype để có thể gọi từ bất kỳ component nào
-    Vue.prototype.$initDialogEscHandler = function() {
+
+    app.config.globalProperties.$initDialogEscHandler = function () {
       if (!isListenerAdded) {
         document.addEventListener('keydown', handleEscKey)
         isListenerAdded = true
       }
     }
-    
-    Vue.prototype.$removeDialogEscHandler = function() {
+
+    app.config.globalProperties.$removeDialogEscHandler = function () {
       if (isListenerAdded) {
         document.removeEventListener('keydown', handleEscKey)
         isListenerAdded = false
       }
     }
-  }
+
+    app.config.globalProperties.$dialogEventBus = emitter
+  },
 }

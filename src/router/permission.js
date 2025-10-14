@@ -1,47 +1,40 @@
 import router from './index'
 import store from '../store'
-import Vue from 'vue'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // getToken from cookie
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login','/register'] // no redirect whitelist
+const whiteList = ['/login', '/register'] // no redirect whitelist
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start() // start progress bar
   if (getToken()) {
     // determine if there has token
     /* has token */
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done() // if current page is homepage will not trigger	afterEach hook, so manually handle it
+      NProgress.done() // if current page is homepage will not trigger afterEach hook, so manually handle it
     } else {
-      if (!store.getters.user.userId) {
-        // 判断当前用户是否已拉取完user_info信息
-        store
-          .dispatch('GetUserInfo')
-          .then(res => {
-            // 拉取user_info
-            store
-              .dispatch('GenerateRoutes', store.getters.user)
-              .then(() => {
-                console.log(router, store.getters.addRouters)
-                router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-                next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-              })
-              .catch(e => {
-                console.info(e)
-              })
+      if (!store.getters.user || !store.getters.user.userId) {
+        // Check if user info is loaded
+        try {
+          await store.dispatch('GetUserInfo')
+          await store.dispatch('GenerateRoutes', store.getters.user)
+
+          store.getters.addRouters.forEach(route => {
+            router.addRoute(route)
           })
-          .catch(err => {
-            console.log(err)
-            store.dispatch('FedLogOut').then(() => {
-              Vue.prototype.$message.error('用户身份验证失败，请重新登录')
-              next({ path: '/' })
-            })
-          })
+
+          next({ ...to, replace: true })
+        } catch (error) {
+          console.error('Failed to get user info:', error)
+          await store.dispatch('FedLogOut')
+          // Optionally, show an error message to the user
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
+        }
       } else {
         next()
       }
@@ -49,11 +42,11 @@ router.beforeEach((to, from, next) => {
   } else {
     /* has no token */
     if (whiteList.indexOf(to.path) !== -1) {
-      // 在免登录白名单，直接进入
+      // in the free login whitelist, go directly
       next()
     } else {
-      next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
-      NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
+      next(`/login?redirect=${to.path}`) // otherwise all redirect to login page
+      NProgress.done()
     }
   }
 })

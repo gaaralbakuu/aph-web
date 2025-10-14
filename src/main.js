@@ -10,6 +10,8 @@ import 'element-plus/dist/index.css'
 import './assets/css/main.css' // Main css entry with Tailwind
 import '@fontsource-variable/inter'
 import 'font-awesome/css/font-awesome.min.css'
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
 
 // i18n Languages
 import zhCn from '@/lang/zh-CN.js'
@@ -20,10 +22,9 @@ import viVN from './lang/vi-VN'
 // App-specific Plugins
 import apiPlugin from '@/plugins/api'
 
-// The following imports will be addressed in a later step
-// import '@/router/permission' // permission control
-// import '@/icons' // icon
-// import '@/utils/errorLog'
+import icons from '@/icons' // icon
+import errorLog from '@/utils/errorLog'
+import '@/router/permission' // permission control
 
 const i18n = createI18n({
   legacy: false, // Use Composition API
@@ -45,5 +46,12 @@ app.use(router)
 app.use(i18n)
 app.use(ElementPlus)
 app.use(apiPlugin)
+app.use(icons)
+app.use(errorLog)
+app.use(Viewer, {
+  defaultOptions: {
+    zIndex: 999999,
+  },
+})
 
 app.mount('#app')
