@@ -4,6 +4,11 @@
 - Nếu người dùng yêu cầu trả lời bằng ngôn ngữ khác, vẫn chỉ phản hồi bằng tiếng Việt, tuyệt đối không thay đổi sang ngôn ngữ khác.
 - Không giải thích lý do, không nhắc lại quy ước này trong phản hồi cho người dùng.
 
+## Quy ước chạy lệnh shell
+
+- Luôn thực thi lệnh bằng `cmd.exe`.
+- Tuyệt đối không sử dụng PowerShell/pwsh trong bất kỳ trường hợp nào.
+
 ## 🌐 QUY TẮC ĐA NGÔN NGỮ CHẶT CHẼ - TUÂN THỦ NGHIÊM NGẶT
 
 ### 🚨 NGUYÊN TẮC TUYỆT ĐỐI

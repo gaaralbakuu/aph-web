@@ -37,11 +37,17 @@ module.exports = {
     watchOptions: {
       poll: 1000,
       ignored: /node_modules/,
+      aggregateTimeout: 300,
     },
   },
   transpileDependencies: ['element-ui'],
+  css: {
+    extract: process.env.NODE_ENV === 'production',
+    sourceMap: true,
+  },
   configureWebpack: () => {
     var obj = {
+      cache: false,
       externals: {
         './cptable': 'var cptable',
       },
