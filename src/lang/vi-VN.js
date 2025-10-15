@@ -958,6 +958,7 @@ export default {
     xlsxImproveManageName: 'Cải thiện dữ liệu quản lý',
     xlsxImproveName: 'Cải thiện việc quản lý các mẫu đã nhập.xlsx',
     yes_include_in_next_internal_audit: 'Có, đưa vào đợt kiểm tra nội bộ tiếp theo',
+    surveyYear: 'Năm khảo sát',
   },
   improveManagementInfo: {
     audit: 'Kiểm tra',
