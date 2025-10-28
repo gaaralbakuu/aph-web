@@ -43,14 +43,14 @@
           </div>
           <input type="text" :placeholder="$l.addr" v-model="manufacturer.query.addr" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
         </div>
-        <div class="relative h-9">
+        <!-- <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
           </div>
           <input type="text" :placeholder="$l.legal_person" v-model="manufacturer.query.legal_person" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
-        </div>
+        </div> -->
         <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
@@ -116,6 +116,8 @@
     <div class="p-3">
       <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
+
+    
     <!-- Create/Edit Dialog -->
     <CustomDialog :title="manufacturer.data.id ? $c.edit : $c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
@@ -287,6 +289,10 @@
           <div>
             <z-table :list="contactInfo.list" :tableProps="tableProps" :columns="contactInfo.columns" @deleteItem="contactInfoDeleteItem" class="w-full">
               <template v-slot:operation="v">
+                <el-button type="text" size="small" class="text-blue-500 hover:underline mr-2" @click="contactInfoEditItem(v.row, v.$index)">
+                  <i class="el-icon-edit"></i>
+                  {{ $c.edit }}
+                </el-button>
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="contactInfoDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
                   {{ $c.delete }}
@@ -314,6 +320,10 @@
           <div>
             <z-table :list="address.list" :tableProps="tableProps" :columns="address.columns" @deleteItem="addressDeleteItem" class="w-full">
               <template v-slot:operation="v">
+                <el-button type="text" size="small" class="text-blue-500 hover:underline mr-2" @click="addressEditItem(v.row, v.$index)">
+                  <i class="el-icon-edit"></i>
+                  {{ $c.edit }}
+                </el-button>
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="addressDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
                   {{ $c.delete }}
@@ -957,6 +967,7 @@ export default {
       contactInfo: {
         list: [],
         data: {},
+        editIndex: -1,
         dialogFormVisible: false,
         dialogTableVisible2: false,
         columns: [
@@ -1007,6 +1018,7 @@ export default {
       address: {
         list: [],
         data: {},
+        editIndex: -1,
         dialogFormVisible: false,
         dialogTableVisible2: false,
         columns: [
@@ -1240,7 +1252,7 @@ export default {
       this.getList()
     },
     add() {
-      ;(this.manufacturer.data = {
+      this.manufacturer.data = {
         name_zh: '',
         name_en: '',
         legal_person: '',
@@ -1276,14 +1288,16 @@ export default {
         contactInfoList: [],
         addressList: [],
         attachment: [],
-      }),
-        (this.contactInfo.data = {}),
-        (this.contactInfo.list = []),
-        (this.address.data = {}),
-        (this.address.list = []),
-        (this.attachment.data = {}),
-        (this.attachment.list = []),
-        (this.manufacturer.addOrEditFormVisible = true)
+      }
+      this.contactInfo.data = {}
+      this.contactInfo.list = []
+      this.contactInfo.editIndex = -1
+      this.address.data = {}
+      this.address.list = []
+      this.address.editIndex = -1
+      this.attachment.data = {}
+      this.attachment.list = []
+      this.manufacturer.addOrEditFormVisible = true
     },
     editItem(index, data) {
       this.getDataByID(data.id)
@@ -1508,6 +1522,8 @@ export default {
     // 新增合规联系人信息
     contactInfoList() {
       console.log('contactInfo')
+      this.contactInfo.editIndex = -1
+      this.contactInfo.data = {}
       this.contactInfo.dialogFormVisible = true
     },
     contactInfoSubmmit() {
@@ -1538,19 +1554,39 @@ export default {
         })
         return
       }
-      this.contactInfo.list.push(this.contactInfo.data)
+      const payload = _.cloneDeep(this.contactInfo.data)
+      if (this.contactInfo.editIndex > -1) {
+        this.$set(this.contactInfo.list, this.contactInfo.editIndex, payload)
+      } else {
+        this.contactInfo.list.push(payload)
+      }
       this.contactInfo.data = {}
+      this.contactInfo.editIndex = -1
       this.contactInfo.dialogFormVisible = false
       console.log(this.contactInfo.list)
     },
     contactInfoDeleteItem(row, index) {
       console.log(row)
       this.contactInfo.list.splice(index, 1)
+      if (this.contactInfo.editIndex === index) {
+        this.contactInfo.editIndex = -1
+        this.contactInfo.data = {}
+      } else if (this.contactInfo.editIndex > index) {
+        this.contactInfo.editIndex -= 1
+      }
+    },
+
+    contactInfoEditItem(row, index) {
+      this.contactInfo.editIndex = index
+      this.contactInfo.data = _.cloneDeep(row)
+      this.contactInfo.dialogFormVisible = true
     },
 
     addressList() {
       // 新增地址
       console.log('addressList')
+      this.address.editIndex = -1
+      this.address.data = {}
       this.address.dialogFormVisible = true
     },
     addressSubmmit() {
@@ -1567,16 +1603,34 @@ export default {
         return
       }
 
+      const payload = _.cloneDeep(this.address.data)
       if (this.manufacturer.data.id != undefined) {
-        this.address.data.manufacture_id = this.manufacturer.data.id
+        payload.manufacture_id = this.manufacturer.data.id
       }
-      this.address.list.push(this.address.data)
+      if (this.address.editIndex > -1) {
+        this.$set(this.address.list, this.address.editIndex, payload)
+      } else {
+        this.address.list.push(payload)
+      }
       console.log(this.address.list, this.address.data)
       this.address.data = {}
+      this.address.editIndex = -1
       this.address.dialogFormVisible = false
     },
     addressDeleteItem(data, index) {
       this.address.list.splice(index, 1)
+      if (this.address.editIndex === index) {
+        this.address.editIndex = -1
+        this.address.data = {}
+      } else if (this.address.editIndex > index) {
+        this.address.editIndex -= 1
+      }
+    },
+
+    addressEditItem(row, index) {
+      this.address.editIndex = index
+      this.address.data = _.cloneDeep(row)
+      this.address.dialogFormVisible = true
     },
     createFileData() {
       this.attachment.fileList = {
@@ -1912,6 +1966,18 @@ export default {
     },
   },
   watch: {
+    'contactInfo.dialogFormVisible'(val) {
+      if (!val) {
+        this.contactInfo.editIndex = -1
+        this.contactInfo.data = {}
+      }
+    },
+    'address.dialogFormVisible'(val) {
+      if (!val) {
+        this.address.editIndex = -1
+        this.address.data = {}
+      }
+    },
     userAuth: {
       deep: true,
       handler(newV) {

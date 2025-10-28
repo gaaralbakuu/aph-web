@@ -35,6 +35,12 @@
                 <!-- Index Column -->
                 <span v-if="col.id === 'index'" class="font-medium text-black text-xs">{{ idx + 1 + (page.page - 1) * page.pageSize }}</span>
 
+                <!-- Survey Year Column -->
+                <template v-else-if="col.id === 'survey_year'">
+                  <span v-if="item[col.id]" class="text-xs whitespace-normal">{{ formatSurveyYear(item[col.id]) }}</span>
+                  <span v-else class="text-gray-300 italic text-xs">{{ $c.empty }}</span>
+                </template>
+
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="max-w-[200px]" :title="item[col.id]">
                   <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
@@ -86,6 +92,17 @@
                   <span v-else class="text-gray-300 italic text-xs">{{ $c.empty }}</span>
                 </template>
 
+                <!-- Initial Assessment Column -->
+                <template v-else-if="col.id === 'is_initial_assessment'">
+                  <div class="flex items-center justify-center">
+                    <el-tag v-if="isInitialAssessment(item[col.id])" type="success" size="small" class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium gap-1">
+                      <i class="el-icon-check text-xs"></i>
+                      <span>{{ $l.initialAssessmentTag }}</span>
+                    </el-tag>
+                    <span v-else class="text-gray-300 italic text-xs">{{ $l.notInitialAssessment }}</span>
+                  </div>
+                </template>
+
                 <!-- Yes/No Fields -->
                 <template v-else-if="col.id === 'is_submit_cap' || col.id === 'requestor_facility_type'">
                   <el-tag v-if="item[col.id] !== null && item[col.id] !== undefined" :type="item[col.id] === 'Y' || item[col.id] === '1' ? 'success' : 'info'" size="small" class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
@@ -103,7 +120,7 @@
                 <!-- Attachments Column -->
                 <template v-else-if="col.id === 'attachments'">
                   <div class="flex items-center gap-2">
-                    <button v-if="item[col.id].length > 0" class="flex items-center gap-1 text-xs transition-colors">
+                    <button v-if="Array.isArray(item[col.id]) && item[col.id].length > 0" class="flex items-center gap-1 text-xs transition-colors">
                       <i class="el-icon-paperclip"></i>
                       <span>{{ item[col.id].length }} {{ $l.files }}</span>
                     </button>
@@ -212,6 +229,7 @@ export default {
     return {
       columns: [
         { id: 'index', title: '#', width: 60, textAlign: 'left' },
+        { id: 'survey_year', title: 'surveyYear', width: 110, textAlign: 'left' },
         { id: 'name_en', title: 'manufacturerNameEn', width: 200, textAlign: 'left' },
         { id: 'address', title: 'address', width: 250, textAlign: 'left' },
         { id: 'third_party_org', title: 'nameOfTheThirdPartyOrganization', width: 180, textAlign: 'left' },
@@ -220,6 +238,7 @@ export default {
         // { id: 'cost_pay_progress', title: 'costPayProgress', width: 120, textAlign: 'left' },
         { id: 'audit_result', title: 'auditResult', width: 200, textAlign: 'left' },
         { id: 'is_submit_cap', title: 'isSubmitCap', width: 100, textAlign: 'center' },
+        { id: 'is_initial_assessment', title: 'initialAssessment', width: 140, textAlign: 'center' },
         { id: 'rec_status', title: 'recStatus', width: 100, textAlign: 'center' },
         { id: 'create_user', title: 'createUser', width: 100, textAlign: 'left' },
         { id: 'create_time', title: 'createTime', width: 120, textAlign: 'left' },
@@ -308,6 +327,25 @@ export default {
         '99': this.$l.end,
       }
       return textMap[status] || status
+    },
+    formatSurveyYear(value) {
+      if (!value) return ''
+      const str = String(value)
+      const match = str.match(/\d{4}/)
+      return match ? match[0] : str
+    },
+    isInitialAssessment(value) {
+      if (value === null || value === undefined) {
+        return false
+      }
+      if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase()
+        return ['y', '1', 'true', 'ia'].includes(normalized)
+      }
+      if (typeof value === 'number') {
+        return value === 1
+      }
+      return Boolean(value)
     },
     formatDate(date) {
       if (!date) return ''

@@ -166,6 +166,13 @@
                 <label class="font-light text-sm text-black">{{ $l.surveyYear }}</label>
                 <el-input v-model="editSurvey.list.survey_year" class="rounded-md" />
               </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.initialAssessment }}</label>
+                <el-checkbox v-model="editSurvey.list.is_initial_assessment" true-label="Y" false-label="N">
+                  {{ $l.initialAssessmentCheckbox }}
+                </el-checkbox>
+              </div>
             </div>
 
             <div class="text-xl font-black text-gray-900 dark:text-white mt-6">{{ $l.latestSeaAudit }}</div>
@@ -245,6 +252,16 @@
             <div class="flex flex-col gap-2">
               <label class="font-light text-sm text-gray-700">{{ $l.surveyYear }}</label>
               <el-input v-model="checkSurvey.list.survey_year" :disabled="true" class="w-full"></el-input>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-light text-sm text-gray-700">{{ $l.initialAssessment }}</label>
+              <div class="flex items-center gap-2">
+                <el-tag v-if="isInitialAssessment(checkSurvey.list.is_initial_assessment)" type="success" size="small" class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium gap-1">
+                  <i class="el-icon-check text-xs"></i>
+                  <span>{{ $l.initialAssessmentTag }}</span>
+                </el-tag>
+                <span v-else class="text-gray-400 text-sm">{{ $l.notInitialAssessment }}</span>
+              </div>
             </div>
           </div>
 
@@ -388,6 +405,13 @@
                   <span class="text-red-500">*</span>
                 </label>
                 <el-date-picker v-model="addSurvey.addList.survey_year" type="year" :placeholder="$l.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-light text-sm text-black">{{ $l.initialAssessment }}</label>
+                <el-checkbox v-model="addSurvey.addList.is_initial_assessment" true-label="Y" false-label="N">
+                  {{ $l.initialAssessmentCheckbox }}
+                </el-checkbox>
               </div>
             </div>
 
@@ -1034,6 +1058,11 @@ export default {
             width: 100,
           },
           {
+            title: this.$l.initialAssessment,
+            key: 'is_initial_assessment',
+            width: 130,
+          },
+          {
             title: this.$l.nameZh,
             key: 'name_zh',
             width: 120,
@@ -1261,6 +1290,7 @@ export default {
         addList: {
           manufacture_id: '',
           manufacture_record_id: '',
+          survey_year: '',
           audit_time: '',
           due_audit_date: '',
           name_zh: '',
@@ -1269,6 +1299,7 @@ export default {
           cost_pay_progress: 0,
           audit_time: '',
           is_submit_cap: 'Y',
+          is_initial_assessment: 'N',
           rec_status: 1,
           attachments: [],
           near_third_party_org: '',
@@ -1286,6 +1317,7 @@ export default {
           cost_pay_progress: 0,
           audit_time: '',
           is_submit_cap: 'Y',
+          is_initial_assessment: 'N',
           rec_status: 1,
           attachments: [],
           near_third_party_org: '',
@@ -1499,6 +1531,28 @@ export default {
       // Handle row click if needed
       console.log('Row clicked:', row)
     },
+    extractYear(value) {
+      if (!value) return ''
+      const str = String(value)
+      const match = str.match(/\d{4}/)
+      return match ? match[0] : str
+    },
+    normalizeInitialFlag(value) {
+      return this.isInitialAssessment(value) ? 'Y' : 'N'
+    },
+    isInitialAssessment(value) {
+      if (value === null || value === undefined) {
+        return false
+      }
+      if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase()
+        return ['y', '1', 'true', 'ia'].includes(normalized)
+      }
+      if (typeof value === 'number') {
+        return value === 1
+      }
+      return Boolean(value)
+    },
     /* 查询 */
 
     getHistoryListCurrent() {
@@ -1519,6 +1573,14 @@ export default {
         .catch(() => {
           this.pageLoading = false
         })
+    },
+
+    getPercentTotal() {
+      this.$request(api.baseUrl + '/Compliance/comPlianceSurvey/getPercentTotal')
+        .then((r) => {
+          console.log(r)
+        })
+        .catch(() => {})
     },
 
     submitForm() {
@@ -1566,6 +1628,7 @@ export default {
 
     // 打开新增窗口
     addForm() {
+      this.addSurvey.addList.is_initial_assessment = 'N'
       this.addFormVisible = true
     },
 
@@ -1596,6 +1659,7 @@ export default {
       this.addSurvey.addList.manufacture_record_id = row.id
       this.addSurvey.addList.name_en = row.name_en
       this.addSurvey.addList.third_party_org = row.third_party_org
+      this.addSurvey.addList.is_initial_assessment = 'N'
       console.log('r.data.list', row)
 
       this.addselectFormVisible = false
@@ -1777,6 +1841,11 @@ export default {
       }).then((r) => {
         let cRow = _.cloneDeep(r)
 
+        if (cRow && cRow.data) {
+          cRow.data.survey_year = this.extractYear(cRow.data.survey_year)
+          cRow.data.is_initial_assessment = this.normalizeInitialFlag(cRow.data.is_initial_assessment)
+        }
+
         if (Number(cRow.data.cost_pay_progress)) {
           cRow.data.cost_pay_progress = Number(cRow.data.cost_pay_progress)
         } else {
@@ -1828,6 +1897,8 @@ export default {
       } else {
         rowList.cost_pay_progress = 0
       }
+      rowList.survey_year = this.extractYear(rowList.survey_year)
+      rowList.is_initial_assessment = this.normalizeInitialFlag(rowList.is_initial_assessment)
       this.editSurvey.list = rowList
       this.checkviewFile(row.survey_id)
         .then((r) => {
@@ -1970,6 +2041,9 @@ export default {
             message: this.$l.modifyFailed,
           })
         })
+        .finally(() => {
+          this.getHistoryListCurrent()
+        })
     },
 
     // 打开编辑提醒/警告函号对话框
@@ -2044,13 +2118,15 @@ export default {
         pageSize: this.historyList.pageSize,
       })
         .then((r) => {
-          // 处理数据，添加附件数量信息
-          const list = r.data || []
-          list.forEach((item) => {
-            // 如果API返回的数据中没有attachment_count，可以设置默认值或通过其他方式获取
-            if (item.attachment_count === undefined) {
-              item.attachment_count = 0 // 默认值，可以根据实际情况调整
+          const rawList = Array.isArray(r.data) ? r.data : []
+          const list = rawList.map((item) => {
+            const cloned = { ...item }
+            if (cloned.attachment_count === undefined) {
+              cloned.attachment_count = 0
             }
+            cloned.survey_year = this.extractYear(cloned.survey_year)
+            cloned.is_initial_assessment = this.normalizeInitialFlag(cloned.is_initial_assessment)
+            return cloned
           })
 
           this.historyList.list = list
@@ -2069,7 +2145,6 @@ export default {
     },
 
     checkClickHistory(row) {
-
       // this.pageLoading = true
       console.log(row)
       let rowList = _.cloneDeep(row)
@@ -2081,6 +2156,8 @@ export default {
       } else {
         rowList.cost_pay_progress = 0
       }
+      rowList.survey_year = this.extractYear(rowList.survey_year)
+      rowList.is_initial_assessment = this.normalizeInitialFlag(rowList.is_initial_assessment)
       this.checkSurvey.list = rowList
       this.checkviewFile(row.survey_id)
         .then((r) => {
@@ -2690,6 +2767,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getPercentTotal()
     this.getUserAuth()
   },
   watch: {

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-200" :style="{ zIndex: currentZIndex }" @click="handleOverlayClick">
+  <div v-if="visible" class="fixed left-0 right-0 top-0 bottom-0 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-200" :style="{ zIndex: currentZIndex }" @click="handleOverlayClick">
     <div :class="['relative bg-white border border-solid border-transparent rounded-[6px] shadow-[rgba(0,0,0,0.1)_0px_20px_25px_-5px,rgba(0,0,0,0.04)_0px_10px_10px_-5px] flex flex-col box-border font-[\'HarmonyOS Sans\',_\'PingFang SC\',_\'Microsoft Yahei\',_\'Heiti SC\',_\'WenQuanYi Micro Hei\',_\'Helvetica Neue\',_Helvetica,_Arial,_sans-serif] text-[14px] leading-[14px] min-w-[392px] w-[600px] max-h-[calc(100%-48px)] p-0 animate-dialogIn', customClass]" :style="dialogStyle" @click.stop>
       <!-- Header -->
       <div class="flex justify-between items-center px-6 py-3 border-b border-gray-100 bg-white/95">

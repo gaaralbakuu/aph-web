@@ -31,6 +31,8 @@
               </div>
             </div>
             <div class="flex flex-col my-1 py-1 border-t border-b border-[#ebebeb] dark:border-gray-600">
+              <div @click="navigateTo('/videoAdminLayout/lesson/contentManage')" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{ $l.adminCourseManage }}</div>
+              <div @click="navigateTo('/videoLayout/home')" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{ $l.viewCourse }}</div>
               <div @click="passwordFormVisible = true" class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer">{{ $l.changePwd }}</div>
             </div>
             <div class="flex flex-col">
@@ -175,6 +177,15 @@ export default {
         return false
       }
       screenfull.toggle()
+    },
+    navigateTo(path) {
+      if (!path) {
+        return
+      }
+      if (this.$route.path === path) {
+        return
+      }
+      this.$router.push({ path }).catch(() => {})
     },
   },
 }

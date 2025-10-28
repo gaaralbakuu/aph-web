@@ -1,4 +1,4 @@
-import { asyncRouterMap, constantRouterMap, noPageRoute } from '@/router'
+import { asyncRouterMap, constantRouterMap, noPageRoute, routerVideo } from '@/router'
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -20,7 +20,7 @@ function hasPermission(arr, route) {
 function filterAsyncRouter(routes, menus) {
   const res = []
   const arr = Object.keys(menus)
-  routes.forEach(route => {
+  routes.forEach((route, index) => {
     const tmp = { ...route }
     if (tmp.children) {
       tmp.children = filterAsyncRouter(tmp.children, menus)
@@ -33,42 +33,44 @@ function filterAsyncRouter(routes, menus) {
       res.push(tmp)
     }
   })
+
   return res
 }
 
 const permission = {
   state: {
     routers: constantRouterMap,
-    addRouters: []
+    addRouters: [],
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
       state.routers = constantRouterMap.concat(routers)
-    }
+    },
   },
   actions: {
     GenerateRoutes({ commit }, data) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const { menu } = data
         const routeNameList = {}
-        menu.forEach(i => {
+        menu.forEach((i) => {
           if (['WEB', 'MENU'].includes(i.resource_type)) {
             routeNameList[i.resource_path] = i.menu_name
           }
         })
         let accessedRouters = []
         accessedRouters = filterAsyncRouter(asyncRouterMap, routeNameList)
+        accessedRouters.push(...routerVideo)
         accessedRouters.push(noPageRoute)
         commit('SET_ROUTERS', accessedRouters)
         resolve()
       })
-    }
+    },
   },
   getters: {
-    permission_routers: state => state.routers,
-    addRouters: state => state.addRouters
-  }
+    permission_routers: (state) => state.routers,
+    addRouters: (state) => state.addRouters,
+  },
 }
 
 export default permission

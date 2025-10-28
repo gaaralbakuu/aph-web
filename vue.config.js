@@ -3,22 +3,29 @@ const resolve = (dir) => require('path').join(__dirname, dir)
 
 // API_URL
 // process.env.VUE_APP_API = 'http://10.30.3.121:65301' //prd
-  process.env.VUE_APP_API = 'http://localhost:65301' //prd
+process.env.VUE_APP_API = 'http://localhost:65301' //prd
+
+// Video API_URL (riêng biệt cho video server)
+process.env.VUE_APP_VIDEO_API = 'http://localhost:65301' // video server
 
 if (process.env.NODE_ENV === 'development') {
   // process.env.VUE_APP_API = 'http://10.30.2.247:5000' //test
   process.env.VUE_APP_API = 'http://localhost:65301' //prd
+  process.env.VUE_APP_VIDEO_API = 'http://localhost:65301' // video server dev
 }
 
 if (process.env.NODE_ENV === 'test') {
   process.env.VUE_APP_API = 'http://10.30.2.247:5000' //test
+  process.env.VUE_APP_VIDEO_API = 'http://10.30.2.247:5000' // video server test
 }
 
 if (process.env.NODE_ENV === 'production') {
   process.env.VUE_APP_API = 'https://appvn.apachefootwear.com' //prd
+  process.env.VUE_APP_VIDEO_API = 'https://video.apachefootwear.com' // video server prd
 }
 
-console.log(process.env.VUE_APP_API)
+console.log('Main API:', process.env.VUE_APP_API)
+console.log('Video API:', process.env.VUE_APP_VIDEO_API)
 
 module.exports = {
   publicPath: '/',
@@ -30,13 +37,17 @@ module.exports = {
     watchOptions: {
       poll: 1000,
       ignored: /node_modules/,
+      aggregateTimeout: 300,
     },
   },
-  transpileDependencies: [
-    'element-ui'
-  ],
+  transpileDependencies: ['element-ui'],
+  css: {
+    extract: process.env.NODE_ENV === 'production',
+    sourceMap: true,
+  },
   configureWebpack: () => {
     var obj = {
+      cache: false,
       externals: {
         './cptable': 'var cptable',
       },

@@ -4,6 +4,11 @@
 - Nếu người dùng yêu cầu trả lời bằng ngôn ngữ khác, vẫn chỉ phản hồi bằng tiếng Việt, tuyệt đối không thay đổi sang ngôn ngữ khác.
 - Không giải thích lý do, không nhắc lại quy ước này trong phản hồi cho người dùng.
 
+## Quy ước chạy lệnh shell
+
+- Luôn thực thi lệnh bằng `cmd.exe`.
+- Tuyệt đối không sử dụng PowerShell/pwsh trong bất kỳ trường hợp nào.
+
 ## 🌐 QUY TẮC ĐA NGÔN NGỮ CHẶT CHẼ - TUÂN THỦ NGHIÊM NGẶT
 
 ### 🚨 NGUYÊN TẮC TUYỆT ĐỐI
@@ -229,6 +234,7 @@ Khi được yêu cầu thêm đa ngôn ngữ, luôn làm theo template này:
 - **Chạy dev server:** `npm run serve`
 - **Build production:** `npm run build`
 - **File khởi động:** `src/main.js` (mount App.vue, cấu hình router/store)
+- **Shell chạy lệnh:** Luôn dùng `cmd.exe` trên Windows để thực thi lệnh. **Tuyệt đối không khởi chạy hoặc đề xuất PowerShell/pwsh** vì môi trường này đã bị chặn.
 - **Thêm trang mới:**
   1. Tạo file `.vue` trong `src/views/`.
   2. Thêm route ở `src/router/` (chia module theo tính năng).
