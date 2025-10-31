@@ -370,110 +370,151 @@
       </span>
     </CustomDialog>
     <!-- 确认信息窗口 -->
-    <CustomDialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'800px'" :width="'100%'">
-      <el-descriptions :title="$l.basic">
-        <el-descriptions-item :label="$l.manufacture_name_CN">
-          {{ manufacturer.data.name_zh }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.manufacture_name_US">
-          {{ manufacturer.data.name_en }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.requestor_facility_name">
-          {{ manufacturer.data.requestor_facility_type }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.legal_person">
-          {{ manufacturer.data.legal_person }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.partner_country">
-          {{ manufacturer.data.country }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.export_business">
-          {{ manufacturer.data.is_export_biz }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.customs_number">
-          {{ manufacturer.data.customs_number }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.biz_license_number">
-          {{ manufacturer.data.biz_license_number }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.is_involve_product">
-          {{ manufacturer.data.is_involve_product }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.cooperation_start_date">
-          {{ Sdate }}
-        </el-descriptions-item>
-        <!-- <el-descriptions-item :label="$l.cooperation_end_date">{{
-          Edate
-        }}</el-descriptions-item> -->
-        <el-descriptions-item :label="$l.is_alidas_producer">
-          {{ manufacturer.data.is_alidas_producer }}
-        </el-descriptions-item>
-        <!-- <el-descriptions-item :label="$l.cooperation_company_ownership">{{
-          manufacturer.data.cooperation_company_ownership
-        }}</el-descriptions-item>
-        <el-descriptions-item :label="$l.cooperation_group_name">{{
-          manufacturer.data.cooperation_group_name
-        }}</el-descriptions-item> -->
-        <el-descriptions-item :label="$l.is_alidas_authorized">
-          {{ manufacturer.data.is_alidas_authorized }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.requestor_facility_name">
-          {{ manufacturer.data.requestor_facility_name }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.requestor_contact_name">
-          {{ manufacturer.data.requestor_contact_name }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.monthly_produce_quantity">
-          {{ manufacturer.data.monthly_produce_quantity }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.employee_num">
-          {{ manufacturer.data.employee_num }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.requestor_facility_code">
-          {{ manufacturer.data.requestor_facility_code }}
-        </el-descriptions-item>
-        <el-descriptions-item label="手动输入的ID">
-          {{ manufacturer.data.manual_input_id }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.vendor_code">
-          {{ manufacturer.data.vendor_code }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.unique_identifier">
-          {{ manufacturer.data.unique_identifier }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.ffc_id">
-          {{ manufacturer.data.ffc_id }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.sap_code">
-          {{ manufacturer.data.sap_code }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.classification">
-          {{ manufacturer.data.classification }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.authorization_status">
-          {{ manufacturer.data.authorization_status }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.compliance_warning_letter">
-          {{ manufacturer.data.compliance_warning_letter }}
-        </el-descriptions-item>
-        <el-descriptions-item :label="$l.types_of_orders">
-          {{ manufacturer.data.types_of_orders }}
-        </el-descriptions-item>
-      </el-descriptions>
-      <!-- <el-descriptions :title="$l.contact_infos" :column="4">
-        <el-descriptions-item :label="$l.contact_name">{{
-          manufacturer.data.contact_name
-        }}</el-descriptions-item>
-        <el-descriptions-item :label="$l.contact_job_title">{{
-          manufacturer.data.contact_job_title
-        }}</el-descriptions-item>
-        <el-descriptions-item :label="$l.contact_phone">{{
-          manufacturer.data.contact_phone
-        }}</el-descriptions-item>
-        <el-descriptions-item :label="$l.contact_email">{{
-          manufacturer.data.contact_email
-        }}</el-descriptions-item>
-      </el-descriptions> -->
+    <CustomDialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'1000px'" :width="'100%'">
+      <template #content>
+        <div class="flex flex-col gap-6 p-4">
+          <!-- 基本信息 Section -->
+          <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 px-4 py-3 dark:from-blue-900 dark:to-blue-800 border-b border-gray-200 dark:border-gray-700">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $l.partner_information }}</h3>
+            </div>
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.manufacture_name_CN }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.name_zh) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.manufacture_name_US }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.name_en) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.legal_person }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.legal_person) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.partner_country }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.country) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_facility_name }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_facility_code }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商业信息 Section -->
+          <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
+            <div class="bg-gradient-to-r from-green-50 to-green-100 px-4 py-3 dark:from-green-900 dark:to-green-800 border-b border-gray-200 dark:border-gray-700">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $l.export_business }}</h3>
+            </div>
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.export_business }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_export_biz) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_involve_product }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.customs_number }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.customs_number) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.biz_license_number }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.cooperation_start_date }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(Sdate) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.vendor_code }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.vendor_code) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 授权信息 Section -->
+          <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 px-4 py-3 dark:from-purple-900 dark:to-purple-800 border-b border-gray-200 dark:border-gray-700">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $l.cooperation_authorization }}</h3>
+            </div>
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_alidas_producer }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_alidas_producer) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_alidas_authorized }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.authorization_status }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_contact_name }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.compliance_warning_letter }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.classification }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.classification) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 生产信息 Section -->
+          <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
+            <div class="bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-3 dark:from-orange-900 dark:to-orange-800 border-b border-gray-200 dark:border-gray-700">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $l.production_operations }}</h3>
+            </div>
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.monthly_produce_quantity }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.employee_num }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.employee_num) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.types_of_orders }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标识信息 Section -->
+          <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
+            <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 px-4 py-3 dark:from-indigo-900 dark:to-indigo-800 border-b border-gray-200 dark:border-gray-700">
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $l.codes_identifiers }}</h3>
+            </div>
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.unique_identifier }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.ffc_id }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.ffc_id) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.sap_code }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.sap_code) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="manufacturer.inforFormVisible = false">
           {{ $c.cancel }}
@@ -666,108 +707,154 @@
     <!-- Chi tiết modal -->
     <CustomDialog :title="$c.detail" :visible.sync="manufacturer.detailFormVisible" :clickOutside="false" width="90%" :maxWidth="'1280px'" custom-class="scrollable-dialog manufacturer-detail-dialog">
       <template #content>
-        <div class="form-container">
-          <!-- Basic Information Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-info"></i>
-                {{ $l.basic }}
-              </h3>
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-4">
+            <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.basic }}</div>
+
+            <div>
+              <div class="text-base font-semibold text-black">{{ $l.partner_information }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.manufacture_name_CN }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.name_zh) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.manufacture_name_US }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.name_en) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.legal_person }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.legal_person) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.partner_country }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.country) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_group_name }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.cooperation_group_name) }}</span>
+                </div>
+              </div>
             </div>
-            <div class="form-content">
-              <div class="detail-descriptions">
-                <el-descriptions :column="3" border>
-                  <el-descriptions-item :label="$l.manufacture_name_CN">
-                    {{ manufacturer.data.name_zh || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.manufacture_name_US">
-                    {{ manufacturer.data.name_en || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.legal_person">
-                    {{ manufacturer.data.legal_person || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.partner_country">
-                    {{ manufacturer.data.country || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.customs_number">
-                    {{ manufacturer.data.customs_number || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.biz_license_number">
-                    {{ manufacturer.data.biz_license_number || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.requestor_facility_type">
-                    {{ manufacturer.data.requestor_facility_type || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.export_business">
-                    {{ manufacturer.data.is_export_biz || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.is_involve_product">
-                    {{ manufacturer.data.is_involve_product || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.cooperation_start_date">
-                    {{ manufacturer.data.cooperation_start_date || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.is_alidas_producer">
-                    {{ manufacturer.data.is_alidas_producer || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.is_alidas_authorized">
-                    {{ manufacturer.data.is_alidas_authorized || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.requestor_facility_name">
-                    {{ manufacturer.data.requestor_facility_name || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.requestor_contact_name">
-                    {{ manufacturer.data.requestor_contact_name || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.monthly_produce_quantity">
-                    {{ manufacturer.data.monthly_produce_quantity || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.employee_num">
-                    {{ manufacturer.data.employee_num || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.requestor_facility_code">
-                    {{ manufacturer.data.requestor_facility_code || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.vendor_code">
-                    {{ manufacturer.data.vendor_code || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.unique_identifier">
-                    {{ manufacturer.data.unique_identifier || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.ffc_id">
-                    {{ manufacturer.data.ffc_id || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.sap_code">
-                    {{ manufacturer.data.sap_code || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.classification">
-                    {{ manufacturer.data.classification || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.authorization_status">
-                    {{ manufacturer.data.authorization_status || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.compliance_warning_letter">
-                    {{ manufacturer.data.compliance_warning_letter || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="$l.types_of_orders">
-                    {{ manufacturer.data.types_of_orders || '--' }}
-                  </el-descriptions-item>
-                </el-descriptions>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.registration_legal }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.customs_number }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.customs_number) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.biz_license_number }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.cooperation_authorization }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_facility_type }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.is_involve_product }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.is_alidas_authorized }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_start_date }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.cooperation_start_date) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_end_date }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.cooperation_end_date) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.authorization_status }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.production_operations }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_facility_code }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_contact_name }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.monthly_produce_quantity }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.employee_num }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.employee_num) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.codes_identifiers }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.vendor_code }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.vendor_code) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.unique_identifier }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.ffc_id }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.ffc_id) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.sap_code }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.sap_code) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.classification_orders }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.classification }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.classification) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.types_of_orders }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.warnings_compliance }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 md:col-span-3">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.compliance_warning_letter }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Contact Information Section -->
-          <div class="form-section" v-if="contactInfo.list && contactInfo.list.length > 0">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-user"></i>
-                {{ $l.contact_info }}
-              </h3>
+          <div class="flex flex-col gap-2" v-if="contactInfo.list && contactInfo.list.length > 0">
+            <div class="mt-4 flex items-center justify-between">
+              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.contact_info }}</div>
             </div>
-            <div class="table-container">
-              <el-table :data="contactInfo.list" class="form-table" border>
+            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
+              <el-table :data="contactInfo.list" border class="w-full">
                 <el-table-column prop="contact_name" :label="$l.contact_name" min-width="120"></el-table-column>
                 <el-table-column prop="contact_job_title" :label="$l.contact_job_title" min-width="120"></el-table-column>
                 <el-table-column prop="contact_phone" :label="$l.contact_phone" min-width="140"></el-table-column>
@@ -776,16 +863,12 @@
             </div>
           </div>
 
-          <!-- Address & Processes Section -->
-          <div class="form-section" v-if="address.list && address.list.length > 0">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-location"></i>
-                {{ $l.addr_and_processes }}
-              </h3>
+          <div class="flex flex-col gap-2" v-if="address.list && address.list.length > 0">
+            <div class="mt-4 flex items-center justify-between">
+              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.addr_and_processes }}</div>
             </div>
-            <div class="table-container">
-              <el-table :data="address.list" class="form-table" border>
+            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
+              <el-table :data="address.list" border class="w-full">
                 <el-table-column prop="address_zh" :label="$l.address_zh" min-width="200"></el-table-column>
                 <el-table-column prop="address_en" :label="$l.address_en" min-width="200"></el-table-column>
                 <el-table-column prop="own_processes" :label="$l.own_processes" min-width="150"></el-table-column>
@@ -794,16 +877,15 @@
             </div>
           </div>
 
-          <!-- Compliance Evidence Section -->
-          <div class="form-section" v-if="attachment.list && attachment.list.length > 0">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-folder"></i>
-                {{ $l.compliance_evidence }}
-              </h3>
+          <div class="flex flex-col gap-2" v-if="attachment.list && attachment.list.length > 0">
+            <div class="mt-4 flex items-center justify-between">
+              <div class="text-xl font-black text-gray-900 dark:text-white">{{ $l.compliance_evidence }}</div>
+              <div>
+                <el-button type="text" size="small" class="delete-action-button" @click="downloadAllAttachments(manufacturer.data.id)">Tải xuống tất cả</el-button>
+              </div>
             </div>
-            <div class="table-container">
-              <el-table :data="attachment.list" class="form-table" border>
+            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
+              <el-table :data="attachment.list" border class="w-full">
                 <el-table-column prop="file_name" :label="$l.fileName" min-width="200"></el-table-column>
                 <el-table-column prop="attachment_type" :label="$l.fileType" min-width="120">
                   <template slot-scope="scope">
@@ -1513,12 +1595,6 @@ export default {
       console.log(this.attachment.fileUrl)
       this.attachment.dialogFormVisible3 = true
     },
-    downAttachments(data) {
-      const url = api.baseUrl + '/' + data.file_url
-      console.log(url)
-      //window.open (url, "newwindow", "height=100, width=400, toolbar =no, menubar=no, scrollbars=no, resizable=no, location=no, status=no");
-      window.open(url, '_blank')
-    },
     // 新增合规联系人信息
     contactInfoList() {
       console.log('contactInfo')
@@ -1916,6 +1992,37 @@ export default {
     },
 
     // Helper methods for detail dialog
+    displayValue(value) {
+      if (value === 0) {
+        return 0
+      }
+      return value && value !== '' ? value : '--'
+    },
+    displayYnFlag(value) {
+      if (value === 'Y') {
+        return this.$c.Y
+      }
+      if (value === 'N') {
+        return this.$c.N
+      }
+      return '--'
+    },
+    displayProductFlag(value) {
+      if (value === 'Y') {
+        return this.$l.product
+      }
+      if (value === 'N') {
+        return this.$l.exploit
+      }
+      return '--'
+    },
+    displayAuthorizationStatus(value) {
+      if (!value) {
+        return '--'
+      }
+      const match = this.options_authorization_status.find((item) => item.value === value)
+      return match ? match.label : value
+    },
     getStatusClass(status) {
       if (!status) return 'status-default'
       switch (status.toLowerCase()) {
@@ -1951,6 +2058,93 @@ export default {
         default:
           return ''
       }
+    },
+
+    // 下载单个厂商的所有附件
+    downloadAllAttachments(manufacturerId) {
+      if (!manufacturerId) {
+        this.$message.warning(this.$c.no_data)
+        return
+      }
+      const url = api.baseUrl + '/Compliance/complianceManufacturer/downloadAttachments'
+      const fileName = (this.manufacturer.data.name_zh || 'manufacturer') + '_attachments.zip'
+      
+      axios({
+        headers: {
+          token: getToken(),
+        },
+        responseType: 'blob',
+        method: 'get',
+        url: url + '?id=' + encodeURIComponent(manufacturerId),
+      })
+        .then((response) => {
+          const blob = new Blob([response.data])
+          const a = document.createElement('a')
+          a.href = URL.createObjectURL(blob)
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          URL.revokeObjectURL(a.href)
+          document.body.removeChild(a)
+          this.$message.success(this.$c.success)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error(this.$c.fail)
+        })
+    },
+
+    downAttachments(data) {
+      if (!data) {
+        this.$message.warning(this.$c.no_data)
+        return
+      }
+
+      if (!data.id) {
+        // 回退到直接下载
+        const fallbackUrl = api.baseUrl + '/' + data.file_url
+        const fallbackName =
+          data.file_name || data.fileName || fallbackUrl.split('/').pop() || 'download'
+        const link = document.createElement('a')
+        link.href = fallbackUrl
+        link.download = fallbackName
+        link.target = '_blank'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+
+      const requestUrl =
+        api.baseUrl +
+        '/Compliance/complianceManufacturer/downloadAttachment?attachmentId=' +
+        encodeURIComponent(data.id)
+      const fileName = data.file_name || 'attachment'
+
+      axios({
+        headers: {
+          token: getToken(),
+        },
+        responseType: 'blob',
+        method: 'get',
+        url: requestUrl,
+      })
+        .then((response) => {
+          const blob = new Blob([response.data])
+          const objectUrl = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = objectUrl
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          URL.revokeObjectURL(objectUrl)
+          document.body.removeChild(a)
+          this.$message.success(this.$c.success)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error(this.$c.fail)
+        })
     },
   },
   created() {
