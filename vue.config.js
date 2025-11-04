@@ -44,6 +44,14 @@ module.exports = {
   css: {
     extract: process.env.NODE_ENV === 'production',
     sourceMap: true,
+    loaderOptions: {
+      scss: {
+        sassOptions: {
+          quietDeps: true, // Tắt cảnh báo deprecation cho dependencies
+          silenceDeprecations: ['import', 'legacy-js-api'], // Tắt cảnh báo cụ thể
+        },
+      },
+    },
   },
   configureWebpack: () => {
     var obj = {
