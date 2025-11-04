@@ -1133,6 +1133,13 @@ export default {
     investigationHistory: '調查歷史',
     dataLoadFailed: '數據加載失敗',
     edit_notices: '編輯提醒/警告數量',
+    issue_years_average: '多年平均比率',
+    issue_years_average_detail_title: '多年平均比率詳情',
+    issue_years_detail_year: '年份',
+    issue_years_detail_total: '總數',
+    issue_years_detail_finish: '完成',
+    issue_years_detail_ratio: '比率',
+    issue_years_detail_average: '平均值',
   },
   chooseUser: {
     title: '選擇用戶',

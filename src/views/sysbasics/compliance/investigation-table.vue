@@ -121,6 +121,22 @@
                   </div>
                 </template>
 
+                <!-- Multi-year Average Column -->
+                <template v-else-if="(col.originalId || col.id) === 'issueYearsAverage'">
+                  <div
+                    v-if="getIssueYearsAverage(item) !== null"
+                    :class="['flex max-w-full overflow-hidden overflow-ellipsis leading-5 items-center gap-1 cursor-pointer select-none transition-transform duration-150 hover:scale-[1.02]']"
+                    @click.stop="openIssueYearsDialog(item)"
+                    :title="$l.issue_years_average"
+                  >
+                    <div :class="['w-3 h-3 rounded-full', getPercentColor(getIssueYearsAverage(item)).main]"></div>
+                    <div :class="['px-3', getPercentColor(getIssueYearsAverage(item)).sub]">{{ formatPercent(getIssueYearsAverage(item)) }}</div>
+                  </div>
+                  <span v-else class="text-gray-300 italic text-xs">
+                    {{ $c.empty }}
+                  </span>
+                </template>
+
                 <!-- Action Column -->
                 <template v-else-if="(col.originalId || col.id) === 'action'">
                     <div class="flex justify-end items-center">
@@ -171,6 +187,10 @@
                 <div :class="['px-3', getPercentColor(getAverageCurrentYear() / 100).sub]">{{ getAverageCurrentYear() }}%</div>
               </div>
             </td>
+            <!-- Multi-year average -->
+            <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-left whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
+              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+            </td>
             <!-- Remaining columns -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
               <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
@@ -188,10 +208,99 @@
         </tbody>
       </table>
     </div>
+
+    <CustomDialog
+      :visible.sync="issueYearsDialogVisible"
+      :title="$l.issue_years_average_detail_title"
+      :clickOutside="false"
+      width="70%"
+      :maxWidth="'900px'"
+    >
+      <div class="px-6 pb-6 space-y-6">
+        <div class="grid gap-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900/40 md:grid-cols-4">
+          <div class="flex flex-col">
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.vendor_code }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || $c.empty }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.sap_code }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.sap_code || $c.empty }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.name_en }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{{ issueYearsDialogMeta.name_en || $c.empty }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.issue_years_average }}</span>
+            <div class="mt-2">
+              <template v-if="issueYearsDialogMeta.averageRatio !== null">
+                <div class="inline-flex items-center gap-2">
+                  <span :class="['w-3 h-3 rounded-full', getPercentColor(issueYearsDialogMeta.averageRatio).main]"></span>
+                  <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getPercentColor(issueYearsDialogMeta.averageRatio).sub]">{{ issueYearsDialogAverageText }}</span>
+                </div>
+              </template>
+              <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ $c.empty }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-xl border border-gray-100 shadow-sm dark:border-gray-700">
+          <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+            <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-900/60 dark:text-gray-400">
+              <tr>
+                <th class="px-4 py-3">{{ $l.issue_years_detail_year }}</th>
+                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_total }}</th>
+                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_finish }}</th>
+                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_ratio }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr v-if="issueYearsDialogRows.length === 0">
+                <td colspan="4" class="px-4 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+                  {{ $c.no_data }}
+                </td>
+              </tr>
+              <tr
+                v-for="(row, rowIdx) in issueYearsDialogRows"
+                :key="row.manufacture_id || `${row.year}-${rowIdx}`"
+                class="bg-white text-sm text-gray-700 transition-colors dark:bg-black dark:text-gray-200 even:bg-gray-50 even:dark:bg-gray-900/40"
+              >
+                <td class="px-4 py-3 whitespace-nowrap">{{ row.year || $c.dash }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.total_issue === null || row.total_issue === undefined ? $c.dash : row.total_issue }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.finish === null || row.finish === undefined ? $c.dash : row.finish }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                  <template v-if="row.ratio !== null">
+                    <div class="inline-flex items-center gap-2">
+                      <span :class="['w-3 h-3 rounded-full', getPercentColor(row.ratio).main]"></span>
+                      <span :class="['px-3 py-1 rounded-full text-xs font-medium', getPercentColor(row.ratio).sub]">{{ formatPercent(row.ratio) }}</span>
+                    </div>
+                  </template>
+                  <span v-else class="text-xs italic text-gray-300 dark:text-gray-500">{{ $c.empty }}</span>
+                </td>
+              </tr>
+              <tr v-if="issueYearsDialogRows.length > 0" class="bg-gray-50 text-sm font-medium text-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
+                <td colspan="3" class="px-4 py-4 text-right">{{ $l.issue_years_detail_average }}</td>
+                <td class="px-4 py-4 text-right">
+                  <template v-if="issueYearsDialogMeta.averageRatio !== null">
+                    <div class="inline-flex items-center gap-2">
+                      <span :class="['w-3 h-3 rounded-full', getPercentColor(issueYearsDialogMeta.averageRatio).main]"></span>
+                      <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getPercentColor(issueYearsDialogMeta.averageRatio).sub]">{{ issueYearsDialogAverageText }}</span>
+                    </div>
+                  </template>
+                  <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ $c.dash }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </CustomDialog>
   </div>
 </template>
 
 <script>
+import CustomDialog from '@/views/_common/CustomDialog.vue'
+
 /*
   Chú ý: 
   - Các text hiển thị đều lấy từ file ngôn ngữ qua $l.key và $c.key.
@@ -202,6 +311,9 @@
 
 export default {
   name: 'investigation_table',
+  components: {
+    CustomDialog,
+  },
   props: {
     data: {
       type: Array,
@@ -249,6 +361,7 @@ export default {
             { id: 'current_year', title: 'current_year', width: 100, textAlign: 'left' },
           ],
         },
+        { id: 'issueYearsAverage', title: 'issue_years_average', width: 160, textAlign: 'left' },
         { id: 'official_reminder_number', title: 'official_reminder_number', width: 150, textAlign: 'right' },
         { id: 'warning_letter_number', title: 'warning_letter_number', width: 150, textAlign: 'right' },
         { id: 'audit_count', title: 'audit_count', width: 120, textAlign: 'right' },
@@ -257,7 +370,25 @@ export default {
       rowHeight: 44,
       scrollTop: 0,
       height: 400, // mặc định, có thể truyền prop hoặc tính toán động
+      issueYearsDialogVisible: false,
+      issueYearsDialogMeta: {
+        vendor_code: '',
+        sap_code: '',
+        name_en: '',
+        averageRatio: null,
+      },
+      issueYearsDialogRows: [],
     }
+  },
+  computed: {
+    averageIssueYearsRatio() {
+      return this.getAverageIssueYearsRatio()
+    },
+    issueYearsDialogAverageText() {
+      const ratio = this.issueYearsDialogMeta.averageRatio
+      if (typeof ratio !== 'number' || isNaN(ratio)) return null
+      return this.formatPercent(ratio)
+    },
   },
   methods: {
     // Tính toán maxRowSpan dựa trên việc có cột nào có children hay không
@@ -448,6 +579,100 @@ export default {
       if (validData.length === 0) return 0
       const sum = validData.reduce((acc, item) => acc + parseFloat(item.last_year), 0)
       return Math.round(sum / validData.length * 100) / 100
+    },
+    // Tính trung bình tỷ lệ nhiều năm theo từng dòng
+    calculateIssueYearsAverage(issueYears) {
+      if (!Array.isArray(issueYears) || issueYears.length === 0) return null
+      let sumRatio = 0
+      let count = 0
+      issueYears.forEach(entry => {
+        if (!entry) return
+        const total = Number(entry.total_issue)
+        if (!Number.isFinite(total) || total <= 0) return
+        const finish = Number(entry.finish)
+        const safeFinish = Number.isFinite(finish) ? finish : 0
+        sumRatio += safeFinish / total
+        count += 1
+      })
+      if (count === 0) return null
+      const average = sumRatio / count
+      if (!Number.isFinite(average)) return null
+      return Math.round(average * 10000) / 10000
+    },
+    // Hiển thị phần trăm với số thập phân cố định
+    formatPercent(ratio, fractionDigits = 2) {
+      if (typeof ratio !== 'number' || isNaN(ratio)) return ''
+      const percentValue = ratio * 100
+      return `${percentValue.toFixed(fractionDigits)}%`
+    },
+    // Tính trung bình tỷ lệ nhiều năm của toàn bộ bảng
+    getAverageIssueYearsRatio() {
+      if (!this.data || this.data.length === 0) return null
+      const ratios = this.data
+        .map(item => this.calculateIssueYearsAverage(item && item.issueYears))
+        .filter(ratio => typeof ratio === 'number' && !isNaN(ratio))
+
+      if (ratios.length === 0) return null
+      const sum = ratios.reduce((acc, ratio) => acc + ratio, 0)
+      const average = sum / ratios.length
+      if (!Number.isFinite(average)) return null
+      return Math.round(average * 10000) / 10000
+    },
+    getIssueYearsAverage(item) {
+      if (!item) return null
+      return this.calculateIssueYearsAverage(item.issueYears)
+    },
+    calculateIssueYearRatio(entry) {
+      if (!entry) return null
+      const total = Number(entry.total_issue)
+      if (!Number.isFinite(total) || total <= 0) return null
+      const finish = Number(entry.finish)
+      const safeFinish = Number.isFinite(finish) ? finish : 0
+      const ratio = safeFinish / total
+      if (!Number.isFinite(ratio)) return null
+      const clamped = Math.max(0, Math.min(ratio, 1))
+      return Math.round(clamped * 10000) / 10000
+    },
+    prepareIssueYearsRows(issueYears) {
+      if (!Array.isArray(issueYears)) return []
+      return issueYears
+        .map((entry, index) => {
+          if (!entry) return null
+          const ratio = this.calculateIssueYearRatio(entry)
+          const totalNumber = Number(entry.total_issue)
+          const finishNumber = Number(entry.finish)
+          return {
+            ...entry,
+            year: entry.year,
+            total_issue: Number.isFinite(totalNumber) ? totalNumber : entry.total_issue,
+            finish: Number.isFinite(finishNumber) ? finishNumber : entry.finish,
+            ratio,
+            _order: index,
+          }
+        })
+        .filter(Boolean)
+        .sort((a, b) => {
+          const yearA = Number(a.year)
+          const yearB = Number(b.year)
+          if (Number.isFinite(yearA) && Number.isFinite(yearB)) return yearB - yearA
+          if (Number.isFinite(yearA)) return -1
+          if (Number.isFinite(yearB)) return 1
+          return (b._order || 0) - (a._order || 0)
+        })
+        .map(({ _order, ...rest }) => rest)
+    },
+    openIssueYearsDialog(item) {
+      if (!item) return
+      const rows = this.prepareIssueYearsRows(item.issueYears)
+      const averageRatio = this.getIssueYearsAverage(item)
+      this.issueYearsDialogRows = rows
+      this.issueYearsDialogMeta = {
+        vendor_code: item.vendor_code || '',
+        sap_code: item.sap_code || '',
+        name_en: item.name_en || '',
+        averageRatio,
+      }
+      this.issueYearsDialogVisible = true
     },
     handleAction(cmd, row) {
       this.$emit('action', { action: cmd, row })

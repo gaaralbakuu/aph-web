@@ -1113,6 +1113,13 @@ export default {
     investigationHistory: 'Investigation History',
     dataLoadFailed: 'Data load failed',
     edit_notices: 'Edit Notices',
+    issue_years_average: 'Multi-Year Avg',
+    issue_years_average_detail_title: 'Multi-Year Average Details',
+    issue_years_detail_year: 'Year',
+    issue_years_detail_total: 'Total',
+    issue_years_detail_finish: 'Finished',
+    issue_years_detail_ratio: 'Ratio',
+    issue_years_detail_average: 'Average',
   },
   chooseUser: {
     title: 'Choose User',

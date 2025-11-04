@@ -309,7 +309,13 @@
             </div>
           </div>
 
-          <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
+          <div class="flex justify-between">
+            <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ $l.auditFile }}</div>
+
+            <div>
+              <el-button type="text" size="small" class="delete-action-button"  v-if="checkSurvey.fileList.length > 0" @click="downloadAllFiles">{{ $l.downloadAll || 'Tải xuống tất cả' }}</el-button>
+            </div>
+          </div>
 
           <div>
             <!-- 文件表格 -->
@@ -318,6 +324,7 @@
               <el-table-column fixed="right" :label="$c.operation" width="145">
                 <template slot-scope="scope">
                   <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
+                  <el-button @click="downloadFile(scope.row)" type="text" size="small">{{ $l.download || 'Tải xuống' }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -380,7 +387,7 @@
       </template>
     </CustomDialog>
 
-    <!-- 新增 -->
+    <!-- Thêm -->
     <CustomDialog :title="$l.cAdd" :visible.sync="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-6">
@@ -642,6 +649,7 @@
 <script>
 import { _, api, zTable, zPagination, initFuncs, zForm, dayjs } from '@/views/_common'
 import axios from 'axios'
+import { getToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
 import filePreviews from '../../_common/filePreviews.vue'
 import CustomDialog from '../../_common/CustomDialog.vue'
@@ -2500,7 +2508,96 @@ export default {
       this.dialogVisible = true
     },
 
-    // 下载
+    // 下载所有附件
+    downloadAllFiles() {
+      if (!this.checkSurvey.list || !this.checkSurvey.list.id) {
+        this.$message.error(this.$l.pleaseSelectSurvey || 'Vui lòng chọn cuộc điều tra')
+        return
+      }
+
+      const surveyId = this.checkSurvey.list.id
+      const fileName = (this.checkSurvey.list.name_en || 'survey') + '_attachments.zip'
+      const url = api.baseUrl + '/Compliance/complianceSurvey/downloadAttachments'
+
+      axios({
+        headers: {
+          token: getToken(),
+        },
+        responseType: 'blob',
+        method: 'get',
+        url: url + '?survey_id=' + encodeURIComponent(surveyId),
+      })
+        .then((response) => {
+          const blob = new Blob([response.data])
+          const objectUrl = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = objectUrl
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          URL.revokeObjectURL(objectUrl)
+          document.body.removeChild(a)
+          this.$message.success(this.$l.downloadStart || 'Bắt đầu tải xuống')
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error(this.$l.downloadFailed || 'Tải xuống thất bại')
+        })
+    },
+
+    // 下载单个附件 - dựa vào downAttachments của manufacturer.vue
+    downloadFile(data) {
+      if (!data) {
+        this.$message.warning(this.$c.no_data)
+        return
+      }
+
+      if (!data.id) {
+        // 回退到直接下载 - khi không có attachment ID, dùng file_url trực tiếp
+        const fallbackUrl = api.baseUrl + '/' + data.file_url
+        const fallbackName =
+          data.file_name || data.fileName || fallbackUrl.split('/').pop() || 'download'
+        const link = document.createElement('a')
+        link.href = fallbackUrl
+        link.download = fallbackName
+        link.target = '_blank'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+
+      const requestUrl =
+        api.baseUrl +
+        '/Compliance/complianceSurvey/downloadAttachment?attachmentId=' +
+        encodeURIComponent(data.id)
+      const fileName = data.file_name || 'attachment'
+
+      axios({
+        headers: {
+          token: getToken(),
+        },
+        responseType: 'blob',
+        method: 'get',
+        url: requestUrl,
+      })
+        .then((response) => {
+          const blob = new Blob([response.data])
+          const objectUrl = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = objectUrl
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          URL.revokeObjectURL(objectUrl)
+          document.body.removeChild(a)
+          this.$message.success(this.$c.success)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error(this.$c.fail)
+        })
+    },
 
     exportInfo() {
       const mergedArrayUsingSpread = [...this.tableList.columns1, ...this.tableList.columns2, ...this.tableList.columns3, ...this.tableList.columns4]
