@@ -173,83 +173,65 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" scoped>
 .navbar {
   height: 50px;
   display: flex;
-
-  .hamburger-container {
-    height: 100%;
-    padding: 0 10px;
-    line-height: 50px;
-  }
-
-  .breadcrumb-container {
-    margin-left: 5px;
-  }
-
-  .errLog-container {
-  }
-
-  .right-menu {
-    float: right;
-    height: 100%;
-    display: flex;
-    color: #606266;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      border-top: solid 3px transparent;
-      width: 50px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .right-menu-item:hover {
-      border-top-color: #409eff;
-    }
-
-    .screenfull {
-    }
-
-    .theme-switch {
-      .el-color-picker__trigger {
-        border: 0px !important;
-        height: 20px;
-        width: 20px;
-      }
-    }
-
-    .avatar-container {
-      width: auto !important;
-      padding: 0 5px;
-      .avatar-wrapper {
-        cursor: pointer;
-        position: relative;
-        display: flex;
-        align-items: flex-end;
-        .user-avatar {
-          width: 35px;
-          height: 35px;
-          border-radius: 5px;
-        }
-
-        .user-info {
-          font-size: 12px;
-          line-height: 1.5;
-          margin-left: 10px;
-        }
-
-        .more-icon {
-          font-size: 20px;
-        }
-      }
-    }
-  }
+}
+.navbar .hamburger-container {
+  height: 100%;
+  padding: 0 10px;
+  line-height: 50px;
+}
+.navbar .breadcrumb-container {
+  margin-left: 5px;
+}
+.navbar .right-menu {
+  float: right;
+  height: 100%;
+  display: flex;
+  color: #606266;
+}
+.navbar .right-menu:focus {
+  outline: none;
+}
+.navbar .right-menu .right-menu-item {
+  border-top: solid 3px transparent;
+  width: 50px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar .right-menu .right-menu-item:hover {
+  border-top-color: #409eff;
+}
+.navbar .right-menu .theme-switch .el-color-picker__trigger {
+  border: 0px !important;
+  height: 20px;
+  width: 20px;
+}
+.navbar .right-menu .avatar-container {
+  width: auto !important;
+  padding: 0 5px;
+}
+.navbar .right-menu .avatar-container .avatar-wrapper {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+.navbar .right-menu .avatar-container .avatar-wrapper .user-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 5px;
+}
+.navbar .right-menu .avatar-container .avatar-wrapper .user-info {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-left: 10px;
+}
+.navbar .right-menu .avatar-container .avatar-wrapper .more-icon {
+  font-size: 20px;
 }
 </style>

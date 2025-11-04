@@ -36,27 +36,27 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" scoped>
 .icons-container {
   overflow: hidden;
-  .icon-item {
-    padding-top: 10px;
-    margin: 15px;
-    height: 64px;
-    text-align: center;
-    width: 64px;
-    float: left;
-    font-size: 22px;
-    color: #24292e;
-    cursor: pointer;
-  }
-  span {
-    display: block;
-    font-size: 13px;
-    margin-top: 8px;
-  }
-  .disabled {
-    pointer-events: none;
-  }
+}
+.icons-container .icon-item {
+  padding-top: 10px;
+  margin: 15px;
+  height: 64px;
+  text-align: center;
+  width: 64px;
+  float: left;
+  font-size: 22px;
+  color: #24292e;
+  cursor: pointer;
+}
+.icons-container span {
+  display: block;
+  font-size: 13px;
+  margin-top: 8px;
+}
+.icons-container .disabled {
+  pointer-events: none;
 }
 </style>

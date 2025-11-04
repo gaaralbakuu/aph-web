@@ -120,97 +120,80 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mine-container {
   width: 100%;
   background-color: #efefef;
-
-  .page-body {
-    width: 80%;
-    min-width: 1000px;
-    // height: 100%;
-    margin: 0 auto;
-    padding: 40px;
-
-    .user-info {
-      width: 100%;
-      height: 200px;
-      background-color: white;
-      display: flex;
-      justify-content: space-between;
-      border-radius: 10px;
-      padding: 20px;
-
-      .user-left {
-        height: 100%;
-        display: flex;
-        align-items: center;
-
-        .user-avatar {
-          width: 100px;
-          height: 100px;
-          margin-right: 20px;
-        }
-
-        .infos {
-          div {
-            margin-top: 5px;
-            font-size: 16px;
-          }
-
-          .name {
-            font-size: 30px;
-          }
-        }
-      }
-
-      .user-right {
-        width: 50%;
-        display: flex;
-        height: 100%;
-        align-items: center;
-        justify-content: end;
-
-        .item {
-          text-align: center;
-          width: 20%;
-
-          .value {
-            font-size: 24px;
-          }
-
-          .desc {
-            margin-top: 10px;
-          }
-        }
-      }
-    }
-
-    .content {
-      width: 100%;
-      height: calc(100vh - 150px);
-      background-color: white;
-      margin-top: 30px;
-      // padding: 10px;
-      border-radius: 10px;
-      display: flex;
-
-      .navigation {
-        border-radius: 10px;
-        width: 15%;
-        min-width: 200px;
-        flex-grow: 1;
-        padding: 10px;
-        height: 100%;
-      }
-
-      .router_wrapper {
-        width: 85%;
-        background-color: white;
-        height: 100%;
-        border-radius: 10px;
-      }
-    }
-  }
+}
+.mine-container .page-body {
+  width: 80%;
+  min-width: 1000px;
+  margin: 0 auto;
+  padding: 40px;
+}
+.mine-container .page-body .user-info {
+  width: 100%;
+  height: 200px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 20px;
+}
+.mine-container .page-body .user-info .user-left {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.mine-container .page-body .user-info .user-left .user-avatar {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+.mine-container .page-body .user-info .user-left .infos div {
+  margin-top: 5px;
+  font-size: 16px;
+}
+.mine-container .page-body .user-info .user-left .infos .name {
+  font-size: 30px;
+}
+.mine-container .page-body .user-info .user-right {
+  width: 50%;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+}
+.mine-container .page-body .user-info .user-right .item {
+  text-align: center;
+  width: 20%;
+}
+.mine-container .page-body .user-info .user-right .item .value {
+  font-size: 24px;
+}
+.mine-container .page-body .user-info .user-right .item .desc {
+  margin-top: 10px;
+}
+.mine-container .page-body .content {
+  width: 100%;
+  height: calc(100vh - 150px);
+  background-color: white;
+  margin-top: 30px;
+  border-radius: 10px;
+  display: flex;
+}
+.mine-container .page-body .content .navigation {
+  border-radius: 10px;
+  width: 15%;
+  min-width: 200px;
+  flex-grow: 1;
+  padding: 10px;
+  height: 100%;
+}
+.mine-container .page-body .content .router_wrapper {
+  width: 85%;
+  background-color: white;
+  height: 100%;
+  border-radius: 10px;
 }
 </style>

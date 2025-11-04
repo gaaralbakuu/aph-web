@@ -467,74 +467,59 @@
 </script>
 
 
-<style lang="scss">
-  .examManage-container {
-    width: 100%;
-    height: 100%;
-
-    .component {
-      .drawer {
-
-        //抽屉样式
-        .title {
-          padding: 20px 0px;
-          font-size: 18px;
-          font-weight: 600;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .form {
-          width: 95%;
-          margin: 0 auto;
-        }
-
-        .buttonBar {
-          width: 100%;
-          height: 60px;
-          background-color: #fff;
-          margin: 0 auto;
-          padding: 0 15px;
-          position: absolute;
-          bottom: 0px;
-          border-top: 1px solid #ccc;
-          float: right;
-          display: flex;
-          justify-content: end;
-          align-items: center;
-        }
-      }
-    }
-
-    .pageBody {
-      width: 100%;
-      min-width: 1000px;
-      height: 100%;
-      margin: 0 auto;
-
-      .examFilter {
-        width: 100%;
-        height: 60px;
-        padding: 15px 0px;
-        white-space: nowrap;
-        background-color: white;
-        float: right;
-        // text-align: right;
-        border-bottom: 1px #eee solid;
-      }
-
-      .examContent {
-        width: 100%;
-        height: calc(100% - 60px);
-        display: flex;
-
-
-        .examList {
-          width: 100%;
-          height: 100%;
-          padding: 5px;
-          background-color: white;
-        }
-      }
-    }
-  }
+<style>
+.examManage-container {
+  width: 100%;
+  height: 100%;
+}
+.examManage-container .component .drawer .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.examManage-container .component .drawer .form {
+  width: 95%;
+  margin: 0 auto;
+}
+.examManage-container .component .drawer .buttonBar {
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.examManage-container .pageBody {
+  width: 100%;
+  min-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+}
+.examManage-container .pageBody .examFilter {
+  width: 100%;
+  height: 60px;
+  padding: 15px 0px;
+  white-space: nowrap;
+  background-color: white;
+  float: right;
+  border-bottom: 1px #eee solid;
+}
+.examManage-container .pageBody .examContent {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+}
+.examManage-container .pageBody .examContent .examList {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  background-color: white;
+}
 </style>

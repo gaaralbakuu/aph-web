@@ -863,151 +863,127 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
 .questionManage-container {
   width: 100%;
   height: 100%;
-
-  .component {
-    .drawer {
-      //抽屉样式
-      .title {
-        padding: 20px 0px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-      }
-
-      .form {
-        width: 95%;
-        margin: 0 auto;
-
-        .options {
-          width: 100%;
-          height: auto;
-          min-height: 100px;
-          margin-bottom: 100px;
-
-          .radio-box,
-          .judge {
-            width: 100%;
-
-            .option-card {
-              border-radius: 5px;
-              border: 1px solid #ddd;
-              padding: 5px 10px;
-              margin-bottom: 20px;
-
-              .oprate {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                font-size: 16px;
-                margin-bottom: 5px;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 5px;
-              }
-
-              .input-box {
-                width: 100%;
-                height: 40px;
-                display: flex;
-                align-items: center;
-              }
-            }
-          }
-        }
-      }
-
-      .buttonBar {
-        width: 100%;
-        height: 60px;
-        background-color: #fff;
-        margin: 0 auto;
-        padding: 0 15px;
-        position: absolute;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        float: right;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-      }
-    }
-  }
-
-  .pageBody {
-    width: 100%;
-    min-width: 1000px;
-    height: 100%;
-    margin: 0 auto;
-
-    .questionFilter {
-      width: 100%;
-      height: 60px;
-      padding: 15px;
-      white-space: nowrap;
-      background-color: white;
-      float: right;
-      // text-align: right;
-      border-bottom: 1px #eee solid;
-    }
-
-    .questionContent {
-      width: 100%;
-      height: calc(100% - 60px);
-      display: flex;
-
-      .catalogList {
-        width: 25%;
-        height: 100%;
-        padding: 10px;
-        background-color: #f7f7f7;
-
-        .catalogFilter {
-          margin-bottom: 20px;
-        }
-
-        .custom-catalog-tree {
-          width: 100%;
-
-          .catalogItem {
-            width: 100%;
-            height: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            .name {
-              font-size: 16px;
-            }
-
-            .btn {
-              padding-right: 10px;
-
-              .edit {
-                color: #409fee;
-              }
-
-              .disable {
-                color: #f56c6c;
-              }
-
-              .enable {
-                color: #67c23a;
-              }
-            }
-          }
-        }
-      }
-
-      .questionList {
-        width: 75%;
-        height: 100%;
-        padding: 5px;
-        background-color: white;
-      }
-    }
-  }
+}
+.questionManage-container .component .drawer .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.questionManage-container .component .drawer .form {
+  width: 95%;
+  margin: 0 auto;
+}
+.questionManage-container .component .drawer .form .options {
+  width: 100%;
+  height: auto;
+  min-height: 100px;
+  margin-bottom: 100px;
+}
+.questionManage-container .component .drawer .form .options .radio-box,
+.questionManage-container .component .drawer .form .options .judge {
+  width: 100%;
+}
+.questionManage-container .component .drawer .form .options .radio-box .option-card,
+.questionManage-container .component .drawer .form .options .judge .option-card {
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  margin-bottom: 20px;
+}
+.questionManage-container .component .drawer .form .options .radio-box .option-card .oprate,
+.questionManage-container .component .drawer .form .options .judge .option-card .oprate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+.questionManage-container .component .drawer .form .options .radio-box .option-card .input-box,
+.questionManage-container .component .drawer .form .options .judge .option-card .input-box {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+.questionManage-container .component .drawer .buttonBar {
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.questionManage-container .pageBody {
+  width: 100%;
+  min-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+}
+.questionManage-container .pageBody .questionFilter {
+  width: 100%;
+  height: 60px;
+  padding: 15px;
+  white-space: nowrap;
+  background-color: white;
+  float: right;
+  border-bottom: 1px #eee solid;
+}
+.questionManage-container .pageBody .questionContent {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+}
+.questionManage-container .pageBody .questionContent .catalogList {
+  width: 25%;
+  height: 100%;
+  padding: 10px;
+  background-color: #f7f7f7;
+}
+.questionManage-container .pageBody .questionContent .catalogList .catalogFilter {
+  margin-bottom: 20px;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree {
+  width: 100%;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree .catalogItem {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree .catalogItem .name {
+  font-size: 16px;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree .catalogItem .btn {
+  padding-right: 10px;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree .catalogItem .btn .edit {
+  color: #409fee;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree .catalogItem .btn .disable {
+  color: #f56c6c;
+}
+.questionManage-container .pageBody .questionContent .catalogList .custom-catalog-tree .catalogItem .btn .enable {
+  color: #67c23a;
+}
+.questionManage-container .pageBody .questionContent .questionList {
+  width: 75%;
+  height: 100%;
+  padding: 5px;
+  background-color: white;
 }
 </style>

@@ -773,7 +773,7 @@
         border-top: 1px solid #ccc;
         float: right;
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
         align-items: center;
       }
     }

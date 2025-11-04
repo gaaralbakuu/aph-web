@@ -218,97 +218,81 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .videoAdminLayout-wrapper {
   width: 100%;
   height: 100%;
   background-color: aliceblue;
-
-  .navi {
-    width: 100%;
-    min-width: 1200px;
-//    height: 50px;
-    background-color: white;
-    border-bottom: 1px solid #e1e1e1;
-    display: flex;
-    align-items: center;
-
-    .customActive {
-      background-color: #409fee;
-      color: #fff !important;
-    }
-
-    .logo-wrapper {
-      width: 15%;
-      min-width: 200px;
-      height: 100%;
-      text-align: center;
-      border-right: 1px solid #e1e1e1;
-      background-color: white;
-
-      img {
-        width: 40px;
-        height: 40px;
-        margin-top: 5px;
-      }
-    }
-
-    .menu-wrapper {
-      width: 64%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      color: #000;
-
-      .menu {
-        display: block;
-        min-width: 120px;
-        height: 100%;
-        text-align: center;
-        // margin: 0px 30px;
-        line-height: 50px;
-
-        &:hover {
-          background-color: #e1e1e1;
-        }
-
-        .link {
-          // display: block;
-          display: flex;
-          width: 100%;
-          height: 100%;
-          color: #000;
-        }
-
-        .router-link-active {
-          // display: block;
-          width: 100%;
-          min-width: 100px;
-          height: 100%;
-          background-color: #409fee;
-          color: #fff;
-        }
-      }
-    }
-  }
-
-  .content {
-    width: 100%;
-    height: calc(100% - 50px);
-    display: flex;
-
-    .menu-container {
-      width: 15%;
-      height: 100%;
-      background-color: white;
-
-      .menu-label {
-        height: 60px;
-        padding: 10px;
-        font-size: 28px;
-        line-height: 40px;
-      }
-    }
-  }
+}
+.videoAdminLayout-wrapper .navi {
+  width: 100%;
+  min-width: 1200px;
+  background-color: white;
+  border-bottom: 1px solid #e1e1e1;
+  display: flex;
+  align-items: center;
+}
+.videoAdminLayout-wrapper .navi .customActive {
+  background-color: #409fee;
+  color: #fff !important;
+}
+.videoAdminLayout-wrapper .navi .logo-wrapper {
+  width: 15%;
+  min-width: 200px;
+  height: 100%;
+  text-align: center;
+  border-right: 1px solid #e1e1e1;
+  background-color: white;
+}
+.videoAdminLayout-wrapper .navi .logo-wrapper img {
+  width: 40px;
+  height: 40px;
+  margin-top: 5px;
+}
+.videoAdminLayout-wrapper .navi .menu-wrapper {
+  width: 64%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  color: #000;
+}
+.videoAdminLayout-wrapper .navi .menu-wrapper .menu {
+  display: block;
+  min-width: 120px;
+  height: 100%;
+  text-align: center;
+  line-height: 50px;
+}
+.videoAdminLayout-wrapper .navi .menu-wrapper .menu:hover {
+  background-color: #e1e1e1;
+}
+.videoAdminLayout-wrapper .navi .menu-wrapper .menu .link {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  color: #000;
+}
+.videoAdminLayout-wrapper .navi .menu-wrapper .menu .router-link-active {
+  width: 100%;
+  min-width: 100px;
+  height: 100%;
+  background-color: #409fee;
+  color: #fff;
+}
+.videoAdminLayout-wrapper .content {
+  width: 100%;
+  height: calc(100% - 50px);
+  display: flex;
+}
+.videoAdminLayout-wrapper .content .menu-container {
+  width: 15%;
+  height: 100%;
+  background-color: white;
+}
+.videoAdminLayout-wrapper .content .menu-container .menu-label {
+  height: 60px;
+  padding: 10px;
+  font-size: 28px;
+  line-height: 40px;
 }
 </style>

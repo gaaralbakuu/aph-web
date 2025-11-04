@@ -55,16 +55,16 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" scoped>
 .app-breadcrumb {
   display: inline-block;
   font-size: 14px;
-  .el-breadcrumb {
-    line-height: 50px;
-  }
-  .no-redirect {
-    color: #97a8be;
-    cursor: text;
-  }
+}
+.app-breadcrumb .el-breadcrumb {
+  line-height: 50px;
+}
+.app-breadcrumb .no-redirect {
+  color: #97a8be;
+  cursor: text;
 }
 </style>

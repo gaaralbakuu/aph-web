@@ -264,69 +264,58 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
 .videoTag-container {
   width: 100%;
   height: 100%;
-
-  .drawer-container {
-    //抽屉样式
-    .title {
-      padding: 20px 0px;
-      font-size: 18px;
-      font-weight: 600;
-      border-bottom: 1px solid #ccc;
-    }
-
-    .form-container {
-      width: 95%;
-      height: 90%;
-      margin: 0 auto;
-      background-color: #fff;
-    }
-
-    .buttonBar {
-      width: 100%;
-      height: 60px;
-      margin: 0 auto;
-      padding: 0 25px;
-      position: absolute;
-      bottom: 0px;
-      border-top: 1px solid #ccc;
-      float: right;
-      display: flex;
-      justify-content: end;
-      align-items: center;
-    }
-  }
-
-  .pageBody {
-    width: 100%;
-    min-width: 1000px;
-    height: 100%;
-    margin: 0 auto;
-    // padding: 20px;
-    background-color: #fff;
-
-    .pageBody-filter {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid #ddd;
-      padding: 14px;
-      height: 60px;
-    }
-
-    .tableContainer {
-      width: 100%;
-      height: calc(100% - 110px);
-    }
-
-    .tagList-pagenation {
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-  }
+}
+.videoTag-container .drawer-container .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.videoTag-container .drawer-container .form-container {
+  width: 95%;
+  height: 90%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.videoTag-container .drawer-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 25px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.videoTag-container .pageBody {
+  width: 100%;
+  min-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.videoTag-container .pageBody .pageBody-filter {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  padding: 14px;
+  height: 60px;
+}
+.videoTag-container .pageBody .tableContainer {
+  width: 100%;
+  height: calc(100% - 110px);
+}
+.videoTag-container .pageBody .tagList-pagenation {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 </style>

@@ -314,59 +314,50 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-  .platform-container {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-
-    .platform-filter {
-      width: 100%;
-      height: 60px;
-      padding: 14px;
-      border-bottom: 1px #ddd solid;
-      display: flex;
-      justify-content: space-between;
-      background-color: white;
-    }
-
-    .platform-content {
-      padding: 20px;
-
-      .login {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        .item {
-          width: 23%;
-          background-color: white;
-          border-radius: 5px;
-          border: 1px solid #efefef;
-
-          .l_label {
-            text-indent: 1em;
-            height: 50px;
-            line-height: 50px;
-          }
-
-          .l_value {
-            height: 100px;
-            line-height: 100px;
-            font-size: 30px;
-            text-align: center;
-          }
-        }
-
-
-      }
-
-      .barChart {
-        width: 100%;
-        height: 500px;
-        background-color: white;
-        margin-top: 40px;
-      }
-    }
-  }
+<style scoped>
+.platform-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.platform-container .platform-filter {
+  width: 100%;
+  height: 60px;
+  padding: 14px;
+  border-bottom: 1px #ddd solid;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+}
+.platform-container .platform-content {
+  padding: 20px;
+}
+.platform-container .platform-content .login {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.platform-container .platform-content .login .item {
+  width: 23%;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid #efefef;
+}
+.platform-container .platform-content .login .item .l_label {
+  text-indent: 1em;
+  height: 50px;
+  line-height: 50px;
+}
+.platform-container .platform-content .login .item .l_value {
+  height: 100px;
+  line-height: 100px;
+  font-size: 30px;
+  text-align: center;
+}
+.platform-container .platform-content .barChart {
+  width: 100%;
+  height: 500px;
+  background-color: white;
+  margin-top: 40px;
+}
 </style>

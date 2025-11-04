@@ -72,44 +72,38 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  .lesson-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-
-    .menu-container {
-      width: 15%;
-      min-width: 200px;
-      height: 100%;
-      background-color: white;
-
-      .menu-label {
-        height: 60px;
-        padding: 15px 20px;
-        font-size: 28px;
-        font-weight: bold;
-        line-height: 30px;
-        border-bottom: 1px solid #e1e1e1;
-        border-right: 1px solid #e1e1e1;
-      }
-
-      .menu-wrapper {
-        width: 100%;
-        height: calc(100% - 60px);
-
-        .link {
-          // display: block;
-          width: 100%;
-          height: 100%;
-          color: #000;
-        }
-      }
-    }
-
-    .router-view {
-      width: 85%;
-      height: 100%;
-    }
-  }
+<style scoped>
+.lesson-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.lesson-container .menu-container {
+  width: 15%;
+  min-width: 200px;
+  height: 100%;
+  background-color: white;
+}
+.lesson-container .menu-container .menu-label {
+  height: 60px;
+  padding: 15px 20px;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 30px;
+  border-bottom: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+}
+.lesson-container .menu-container .menu-wrapper {
+  width: 100%;
+  height: calc(100% - 60px);
+}
+.lesson-container .menu-container .menu-wrapper .link {
+  width: 100%;
+  height: 100%;
+  color: #000;
+}
+.lesson-container .router-view {
+  width: 85%;
+  height: 100%;
+}
 </style>

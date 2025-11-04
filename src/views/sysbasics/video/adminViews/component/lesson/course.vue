@@ -1995,210 +1995,167 @@
 </script>
 
 
-<style lang="scss">
-  .lessonList-container {
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-
-    .videoSelect-dialog {
-      width: 100%;
-      height: auto;
-      max-height: 70vh;
-      padding: 10px;
-
-      .video-table {
-        width: 100%;
-        height: auto;
-        max-height: 70vh;
-        margin-bottom: 10px;
-      }
-    }
-
-
-    .drawer-container {
-
-      //视频上传抽屉样式
-      .title {
-        padding: 0px 20px 10px 20px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .form-container {
-        width: 95%;
-        height: calc(100% - 80px);
-        margin: 0 auto;
-
-        .tab-container {
-          width: 100%;
-          height: 100%;
-          // background-color: #409fee;
-        }
-
-
-        .modifyCover {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-
-          .change {
-            text-align: center;
-            color: #409fee;
-            font-size: 50px;
-
-          }
-        }
-
-        .cover {
-          position: relative;
-          width: 150px;
-          height: 150px;
-          display: flex;
-          align-items: center;
-
-          &:hover {
-            .cover-oprate {
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              top: 0;
-              display: flex;
-              justify-content: space-evenly;
-              align-items: center;
-              background-color: rgba(167, 167, 167, 0.7);
-              color: white;
-              font-size: 30px;
-
-              .iconZoom {
-                margin-top: 15%;
-
-                &:hover {
-                  color: #409fee;
-                }
-              }
-
-              .iconRefresh {
-                margin-top: 15%;
-
-                &:hover {
-                  color: #00aa7f;
-                }
-              }
-            }
-          }
-
-          .plus-icon {
-            width: 140px;
-            height: 140px;
-            border: 2px dotted #ccc;
-            border-radius: 5px;
-            color: #999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-
-            &:hover {
-              color: #409fee;
-            }
-          }
-
-          .cover-oprate {
-            display: none;
-          }
-        }
-
-        .tags {
-          margin: 0 10px;
-          padding: 0 10px;
-          white-space: nowrap;
-        }
-
-        .tagInput {
-          width: 100%;
-          height: auto;
-          min-height: 40px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          cursor: pointer;
-          display: flex;
-          justify-content: space-between;
-        }
-
-
-
-      }
-
-
-
-      .buttonBar {
-        width: 100%;
-        height: 60px;
-        margin: 0 auto;
-        padding: 0 15px;
-        position: absolute;
-        background-color: white;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        float: right;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-      }
-
-
-    }
-
-    .lessonList-filter {
-      padding: 15px;
-      width: 100%;
-      min-width: 1000px;
-      height: 60px;
-      background-color: #f2f4f9;
-    }
-
-    .lessonList-oprate {
-      // margin-top: 20px;
-      padding: 10px;
-      width: 100%;
-      min-width: 1000px;
-      height: 50px;
-      background-color: #ffffff;
-    }
-
-    .lessonList-table {
-      width: 100%;
-      min-width: 1000px;
-      height: calc(100% - 160px);
-
-      .img {
-        width: 100%;
-        height: 80px;
-
-        .auto-img {
-          position: relative;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          max-width: 100%;
-          max-height: 100%;
-          cursor: pointer;
-        }
-      }
-    }
-
-    .lessonList-pagenation {
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-  }
+<style>
+.lessonList-container {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+}
+.lessonList-container .videoSelect-dialog {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  padding: 10px;
+}
+.lessonList-container .videoSelect-dialog .video-table {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  margin-bottom: 10px;
+}
+.lessonList-container .drawer-container .title {
+  padding: 0px 20px 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lessonList-container .drawer-container .form-container {
+  width: 95%;
+  height: calc(100% - 80px);
+  margin: 0 auto;
+}
+.lessonList-container .drawer-container .form-container .tab-container {
+  width: 100%;
+  height: 100%;
+}
+.lessonList-container .drawer-container .form-container .modifyCover {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lessonList-container .drawer-container .form-container .modifyCover .change {
+  text-align: center;
+  color: #409fee;
+  font-size: 50px;
+}
+.lessonList-container .drawer-container .form-container .cover {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
+.lessonList-container .drawer-container .form-container .cover:hover .cover-oprate {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: rgba(167, 167, 167, 0.7);
+  color: white;
+  font-size: 30px;
+}
+.lessonList-container .drawer-container .form-container .cover:hover .cover-oprate .iconZoom {
+  margin-top: 15%;
+}
+.lessonList-container .drawer-container .form-container .cover:hover .cover-oprate .iconZoom:hover {
+  color: #409fee;
+}
+.lessonList-container .drawer-container .form-container .cover:hover .cover-oprate .iconRefresh {
+  margin-top: 15%;
+}
+.lessonList-container .drawer-container .form-container .cover:hover .cover-oprate .iconRefresh:hover {
+  color: #00aa7f;
+}
+.lessonList-container .drawer-container .form-container .cover .plus-icon {
+  width: 140px;
+  height: 140px;
+  border: 2px dotted #ccc;
+  border-radius: 5px;
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+.lessonList-container .drawer-container .form-container .cover .plus-icon:hover {
+  color: #409fee;
+}
+.lessonList-container .drawer-container .form-container .cover .cover-oprate {
+  display: none;
+}
+.lessonList-container .drawer-container .form-container .tags {
+  margin: 0 10px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.lessonList-container .drawer-container .form-container .tagInput {
+  width: 100%;
+  height: auto;
+  min-height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+.lessonList-container .drawer-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  background-color: white;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.lessonList-container .lessonList-filter {
+  padding: 15px;
+  width: 100%;
+  min-width: 1000px;
+  height: 60px;
+  background-color: #f2f4f9;
+}
+.lessonList-container .lessonList-oprate {
+  padding: 10px;
+  width: 100%;
+  min-width: 1000px;
+  height: 50px;
+  background-color: #ffffff;
+}
+.lessonList-container .lessonList-table {
+  width: 100%;
+  min-width: 1000px;
+  height: calc(100% - 160px);
+}
+.lessonList-container .lessonList-table .img {
+  width: 100%;
+  height: 80px;
+}
+.lessonList-container .lessonList-table .img .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+.lessonList-container .lessonList-pagenation {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 </style>

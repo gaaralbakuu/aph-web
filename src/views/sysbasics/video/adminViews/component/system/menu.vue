@@ -422,58 +422,51 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style>
 .menuManage-container {
   width: 100%;
   height: 100%;
-
-  .pageBody {
-    width: 100%;
-    margin: 0 auto;
-
-    .drawer-container {
-      width: 100%;
-
-      //视频上传抽屉样式
-      .title {
-        padding: 20px 0px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-      }
-
-      .form-container {
-        width: 100%;
-        height: 95%;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-      }
-
-      .buttonBar {
-        width: 100%;
-        height: 60px;
-        margin: 0 auto;
-        padding: 0 15px;
-        position: absolute;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        float: right;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-      }
-    }
-
-    .filter-wrapper {
-      height: 60px;
-      background-color: white;
-      padding: 15px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #e1e1e1;
-    }
-  }
+}
+.menuManage-container .pageBody {
+  width: 100%;
+  margin: 0 auto;
+}
+.menuManage-container .pageBody .drawer-container {
+  width: 100%;
+}
+.menuManage-container .pageBody .drawer-container .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.menuManage-container .pageBody .drawer-container .form-container {
+  width: 100%;
+  height: 95%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+}
+.menuManage-container .pageBody .drawer-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.menuManage-container .pageBody .filter-wrapper {
+  height: 60px;
+  background-color: white;
+  padding: 15px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e1e1;
 }
 </style>

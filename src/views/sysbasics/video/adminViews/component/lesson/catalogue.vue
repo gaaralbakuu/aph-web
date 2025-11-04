@@ -628,103 +628,87 @@
   };
 </script>
 
-<style lang="scss">
-  .img {
-    width: 80%;
-    height: 60px;
+<style>
+.img {
+  width: 80%;
+  height: 60px;
+}
+.img .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
 
-    .auto-img {
-      position: relative;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 100%;
-      max-height: 100%;
-      cursor: pointer;
-    }
-  }
+.catalogBox {
+  width: 65%;
+  height: 100%;
+  max-height: 100%;
+}
+.catalogBox .catalog_filter {
+  display: flex;
+  height: 60px;
+  padding: 14px 0px;
+}
+.catalogBox .catalog-tree {
+  height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
+  overflow: scroll;
+}
 
-  .catalogBox {
-    width: 65%;
-    height: 100%;
-    max-height: 100%;
+.custom-tree-node {
+  width: 95%;
+  height: 40px;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .catalog_filter {
-      display: flex;
-      height: 60px;
-      padding: 14px 0px;
-    }
-
-    .catalog-tree {
-      height: calc(100% - 60px);
-      max-height: calc(100% - 60px);
-      overflow: scroll;
-    }
-  }
-
-  .custom-tree-node {
-    width: 95%;
-    height: 40px;
-    font-size: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-
-  }
-
-
-
-  .lesssonCatalogue-container {
-    width: 100%;
-    height: 100%;
-
-    .drawer-container {
-
-      //视频上传抽屉样式
-      .title {
-        padding: 0px 20px 10px 20px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .form-container {
-        width: 100%;
-        height: 95%;
-        margin: 0 auto;
-        background-color: #fff;
-
-        .form {
-          width: 90%;
-          margin: 0 auto;
-        }
-
-        .buttonBar {
-          width: 100%;
-          height: 60px;
-          margin: 0 auto;
-          padding: 0 30px;
-          position: absolute;
-          bottom: 0px;
-          border-top: 1px solid #ccc;
-          float: right;
-          display: flex;
-          justify-content: end;
-          align-items: center;
-        }
-      }
-    }
-
-    .org-tree-node {
-      width: 85%;
-      height: 40px;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
+.lesssonCatalogue-container {
+  width: 100%;
+  height: 100%;
+}
+.lesssonCatalogue-container .drawer-container .title {
+  padding: 0px 20px 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+}
+.lesssonCatalogue-container .drawer-container .form-container {
+  width: 100%;
+  height: 95%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.lesssonCatalogue-container .drawer-container .form-container .form {
+  width: 90%;
+  margin: 0 auto;
+}
+.lesssonCatalogue-container .drawer-container .form-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.lesssonCatalogue-container .org-tree-node {
+  width: 85%;
+  height: 40px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>

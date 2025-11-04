@@ -28,11 +28,11 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  .link {
-    display: block;
-    width: 100%;
-    height: 100%;
-    color: #000;
-  }
+<style scoped>
+.link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #000;
+}
 </style>

@@ -1,0 +1,77 @@
+/* Main layout CSS */
+
+.app-aside, .app-aside-right {
+  transition: width 0.28s;
+}
+
+.el-menu .el-menu-item {
+  min-width: 0 !important;
+}
+.el-menu .el-menu-item, .el-menu .el-submenu__title {
+  height: 50px;
+  line-height: 50px;
+}
+.el-menu .el-submenu .el-menu-item {
+  height: 40px;
+  line-height: 40px;
+}
+.el-menu .nest-menu .el-submenu__title {
+  height: 40px;
+  line-height: 40px;
+}
+.el-menu .el-menu-item:before, .el-menu .el-submenu__title:before {
+  content: '';
+  background-color: transparent;
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+}
+.el-menu .el-submenu.is-active:before, .el-menu .el-menu-item.is-active:before {
+  background-color: #409EFF;
+}
+.el-menu i.fa {
+  color: currentColor;
+  vertical-align: middle;
+  margin-left: -3px;
+  margin-right: 8px;
+  font-size: 16px;
+}
+.el-menu .svg-icon {
+  margin-left: -3px;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.el-menu--popup .el-menu-item {
+  height: 40px;
+  line-height: 40px;
+}
+.el-menu--popup .el-submenu.is-active .el-submenu__title:before {
+  background-color: #409EFF;
+}
+.el-menu--popup .svg-icon {
+  margin-right: 10px !important;
+}
+.el-menu--popup i.fa {
+  margin-right: 10px !important;
+}
+
+.el-menu--collapse .el-submenu.is-active .el-submenu__title:before {
+  background-color: #409EFF;
+}
+
+.el-menu--collapse .el-submenu > .el-submenu__title span, 
+.el-menu--collapse .el-submenu > .el-submenu__title i.el-icon-arrow-right {
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* Mobile adaptation */
+.mobile .app-aside {
+  position: absolute;
+  height: 100%;
+  z-index: 2199;
+}

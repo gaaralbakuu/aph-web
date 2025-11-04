@@ -352,43 +352,36 @@
   }
 </script>
 
-<style lang="scss">
-  .drawer-container {
-
-    //视频上传抽屉样式
-    .title {
-      padding: 0px 20px 10px 20px;
-      font-size: 18px;
-      font-weight: 600;
-      border-bottom: 1px solid #ccc;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .form-container {
-      width: 100%;
-      height: 95%;
-      margin: 0 auto;
-      background-color: #fff;
-
-      .form {
-        width: 90%;
-        margin: 0 auto;
-      }
-
-      .buttonBar {
-        width: 100%;
-        height: 60px;
-        margin: 0 auto;
-        padding: 0 30px;
-        position: absolute;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        float: right;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-      }
-    }
-  }
+<style>
+.drawer-container .title {
+  padding: 0px 20px 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+}
+.drawer-container .form-container {
+  width: 100%;
+  height: 95%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.drawer-container .form-container .form {
+  width: 90%;
+  margin: 0 auto;
+}
+.drawer-container .form-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
 </style>

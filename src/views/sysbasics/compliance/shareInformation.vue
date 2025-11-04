@@ -811,140 +811,110 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-// Modern table styling
+<style scoped>
 .modern-table {
   border: none;
   border-radius: 8px;
   overflow: hidden;
-
-  :deep(.el-table__header-wrapper) {
-    th {
-      background-color: #f9fafb;
-      color: #374151;
-      font-weight: 600;
-      border: none;
-      font-size: 14px;
-      padding: 16px 12px;
-    }
-  }
-
-  :deep(.el-table__body-wrapper) {
-    td {
-      border: none;
-      border-bottom: 1px solid #f3f4f6;
-      padding: 16px 12px;
-      font-size: 14px;
-    }
-
-    tr:hover {
-      background-color: #f9fafb;
-    }
-  }
-
-  :deep(.el-table__empty-block) {
-    background-color: #f9fafb;
-  }
+}
+.modern-table :deep(.el-table__header-wrapper) th {
+  background-color: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  border: none;
+  font-size: 14px;
+  padding: 16px 12px;
+}
+.modern-table :deep(.el-table__body-wrapper) td {
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 16px 12px;
+  font-size: 14px;
+}
+.modern-table :deep(.el-table__body-wrapper) tr:hover {
+  background-color: #f9fafb;
+}
+.modern-table :deep(.el-table__empty-block) {
+  background-color: #f9fafb;
 }
 
-// Modern dialog styling
-.modern-dialog {
-  :deep(.el-dialog) {
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  }
-
-  :deep(.el-dialog__header) {
-    border-bottom: 1px solid #f3f4f6;
-    padding: 24px 24px 16px;
-    margin-bottom: 0;
-  }
-
-  :deep(.el-dialog__title) {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-  }
-
-  :deep(.el-dialog__body) {
-    padding: 24px;
-  }
-
-  :deep(.el-dialog__footer) {
-    border-top: 1px solid #f3f4f6;
-    padding: 16px 24px 24px;
-  }
+.modern-dialog :deep(.el-dialog) {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.modern-dialog :deep(.el-dialog__header) {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 24px 24px 16px;
+  margin-bottom: 0;
+}
+.modern-dialog :deep(.el-dialog__title) {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+.modern-dialog :deep(.el-dialog__body) {
+  padding: 24px;
+}
+.modern-dialog :deep(.el-dialog__footer) {
+  border-top: 1px solid #f3f4f6;
+  padding: 16px 24px 24px;
 }
 
-// Modern form styling
-.modern-form {
-  .form-group {
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #374151;
-    }
-
-    :deep(.el-input__inner) {
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      height: 40px;
-      font-size: 14px;
-      transition: all 0.2s ease-in-out;
-
-      &:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-      }
-    }
-  }
+.modern-form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #374151;
+}
+.modern-form .form-group :deep(.el-input__inner) {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  height: 40px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+.modern-form .form-group :deep(.el-input__inner):focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-// Custom pagination styling
-.custom-pagination {
-  :deep(.el-pagination) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-
-    .el-pager li {
-      border-radius: 6px;
-      min-width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 500;
-      transition: all 0.2s ease-in-out;
-
-      &.active {
-        background-color: #3b82f6;
-        color: white;
-      }
-
-      &:hover:not(.active) {
-        background-color: #f3f4f6;
-      }
-    }
-
-    .btn-prev,
-    .btn-next {
-      border-radius: 6px;
-      min-width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease-in-out;
-
-      &:hover {
-        background-color: #f3f4f6;
-      }
-    }
-  }
+.custom-pagination :deep(.el-pagination) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.custom-pagination :deep(.el-pagination) .el-pager li {
+  border-radius: 6px;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+.custom-pagination :deep(.el-pagination) .el-pager li.active {
+  background-color: #3b82f6;
+  color: white;
+}
+.custom-pagination :deep(.el-pagination) .el-pager li:hover:not(.active) {
+  background-color: #f3f4f6;
+}
+.custom-pagination :deep(.el-pagination) .btn-prev,
+.custom-pagination :deep(.el-pagination) .btn-next {
+  border-radius: 6px;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+.custom-pagination :deep(.el-pagination) .btn-prev:hover,
+.custom-pagination :deep(.el-pagination) .btn-next:hover {
+  background-color: #f3f4f6;
 }
 
 .main-table {
@@ -973,7 +943,6 @@ export default {
   background-color: #f8fafc;
 }
 
-// Animation classes
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

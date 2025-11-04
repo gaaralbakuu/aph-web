@@ -71,44 +71,38 @@
     }
   }
 </script>
-<style lang="scss" scoped>
-  .exam-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-
-    .router-view {
-      width: 85%;
-      height: 100%;
-    }
-
-    .menu-container {
-      width: 15%;
-      min-width: 200px;
-      height: 100%;
-      background-color: white;
-
-      .menu-wrapper {
-        width: 100%;
-        height: calc(100% - 60px);
-
-        .link {
-          // display: block;
-          width: 100%;
-          height: 100%;
-          color: #000;
-        }
-      }
-
-      .menu-label {
-        height: 60px;
-        padding: 15px 20px;
-        font-weight: bold;
-        font-size: 28px;
-        line-height: 30px;
-        border-bottom: 1px solid #e1e1e1;
-        border-right: 1px solid #e1e1e1;
-      }
-    }
-  }
+<style scoped>
+.exam-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.exam-container .router-view {
+  width: 85%;
+  height: 100%;
+}
+.exam-container .menu-container {
+  width: 15%;
+  min-width: 200px;
+  height: 100%;
+  background-color: white;
+}
+.exam-container .menu-container .menu-wrapper {
+  width: 100%;
+  height: calc(100% - 60px);
+}
+.exam-container .menu-container .menu-wrapper .link {
+  width: 100%;
+  height: 100%;
+  color: #000;
+}
+.exam-container .menu-container .menu-label {
+  height: 60px;
+  padding: 15px 20px;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 30px;
+  border-bottom: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+}
 </style>

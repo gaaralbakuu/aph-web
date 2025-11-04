@@ -287,7 +287,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .resetbutton {
   position: relative;
   left: 1.8%;
@@ -473,11 +473,9 @@ export default {
     margin: 10px;
     border-radius: 4px;
   }
-
   .table-header {
     padding: 12px 16px;
   }
-
   .custom-table th,
   .custom-table td {
     padding: 8px 12px;

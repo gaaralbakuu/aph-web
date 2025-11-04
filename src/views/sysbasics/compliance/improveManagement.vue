@@ -1930,52 +1930,38 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-// Modern table styling
+<style scoped>
 .modern-table {
   border: none;
-
-  :deep(.el-table__header-wrapper) {
-    th {
-      background-color: #f9fafb;
-      color: #374151;
-      font-weight: 500;
-      border: none;
-    }
-  }
-
-  :deep(.el-table__body-wrapper) {
-    td {
-      border: none;
-      border-bottom: 1px solid #f3f4f6;
-    }
-
-    tr:hover {
-      background-color: #f9fafb;
-    }
-  }
+}
+.modern-table :deep(.el-table__header-wrapper) th {
+  background-color: #f9fafb;
+  color: #374151;
+  font-weight: 500;
+  border: none;
+}
+.modern-table :deep(.el-table__body-wrapper) td {
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+}
+.modern-table :deep(.el-table__body-wrapper) tr:hover {
+  background-color: #f9fafb;
 }
 
-// Modern dialog styling
-.modern-dialog {
-  :deep(.el-dialog) {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  }
-
-  :deep(.el-dialog__header) {
-    border-bottom: 1px solid #f3f4f6;
-    padding-bottom: 16px;
-    margin-bottom: 0;
-  }
-
-  :deep(.el-dialog__body) {
-    padding-top: 24px;
-  }
+.modern-dialog :deep(.el-dialog) {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.modern-dialog :deep(.el-dialog__header) {
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 16px;
+  margin-bottom: 0;
+}
+.modern-dialog :deep(.el-dialog__body) {
+  padding-top: 24px;
 }
 
-// Legacy styles (keeping for compatibility)
 .check {
   position: relative;
   top: 20px;

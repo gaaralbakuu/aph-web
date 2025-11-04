@@ -180,130 +180,106 @@
   };
 </script>
 
-<style lang="scss" scoped>
-  .learning-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-
-
-    .learning-filter {
-      position: absolute;
-      z-index: 10;
-      width: 40%;
-      height: 40px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding-right: 40px;
-      right: 0;
-
-      .filter-item {
-        margin: 0 15px;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-    }
-
-    .learning-content {
-      height: calc(100% - 50px);
-      width: 100%;
-      padding: 20px;
-      overflow: scroll;
-
-      .learning-item {
-        width: 100%;
-        height: 120px;
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px dashed #b4b4b4;
-
-
-        &:hover {
-          background-color: aliceblue;
-
-          .delete {
-            width: 50px;
-            font-size: 20px;
-            visibility: visible;
-
-            &:hover {
-              color: red;
-              cursor: pointer;
-            }
-          }
-        }
-
-
-
-        .cover {
-          width: 200px;
-          height: 100%;
-
-          .auto-img {
-            position: relative;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 100%;
-            max-height: 100%;
-            cursor: pointer;
-          }
-        }
-
-        .content {
-          flex-grow: 1;
-          height: 100%;
-
-          .course-name {
-            height: 50px;
-            line-height: 50px;
-            font-size: 20px;
-          }
-
-          .course-info {
-            height: 50px;
-            line-height: 50px;
-            color: #999999;
-          }
-
-
-        }
-
-        .progress {
-          width: 180px;
-          height: 100%;
-          padding: 20px;
-          text-align: right;
-          font-weight: bold;
-
-          .status {
-            height: 30px;
-            line-height: 30px;
-            font-size: 16px;
-            color: seagreen;
-          }
-
-          .duration {
-            height: 30px;
-            line-height: 30px;
-            color: #333333;
-          }
-        }
-
-        .btn-right {
-          text-align: center;
-          width: 100px;
-        }
-
-        .delete {
-          width: 50px;
-          visibility: hidden;
-        }
-
-      }
-    }
-  }
+<style scoped>
+.learning-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+.learning-container .learning-filter {
+  position: absolute;
+  z-index: 10;
+  width: 40%;
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 40px;
+  right: 0;
+}
+.learning-container .learning-filter .filter-item {
+  margin: 0 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.learning-container .learning-content {
+  height: calc(100% - 50px);
+  width: 100%;
+  padding: 20px;
+  overflow: scroll;
+}
+.learning-container .learning-content .learning-item {
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px dashed #b4b4b4;
+}
+.learning-container .learning-content .learning-item:hover {
+  background-color: aliceblue;
+}
+.learning-container .learning-content .learning-item:hover .delete {
+  width: 50px;
+  font-size: 20px;
+  visibility: visible;
+}
+.learning-container .learning-content .learning-item:hover .delete:hover {
+  color: red;
+  cursor: pointer;
+}
+.learning-container .learning-content .learning-item .cover {
+  width: 200px;
+  height: 100%;
+}
+.learning-container .learning-content .learning-item .cover .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+.learning-container .learning-content .learning-item .content {
+  flex-grow: 1;
+  height: 100%;
+}
+.learning-container .learning-content .learning-item .content .course-name {
+  height: 50px;
+  line-height: 50px;
+  font-size: 20px;
+}
+.learning-container .learning-content .learning-item .content .course-info {
+  height: 50px;
+  line-height: 50px;
+  color: #999999;
+}
+.learning-container .learning-content .learning-item .progress {
+  width: 180px;
+  height: 100%;
+  padding: 20px;
+  text-align: right;
+  font-weight: bold;
+}
+.learning-container .learning-content .learning-item .progress .status {
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  color: seagreen;
+}
+.learning-container .learning-content .learning-item .progress .duration {
+  height: 30px;
+  line-height: 30px;
+  color: #333333;
+}
+.learning-container .learning-content .learning-item .btn-right {
+  text-align: center;
+  width: 100px;
+}
+.learning-container .learning-content .learning-item .delete {
+  width: 50px;
+  visibility: hidden;
+}
 </style>

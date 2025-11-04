@@ -13,7 +13,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import '@fontsource-variable/inter'
 import 'font-awesome/css/font-awesome.min.css' // font-awesome
-import '@/styles/index.scss' // global css
+import '@/styles/index.css' // global css
 import '@/router/permission' // permission control
 import '@/icons' // icon
 import '@/utils/errorLog'

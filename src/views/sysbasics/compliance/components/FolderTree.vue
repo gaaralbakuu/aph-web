@@ -318,70 +318,55 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.modern-form {
-  .form-group {
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #374151;
-    }
-
-    :deep(.el-input__inner) {
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      height: 40px;
-      font-size: 14px;
-      transition: all 0.2s ease-in-out;
-
-      &:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-      }
-    }
-
-    :deep(.el-textarea__inner) {
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-size: 14px;
-      transition: all 0.2s ease-in-out;
-
-      &:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-      }
-    }
-  }
+<style scoped>
+.modern-form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #374151;
+}
+.modern-form .form-group :deep(.el-input__inner) {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  height: 40px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+.modern-form .form-group :deep(.el-input__inner):focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.modern-form .form-group :deep(.el-textarea__inner) {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+.modern-form .form-group :deep(.el-textarea__inner):focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-// Modern dialog styling
-.modern-dialog {
-  :deep(.el-dialog) {
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  }
-
-  :deep(.el-dialog__header) {
-    border-bottom: 1px solid #f3f4f6;
-    padding: 24px 24px 16px;
-    margin-bottom: 0;
-  }
-
-  :deep(.el-dialog__title) {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-  }
-
-  :deep(.el-dialog__body) {
-    padding: 24px;
-  }
-
-  :deep(.el-dialog__footer) {
-    border-top: 1px solid #f3f4f6;
-    padding: 16px 24px 24px;
-  }
+.modern-dialog :deep(.el-dialog) {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.modern-dialog :deep(.el-dialog__header) {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 24px 24px 16px;
+  margin-bottom: 0;
+}
+.modern-dialog :deep(.el-dialog__title) {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+.modern-dialog :deep(.el-dialog__body) {
+  padding: 24px;
+}
+.modern-dialog :deep(.el-dialog__footer) {
+  border-top: 1px solid #f3f4f6;
+  padding: 16px 24px 24px;
 }
 </style>

@@ -524,75 +524,59 @@
   };
 </script>
 
-<style lang="scss">
-  .roleManage-container {
-    width: 100%;
-    height: 100%;
-
-    .pageBody {
-      width: 100%;
-      margin: 0 auto;
-
-      .drawer-container {
-        width: 100%;
-
-        //视频上传抽屉样式
-        .title {
-          padding: 20px 0px;
-          font-size: 18px;
-          font-weight: 600;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .form-container {
-          width: 100%;
-          height: 95%;
-          margin: 0 auto;
-          padding: 20px;
-          background-color: #fff;
-
-
-        }
-
-        .buttonBar {
-          width: 100%;
-          height: 60px;
-          margin: 0 auto;
-          padding: 0 15px;
-          position: absolute;
-          bottom: 0px;
-          border-top: 1px solid #ccc;
-          float: right;
-          display: flex;
-          justify-content: end;
-          align-items: center;
-        }
-      }
-
-      .filter-wrapper {
-        height: 60px;
-        background-color: white;
-        // margin-bottom: 20px;
-        padding: 15px 10px;
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px solid #e1e1e1;
-        // align-items: center;
-      }
-
-      .role-wrapper {
-        display: flex;
-
-        .role-table {
-          width: 40%;
-        }
-
-        .role-tabs {
-          flex: 1;
-        }
-      }
-
-
-    }
-  }
+<style>
+.roleManage-container {
+  width: 100%;
+  height: 100%;
+}
+.roleManage-container .pageBody {
+  width: 100%;
+  margin: 0 auto;
+}
+.roleManage-container .pageBody .drawer-container {
+  width: 100%;
+}
+.roleManage-container .pageBody .drawer-container .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.roleManage-container .pageBody .drawer-container .form-container {
+  width: 100%;
+  height: 95%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+}
+.roleManage-container .pageBody .drawer-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.roleManage-container .pageBody .filter-wrapper {
+  height: 60px;
+  background-color: white;
+  padding: 15px 10px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e1e1e1;
+}
+.roleManage-container .pageBody .role-wrapper {
+  display: flex;
+}
+.roleManage-container .pageBody .role-wrapper .role-table {
+  width: 40%;
+}
+.roleManage-container .pageBody .role-wrapper .role-tabs {
+  flex: 1;
+}
 </style>

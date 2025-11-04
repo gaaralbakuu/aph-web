@@ -547,297 +547,213 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  // 单选框样式
-  .custom_disabled {
-    width: 100%;
+<style scoped>
+.custom_disabled {
+  width: 100%;
+}
+.custom_disabled ::v-deep .el-radio .el-radio__label {
+  color: #606266 !important;
+}
+.custom_disabled ::v-deep .el-radio .el-radio__input {
+  margin-bottom: px(5);
+}
+.custom_disabled ::v-deep .el-radio .el-radio__input.is-checked .el-radio__inner {
+  background-color: #409fee;
+  border-color: #409fee;
+}
+.custom_disabled ::v-deep .el-radio .el-radio__input.is-checked .el-radio__inner::after {
+  background-color: #fff;
+}
+.custom_disabled ::v-deep .el-radio .el-radio__input .el-radio__inner {
+  /* &:hover{
+          border-color:hsl(216, 92%, 51%);
+      } */
+}
+.custom_disabled ::v-deep .el-checkbox .el-checkbox__label {
+  color: #606266 !important;
+}
+.custom_disabled ::v-deep .el-checkbox .el-checkbox__input {
+  margin-bottom: px(5);
+}
+.custom_disabled ::v-deep .el-checkbox .el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: #409fee;
+  border-color: #409fee;
+}
+.custom_disabled ::v-deep .el-checkbox .el-checkbox__input.is-checked .el-checkbox__inner::after {
+  border-color: #ffffff;
+}
+.custom_disabled ::v-deep .el-textarea__inner {
+  background-color: white;
+  color: #606266;
+  border-color: #babfc5;
+}
 
-    ::v-deep {
-      .el-radio {
-
-        .el-radio__label {
-          color: #606266 !important;
-        }
-
-        .el-radio__input {
-          margin-bottom: px(5);
-
-          &.is-checked {
-            .el-radio__inner {
-              background-color: #409fee;
-              border-color: #409fee;
-            }
-
-            .el-radio__inner::after {
-              background-color: #fff;
-            }
-          }
-
-          .el-radio__inner {
-            /* &:hover{
-                    border-color:hsl(216, 92%, 51%);
-                } */
-          }
-        }
-      }
-
-      //这里是复选框的样式写法，同上一样
-
-      .el-checkbox {
-
-        .el-checkbox__label {
-          color: #606266 !important;
-        }
-
-        .el-checkbox__input {
-          margin-bottom: px(5);
-
-          &.is-checked {
-            .el-checkbox__inner {
-              background-color: #409fee;
-              border-color: #409fee;
-            }
-
-            .el-checkbox__inner::after {
-              border-color: #ffffff;
-            }
-
-          }
-
-          .el-checkbox__inner {
-            // &:hover {
-            //   border-color: #28D4C1;
-            // }
-          }
-        }
-      }
-
-
-      .el-textarea__inner {
-
-        background-color: white;
-        color: #606266;
-        border-color: #babfc5;
-
-      }
-
-
-
-
-    }
-  }
-
-  .examDetail-container {
-    width: 100%;
-    height: 100%;
-    background-color: #f5f5f5;
-
-    .page-body {
-      position: fixed;
-      top: 0px;
-      left: 15%;
-      width: 70%;
-      min-width: 1000px !important;
-      height: calc(100% - 60px);
-      padding: 20px;
-
-
-
-      .examingContent {
-        width: 100%;
-        height: calc(100%);
-        display: flex;
-        justify-content: space-between;
-
-        .left {
-          width: 70%;
-          height: 100%;
-          background-color: white;
-
-          .title {
-            width: 100%;
-            height: 80px;
-            line-height: 80px;
-            padding: 0 10px;
-            font-size: 24px;
-            text-align: center;
-            border-bottom: 1px solid #f5f5f5;
-          }
-
-          .content {
-            width: 100%;
-            height: calc(100% - 140px);
-            padding: 30px;
-            border-bottom: 1px solid #f5f5f5;
-
-            .type {
-              height: 50px;
-              font-size: 20px;
-            }
-
-            .question {
-              height: calc(100% - 50px);
-              display: flex;
-
-              .q_left {
-                width: 5em;
-                height: 100%;
-                padding-right: 1em;
-
-                .currentIndex {
-                  font-size: 24px;
-                  color: #409fee;
-                }
-              }
-
-              .q_right {
-                padding: 5px;
-                flex-grow: 1;
-
-                .q_title {
-                  font-size: 18px;
-                }
-
-                .q_type {
-                  margin: 20px 0px;
-                  color: darkgray;
-                }
-
-                .q_options {
-                  margin: 10px 0px;
-                  font-size: 16px;
-                }
-
-                .q_anwser,
-                .q_score {
-                  width: 100%;
-                  font-size: 16px;
-                  padding: 25px;
-                  background-color: #f8f9fb;
-                  border-radius: 10px;
-                  border: 1px solid #e4ecfb;
-                  margin-top: 20px;
-
-                  .anwser {
-                    margin-top: 10px;
-                    display: flex;
-                    align-items: center;
-                  }
-                }
-              }
-            }
-          }
-
-          .next {
-            width: 100%;
-            height: 60px;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-          }
-
-        }
-
-        .right {
-          width: 27%;
-          height: 100%;
-          background-color: white;
-          padding: 10px 25px;
-
-          .result {
-            width: 100%;
-            border-bottom: 1px solid #f5f5f5;
-
-            .item {
-              width: 100%;
-              height: 60px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-
-            }
-          }
-
-          .examcard {
-            width: 100%;
-            height: 100%;
-
-            .desc {
-              width: 100%;
-              text-align: center;
-              padding: 30px 0px;
-            }
-
-            .num {
-              width: 100%;
-              display: flex;
-              justify-content: space-evenly;
-              align-items: center;
-              margin-bottom: 40px;
-              cursor: pointer;
-
-              .num-item {
-                span {
-                  font-size: 20px;
-                  padding-right: 5px;
-                }
-
-                &:nth-child(1) {
-                  span {
-                    color: limegreen;
-                  }
-                }
-
-                &:nth-child(2) {
-                  span {
-                    color: orangered;
-                  }
-                }
-
-
-
-                &:nth-child(3) {
-                  span {
-                    color: orange;
-                  }
-                }
-              }
-            }
-
-            .card {
-              width: 100%;
-              display: flex;
-              flex-wrap: wrap;
-
-
-              .num {
-                margin: 5px;
-                width: 32px;
-                height: 32px;
-                font-size: 18px;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .bottom {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      height: 60px;
-      background-color: #fff;
-      padding: 0 20%;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-
-      .btn {}
-    }
-  }
+.examDetail-container {
+  width: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+.examDetail-container .page-body {
+  position: fixed;
+  top: 0px;
+  left: 15%;
+  width: 70%;
+  min-width: 1000px !important;
+  height: calc(100% - 60px);
+  padding: 20px;
+}
+.examDetail-container .page-body .examingContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.examDetail-container .page-body .examingContent .left {
+  width: 70%;
+  height: 100%;
+  background-color: white;
+}
+.examDetail-container .page-body .examingContent .left .title {
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+  padding: 0 10px;
+  font-size: 24px;
+  text-align: center;
+  border-bottom: 1px solid #f5f5f5;
+}
+.examDetail-container .page-body .examingContent .left .content {
+  width: 100%;
+  height: calc(100% - 140px);
+  padding: 30px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.examDetail-container .page-body .examingContent .left .content .type {
+  height: 50px;
+  font-size: 20px;
+}
+.examDetail-container .page-body .examingContent .left .content .question {
+  height: calc(100% - 50px);
+  display: flex;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_left {
+  width: 5em;
+  height: 100%;
+  padding-right: 1em;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_left .currentIndex {
+  font-size: 24px;
+  color: #409fee;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_right {
+  padding: 5px;
+  flex-grow: 1;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_title {
+  font-size: 18px;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_type {
+  margin: 20px 0px;
+  color: darkgray;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_options {
+  margin: 10px 0px;
+  font-size: 16px;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_anwser,
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_score {
+  width: 100%;
+  font-size: 16px;
+  padding: 25px;
+  background-color: #f8f9fb;
+  border-radius: 10px;
+  border: 1px solid #e4ecfb;
+  margin-top: 20px;
+}
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_anwser .anwser,
+.examDetail-container .page-body .examingContent .left .content .question .q_right .q_score .anwser {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+.examDetail-container .page-body .examingContent .left .next {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.examDetail-container .page-body .examingContent .right {
+  width: 27%;
+  height: 100%;
+  background-color: white;
+  padding: 10px 25px;
+}
+.examDetail-container .page-body .examingContent .right .result {
+  width: 100%;
+  border-bottom: 1px solid #f5f5f5;
+}
+.examDetail-container .page-body .examingContent .right .result .item {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.examDetail-container .page-body .examingContent .right .examcard {
+  width: 100%;
+  height: 100%;
+}
+.examDetail-container .page-body .examingContent .right .examcard .desc {
+  width: 100%;
+  text-align: center;
+  padding: 30px 0px;
+}
+.examDetail-container .page-body .examingContent .right .examcard .num {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 40px;
+  cursor: pointer;
+}
+.examDetail-container .page-body .examingContent .right .examcard .num .num-item span {
+  font-size: 20px;
+  padding-right: 5px;
+}
+.examDetail-container .page-body .examingContent .right .examcard .num .num-item:nth-child(1) span {
+  color: limegreen;
+}
+.examDetail-container .page-body .examingContent .right .examcard .num .num-item:nth-child(2) span {
+  color: orangered;
+}
+.examDetail-container .page-body .examingContent .right .examcard .num .num-item:nth-child(3) span {
+  color: orange;
+}
+.examDetail-container .page-body .examingContent .right .examcard .card {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.examDetail-container .page-body .examingContent .right .examcard .card .num {
+  margin: 5px;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.examDetail-container .bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  padding: 0 20%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
 </style>

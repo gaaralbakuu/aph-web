@@ -240,107 +240,87 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+@charset "UTF-8";
 .videoLayout-wrapper {
   display: block;
   width: 100%;
   height: 100%;
-  // background-color: aliceblue;
-
-  .navi {
-    width: 100%;
-    min-width: 1000px;
-    height: 100px;
-    padding: 0px 1%;
-    background-color: white;
-    display: flex;
-    position: fixed;
-    z-index: 99;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), /* 主阴影 */ 0 6px 6px rgba(0, 0, 0, 0.15);
-    /* 辅助阴影 */
-    // justify-content: space-between;
-
-    .copyright {
-      width: max-content;
-      min-width: 280px;
-      display: flex;
-      align-items: center;
-      align-self: center;
-      margin-right: 20px;
-
-      img {
-        width: 80px;
-        height: 80px;
-      }
-
-      .systemName {
-        margin-left: 16px;
-        font-size: 24px;
-        min-width: 8em;
-      }
-
-      .collageName {
-        margin-top: 8px;
-        font-size: 16px;
-        min-width: 8em;
-      }
-    }
-
-    .menu-wrapper {
-      // width: 60%;
-      flex: 1;
-      display: flex;
-      align-self: center;
-      font-size: 20px;
-      white-space: nowrap;
-
-      .menu {
-        margin: 0 20px;
-        color: #000;
-      }
-
-      .router-link-active {
-        color: #3994d5;
-      }
-    }
-
-    .right-menu {
-      white-space: nowrap;
-      width: 20%;
-      align-self: center;
-      cursor: pointer;
-      text-align: right;
-      display: flex;
-      justify-content: flex-end;
-
-      .lang-select {
-        // color: #409fee;
-        margin-right: 20px;
-        align-self: center;
-      }
-
-      .avatar-container {
-        .avatar-wrapper {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          // border-right:1px dotted #3994d5;
-
-          img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-          }
-        }
-      }
-    }
-  }
-
-  .router-view {
-    width: 100%;
-    // height: calc(100% - 100px);
-    height: 100%;
-    padding-top: 100px;
-  }
+}
+.videoLayout-wrapper .navi {
+  width: 100%;
+  min-width: 1000px;
+  height: 100px;
+  padding: 0px 1%;
+  background-color: white;
+  display: flex;
+  position: fixed;
+  z-index: 99;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(0, 0, 0, 0.15);
+  /* 辅助阴影 */
+}
+.videoLayout-wrapper .navi .copyright {
+  width: max-content;
+  min-width: 280px;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  margin-right: 20px;
+}
+.videoLayout-wrapper .navi .copyright img {
+  width: 80px;
+  height: 80px;
+}
+.videoLayout-wrapper .navi .copyright .systemName {
+  margin-left: 16px;
+  font-size: 24px;
+  min-width: 8em;
+}
+.videoLayout-wrapper .navi .copyright .collageName {
+  margin-top: 8px;
+  font-size: 16px;
+  min-width: 8em;
+}
+.videoLayout-wrapper .navi .menu-wrapper {
+  flex: 1;
+  display: flex;
+  align-self: center;
+  font-size: 20px;
+  white-space: nowrap;
+}
+.videoLayout-wrapper .navi .menu-wrapper .menu {
+  margin: 0 20px;
+  color: #000;
+}
+.videoLayout-wrapper .navi .menu-wrapper .router-link-active {
+  color: #3994d5;
+}
+.videoLayout-wrapper .navi .right-menu {
+  white-space: nowrap;
+  width: 20%;
+  align-self: center;
+  cursor: pointer;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+.videoLayout-wrapper .navi .right-menu .lang-select {
+  margin-right: 20px;
+  align-self: center;
+}
+.videoLayout-wrapper .navi .right-menu .avatar-container .avatar-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.videoLayout-wrapper .navi .right-menu .avatar-container .avatar-wrapper img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+.videoLayout-wrapper .router-view {
+  width: 100%;
+  height: 100%;
+  padding-top: 100px;
 }
 </style>

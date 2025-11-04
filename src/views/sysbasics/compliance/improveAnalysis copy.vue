@@ -273,7 +273,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .resetbutton {
   position: relative;
   left: 1.8%;

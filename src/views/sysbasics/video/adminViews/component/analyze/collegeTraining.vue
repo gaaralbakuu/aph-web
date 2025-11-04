@@ -177,42 +177,37 @@
   }
 </script>
 
-<style scoped lang="scss">
-  .college-container {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-
-    .college-filter {
-      width: 100%;
-      height: 60px;
-      padding: 14px;
-      border-bottom: 1px #ddd solid;
-      display: flex;
-      justify-content: space-between;
-      background-color: white;
-    }
-
-    .college-content {
-      padding: 20px;
-
-      .upper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        height: 500px;
-
-        .barChart {
-          width: 100%;
-          height: 100%;
-          background-color: white;
-        }
-      }
-
-      .bottom {
-        margin-top: 40px;
-      }
-    }
-  }
+<style scoped>
+.college-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.college-container .college-filter {
+  width: 100%;
+  height: 60px;
+  padding: 14px;
+  border-bottom: 1px #ddd solid;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+}
+.college-container .college-content {
+  padding: 20px;
+}
+.college-container .college-content .upper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 500px;
+}
+.college-container .college-content .upper .barChart {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
+.college-container .college-content .bottom {
+  margin-top: 40px;
+}
 </style>

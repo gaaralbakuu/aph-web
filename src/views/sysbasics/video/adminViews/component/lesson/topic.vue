@@ -599,79 +599,69 @@
   };
 </script>
 
-<style lang="scss">
-  .img {
-    width: 80%;
-    height: 60px;
+<style>
+.img {
+  width: 80%;
+  height: 60px;
+}
+.img .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
 
-    .auto-img {
-      position: relative;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 100%;
-      max-height: 100%;
-      cursor: pointer;
-    }
-  }
-
-  .recommendation-container {
-    width: 100%;
-    height: 100%;
-
-    .components {
-      .drawer-container {
-        width: 100%;
-        height: 100%;
-
-        //视频上传抽屉样式
-        .title {
-          padding: 20px 0px;
-          font-size: 18px;
-          font-weight: 600;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .form-container {
-          width: 95%;
-          height: 95%;
-          margin: 0 auto;
-          background-color: #fff;
-        }
-
-        .buttonBar {
-          width: 100%;
-          height: 60px;
-          margin: 0 auto;
-          padding: 0 15px;
-          position: absolute;
-          bottom: 0px;
-          border-top: 1px solid #ccc;
-          float: right;
-          display: flex;
-          justify-content: end;
-          align-items: center;
-        }
-      }
-    }
-
-    .recommendation-filter {
-      width: 100%;
-      height: 60px;
-      background-color: white;
-      padding: 15px 10px 0px 10px;
-      border-bottom: 1px #eee solid;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .recommendation-pageBody {
-      width: 100%;
-      height: calc(100% - 60px);
-      background-color: white;
-      display: flex;
-      justify-content: space-between;
-    }
-  }
+.recommendation-container {
+  width: 100%;
+  height: 100%;
+}
+.recommendation-container .components .drawer-container {
+  width: 100%;
+  height: 100%;
+}
+.recommendation-container .components .drawer-container .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.recommendation-container .components .drawer-container .form-container {
+  width: 95%;
+  height: 95%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.recommendation-container .components .drawer-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.recommendation-container .recommendation-filter {
+  width: 100%;
+  height: 60px;
+  background-color: white;
+  padding: 15px 10px 0px 10px;
+  border-bottom: 1px #eee solid;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.recommendation-container .recommendation-pageBody {
+  width: 100%;
+  height: calc(100% - 60px);
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+}
 </style>

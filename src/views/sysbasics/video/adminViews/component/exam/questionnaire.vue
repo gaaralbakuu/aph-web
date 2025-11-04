@@ -637,97 +637,72 @@
 </script>
 
 
-<style lang="scss">
-  .questionnaireManage-container {
-    width: 100%;
-    height: 100%;
-
-    .component {
-      .drawer {
-
-        //抽屉样式
-        .title {
-          padding: 20px 0px;
-          font-size: 18px;
-          font-weight: 600;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .form {
-          width: 95%;
-          margin: 0 auto;
-
-          .questionList {
-            .questionCard {
-              padding: 0px 0px 20px 0px;
-              border-bottom: 1px dashed #ccc;
-
-              .questionItem {
-                display: flex;
-                width: 100%;
-                justify-content: space-between;
-
-                .prepend {
-                  width: 4em;
-                  text-align: center;
-                }
-
-
-              }
-            }
-          }
-
-
-
-        }
-
-        .buttonBar {
-          width: 100%;
-          height: 60px;
-          background-color: #fff;
-          margin: 0 auto;
-          padding: 0 15px;
-          position: absolute;
-          bottom: 0px;
-          border-top: 1px solid #ccc;
-          float: right;
-          display: flex;
-          justify-content: end;
-          align-items: center;
-        }
-      }
-    }
-
-    .pageBody {
-      width: 100%;
-      min-width: 1000px;
-      height: 100%;
-      margin: 0 auto;
-
-      .questionnaireFilter {
-        width: 100%;
-        height: 60px;
-        padding: 15px 0px;
-        white-space: nowrap;
-        background-color: white;
-        float: right;
-        // text-align: right;
-        border-bottom: 1px #eee solid;
-      }
-
-      .questionnaireContent {
-        width: 100%;
-        height: calc(100% - 60px);
-        display: flex;
-
-
-        .questionnaireList {
-          width: 100%;
-          height: 100%;
-          padding: 5px;
-          background-color: white;
-        }
-      }
-    }
-  }
+<style>
+.questionnaireManage-container {
+  width: 100%;
+  height: 100%;
+}
+.questionnaireManage-container .component .drawer .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.questionnaireManage-container .component .drawer .form {
+  width: 95%;
+  margin: 0 auto;
+}
+.questionnaireManage-container .component .drawer .form .questionList .questionCard {
+  padding: 0px 0px 20px 0px;
+  border-bottom: 1px dashed #ccc;
+}
+.questionnaireManage-container .component .drawer .form .questionList .questionCard .questionItem {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.questionnaireManage-container .component .drawer .form .questionList .questionCard .questionItem .prepend {
+  width: 4em;
+  text-align: center;
+}
+.questionnaireManage-container .component .drawer .buttonBar {
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.questionnaireManage-container .pageBody {
+  width: 100%;
+  min-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+}
+.questionnaireManage-container .pageBody .questionnaireFilter {
+  width: 100%;
+  height: 60px;
+  padding: 15px 0px;
+  white-space: nowrap;
+  background-color: white;
+  float: right;
+  border-bottom: 1px #eee solid;
+}
+.questionnaireManage-container .pageBody .questionnaireContent {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+}
+.questionnaireManage-container .pageBody .questionnaireContent .questionnaireList {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  background-color: white;
+}
 </style>

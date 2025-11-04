@@ -867,183 +867,148 @@
 </script>
 
 
-<style lang="scss">
-  .modifyCover {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+<style>
+.modifyCover {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modifyCover .change {
+  text-align: center;
+  color: #409fee;
+  font-size: 50px;
+}
 
-    .change {
-      text-align: center;
-      color: #409fee;
-      font-size: 50px;
+.cover {
+  position: relative;
+  width: 260px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
+.cover .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+.cover:hover .cover-oprate {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: rgba(167, 167, 167, 0.7);
+  color: white;
+  font-size: 30px;
+}
+.cover:hover .cover-oprate .iconZoom {
+  margin-top: 15%;
+}
+.cover:hover .cover-oprate .iconZoom:hover {
+  color: #409fee;
+}
+.cover:hover .cover-oprate .iconRefresh {
+  margin-top: 15%;
+}
+.cover:hover .cover-oprate .iconRefresh:hover {
+  color: #00aa7f;
+}
+.cover .plus-icon {
+  width: 140px;
+  height: 140px;
+  border: 2px dotted #ccc;
+  border-radius: 5px;
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+.cover .plus-icon:hover {
+  color: #409fee;
+}
+.cover .cover-oprate {
+  display: none;
+}
 
-    }
-  }
-
-  .cover {
-    position: relative;
-    width: 260px;
-    height: 150px;
-    display: flex;
-    align-items: center;
-
-    .auto-img {
-      position: relative;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 100%;
-      max-height: 100%;
-      cursor: pointer;
-    }
-
-    &:hover {
-      .cover-oprate {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        background-color: rgba(167, 167, 167, 0.7);
-        color: white;
-        font-size: 30px;
-
-        .iconZoom {
-          margin-top: 15%;
-
-          &:hover {
-            color: #409fee;
-          }
-        }
-
-        .iconRefresh {
-          margin-top: 15%;
-
-          &:hover {
-            color: #00aa7f;
-          }
-        }
-      }
-    }
-
-    .plus-icon {
-      width: 140px;
-      height: 140px;
-      border: 2px dotted #ccc;
-      border-radius: 5px;
-      color: #999;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      cursor: pointer;
-
-      &:hover {
-        color: #409fee;
-      }
-    }
-
-    .cover-oprate {
-      display: none;
-
-
-
-    }
-  }
-
-  .trainingManage-container {
-    width: 100%;
-    height: 100%;
-
-    .lessonList-dialog {
-      .img {
-        width: 100%;
-        height: 80px;
-
-        .auto-img {
-          position: relative;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          max-width: 100%;
-          max-height: 100%;
-          cursor: pointer;
-        }
-      }
-
-      .lessonList-pagenation {
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-      }
-    }
-
-
-
-
-    .drawer-container {
-
-      .title {
-        padding: 20px 0px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-      }
-
-      .form-container {
-        width: 95%;
-        height: 90%;
-        margin: 0 auto;
-        background-color: #fff;
-      }
-
-      .buttonBar {
-        width: 100%;
-        height: 60px;
-        margin: 0 auto;
-        padding: 0 25px;
-        position: absolute;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        float: right;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-      }
-    }
-
-    .pageBody {
-      width: 100%;
-      min-width: 1000px;
-      height: 100%;
-      margin: 0 auto;
-      // padding: 20px;
-      background-color: #fff;
-
-      .pageBody-filter {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px solid #ddd;
-        height: 60px;
-        padding: 14px;
-      }
-
-      .tableContainer {
-        width: 100%;
-        height: calc(100% - 110px);
-      }
-
-      .trainingManage-pagenation {
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-      }
-    }
-  }
+.trainingManage-container {
+  width: 100%;
+  height: 100%;
+}
+.trainingManage-container .lessonList-dialog .img {
+  width: 100%;
+  height: 80px;
+}
+.trainingManage-container .lessonList-dialog .img .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+.trainingManage-container .lessonList-dialog .lessonList-pagenation {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.trainingManage-container .drawer-container .title {
+  padding: 20px 0px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+.trainingManage-container .drawer-container .form-container {
+  width: 95%;
+  height: 90%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.trainingManage-container .drawer-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 25px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.trainingManage-container .pageBody {
+  width: 100%;
+  min-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.trainingManage-container .pageBody .pageBody-filter {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  height: 60px;
+  padding: 14px;
+}
+.trainingManage-container .pageBody .tableContainer {
+  width: 100%;
+  height: calc(100% - 110px);
+}
+.trainingManage-container .pageBody .trainingManage-pagenation {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 </style>

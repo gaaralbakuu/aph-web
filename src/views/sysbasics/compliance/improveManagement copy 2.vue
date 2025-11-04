@@ -1410,7 +1410,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+@charset "UTF-8";
 .check {
   position: relative;
   top: 20px;

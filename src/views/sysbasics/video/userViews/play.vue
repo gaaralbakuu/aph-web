@@ -1006,304 +1006,249 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  .play-container {
-    width: 100%;
-    background-color: #f3f4f6;
-    padding-top: 20px;
+<style scoped>
+@charset "UTF-8";
+.play-container {
+  width: 100%;
+  background-color: #f3f4f6;
+  padding-top: 20px;
+}
+.play-container .examRecord-dialog .goToExam {
+  margin: 5px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+.play-container .examRecord-dialog .goToExam .detail {
+  padding-left: 10px;
+  width: calc(100% - 150px);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.play-container .examRecord-dialog .goToExam .detail .num {
+  margin: 0 2px;
+  font-size: 14px;
+}
+.play-container .examRecord-dialog .goToExam .goToExam-btn {
+  width: 150px;
+  text-align: center;
+}
+.play-container .examRecord-dialog .goToExam .goToExam-btn .go {
+  font-size: 14px;
+  z-index: 6000;
+  border: none;
+  font-weight: bold;
+}
+.play-container .examRecord-dialog .goToExam .goToExam-btn .go:hover {
+  border: none;
+}
+.play-container .page-body {
+  min-width: 1000px;
+  width: 80%;
+  margin: 0 auto;
+}
+.play-container .page-body .player-wrapper {
+  width: 100%;
+  aspect-ratio: 2.539;
+  background-color: white;
+}
+.play-container .page-body .player-wrapper .title-wrapper {
+  display: flex;
+  padding: 10px;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left {
+  width: 70%;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left .title {
+  font-weight: 600;
+  font-size: 28px;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left .views {
+  color: #595959;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left .views .view {
+  margin-left: 0.5em;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right .progress {
+  font-size: 20px;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right .duration {
+  margin-top: 10px;
+}
+.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right .duration span {
+  margin-right: 8px;
+}
+.play-container .page-body .player-wrapper .video-wrapper {
+  height: 100%;
+  display: flex;
+  background-color: #1d1d1d;
+}
+.play-container .page-body .player-wrapper .video-wrapper .video-player {
+  width: 70%;
+  height: 100%;
+  z-index: 0;
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist {
+  height: 100%;
+  width: 30%;
+  padding: 0px 1%;
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist .navi {
+  display: flex;
+  justify-content: space-evenly;
+  color: white;
+  margin-top: 10px;
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist .list {
+  width: 100%;
+  height: 90%;
+  overflow-y: scroll;
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item {
+  margin-top: 10px;
+  padding: 5px;
+  color: white;
+  background-color: #35353a;
+  border-radius: 8px;
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item .title {
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item .title .playing {
+  animation: fadeInOut 6s infinite ease-in-out;
+  /* 4秒，无限循环，缓动函数为ease-in-out */
+}
+.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item .duration {
+  width: 100%;
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+.play-container .page-body .info-wrapper {
+  width: 100%;
+  height: 80vh;
+  padding: 20px 10px;
+  display: flex;
+  background-color: #f8f9fb;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left {
+  width: 70%;
+  padding: 10px;
+  margin-right: 10px;
+  background-color: white;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .goodBad {
+  display: flex;
+  align-items: center;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .goodBad .gb_item {
+  margin-right: 50px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .goodBad .gb_item i {
+  font-size: 36px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .info {
+  border-bottom: 1px solid gainsboro;
+  padding-bottom: 10px;
+  font-size: 20px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .sub-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .sub-info .info-item {
+  width: 20%;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .sub-info .info-item .info-label {
+  color: black;
+  font-size: 16px;
+  padding-bottom: 10px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .desc-label {
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: black;
+  margin-top: 20px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-left .desc-label .desc {
+  width: 100%;
+  height: auto;
+  display: block;
+  color: #333333;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30%;
+  flex-grow: 1;
+  padding: 0px 0px 0px 20px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material {
+  height: 49%;
+  padding: 10px;
+  background-color: white;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material .title {
+  color: #1d1d1d;
+  font-weight: 600;
+  font-size: 20px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #f3f4f6;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item .label {
+  color: #555;
+  height: 40px;
+  line-height: 40px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item .button {
+  width: 60px;
+}
+.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item:hover {
+  background-color: #f3f4f6;
+}
 
-    .examRecord-dialog {
-      .goToExam {
-        margin: 5px 0px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 14px;
-
-        .detail {
-          padding-left: 10px;
-          width: calc(100% - 150px);
-          white-space: nowrap;
-          overflow: hidden;
-
-          .num {
-            margin: 0 2px;
-            font-size: 14px;
-          }
-        }
-
-        .goToExam-btn {
-          width: 150px;
-          text-align: center;
-
-          .go {
-            font-size: 14px;
-            z-index: 6000;
-            border: none;
-            font-weight: bold;
-
-            &:hover {
-              border: none;
-            }
-          }
-        }
-      }
-    }
-
-    .page-body {
-      min-width: 1000px;
-      width: 80%;
-      margin: 0 auto;
-
-      .player-wrapper {
-        width: 100%;
-        aspect-ratio: 2.539;
-        background-color: white;
-
-        .title-wrapper {
-          display: flex;
-          padding: 10px;
-
-          .title-wrapper-left {
-            width: 70%;
-
-            .title {
-              font-weight: 600;
-              font-size: 28px;
-              // margin-bottom: 5px;
-            }
-
-            .views {
-              // margin-top: 5px;
-              color: #595959;
-
-              .view {
-                margin-left: 0.5em;
-              }
-            }
-          }
-
-          .title-wrapper-right {
-            width: 30%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            .progress {
-              font-size: 20px;
-            }
-
-            .duration {
-              margin-top: 10px;
-
-              span {
-                margin-right: 8px;
-              }
-            }
-          }
-        }
-
-        .video-wrapper {
-          height: 100%;
-          display: flex;
-          background-color: #1d1d1d;
-
-          .video-player {
-            width: 70%;
-            height: 100%;
-            z-index: 0;
-            // background-color: #000000;
-          }
-
-          .playlist {
-            height: 100%;
-            width: 30%;
-            padding: 0px 1%;
-
-            .navi {
-              display: flex;
-              justify-content: space-evenly;
-              color: white;
-              margin-top: 10px;
-            }
-
-            .list {
-              width: 100%;
-              height: 90%;
-              overflow-y: scroll;
-
-              .item {
-                margin-top: 10px;
-                padding: 5px;
-                color: white;
-                background-color: #35353a;
-                border-radius: 8px;
-
-                .title {
-                  font-size: 18px;
-                  display: flex;
-                  justify-content: space-between;
-
-                  .playing {
-                    // color: #409fee;
-                    animation: fadeInOut 6s infinite ease-in-out;
-                    /* 4秒，无限循环，缓动函数为ease-in-out */
-                  }
-                }
-
-                .duration {
-                  width: 100%;
-                  margin-top: 5px;
-                  display: flex;
-                  justify-content: space-between;
-                  color: white;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      .info-wrapper {
-        width: 100%;
-        height: 80vh;
-        padding: 20px 10px;
-        display: flex;
-        background-color: #f8f9fb;
-
-
-        .info-wrapper-left {
-          width: 70%;
-          padding: 10px;
-          margin-right: 10px;
-          background-color: white;
-
-          .goodBad {
-            display: flex;
-            align-items: center;
-
-            .gb_item {
-              margin-right: 50px;
-              font-size: 20px;
-              cursor: pointer;
-
-              i {
-                font-size: 36px;
-              }
-            }
-          }
-
-          .info {
-            border-bottom: 1px solid gainsboro;
-            padding-bottom: 10px;
-            font-size: 20px;
-          }
-
-          .sub-info {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 10px;
-
-            .info-item {
-              width: 20%;
-
-              .info-label {
-                color: black;
-                font-size: 16px;
-                padding-bottom: 10px;
-              }
-            }
-          }
-
-          .desc-label {
-            width: 100%;
-            font-size: 16px;
-            margin-bottom: 10px;
-            color: black;
-            margin-top: 20px;
-
-            .desc {
-              width: 100%;
-              height: auto;
-              display: block;
-              color: #333333;
-            }
-          }
-        }
-
-        .info-wrapper-right {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          width: 30%;
-          flex-grow: 1;
-          padding: 0px 0px 0px 20px;
-
-          .material {
-            height: 49%;
-            padding: 10px;
-            background-color: white;
-
-            .title {
-              color: #1d1d1d;
-              font-weight: 600;
-              font-size: 20px;
-            }
-
-            .list-wrapper {
-              width: 100%;
-              height: 100%;
-              max-height: 100%;
-              overflow: auto;
-
-              .item {
-                width: 100%;
-                height: 40px;
-                line-height: 40px;
-                // padding: 0px 5px;
-                display: flex;
-                justify-content: space-between;
-                border-bottom: 1px solid #f3f4f6;
-
-                .label {
-                  color: #555;
-                  height: 40px;
-                  line-height: 40px;
-                  flex: 1;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  text-align: left;
-                }
-
-                .button {
-                  width: 60px;
-                }
-
-                &:hover {
-                  background-color: #f3f4f6;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+@keyframes fadeInOut {
+  0% {
+    opacity: 1;
   }
-
-
-  @keyframes fadeInOut {
-    0% {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0.3;
-    }
-
-    100% {
-      opacity: 1;
-    }
+  50% {
+    opacity: 0.3;
   }
+  100% {
+    opacity: 1;
+  }
+}
 </style>

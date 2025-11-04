@@ -999,179 +999,138 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  @import url('./video-js.css');
-  @import url('./videojs.watermark.css');
-  @import url('./videojs.markers.css');
+<style scoped>
+@charset "UTF-8";
+@import url("./video-js.css");
+@import url("./videojs.watermark.css");
+@import url("./videojs.markers.css");
+.playbackRateControl {
+  width: 30%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  color: white;
+  padding: 5% 3%;
+  background-color: rgba(12, 12, 12, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1500;
+}
+.playbackRateControl .playbackRatePanel {
+  width: 90%;
+  height: 15%;
+  border-radius: 5px;
+  background-color: rgba(80, 80, 80, 0.8);
+  padding-left: 1em;
+  display: flex;
+  align-items: center;
+}
 
+.el-radio-group {
+  width: 100%;
+}
 
-  .playbackRateControl {
+.video-js .vjs-progress-control {
+  display: none;
+}
 
-    width: 30%;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    color: white;
-    padding: 5% 3%;
-    background-color: rgba(12, 12, 12, 0.8);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    z-index: 1500;
-
-    .playbackRatePanel {
-      width: 90%;
-      height: 15%;
-      border-radius: 5px;
-      background-color: rgba(80, 80, 80, 0.8);
-      padding-left: 1em;
-      display: flex;
-      align-items: center;
-    }
-  }
-
-
-
-  .el-radio-group {
-    width: 100%;
-
-
-  }
-
-  .video-js .vjs-progress-control {
-    display: none;
-  }
-
-
-
-  .video-play-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .video-js .vjs-tech {
-      position: relative !important;
-    }
-
-    .player {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: 1000;
-    }
-
-    .resumePlayBtn {
-      position: absolute;
-      z-index: 19999999;
-      left: 10px;
-      bottom: 20px;
-      color: white;
-      padding: 0 1em;
-      border-radius: 5px;
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-
-    .topMessage {
-      position: absolute;
-      z-index: 19999999;
-      text-align: center;
-      top: 20px;
-      color: white;
-      // font-size: 16px;
-      padding: 5px 20px;
-      border-radius: 5px;
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-
-    .modal {
-      position: absolute;
-      z-index: 19999999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      /* 模态内容 */
-      .modal-content {
-        background-color: #fefefe;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        min-width: 600px;
-        // max-width: 500px;
-        box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.19);
-
-        .modal-rightBtn {
-          float: right;
-        }
-
-        .modal-title {
-          display: flex;
-          align-items: baseline;
-          font-weight: bold;
-          font-size: 20px;
-          // text-align: center;
-        }
-
-        .modal-btn {
-          margin-top: 20px;
-          text-align: center;
-        }
-
-        .option-box {
-          // width: 1%;
-
-          .m_options {
-            margin-top: 10px;
-            width: 100%;
-            height: auto;
-            // height: auto;
-          }
-        }
-
-        /* 关闭按钮 */
-        .close {
-          color: #aaa;
-          float: right;
-          font-size: 28px;
-          font-weight: bold;
-
-          &:hover,
-          &:focus {
-            color: red;
-            text-decoration: none;
-            cursor: pointer;
-          }
-        }
-      }
-    }
-
-
-
-
-
-
-
-    /* 淡入动画 */
-    .fade-enter-active,
-    .fade-leave-active {
-      transition: opacity 0.5s;
-    }
-
-    .fade-enter,
-    .fade-leave-to
-
-    /* .fade-leave-active 在 Vue 2.1.8+ 中 */
-      {
-      opacity: 0;
-    }
-  }
+.video-play-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 淡入动画 */
+}
+.video-play-container .video-js .vjs-tech {
+  position: relative !important;
+}
+.video-play-container .player {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1000;
+}
+.video-play-container .resumePlayBtn {
+  position: absolute;
+  z-index: 19999999;
+  left: 10px;
+  bottom: 20px;
+  color: white;
+  padding: 0 1em;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.video-play-container .topMessage {
+  position: absolute;
+  z-index: 19999999;
+  text-align: center;
+  top: 20px;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.video-play-container .modal {
+  position: absolute;
+  z-index: 19999999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 模态内容 */
+}
+.video-play-container .modal .modal-content {
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  min-width: 600px;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.19);
+  /* 关闭按钮 */
+}
+.video-play-container .modal .modal-content .modal-rightBtn {
+  float: right;
+}
+.video-play-container .modal .modal-content .modal-title {
+  display: flex;
+  align-items: baseline;
+  font-weight: bold;
+  font-size: 20px;
+}
+.video-play-container .modal .modal-content .modal-btn {
+  margin-top: 20px;
+  text-align: center;
+}
+.video-play-container .modal .modal-content .option-box .m_options {
+  margin-top: 10px;
+  width: 100%;
+  height: auto;
+}
+.video-play-container .modal .modal-content .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.video-play-container .modal .modal-content .close:hover, .video-play-container .modal .modal-content .close:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
+}
+.video-play-container .fade-enter-active,
+.video-play-container .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.video-play-container .fade-enter,
+.video-play-container .fade-leave-to {
+  opacity: 0;
+}
 </style>

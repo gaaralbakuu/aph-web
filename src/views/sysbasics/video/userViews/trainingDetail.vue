@@ -471,305 +471,251 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  .goToExam {
-    margin: 5px 0px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
+<style scoped>
+.goToExam {
+  margin: 5px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+.goToExam .detail {
+  padding-left: 10px;
+  width: calc(100% - 150px);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.goToExam .detail .num {
+  margin: 0 2px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.goToExam .goToExam-btn {
+  width: 150px;
+  text-align: center;
+}
+.goToExam .goToExam-btn .go {
+  z-index: 6000;
+  border: none;
+}
+.goToExam .goToExam-btn .go:hover {
+  border: none;
+}
 
-    .detail {
-      padding-left: 10px;
-      width: calc(100% - 150px);
-      white-space: nowrap;
-      overflow: hidden;
-
-      .num {
-        margin: 0 2px;
-        font-size: 16px;
-        font-weight: bold;
-      }
-    }
-
-    .goToExam-btn {
-      width: 150px;
-      text-align: center;
-
-      .go {
-        z-index: 6000;
-        border: none;
-
-        &:hover {
-          border: none;
-        }
-      }
-    }
-
-
-  }
-
-  .trainingDetail-container {
-    width: 100%;
-    background-color: #fafafa;
-
-    .page-body {
-      width: 75%;
-      margin: 0 auto;
-      padding: 25px;
-      min-width: 1000px;
-
-      .course-info {
-        width: 100%;
-        height: 350px;
-        padding: 25px;
-        background-color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        border: 1px solid #dadada;
-        border-radius: 5px;
-
-        .cover {
-          width: 300px;
-          height: 300px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .info {
-          flex-grow: 1;
-          height: 100%;
-
-          .item {
-            width: 100%;
-            margin-top: 10px;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            text-overflow: ellipsis;
-            overflow: hidden;
-          }
-        }
-      }
-
-      .activity-container {
-        width: 100%;
-        min-height: calc(100vh - 120px);
-        margin-top: 50px;
-        display: flex;
-        justify-content: space-between;
-
-        .left {
-          width: calc(100% - 400px);
-          min-height: 100%;
-          border: 1px solid #dadada;
-          border-radius: 5px;
-          background-color: white;
-
-          .title-label {
-            padding: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            border-bottom: 1px solid #dadada;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          }
-
-          .filter {
-            width: 100%;
-            padding: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .activity {
-            width: 95%;
-            margin: 50px auto;
-
-            .activity-collapse {
-              margin-bottom: 30px;
-
-              .collapse-title {
-                width: 100%;
-                background-color: #fafafa;
-                text-indent: 2em;
-              }
-
-              .video-item {
-                width: 100%;
-                height: 140px;
-                padding: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                &:hover {
-                  background-color: aliceblue;
-                }
-
-                .cover {
-                  width: 200px;
-                  height: 100%;
-                }
-
-                .content {
-                  width: calc(100% - 350px);
-                  height: 100%;
-
-                  .course-name {
-                    height: 40px;
-                    line-height: 40px;
-                    font-size: 20px;
-                  }
-
-                  .course-desc {
-                    // height: 40px;
-                    // line-height: 40px;
-                    color: #999999;
-                    text-align: left;
-                  }
-
-                  .status {
-                    color: #999999;
-                  }
-                }
-
-                .btn-right {
-                  text-align: center;
-                  width: 100px;
-                }
-              }
-
-              .exam-item {
-                width: 100%;
-                height: 140px;
-                padding: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                &:hover {
-                  background-color: aliceblue;
-                }
-
-                .cover {
-                  width: 200px;
-                  height: 100%;
-                }
-
-                .content {
-                  width: calc(100% - 350px);
-                  height: 100%;
-
-                  .course-name {
-                    height: 40px;
-                    line-height: 40px;
-                    font-size: 20px;
-                  }
-
-                  .course-desc {
-                    // height: 40px;
-                    // line-height: 40px;
-                    color: #999999;
-                    text-align: left;
-                  }
-
-                  .status {
-                    color: #999999;
-                  }
-                }
-
-                .btn-right {
-                  text-align: center;
-                  width: 100px;
-                }
-              }
-            }
-          }
-        }
-
-        .right {
-          width: 400px;
-          height: auto;
-
-          .count {
-            float: right;
-            width: 95%;
-            height: max-content;
-            background-color: white;
-            border: 1px solid #dadada;
-            border-radius: 5px;
-            padding-bottom: 1px;
-            margin-bottom: 30px;
-
-            .title-label {
-              padding: 15px;
-              font-size: 20px;
-              font-weight: bold;
-              border-bottom: 1px solid #dadada;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            }
-
-            .status {
-              padding: 15px;
-              font-size: 20px;
-              font-weight: bold;
-              color: #409fee;
-            }
-
-            .status-box {
-              width: 95%;
-              margin: 0 auto;
-
-              .status-item {
-                width: 100%;
-                height: 65px;
-                margin-bottom: 20px;
-                padding: 0 10px;
-                border-radius: 5px;
-                background-color: #f5f5f5;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-around;
-                align-items: center;
-                text-align: center;
-
-
-                .status-label {
-                  width: 100%;
-                  display: flex;
-                  justify-content: space-between;
-                  font-weight: bold;
-                }
-
-                .content {
-                  width: 100%;
-                  display: flex;
-
-                }
-              }
-            }
-
-            .message-box {
-              width: 90%;
-              aspect-ratio: 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-
-
-          }
-        }
-
-        .examRecord-dialog {}
-      }
-    }
-  }
+.trainingDetail-container {
+  width: 100%;
+  background-color: #fafafa;
+}
+.trainingDetail-container .page-body {
+  width: 75%;
+  margin: 0 auto;
+  padding: 25px;
+  min-width: 1000px;
+}
+.trainingDetail-container .page-body .course-info {
+  width: 100%;
+  height: 350px;
+  padding: 25px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px solid #dadada;
+  border-radius: 5px;
+}
+.trainingDetail-container .page-body .course-info .cover {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.trainingDetail-container .page-body .course-info .info {
+  flex-grow: 1;
+  height: 100%;
+}
+.trainingDetail-container .page-body .course-info .info .item {
+  width: 100%;
+  margin-top: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.trainingDetail-container .page-body .activity-container {
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+.trainingDetail-container .page-body .activity-container .left {
+  width: calc(100% - 400px);
+  min-height: 100%;
+  border: 1px solid #dadada;
+  border-radius: 5px;
+  background-color: white;
+}
+.trainingDetail-container .page-body .activity-container .left .title-label {
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #dadada;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.trainingDetail-container .page-body .activity-container .left .filter {
+  width: 100%;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trainingDetail-container .page-body .activity-container .left .activity {
+  width: 95%;
+  margin: 50px auto;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse {
+  margin-bottom: 30px;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .collapse-title {
+  width: 100%;
+  background-color: #fafafa;
+  text-indent: 2em;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item {
+  width: 100%;
+  height: 140px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item:hover {
+  background-color: aliceblue;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .cover {
+  width: 200px;
+  height: 100%;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content {
+  width: calc(100% - 350px);
+  height: 100%;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content .course-name {
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content .course-desc {
+  color: #999999;
+  text-align: left;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content .status {
+  color: #999999;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .btn-right {
+  text-align: center;
+  width: 100px;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item {
+  width: 100%;
+  height: 140px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item:hover {
+  background-color: aliceblue;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .cover {
+  width: 200px;
+  height: 100%;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content {
+  width: calc(100% - 350px);
+  height: 100%;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content .course-name {
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content .course-desc {
+  color: #999999;
+  text-align: left;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content .status {
+  color: #999999;
+}
+.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .btn-right {
+  text-align: center;
+  width: 100px;
+}
+.trainingDetail-container .page-body .activity-container .right {
+  width: 400px;
+  height: auto;
+}
+.trainingDetail-container .page-body .activity-container .right .count {
+  float: right;
+  width: 95%;
+  height: max-content;
+  background-color: white;
+  border: 1px solid #dadada;
+  border-radius: 5px;
+  padding-bottom: 1px;
+  margin-bottom: 30px;
+}
+.trainingDetail-container .page-body .activity-container .right .count .title-label {
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #dadada;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.trainingDetail-container .page-body .activity-container .right .count .status {
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #409fee;
+}
+.trainingDetail-container .page-body .activity-container .right .count .status-box {
+  width: 95%;
+  margin: 0 auto;
+}
+.trainingDetail-container .page-body .activity-container .right .count .status-box .status-item {
+  width: 100%;
+  height: 65px;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+.trainingDetail-container .page-body .activity-container .right .count .status-box .status-item .status-label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.trainingDetail-container .page-body .activity-container .right .count .status-box .status-item .content {
+  width: 100%;
+  display: flex;
+}
+.trainingDetail-container .page-body .activity-container .right .count .message-box {
+  width: 90%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>
