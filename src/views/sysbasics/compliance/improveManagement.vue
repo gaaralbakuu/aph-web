@@ -5,7 +5,7 @@
       <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
     </div>
     <!-- Search Section -->
-    <!-- <div class="flex gap-3 flex-wrap justify-between p-3">
+    <div class="flex gap-3 flex-wrap justify-between p-3">
       <div class="flex gap-3 flex-wrap">
         <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -36,7 +36,7 @@
           {{ $l.reset }}
         </button>
       </div>
-    </div> -->
+    </div>
 
     <!-- Action Bar -->
     <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100">
