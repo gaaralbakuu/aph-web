@@ -1,38 +1,30 @@
 <template>
   <div class="trainingDetail-container">
     <el-dialog class="examRecord-dialog" :title="$l.examRecord" :visible.sync="showObj.examDialog" width="50%">
-      <el-table :data="examRecord" stripe style="width: 100%" max-height="350px" empty-text=" ">
-        <el-table-column type="index" :label="$c.sn"></el-table-column>
-        <el-table-column prop="create_time" :label="$l.examedTime"></el-table-column>
-        <el-table-column prop="create_user" :label="$l.examUser"></el-table-column>
-        <el-table-column prop="score" :label="$l.examScore"></el-table-column>
-        <el-table-column :label="$c.operate" width="150" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="reviewExam(scope.row)">{{ $l.check }}</el-button>
-          </template>
-        </el-table-column>
-        <div slot="append">
-          <div class="goToExam">
-            <div class="detail">
-              {{ $l.mostExam }}
-              <el-button class="num" type="text">{{ currentExam.max_reply_num }}</el-button>
-              {{ $l.examUnit }}，{{ $l.youCanExam }}
-              <el-button
-                class="num"
-                type="text"
-                :style="{
-                  color: currentExam.max_reply_num - examRecord.length <= 0 ? 'red' : '',
-                }">
-                {{ currentExam.max_reply_num - examRecord.length }}
-              </el-button>
-              {{ $l.examUnit }}
-            </div>
-            <div class="goToExam-btn">
-              <el-button class="go" type="text" plain @click="goToExam" :disabled="currentExam.max_reply_num - examRecord.length <= 0">{{ $l.goExam }}</el-button>
-            </div>
-          </div>
+      <z-table :list="examRecord" :columns="examColumns">
+        <template #operation="{row, $index}">
+          <el-button type="text" size="mini" @click="reviewExam(row)">{{ $l.check }}</el-button>
+        </template>
+      </z-table>
+      <div class="goToExam">
+        <div class="detail">
+          {{ $l.mostExam }}
+          <el-button class="num" type="text">{{ currentExam.max_reply_num }}</el-button>
+          {{ $l.examUnit }}，{{ $l.youCanExam }}
+          <el-button
+            class="num"
+            type="text"
+            :style="{
+              color: currentExam.max_reply_num - examRecord.length <= 0 ? 'red' : '',
+            }">
+            {{ currentExam.max_reply_num - examRecord.length }}
+          </el-button>
+          {{ $l.examUnit }}
         </div>
-      </el-table>
+        <div class="goToExam-btn">
+          <el-button class="go" type="text" plain @click="goToExam" :disabled="currentExam.max_reply_num - examRecord.length <= 0">{{ $l.goExam }}</el-button>
+        </div>
+      </div>
       <div slot="footer">
         <el-button type="primary" @click="showObj.examDialog = false">{{ $c.close }}</el-button>
         <el-button type="success" plain @click="getReplyRecord(currentExam)">{{ $l.refresh }}</el-button>
@@ -241,9 +233,13 @@ import { mapGetters } from 'vuex'
 
 import logoImage from '@/assets/logo.png'
 import { assignObject } from '@/utils'
+import { zTable } from '@/views/_common'
 
 export default {
   name: 'videoUserTrainDetail',
+  components: {
+    zTable,
+  },
   data() {
     return {
       logoImage,
@@ -269,6 +265,20 @@ export default {
       },
       examList: [],
       examRecord: [],
+      examColumns: [
+        {
+          key: 'create_time',
+          title: this.$l.examedTime,
+        },
+        {
+          key: 'create_user',
+          title: this.$l.examUser,
+        },
+        {
+          key: 'score',
+          title: this.$l.examScore,
+        },
+      ],
       activeNames: '',
       query: {
         name: '',

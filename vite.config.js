@@ -112,6 +112,8 @@ export default defineConfig(({ mode }) => {
         transformMixedEsModules: true,
         // Include tất cả node_modules có thể là CJS
         include: [/node_modules/],
+        // Giữ default export khi Rollup chuyển CJS -> ESM để Vue.use(Element) không bị rỗng trong build
+        defaultIsModuleExports: 'auto',
         // Đặc biệt cho element-ui
         requireReturnsDefault: 'auto',
       },
@@ -147,6 +149,8 @@ export default defineConfig(({ mode }) => {
         'element-ui/lib/message-box',
         'element-ui/lib/notification',
       ],
+      // Giữ interop CJS cho element-ui (fix Table/Form mất props khi build)
+      needsInterop: ['element-ui'],
       exclude: [],
       // Force prebundle lại khi có thay đổi
       force: false,
