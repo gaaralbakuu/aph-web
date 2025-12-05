@@ -732,16 +732,7 @@ export default {
         list: [],
       },
       manufacture: {
-        column: [
-          {
-            key: 'manufacture_id',
-            label: 'manufacture_id',
-          },
-          {
-            key: 'name_en',
-            label: this.$l.ENname,
-          },
-        ],
+        column: [],
         tableData: [],
         total: 0,
         loading: false,
@@ -1102,6 +1093,18 @@ export default {
     }
   },
   created() {
+    // Initialize manufacture columns after $l is ready
+    this.manufacture.column = [
+      {
+        key: 'manufacture_id',
+        label: 'ID',
+      },
+      {
+        key: 'name_en',
+        label: this.$l.ENname || 'Name (EN)',
+      },
+    ]
+    
     this.getList() // 在组件创建时调用getList方法获取数据
     // this.getIssueType()
     this.getUserAuth()
