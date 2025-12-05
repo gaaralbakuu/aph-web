@@ -123,7 +123,7 @@
           <el-table-column :label="$l.examDuration" prop="test_duration"></el-table-column>
           <el-table-column :label="$l.startTime" prop="start_time"></el-table-column>
           <el-table-column :label="$l.endTime" prop="end_time"></el-table-column>
-        </el-Table>
+        </el-table>
       </el-dialog>
 
       <!-- 选择培训dialog -->
@@ -171,7 +171,7 @@
                 <el-button type='text' @click="selectTraining(scope.row)">{{$l.select}}</el-button>
               </template>
             </el-table-column>
-          </el-Table>
+          </el-table>
         </div>
       </el-dialog>
 
@@ -207,7 +207,7 @@
                 <el-button type='text' @click="selectUser(scope.row)">{{$l.select}}</el-button>
               </template>
             </el-table-column>
-          </el-Table>
+          </el-table>
         </div>
         <div
           style="width: 100%;display: flex;align-items: center;height: 50px;justify-content: flex-end;padding-right: 20px;">
@@ -404,7 +404,7 @@
                   </div>
                 </template>
               </el-table-column>
-            </el-Table>
+            </el-table>
           </el-tab-pane>
         </el-tabs>
         <div class="buttonBar">
@@ -477,7 +477,7 @@
                 @click="modifyStatus(scope.row)">{{$l.disable}}</el-button>
             </template>
           </el-table-column>
-        </el-Table>
+        </el-table>
       </div>
 
       <div class="trainingManage-pagenation">

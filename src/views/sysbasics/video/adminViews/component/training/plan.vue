@@ -307,7 +307,7 @@
               <el-button v-else type='text' style="color: red;" @click="modifyStatus(scope.row)">{{$l.disable}}</el-button>
             </template>
           </el-table-column>
-        </el-Table>
+        </el-table>
       </div>
 
       <div class="trainingManage-pagenation">
