@@ -289,7 +289,7 @@
       </div>
 
       <div class="tableContainer" ref="tableContainer">
-        <el-Table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+        <el-table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
           highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
           :row-style="{height:'60px',fontSize:'14px'}">
           <el-table-column type="index" width="50" :label='$l.serialNumber'>

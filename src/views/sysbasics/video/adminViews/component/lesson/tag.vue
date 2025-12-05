@@ -53,22 +53,25 @@
       </div>
 
       <div class="tableContainer" ref="tableContainer">
-        <el-Table :data="tagObj.list" tooltip-effect="dark" style="width: 100%" highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight" :row-style="{ height: '60px', fontSize: '14px' }">
+        <el-table v-if="tagObj.list && tagObj.list.length > 0" :data="tagObj.list" tooltip-effect="dark" style="width: 100%" highlight-current-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight" :row-style="{ height: '60px', fontSize: '14px' }">
           <el-table-column type="index" width="50" label="No"></el-table-column>
-          <el-table-column :label="$l.name_zh" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.name_tw" prop="name_tw"></el-table-column>
-          <el-table-column :label="$l.name_en" prop="name_en"></el-table-column>
-          <el-table-column :label="$l.name_vi" prop="name_vi"></el-table-column>
-          <el-table-column :label="$l.create_time" prop="create_time"></el-table-column>
-          <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-          <el-table-column :label="$l.oprate" fixed="right">
+          <el-table-column :label="$l.name_zh || 'Name (ZH)' " prop="name_zh"></el-table-column>
+          <el-table-column :label="$l.name_tw || 'Name (TW)'" prop="name_tw"></el-table-column>
+          <el-table-column :label="$l.name_en || 'Name (EN)'" prop="name_en"></el-table-column>
+          <el-table-column :label="$l.name_vi || 'Name (VI)'" prop="name_vi"></el-table-column>
+          <el-table-column :label="$l.create_time || 'Created'" prop="create_time"></el-table-column>
+          <el-table-column :label="$l.status || 'Status'" prop="is_valid"></el-table-column>
+          <el-table-column :label="$l.oprate || 'Action'" fixed="right" width="180">
             <template slot-scope="scope">
               <el-button type="text" @click="modifyTag(scope.row)">{{ $c.edit }}</el-button>
               <el-button v-if="scope.row.is_valid == 'N'" type="text" style="color: seagreen" @click="modifyStatus(scope.row)">{{ $c.enable }}</el-button>
               <el-button v-else type="text" style="color: red" @click="modifyStatus(scope.row)">{{ $c.disable }}</el-button>
             </template>
           </el-table-column>
-        </el-Table>
+        </el-table>
+        <div v-else class="empty-state" style="text-align: center; padding: 40px; color: #999;">
+          {{ $c.no_data || 'No data available' }}
+        </div>
       </div>
 
       <div class="tagList-pagenation">
@@ -119,9 +122,13 @@ export default {
   methods: {
     updateTableMaxHeight() {
       //返回表格最大高度
-      const container = this.$refs.tableContainer
-      if (container) {
-        this.cssObj.tableMaxHeight = container.clientHeight + 'px'
+      try {
+        const container = this.$refs.tableContainer
+        if (container && container.clientHeight > 0) {
+          this.cssObj.tableMaxHeight = (container.clientHeight - 10) + 'px'
+        }
+      } catch (e) {
+        console.warn('Failed to update table height:', e)
       }
     },
 
@@ -251,11 +258,11 @@ export default {
   },
 
   mounted() {
-    this.getTagList()
-    window.addEventListener('resize', this.updateTableMaxHeight)
     this.$nextTick(() => {
+      this.getTagList()
       this.updateTableMaxHeight()
     })
+    window.addEventListener('resize', this.updateTableMaxHeight)
   },
 
   beforeDestroy() {

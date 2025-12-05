@@ -1,0 +1,105 @@
+CAC FILE CO VAN DE EL-TABLE KHI BUILD VOI VITE
+
+TONG CONG: 6 FILE CAN SUA
+
+=================================================================================
+
+VẤN ĐỀ CHÍNH: <el-Table> viết hoa thay vì <el-table> (lowercase)
+- Vue component names phải consistent (lowercase)
+- Vite strict mode bắt lỗi này, Vue CLI không
+- Khi build, component không được recognize → table không render
+
+=================================================================================
+
+FILE CAN SUA (PRIORITY CAO):
+
+1. src/views/sysbasics/video/adminViews/component/training/plan.vue
+   - Line 292: <el-Table :data='trainingObj.list' ...>
+   - FIX: Thay thành <el-table :data='trainingObj.list' ...>
+
+2. src/views/sysbasics/video/adminViews/component/training/class.vue
+   - Line 108: <el-Table :data='learningObj.unfinishCourse' ...>
+   - Line 117: <el-Table :data='learningObj.unfinishExam' ...>
+   - Line 156: <el-Table :data='trainingObj.list' ...>
+   - Line 195: <el-Table :data='userObj.list' ...>
+   - Line 353: <el-Table :data='learningObj.list' ...>
+   - Line 448: <el-Table :data='classObj.list' ...>
+   - FIX: Thay tất cả thành <el-table (6 lines)
+
+=================================================================================
+
+CÁC VẤN ĐỀ PHỤ CẤP 2 (Nên theo dõi):
+
+3. src/views/sysbasics/compliance/ImproveManagement.vue
+   - Sử dụng: 4 el-table (nhưng viết đúng <el-table)
+   - Issue: Column labels dùng $l.* có thể undefined khi build
+   - Status: Đã fix i18n timing issue trước đó, nhưng cần kiểm tra
+
+4. src/views/sysbasics/video/userViews/Play4.vue
+   - Sử dụng: 1 el-table (viết đúng)
+   - Issue: Có thể bị ảnh hưởng nếu i18n không ready
+   - Status: Cần test trên build production
+
+5. src/views/sysbasics/video/adminViews/component/lesson/course.vue
+   - Sử dụng: 9 el-table (viết đúng)
+   - Issue: Nested tables, có thể bị ảnh hưởng bởi CSS minify
+   - Status: Cần kiểm tra CSS styling
+
+6. src/views/sysbasics/video/adminViews/component/lesson/Tag.vue
+   - Status: Đã fix toàn bộ vấn đề (el-Table → el-table)
+
+=================================================================================
+
+DANH SACH CHI TIET CAN SUA:
+
+FILE 1: plan.vue (training)
+- Line 292: <el-Table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+FILE 2: class.vue (training)
+- Line 108: <el-Table :data='learningObj.unfinishCourse' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='learningObj.unfinishCourse' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+- Line 117: <el-Table :data='learningObj.unfinishExam' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='learningObj.unfinishExam' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+- Line 156: <el-Table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+- Line 195: <el-Table :data='userObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='userObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+- Line 353: <el-Table :data='learningObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='learningObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+- Line 448: <el-Table :data='classObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
++ CHANGE TO: <el-table :data='classObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+
+=================================================================================
+
+CACH SUA:
+
+1. Mở file trong VS Code
+2. Tìm: <el-Table
+3. Thay thế: <el-table
+4. Kiểm tra: Tất cả el-table-column vẫn giữ nguyên (không đổi)
+
+=================================================================================
+
+TEST SAU KHI SUA:
+
+1. Xóa cache: rmdir /s /q "node_modules/.vite_cache"
+2. Build: npm run build
+3. Kiểm tra: dist/ folder có được tạo thành công
+4. Test table: Kiểm tra xem data có hiển thị không
+
+=================================================================================
+
+STATUS THEO DÕI:
+
+TAG.vue ........................ FIXED (el-Table → el-table)
+PLAN.vue ....................... NEEDS FIX (1 line)
+CLASS.vue ...................... NEEDS FIX (6 lines)
+ImproveManagement.vue .......... MONITORING (i18n issue)
+Play4.vue ...................... MONITORING (i18n issue)
+course.vue ..................... MONITORING (9 tables)

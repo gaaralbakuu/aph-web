@@ -105,16 +105,16 @@
       </el-dialog>
 
       <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.courseDialog" width="70%">
-        <el-Table :data='learningObj.unfinishCourse' tooltip-effect="dark" style="width: 100%" highlight-current-row
+        <el-table :data='learningObj.unfinishCourse' tooltip-effect="dark" style="width: 100%" highlight-current-row
           highlight-selection-row stripe>
           <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
           <el-table-column :label="$l.name" prop="name_zh"></el-table-column>
           <el-table-column :label="$l.description" prop="description"></el-table-column>
-        </el-Table>
+        </el-table>
       </el-dialog>
 
       <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.examDialog" width="70%">
-        <el-Table :data='learningObj.unfinishExam' tooltip-effect="dark" style="width: 100%" highlight-current-row
+        <el-table :data='learningObj.unfinishExam' tooltip-effect="dark" style="width: 100%" highlight-current-row
           highlight-selection-row stripe>
           <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
           <el-table-column :label="$l.name" prop="name_zh"></el-table-column>
@@ -153,7 +153,7 @@
         </div>
 
         <div class="tableContainer" ref="tableContainer">
-          <el-Table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+          <el-table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
             highlight-selection-row stripe>
             <el-table-column type="index" width="50" :label='$l.serialNumber'>
             </el-table-column>
@@ -192,7 +192,7 @@
           <el-form-item> <el-button type="success" @click="getUserList">{{$l.search}}</el-button></el-form-item>
         </el-form>
         <div class="tableContainer" ref="tableContainer">
-          <el-Table :data='userObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+          <el-table :data='userObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
             highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" max-height="400px"
             :row-style="{height:'60px',fontSize:'14px'}">
             <el-table-column type="index" width="50" :label='$l.serialNumber'>
@@ -350,7 +350,7 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane :label="$l.completionStatus" name="status" v-if='class_id!=""'>
-            <el-Table :data='learningObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+            <el-table :data='learningObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
               highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
               :max-height="cssObj.tableMaxHeight" :row-style="{height:'60px',fontSize:'14px'}">
               <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
@@ -445,7 +445,7 @@
       </div>
 
       <div class="tableContainer" ref="tableContainer">
-        <el-Table :data='classObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
+        <el-table :data='classObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
           highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
           :row-style="{height:'60px',fontSize:'14px'}">
           <el-table-column type="index" width="50" :label='$l.serialNumber'>
