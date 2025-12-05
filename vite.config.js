@@ -106,6 +106,16 @@ export default defineConfig(({ mode }) => {
         },
       },
 
+      // CommonJS options - QUAN TRỌNG cho Element UI
+      commonjsOptions: {
+        // Transform mixed ES/CJS modules - quan trọng cho Element UI
+        transformMixedEsModules: true,
+        // Include tất cả node_modules có thể là CJS
+        include: [/node_modules/],
+        // Đặc biệt cho element-ui
+        requireReturnsDefault: 'auto',
+      },
+
       // nếu dự án nhiều file lớn trong public, cân nhắc false để copy thủ công
       // emptyOutDir: true,
     },
@@ -116,16 +126,34 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      // CHỈ include những package cần prebundle để tránh prebundle toàn bộ
-      include: ['vue', 'vue-router', 'vuex', 'element-ui'],
-      // Element UI là CJS, cần prebundle để build đúng
+      // Element UI là CJS phức tạp, cần prebundle toàn bộ các component
+      include: [
+        'vue',
+        'vue-router',
+        'vuex',
+        'element-ui',
+        // Prebundle các component hay bị lỗi (table, form, etc.)
+        'element-ui/lib/table',
+        'element-ui/lib/table-column',
+        'element-ui/lib/form',
+        'element-ui/lib/form-item',
+        'element-ui/lib/dialog',
+        'element-ui/lib/input',
+        'element-ui/lib/select',
+        'element-ui/lib/option',
+        'element-ui/lib/pagination',
+        'element-ui/lib/loading',
+        'element-ui/lib/message',
+        'element-ui/lib/message-box',
+        'element-ui/lib/notification',
+      ],
       exclude: [],
+      // Force prebundle lại khi có thay đổi
+      force: false,
+      esbuildOptions: {
+        // Hỗ trợ CommonJS modules
+        target: 'es2018',
+      }
     },
-
-    // Element UI là CJS, cần transform đúng cách
-    commonjsOptions: {
-      transformMixedEsModules: true,
-      include: [/element-ui/]
-    }
   }
 })
