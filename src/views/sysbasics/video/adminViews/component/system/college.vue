@@ -73,8 +73,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
 import { api, zPagination } from '@/views/_common'
-import chooseUser from '@/views/_common/chooseUser.vue'
+import chooseUser from '@/views/_common/ChooseUser.vue'
 export default {
   name: 'videoAdminCollege',
   components: {

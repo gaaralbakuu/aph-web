@@ -2,7 +2,7 @@
   <div class="h-screen flex flex-col items-center" :style="{ 'background-image': 'url(' + background + ')' }">
     <div class="w-[440px] flex-1 flex-col flex justify-between">
       <div></div>
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="w-full bg-white rounded-lg shadow-lg p-10 flex flex-col gap-8">
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="w-full bg-white rounded-lg shadow-lg p-10 flex flex-col gap-8">
         <div class="leading-3 text-center">
           <p class="font-black text-2xl text-yellow-500">{{ company }}</p>
           <h1 class="text-lg font-black leading-4 tracking-wide">{{ sysname }}</h1>
@@ -14,7 +14,7 @@
                 <input class="w-full h-full border-none outline-none px-[14px]" placeholder="" v-model="loginForm.username" name="username" type="text" autocomplete="on" @keyup.enter="validateCode" aria-autocomplete="list" />
                 <div class="w-full border border-gray-300 border-solid absolute inset-0 rounded pointer-events-none flex items-center">
                   <div class="px-[14px] input-label">
-                    <div>{{ $l.username }}</div>
+                    <div>{{ l.username }}</div>
                   </div>
                   <div class="w-full h-full absolute input-border">
                     <div class="absolute rounded overflow-hidden flex flex-col justify-end items-center" style="inset: -1px">
@@ -30,7 +30,7 @@
                 <input class="w-full h-full border-none outline-none px-[14px]" placeholder="" :type="passwordType" v-model="loginForm.password" ref="passwordInput" name="password" autocomplete="on" @keyup.enter="validateCode" />
                 <div class="w-full border border-gray-300 border-solid absolute inset-0 rounded pointer-events-none flex items-center">
                   <div class="px-[14px] input-label">
-                    <div>{{ $l.password }}</div>
+                    <div>{{ l.password }}</div>
                   </div>
                   <div class="w-full h-full absolute input-border">
                     <div class="absolute rounded overflow-hidden flex flex-col justify-end items-center" style="inset: -1px">
@@ -38,8 +38,8 @@
                     </div>
                   </div>
                   <div class="input-eye" @mousedown.prevent @click.stop.prevent="showPwd">
-                    <img src="@/assets/eye-close.png" v-show="passwordType === 'password'" :alt="$l.password" />
-                    <img src="@/assets/eye-open.png" v-show="passwordType === 'text'" :alt="$l.password" />
+                    <img src="@/assets/eye-close.png" v-show="passwordType === 'password'" :alt="l.password" />
+                    <img src="@/assets/eye-open.png" v-show="passwordType === 'text'" :alt="l.password" />
                   </div>
                 </div>
               </div>
@@ -52,7 +52,7 @@
                     <input class="w-full h-full border-none outline-none px-[14px]" placeholder="" v-model="loginForm.code" name="code" type="text" :maxlength="identify.maxLength" @keyup.enter="validateCode" />
                     <div class="w-full border border-gray-300 border-solid absolute inset-0 rounded pointer-events-none flex items-center">
                       <div class="px-[14px] input-label">
-                        <div>{{ $l.code }}</div>
+                        <div>{{ l.code }}</div>
                       </div>
                       <div class="w-full h-full absolute input-border">
                         <div class="absolute rounded overflow-hidden flex flex-col justify-end items-center" style="inset: -1px">
@@ -63,23 +63,23 @@
                   </div>
                 </div>
               </el-form-item>
-              <div class="login-code" :title="$l.captchaRefresh" @click="refreshCaptcha">
-                <img v-if="identify.image" :src="identify.image" class="captcha-image" :alt="$l.captchaAlt" />
+              <div class="login-code" :title="l.captchaRefresh" @click="refreshCaptcha">
+                <img v-if="identify.image" :src="identify.image" class="captcha-image" :alt="l.captchaAlt" />
               </div>
             </div>
           </div>
           <div>
-            <el-link class="link-forgot" :underline="false" @click="register(2)" type="primary">{{ $l.forgetPass }}</el-link>
+            <el-link class="link-forgot" :underline="false" @click="register(2)" type="primary">{{ l.forgetPass }}</el-link>
           </div>
         </div>
 
         <div class="flex flex-col gap-4">
           <el-button :loading="loading" type="primary" round class="button-login" @click.native.prevent="validateCode">
-            {{ $l.login }}
+            {{ l.login }}
           </el-button>
         </div>
         <div class="flex items-center justify-center text-sm">
-          <el-link :underline="false" @click="register(1)" type="primary">{{ $l.register }}</el-link>
+          <el-link :underline="false" @click="register(1)" type="primary">{{ l.register }}</el-link>
         </div>
       </el-form>
       <div>
@@ -91,203 +91,220 @@
   </div>
 </template>
 
-<script>
-import con from '@/config'
-import bg from '@/assets/bg.jpg'
+<script setup>
 import dayjs from 'dayjs'
+import { ref, reactive, computed, watch, onMounted, nextTick, getCurrentInstance } from 'vue'
+import { Message as ElMessage } from 'element-ui'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'loginIndex',
-  data() {
-    return {
-      loginForm: {
-        username: '',
-        password: '',
-        code: '',
-        captchaId: '',
-      },
-      loginRules: {
-        username: [
-          {
-            required: true,
-            message: this.$l.usernameValidate,
-            trigger: 'blur',
-          },
-        ],
-        password: [
-          {
-            required: true,
-            message: this.$l.passwordValidate,
-            trigger: 'blur',
-          },
-        ],
-      },
-      identify: {
-        codeShow: false,
-        image: '',
-        captchaId: '',
-        expiresAt: null,
-        maxLength: 6,
-      },
-      background: bg,
-      passwordType: 'password',
-      loading: false,
-      redirect: undefined,
-      currentYear: dayjs().year(),
-      copyright: con.system.copyright,
-      sysname: con.system.name,
-      company: con.system.company,
-    }
-  },
-  watch: {
-    $route: {
-      handler: function (route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true,
+import bg from '@/assets/bg.jpg'
+import con from '@/config'
+
+// defineOptions({ name: 'loginIndex' })
+
+const instance = getCurrentInstance()
+const route = instance.proxy.$route
+const router = instance.proxy.$router
+const { $request } = instance.proxy
+const { l, c } = useLocalI18n('loginIndex')
+
+const loginForm = reactive({
+  username: '',
+  password: '',
+  code: '',
+  captchaId: '',
+})
+
+const loginRules = reactive({
+  username: [
+    {
+      required: true,
+      message: l.value?.usernameValidate || 'Vui lòng nhập tên đăng nhập',
+      trigger: 'blur',
     },
-  },
-  methods: {
-    getCompany() {
-      this.pageLoading = true
-      this.$request(this.$api.siteInfo)
-        .then((r) => {
-          this.company = r.datas[0].company
-          this.description = r.datas[0].system
+  ],
+  password: [
+    {
+      required: true,
+      message: l.value?.passwordValidate || 'Vui lòng nhập mật khẩu',
+      trigger: 'blur',
+    },
+  ],
+})
+
+const identify = reactive({
+  codeShow: false,
+  image: '',
+  captchaId: '',
+  expiresAt: null,
+  maxLength: 6,
+})
+
+const passwordType = ref('password')
+const loading = ref(false)
+const redirect = ref(undefined)
+const passwordInput = ref(null)
+const loginFormRef = ref(null)
+
+const currentYear = dayjs().year()
+const copyright = con.system.copyright
+const sysname = con.system.name
+const company = ref(con.system.company)
+const background = bg
+
+const eyeImage = computed(() => (passwordType.value ? 'eye-close' : 'eye-open'))
+
+const getCompany = () => {
+  const pageLoading = ref(false)
+  pageLoading.value = true
+  $request(instance.proxy.$api.siteInfo)
+    .then((r) => {
+      company.value = r.datas[0].company
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+const showPwd = () => {
+  const input = passwordInput.value
+
+  // 🟢 Lưu vị trí con trỏ và scroll trước khi đổi type
+  const start = input.selectionStart
+  const end = input.selectionEnd
+  const scrollLeft = input.scrollLeft
+
+  if (passwordType.value === 'password') {
+    passwordType.value = 'text'
+  } else {
+    passwordType.value = 'password'
+  }
+
+  // 🟢 Chờ Vue render xong, rồi phục hồi caret
+  nextTick(() => {
+    input.focus()
+    input.setSelectionRange(start, end)
+    input.scrollLeft = scrollLeft
+  })
+}
+
+const handleLogin = () => {
+  loginFormRef.value.validate((valid) => {
+    if (valid) {
+      loading.value = true
+      instance.proxy.$store
+        .dispatch('LoginByUsername', loginForm)
+        .then(() => {
+          loading.value = false
+          hideCaptcha()
+          loginForm.code = ''
+          ElMessage({
+            message: l.value?.success || 'Đăng nhập thành công',
+            type: 'success',
+          })
+          router.push({ path: redirect.value || '/' })
         })
         .catch(() => {
-          this.pageLoading = false
+          loading.value = false
+          ensureCaptcha(true)
         })
-    },
-    showPwd() {
-      const input = this.$refs.passwordInput
-
-      // 🟢 Lưu vị trí con trỏ và scroll trước khi đổi type
-      const start = input.selectionStart
-      const end = input.selectionEnd
-      const scrollLeft = input.scrollLeft
-
-      if (this.passwordType === 'password') {
-        this.passwordType = 'text'
-      } else {
-        this.passwordType = 'password'
-      }
-
-      // 🟢 Chờ Vue render xong, rồi phục hồi caret
-      this.$nextTick(() => {
-        input.focus()
-        input.setSelectionRange(start, end)
-        input.scrollLeft = scrollLeft
-      })
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.loading = true
-          this.$store
-            .dispatch('LoginByUsername', this.loginForm)
-            .then(() => {
-              this.loading = false
-              this.hideCaptcha()
-              this.loginForm.code = ''
-              this.$message({
-                message: this.$l.success,
-                type: 'success',
-              })
-              this.$router.push({ path: this.redirect || '/' })
-            })
-            .catch(() => {
-              this.loading = false
-              this.ensureCaptcha(true)
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    register(type) {
-      this.$router.push({ name: 'loginRegister', params: { flag: type } })
-    },
-    hideCaptcha() {
-      this.identify.codeShow = false
-      this.identify.image = ''
-      this.identify.captchaId = ''
-      this.identify.expiresAt = null
-      this.loginForm.captchaId = ''
-      this.loginForm.code = ''
-    },
-    async ensureCaptcha(force = false) {
-      this.identify.codeShow = true
-      const needRefresh = force || !this.identify.captchaId || !this.identify.image || this.isCaptchaExpired()
-
-      if (needRefresh) {
-        await this.refreshCaptcha()
-      }
-    },
-    async refreshCaptcha() {
-      try {
-        const res = await this.$request(this.$api.authCaptcha)
-        if (res && res.status) {
-          this.identify.image = res.data.image
-          this.identify.captchaId = res.data.id
-          this.identify.expiresAt = res.data.expiresAt
-          this.loginForm.captchaId = res.data.id
-          this.loginForm.code = ''
-        }
-      } catch (error) {
-        this.$message({
-          message: this.$l.captchaLoadFailed,
-          type: 'error',
-        })
-      }
-    },
-    validateCode() {
-      if (this.identify.codeShow && !this.loginForm.code) {
-        this.$message({
-          message: this.$l.codeValidate,
-          type: 'error',
-        })
-        return
-      }
-      this.handleLogin()
-    },
-    async getCodeLength() {
-      try {
-        const r = await this.$request(this.$api.param + 'getparametervalue', {
-          type: 'AppSettings',
-          name: 'verificationCodeLength',
-        })
-        const length = parseInt(r && r.data && r.data[0] && r.data[0].param_value, 10)
-        if (!Number.isNaN(length) && length > 0) {
-          this.identify.maxLength = length
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    isCaptchaExpired() {
-      if (!this.identify.expiresAt) {
-        return true
-      }
-      return dayjs().isAfter(dayjs(this.identify.expiresAt))
-    },
-  },
-  computed: {
-    loginLang() {
-      return this.$t('login')
-    },
-    eyeImage: function () {
-      return this.passwordType ? 'eye-close' : 'eye-open'
-    },
-  },
-  async created() {
-    await this.getCodeLength()
-  },
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
 }
+
+const register = (type) => {
+  router.push({ name: 'loginRegister', params: { flag: type } })
+}
+
+const hideCaptcha = () => {
+  identify.codeShow = false
+  identify.image = ''
+  identify.captchaId = ''
+  identify.expiresAt = null
+  loginForm.captchaId = ''
+  loginForm.code = ''
+}
+
+const isCaptchaExpired = () => {
+  if (!identify.expiresAt) {
+    return true
+  }
+  return dayjs().isAfter(dayjs(identify.expiresAt))
+}
+
+const ensureCaptcha = async (force = false) => {
+  identify.codeShow = true
+  const needRefresh = force || !identify.captchaId || !identify.image || isCaptchaExpired()
+
+  if (needRefresh) {
+    await refreshCaptcha()
+  }
+}
+
+const refreshCaptcha = async () => {
+  try {
+    const res = await $request(instance.proxy.$api.authCaptcha)
+    if (res && res.status) {
+      identify.image = res.data.image
+      identify.captchaId = res.data.id
+      identify.expiresAt = res.data.expiresAt
+      loginForm.captchaId = res.data.id
+      loginForm.code = ''
+    }
+  } catch (error) {
+    ElMessage({
+      message: l.value?.captchaLoadFailed || 'Tải captcha thất bại',
+      type: 'error',
+    })
+  }
+}
+
+const validateCode = () => {
+  if (identify.codeShow && !loginForm.code) {
+    ElMessage({
+      message: l.value?.codeValidate || 'Vui lòng nhập mã xác thực',
+      type: 'error',
+    })
+    return
+  }
+  handleLogin()
+}
+
+const getCodeLength = async () => {
+  try {
+    const r = await $request(instance.proxy.$api.param + 'getparametervalue', {
+      type: 'AppSettings',
+      name: 'verificationCodeLength',
+    })
+    const length = parseInt(r && r.data && r.data[0] && r.data[0].param_value, 10)
+    if (!Number.isNaN(length) && length > 0) {
+      identify.maxLength = length
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// Watch route
+watch(
+  () => route.query,
+  (query) => {
+    redirect.value = query && query.redirect
+  },
+  { immediate: true }
+)
+
+onMounted(async () => {
+  await getCodeLength()
+})
 </script>
 
 <style>
+@reference "@/assets/css/tailwind.css";
+
 .el-form-item--small .el-form-item__error {
   padding-top: 4px;
 }
@@ -298,6 +315,7 @@ export default {
 </style>
 
 <style rel="stylesheet/css" scoped>
+@reference "@/assets/css/tailwind.css";
 .login-code {
   /* position: absolute;
   right: 0px;

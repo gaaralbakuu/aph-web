@@ -98,7 +98,7 @@
     },
 
     watch: {
-      college_id(newV) {
+      college_id() {
         this.getTopicList()
       }
     },

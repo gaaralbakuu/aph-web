@@ -109,16 +109,16 @@
     }
   }
 </script>
-<style scoped lang="less">
+<style scoped>
   .setting-container {
     width: 100%;
     height: 100%;
     background-color: white;
+  }
 
-    .pageBody {
-      width: 100%;
-      height: 100%;
-      padding: 20px;
-    }
+  .setting-container .pageBody {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
   }
 </style>

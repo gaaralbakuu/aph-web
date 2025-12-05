@@ -29,11 +29,11 @@
 import {
   _,
   api,
-  zTable,
-  zPagination,
-  zFormDialog,
-  initFuncs,
   defaultConfig,
+  initFuncs,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.rtestuser,

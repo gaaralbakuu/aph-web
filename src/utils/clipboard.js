@@ -1,5 +1,5 @@
-import Vue from 'vue'
 import Clipboard from 'clipboard'
+import Vue from 'vue'
 
 function clipboardSuccess () {
   Vue.prototype.$message({

@@ -87,9 +87,10 @@
 </template>
 
 <script>
-import { _, api, zTable, zPagination, zFormDialog, initFuncs, defaultConfig } from '@/views/_common';
-import UploadExcelComponent from '@/components/UploadExcel';
 import dayjs from 'dayjs';
+
+import UploadExcelComponent from '@/components/UploadExcel';
+import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common';
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
 	api: api.user,

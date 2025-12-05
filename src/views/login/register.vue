@@ -2,23 +2,23 @@
   <div>
     <div class="bg" :style="{ 'background-image': 'url(' + background + ')' }"></div>
     <div class="login-container">
-      <el-form ref="registerForm" :model="registerForm" :rules="registerRules">
+      <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules">
         <div class="title-container">
-          <h1>{{flag==1?$l.name:'忘记密码'}}</h1>
+          <h1>{{flag==1?l.name:'忘记密码'}}</h1>
           <!-- <p>{{ company }}</p> -->
         </div>
         <el-form-item prop="uid">
           <div class="flex">
-            <el-input class="flex1" v-model="registerForm.uid" :placeholder="$l.uid" @change="getUserByUid" type="text">
+            <el-input class="flex1" v-model="registerForm.uid" :placeholder="l.uid" @change="getUserByUid" type="text">
             </el-input>
             <el-button class="ml-5" plain type="success" :loading="getUserLoading" @click="getUserByUid">
-              {{$c.confirm}}</el-button>
+              {{c.confirm}}</el-button>
           </div>
         </el-form-item>
 
         <div v-show="showVcode">
           <div class="flex flex-center" style="margin-bottom:10px;">
-            <div>{{ $l.phoneRest }}</div>
+            <div>{{ l.phoneRest }}</div>
             <div class="flex1"></div>
             <div>{{ phone }}</div>
             <el-input class="phone-rest" v-model="registerForm.phoneRest" type="text">
@@ -28,14 +28,14 @@
           <el-form-item prop="vcode">
             <el-row :gutter="10">
               <el-col :span="10">
-                <el-input v-model="registerForm.vcode" :placeholder="$l.vcode" type="text">
+                <el-input v-model="registerForm.vcode" :placeholder="l.vcode" type="text">
                 </el-input>
               </el-col>
               <el-col :span="14">
                 <el-button style="width: 100%" plain type="primary" :loading="sendVerCodeLoading"
-                  v-show="!sendVerCodeFlag" @click="sendVerCode">{{$l.sendVcode}}</el-button>
+                  v-show="!sendVerCodeFlag" @click="sendVerCode">{{l.sendVcode}}</el-button>
                 <el-button style="width: 100%" plain type="primary" v-show="sendVerCodeFlag"
-                  @click="sendVerCodeFlag = false">{{$l.sendVcodeAgain }}</el-button>
+                  @click="sendVerCodeFlag = false">{{l.sendVcodeAgain }}</el-button>
               </el-col>
             </el-row>
           </el-form-item>
@@ -44,7 +44,7 @@
         <div v-show="showVcode && showPassArea">
           <el-form-item prop="password">
             <el-input :disabled="!showVcode" :type="passwordType" v-model="registerForm.password"
-              :placeholder="$l.password1" auto-complete="on" @focus="focusFlag1 = true" @blur="focusFlag1 = false">
+              :placeholder="l.password1" auto-complete="on" @focus="focusFlag1 = true" @blur="focusFlag1 = false">
               <template slot="suffix">
                 <div class="svg-container pointer" @click="showPwd">
                   <svg-icon :icon-class="eyeClass" />
@@ -53,16 +53,16 @@
             </el-input>
             <!-- <div v-if="focusFlag1">
               <div class="passwordText">
-                <i class="el-icon-warning" style="color: #e6a23c"></i>{{$l.passwordValidate1}}
+                <i class="el-icon-warning" style="color: #e6a23c"></i>{{l.passwordValidate1}}
               </div>
               <div class="passwordText">
-                <i class="el-icon-warning" style="color: #e6a23c"></i>{{$l.passwordValidate2}}
+                <i class="el-icon-warning" style="color: #e6a23c"></i>{{l.passwordValidate2}}
               </div>
             </div> -->
           </el-form-item>
           <!-- <el-form-item prop="password2">
             <el-input :disabled="!showVcode" @focus="focusFlag2 = true" @blur="focusFlag2 = false" :type="passwordType"
-              v-model="registerForm.password2" :placeholder="$l.password2" name="password" auto-complete="on">
+              v-model="registerForm.password2" :placeholder="l.password2" name="password" auto-complete="on">
               <template slot="suffix">
                 <div class="svg-container" @click="showPwd">
                   <svg-icon :icon-class="eyeClass" />
@@ -71,21 +71,21 @@
             </el-input>
             <div v-if="focusFlag2">
               <div class="passwordText">
-                <i class="el-icon-warning" style="color: #e6a23c"></i>{{$l.passwordValidate1}}
+                <i class="el-icon-warning" style="color: #e6a23c"></i>{{l.passwordValidate1}}
               </div>
               <div class="passwordText">
-                <i class="el-icon-warning" style="color: #e6a23c"></i>{{$l.passwordValidate2}}
+                <i class="el-icon-warning" style="color: #e6a23c"></i>{{l.passwordValidate2}}
               </div>
             </div>
           </el-form-item> -->
         </div>
 
         <el-button size="medium" :disabled="!showVcode" :loading="loading" type="primary"
-          style="width: 100%; margin-top: 20px; margin-bottom: 30px" @click.prevent="register">{{flag==1?$l.register:$l.forgetButton}}
+          style="width: 100%; margin-top: 20px; margin-bottom: 30px" @click.prevent="register">{{flag==1?l.register:l.forgetButton}}
         </el-button>
         <div style="text-align:right;margin-bottom:10px">
           <!-- <el-link :underline="false" @click="register" type="primary" style="font-size:12px">忘记密码</el-link> -->
-          <el-link :underline="false" @click="goBack" type="primary" style="font-size:12px">{{$l.goBack}}</el-link>
+          <el-link :underline="false" @click="goBack" type="primary" style="font-size:12px">{{l.goBack}}</el-link>
         </div>
         <div class="copyright">
           <span>© 2018~{{ currentYear }} {{ copyright }}</span>
@@ -95,203 +95,204 @@
   </div>
 </template>
 
-<script>
-import con from '@/config'
-import bg from '@/assets/bg.jpg'
+<script setup>
 import dayjs from 'dayjs'
+import { ref, reactive, computed, watch, onMounted, getCurrentInstance } from 'vue'
+import { Message as ElMessage } from 'element-ui'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'loginRegister',
-  data() {
-    var validatePass1 = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error(this.$l.passwordValidate3))
-      } else {
-        if (value.length < 6) callback(new Error(this.$l.passwordValidate1))
-        if (!/^[\da-z~.!@#$%^&*]+$/i.test(value))
-          callback(new Error(this.$l.passwordValidate2))
-      }
-      callback()
-    }
-    // var validatePass2 = (rule, value, callback) => {
-    //   if (!value) {
-    //     callback(new Error(this.$l.passwordValidate3))
-    //   } else {
-    //     if (value != this.registerForm.password1) {
-    //       callback(new Error(this.$l.passwordValidate4))
-    //     }
-    //   }
-    //   callback()
-    // }
-    return {
-      flag:'',
-      focusFlag1: false,
-      focusFlag2: false,
-      pageLoading: false,
-      sendVerCodeFlag: false,
-      sendVerCodeLoading: false,
-      getUserLoading: false,
-      api: this.$api.auth,
-      showVcode: false,
-      showPassArea: false,
-      registerForm: {
-        uid: '',
-        password: '',
-        //password2: '',
-        phoneRest: '',
-        vcode: '',
-      },
-      phone: '',
-      registerRules: {
-        uid: [
-          {
-            required: true,
-            message: this.$t('login').usernameValidate,
-            trigger: 'blur',
-          },
-        ],
-        password: [{ validator: validatePass1, trigger: 'blur' }],
-        // password2: [{ validator: validatePass2, trigger: 'blur' }],
-        phoneRest: [
-          {
-            required: true,
-            message: this.$l.phoneRestValidate,
-            trigger: 'blur',
-          },
-        ],
-        vcode: [
-          {
-            required: true,
-            message: this.$l.vcodeValidate,
-            trigger: 'blur',
-          },
-        ],
-      },
-      background: bg,
-      passwordType: 'password',
-      loading: false,
-      redirect: undefined,
-      currentYear: dayjs().year(),
-      copyright: con.system.copyright,
-      sysname: con.system.name,
-      company: con.system.company,
-    }
-  },
-  watch: {
-    $route: {
-      handler: function (route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    getUserByUid() {
-      if (!this.registerForm.uid) return false
-      this.getUserLoading = true
-      this.$request(this.api + 'getUserByUid', { uid: this.registerForm.uid,flag: this.flag })
-        .then((r) => {
-          this.phone = r.data.instel
-          this.showVcode = true
-          this.getUserLoading = false
-        })
-        .catch(() => {
-          this.getUserLoading = false
-        })
-    },
+import bg from '@/assets/bg.jpg'
+import con from '@/config'
 
-    sendVerCode() {
-      if (!this.registerForm.uid || !this.phone || !this.registerForm.phoneRest)
-        return false
-      this.sendVerCodeLoading = true
-      this.$request(this.api + 'sendVerCode', {
-        uid: this.registerForm.uid,
-        flag: this.flag,
-        phone: this.phone + this.registerForm.phoneRest,
-      })
-        .then((r) => {
-          this.sendVerCodeFlag = true
-          this.sendVerCodeLoading = false
-          this.showPassArea = true
-          this.$message({
-                  message: this.$l.sendVcodeSuccess,
-                  type: 'success',
-                })
-        })
-        .catch(() => {
-          this.sendVerCodeFlag = false
-          this.sendVerCodeLoading = false
-          this.showPassArea = true
-        })
-    },
+// defineOptions({ name: 'loginRegister' })
 
-    getCompany() {
-      this.pageLoading = true
-      this.$request(this.$api.siteInfo)
-        .then((r) => {
-          this.company = r.datas[0].company
-          this.description = r.datas[0].system
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
-    },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-    },
-    register() {
-      if (!this.showVcode) {
-        this.$message({
-          message: this.$l.uid,
-          type: 'error',
-        })
-      }
-      this.$refs.registerForm.validate((valid) => {
-        if (valid) {
-          this.loading = true
-          //this.registerForm.password2 = this.registerForm.password1
-          this.$request(this.api + 'register', {...this.registerForm,flag: this.flag}, 'post')
-            .then((r) => {
-              this.loading = false
-              if (r.status) {
-                this.$message({
-                  message:this.flag==1? this.$l.success:this.$c.success,
-                  type: 'success',
-                })
-                setTimeout((v) => {
-                  this.$router.push({ path: '/login' })
-                }, 3000)
-              }
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    goBack(){
-      history.back()
-    }
-  },
-  computed: {
-    loginLang() {
-      return this.$t('login')
-    },
-    eyeClass: function () {
-      return this.passwordType ? 'eye-close' : 'eye-open'
-    },
-  },
-  created: function () {
-    this.flag = this.$route.params.flag
-  },
+const instance = getCurrentInstance()
+const route = instance.proxy.$route
+const router = instance.proxy.$router
+const { $request } = instance.proxy
+const { l, c } = useLocalI18n('loginRegister')
+
+const flag = ref('')
+const focusFlag1 = ref(false)
+const focusFlag2 = ref(false)
+const pageLoading = ref(false)
+const sendVerCodeFlag = ref(false)
+const sendVerCodeLoading = ref(false)
+const getUserLoading = ref(false)
+const showVcode = ref(false)
+const showPassArea = ref(false)
+const passwordType = ref('password')
+const loading = ref(false)
+const redirect = ref(undefined)
+const phone = ref('')
+const registerFormRef = ref(null)
+
+const registerForm = reactive({
+  uid: '',
+  password: '',
+  phoneRest: '',
+  vcode: '',
+})
+
+const currentYear = dayjs().year()
+const copyright = con.system.copyright
+const sysname = con.system.name
+const company = ref(con.system.company)
+const background = bg
+const api = instance.proxy?.$api?.auth || ''
+
+const validatePass1 = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error(l.value?.passwordValidate3 || 'Mật khẩu không được để trống'))
+  } else {
+    if (value.length < 6) callback(new Error(l.value?.passwordValidate1 || 'Mật khẩu phải có ít nhất 6 ký tự'))
+    if (!/^[\da-z~.!@#$%^&*]+$/i.test(value))
+      callback(new Error(l.value?.passwordValidate2 || 'Mật khẩu chứa ký tự không hợp lệ'))
+  }
+  callback()
 }
+
+const registerRules = reactive({
+  uid: [
+    {
+      required: true,
+      message: instance.proxy?.$t?.('login')?.usernameValidate || 'Vui lòng nhập tên đăng nhập',
+      trigger: 'blur',
+    },
+  ],
+  password: [{ validator: validatePass1, trigger: 'blur' }],
+  phoneRest: [
+    {
+      required: true,
+      message: l.value?.phoneRestValidate || 'Vui lòng nhập phần còn lại của số điện thoại',
+      trigger: 'blur',
+    },
+  ],
+  vcode: [
+    {
+      required: true,
+      message: l.value?.vcodeValidate || 'Vui lòng nhập mã xác thực',
+      trigger: 'blur',
+    },
+  ],
+})
+
+const eyeClass = computed(() => (passwordType.value ? 'eye-close' : 'eye-open'))
+
+const getUserByUid = () => {
+  if (!registerForm.uid) return false
+  getUserLoading.value = true
+  $request(api + 'getUserByUid', { uid: registerForm.uid, flag: flag.value })
+    .then((r) => {
+      phone.value = r.data.instel
+      showVcode.value = true
+      getUserLoading.value = false
+    })
+    .catch(() => {
+      getUserLoading.value = false
+    })
+}
+
+const sendVerCode = () => {
+  if (!registerForm.uid || !phone.value || !registerForm.phoneRest) return false
+  sendVerCodeLoading.value = true
+  $request(api + 'sendVerCode', {
+    uid: registerForm.uid,
+    flag: flag.value,
+    phone: phone.value + registerForm.phoneRest,
+  })
+    .then((r) => {
+      sendVerCodeFlag.value = true
+      sendVerCodeLoading.value = false
+      showPassArea.value = true
+      ElMessage({
+        message: l.value?.sendVcodeSuccess || 'Gửi mã xác thực thành công',
+        type: 'success',
+      })
+    })
+    .catch(() => {
+      sendVerCodeFlag.value = false
+      sendVerCodeLoading.value = false
+      showPassArea.value = true
+    })
+}
+
+const getCompany = () => {
+  pageLoading.value = true
+  $request(instance.proxy.$api.siteInfo)
+    .then((r) => {
+      company.value = r.datas[0].company
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+const showPwd = () => {
+  if (passwordType.value === 'password') {
+    passwordType.value = ''
+  } else {
+    passwordType.value = 'password'
+  }
+}
+
+const register = () => {
+  if (!showVcode.value) {
+    ElMessage({
+      message: l.value?.uid || 'Vui lòng nhập tên đăng nhập',
+      type: 'error',
+    })
+  }
+  registerFormRef.value.validate((valid) => {
+    if (valid) {
+      loading.value = true
+      $request(api + 'register', { ...registerForm, flag: flag.value }, 'post')
+        .then((r) => {
+          loading.value = false
+          if (r.status) {
+            ElMessage({
+              message: flag.value == 1 ? l.value?.success : c.value?.success,
+              type: 'success',
+            })
+            setTimeout((v) => {
+              router.push({ path: '/login' })
+            }, 3000)
+          }
+        })
+        .catch(() => {
+          loading.value = false
+        })
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
+}
+
+const goBack = () => {
+  history.back()
+}
+
+// Watch route
+watch(
+  () => route.params,
+  (params) => {
+    flag.value = params.flag
+  },
+  { immediate: true }
+)
+
+watch(
+  () => route.query,
+  (query) => {
+    redirect.value = query && query.redirect
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  flag.value = route.params.flag
+})
 </script>
 
 <style rel="stylesheet/css" scoped lang="css">

@@ -14,9 +14,10 @@
 </template>
 
 <script>
-import con from '@/config'
-import apache from '@/assets/apache.png'
 import dayjs from 'dayjs'
+
+import apache from '@/assets/apache.png'
+import con from '@/config'
 
 export default {
   name: 'loginIndex',

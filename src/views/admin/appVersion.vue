@@ -39,16 +39,16 @@
   </div>
 </template>
 <script>
+import { getToken } from '@/utils/auth'
 import {
   _,
   api,
-  zTable,
-  zPagination,
-  zFormDialog,
-  initFuncs,
   defaultConfig,
+  initFuncs,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
-import { getToken } from '@/utils/auth'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.appVersion,
   apiCreate: api.appVersion + 'addormodify',

@@ -95,17 +95,17 @@
 </template>
 
 <script>
+import { expendsTree,generateTree } from '@/utils'
+import { getCookie } from '@/utils/auth'
 import {
   _,
   api,
-  zTable,
-  zPagination,
-  zFormDialog,
-  initFuncs,
   defaultConfig,
+  initFuncs,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
-import { generateTree, expendsTree } from '@/utils'
-import { getCookie } from '@/utils/auth'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.dictionary,
   tableProps: {

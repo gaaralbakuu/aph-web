@@ -6,7 +6,7 @@ export default {
   children: [
     {
       path: 'sysmesg',
-      component: () => import('@/views/sysbasics/sysmesg'),
+      component: () => import('@/views/sysbasics/SysMsg'),
       name: 'sysbasicssymesg',
       meta: {
         noCache: true,
@@ -14,7 +14,7 @@ export default {
     },
     {
       path: 'epidemic',
-      component: () => import('@/views/sysbasics/epidemic'),
+      component: () => import('@/views/sysbasics/Epidemic'),
       name: 'sysbasicsepidemic',
       meta: {
         noCache: true,
@@ -22,7 +22,7 @@ export default {
     },
     {
       path: 'publiccode',
-      component: () => import('@/views/sysbasics/publiccode'),
+      component: () => import('@/views/sysbasics/PublicCode'),
       name: 'publiccode',
       meta: {
         noCache: true,

@@ -259,8 +259,9 @@
 </template>
 
 <script>
-import videoPlayer from '@/components/videoPlayer/videoPlayer.vue'
 import { mapGetters } from 'vuex'
+
+import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
 
 let axiosController
 
@@ -700,13 +701,15 @@ export default {
     },
 
     uploadVideo() {
-      //上传视频
+      //上传视频 - sử dụng streaming endpoint để hỗ trợ file lớn (>1GB)
       let that = this
 
       axiosController = new AbortController()
       let formData = new FormData()
-      let filed = ['id', 'college_id', 'is_public', 'file', 'name', 'type', 'thumbnail_path', 'description']
-      filed.forEach((i) => {
+      // Thứ tự: file trước, các field khác sau (để streaming xử lý đúng)
+      formData.append('file', this.uploadVideoObj.file)
+      let fields = ['id', 'college_id', 'is_public', 'name', 'type', 'thumbnail_path', 'description']
+      fields.forEach((i) => {
         formData.append(i, this.uploadVideoObj[i])
       })
       let customConfig = {
@@ -726,7 +729,8 @@ export default {
 
       this.flagObj.uploading = true
       this.$set(this.uploadVideoObj.uploadEvent, 'oTime', new Date().getTime())
-      this.$request(this.$api.videoServer + '/Video/VideoManage/uploadVideo', formData, 'post', 'noErrorDialog', customConfig, axiosController)
+      // Sử dụng endpoint streaming mới để tránh OutOfMemoryException với file lớn
+      this.$request(this.$api.videoServer + '/Video/VideoManage/uploadVideoStreaming', formData, 'post', 'noErrorDialog', customConfig, axiosController)
         .then((r) => {
           if (r.httpCode == 200) {
             this.$message({

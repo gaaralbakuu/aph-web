@@ -170,10 +170,11 @@
 </template>
 
 <script>
-  import api from "@/api/index.js"
   import {
     mapGetters
   } from 'vuex'
+
+  import api from "@/api/index.js"
   export default {
     name: 'videoUserExamDetail',
     data() {

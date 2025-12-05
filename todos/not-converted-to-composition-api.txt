@@ -1,0 +1,139 @@
+App.vue
+components\TestHotReload.vue
+components\Img\Uploader.vue
+components\Pagination\index.vue
+components\PanThumb\index.vue
+components\ScrollPane\index.vue
+components\SvgIcon\index.vue
+components\Tag\Dynamictag.vue
+components\TextHoverEffect\Mallki.vue
+components\TipBox\index.vue
+components\UploadExcel\index.vue
+components\Video\VideoCard.vue
+components\Video\VideoPlayer\index.vue
+components\videoPlayer\videoPlayer.vue
+components\videoPlayer\VideoPlayerPlyr.vue
+views\admin\AppVersion.vue
+views\admin\AstrictAuth.vue
+views\admin\Banner.vue
+views\admin\Dictionary.vue
+views\admin\Menu.vue
+views\admin\Param.vue
+views\admin\Quartz.vue
+views\admin\Role.vue
+views\admin\TestUser.vue
+views\admin\User.vue
+views\admin\UserFeedback.vue
+views\admin\WorkflowFields.vue
+views\demo\Demo.vue
+views\errorPage\401.vue
+views\errorPage\404.vue
+views\example\svg-icons\index.vue
+views\home\Welcome.vue
+views\layout\Layout.vue
+views\layout\SubLayout.vue
+views\layout\components\Breadcrumb.vue
+views\layout\components\ErrorLog.vue
+views\layout\components\Hamburger.vue
+views\layout\components\LangSelect.vue
+views\layout\components\MenuItem.vue
+views\layout\components\Navbar copy.vue
+views\layout\components\Navbar.vue
+views\layout\components\NavbarCopy.vue
+views\layout\components\Screenfull.vue
+views\layout\components\SidebarItem.vue
+views\layout\components\SizeSelect.vue
+views\layout\components\TagsView.vue
+views\layout\components\ThemePicker.vue
+views\login\index copy 2.vue
+views\login\index copy 3.vue
+views\login\index copy.vue
+views\login\index.vue
+views\login\Register.vue
+views\redirect\index.vue
+views\sysbasics\Epidemic.vue
+views\sysbasics\PublicCode.vue
+views\sysbasics\SysMsg.vue
+views\sysbasics\compliance\AccountManagement.vue
+views\sysbasics\compliance\Banner.vue
+views\sysbasics\compliance\ComplianceManufacturer.vue
+views\sysbasics\compliance\Demo3.vue
+views\sysbasics\compliance\improveAnalysis copy.vue
+views\sysbasics\compliance\ImproveAnalysis.vue
+views\sysbasics\compliance\improveManagement copy 2.vue
+views\sysbasics\compliance\improveManagement copy.vue
+views\sysbasics\compliance\ImproveManagement.vue
+views\sysbasics\compliance\ImproveManagementDetailsTable.vue
+views\sysbasics\compliance\ImproveManagementInfo.vue
+views\sysbasics\compliance\ImproveManagementTable.vue
+views\sysbasics\compliance\ImproveManagementTable2.vue
+views\sysbasics\compliance\investigation copy.vue
+views\sysbasics\compliance\Investigation.vue
+views\sysbasics\compliance\InvestigationHistoryTable.vue
+views\sysbasics\compliance\InvestigationInfo.vue
+views\sysbasics\compliance\InvestigationTable.vue
+views\sysbasics\compliance\IssuesType.vue
+views\sysbasics\compliance\manufacturer copy.vue
+views\sysbasics\compliance\Manufacturer.vue
+views\sysbasics\compliance\manufacturer2 copy.vue
+views\sysbasics\compliance\Manufacturer2.vue
+views\sysbasics\compliance\ManufacturerTable.vue
+views\sysbasics\compliance\Role.vue
+views\sysbasics\compliance\ShareContactTable.vue
+views\sysbasics\compliance\ShareHelpManualTable.vue
+views\sysbasics\compliance\ShareInformation.vue
+views\sysbasics\compliance\WorkTable.vue
+views\sysbasics\compliance\components\FolderTree.vue
+views\sysbasics\compliance2\ComplianceManufacturer.vue
+views\sysbasics\compliance2\Investigation.vue
+views\sysbasics\compliance2\InvestigationInfo.vue
+views\sysbasics\compliance2\IssuesType.vue
+views\sysbasics\compliance2\ShareInformation.vue
+views\sysbasics\video\adminViews\Analyze.vue
+views\sysbasics\video\adminViews\Exam.vue
+views\sysbasics\video\adminViews\Lesson.vue
+views\sysbasics\video\adminViews\RecursiveMenu.vue
+views\sysbasics\video\adminViews\System.vue
+views\sysbasics\video\adminViews\Training.vue
+views\sysbasics\video\adminViews\component\analyze\CollegeTraining.vue
+views\sysbasics\video\adminViews\component\analyze\index.vue
+views\sysbasics\video\adminViews\component\exam\Exam.vue
+views\sysbasics\video\adminViews\component\exam\Question.vue
+views\sysbasics\video\adminViews\component\exam\Questionnaire.vue
+views\sysbasics\video\adminViews\component\lesson\Catalogue.vue
+views\sysbasics\video\adminViews\component\lesson\Content.vue
+views\sysbasics\video\adminViews\component\lesson\Course.vue
+views\sysbasics\video\adminViews\component\lesson\Tag.vue
+views\sysbasics\video\adminViews\component\lesson\Topic.vue
+views\sysbasics\video\adminViews\component\system\Banner.vue
+views\sysbasics\video\adminViews\component\system\College.vue
+views\sysbasics\video\adminViews\component\system\Menu.vue
+views\sysbasics\video\adminViews\component\system\Role.vue
+views\sysbasics\video\adminViews\component\system\Setting.vue
+views\sysbasics\video\adminViews\component\training\Class.vue
+views\sysbasics\video\adminViews\component\training\Lecturer.vue
+views\sysbasics\video\adminViews\component\training\Place.vue
+views\sysbasics\video\adminViews\component\training\Plan.vue
+views\sysbasics\video\layout\VideoAdminLayout.vue
+views\sysbasics\video\layout\VideoUserLayout copy.vue
+views\sysbasics\video\userViews\Course.vue
+views\sysbasics\video\userViews\ExamDetail.vue
+views\sysbasics\video\userViews\home copy.vue
+views\sysbasics\video\userViews\Mine.vue
+views\sysbasics\video\userViews\Play copy.vue
+views\sysbasics\video\userViews\Topic.vue
+views\sysbasics\video\userViews\TopicDetail.vue
+views\sysbasics\video\userViews\TrainingDetail.vue
+views\sysbasics\video\userViews\component\Favorite.vue
+views\sysbasics\video\userViews\component\History.vue
+views\sysbasics\video\userViews\component\Training.vue
+views\_common\ChooseUser.vue
+views\_common\CustomDialog.vue
+views\_common\Dentify.vue
+views\_common\DialogStackDemo.vue
+views\_common\FilePreviews.vue
+views\_common\Form.vue
+views\_common\FormDialog.vue
+views\_common\Pagination.vue
+views\_common\ShadcnInput.vue
+views\_common\Table.vue

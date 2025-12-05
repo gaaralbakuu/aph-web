@@ -70,8 +70,8 @@
 </template>
 
 <script>
-	import DynamicTag from '@/components/Tag/Dynamictag'
 	import ImgUploader from '@/components/Img/Uploader'
+	import DynamicTag from '@/components/Tag/DynamicTag'
 
 	export default {
 		name: 'z-form',

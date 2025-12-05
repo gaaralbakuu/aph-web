@@ -30,13 +30,14 @@
 </template>
 
 <script>
+import '@vue-office/excel/lib/index.css'
+
 import VueDocxViewer from '@vue-office/docx'
 import VueExcelViewer from '@vue-office/excel'
 import VuePdfViewer from '@vue-office/pdf'
 import VuePptxViewer from '@vue-office/pptx'
-import '@vue-office/excel/lib/index.css'
+
 import CustomDialog from './CustomDialog.vue'
-import XLSX from 'xlsx'
 export default {
   name: 'FilePreview',
   components: {

@@ -1,8 +1,8 @@
 /*! videojs-markers - v0.6.1 - 2016-10-24
  * Copyright (c) 2016 ; Licensed  */
 'use strict';
-import jq from '@/utils/jquery.js'
-import videojs from "./video.min.js"
+// import jq from '@/utils/jquery.js'
+// import videojs from "./video.min.js"
 // import videojs from "./video.js"
 
 var defaultSetting = {
@@ -48,7 +48,7 @@ function generateUUID() {
     return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
   });
   return uuid;
-};
+}
 
 var NULL_INDEX = -1;
 
@@ -150,7 +150,7 @@ function registerVideoJsMarkersPlugin(options) {
 
   function removeMarkers(indexArray) {
     // reset overlay
-    if (!!breakOverlay) {
+    if (breakOverlay) {
       overlayIndex = NULL_INDEX;
       breakOverlay.css("visibility", "hidden");
     }
@@ -183,7 +183,7 @@ function registerVideoJsMarkersPlugin(options) {
   function registerMarkerTipHandler(markerDiv) {
     markerDiv.on('mouseover', function() {
       var marker = markersMap[jq(markerDiv).data('marker-key')];
-      if (!!markerTip) {
+      if (markerTip) {
         markerTip.find('.vjs-tip-text').text(setting.markerTip.text(marker));
         let progressBarWidth = videoWrapper.find('.vjs-progress-holder').width()
         let textLength = setting.markerTip.text(marker).length

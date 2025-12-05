@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
-import { getToken, getCookie, localGet } from '@/utils/auth'
+
+import { getCookie, getToken, localGet } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({

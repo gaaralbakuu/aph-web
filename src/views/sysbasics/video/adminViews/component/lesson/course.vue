@@ -717,16 +717,16 @@
 
 
 <script>
-  import {
-    _
-  } from '@/views/_common'
-  import videoPlayer from '@/components/videoPlayer/videoPlayer.vue'
-  import filePreviews from '@/views/_common/filePreviews.vue'
-
   import Sortable from 'sortablejs'
   import {
     mapGetters
   } from 'vuex'
+
+  import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
+  import {
+    _
+  } from '@/views/_common'
+  import filePreviews from '@/views/_common/filePreviews.vue'
   export default {
     name: 'videoAdminCourse',
     components: {

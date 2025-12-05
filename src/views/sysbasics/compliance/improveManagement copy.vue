@@ -458,13 +458,15 @@
 
 <script>
 import axios from 'axios'
+import dayjs from 'dayjs'
+
+import { getToken } from '@/utils/auth'
 // import { checkField } from '../../utils/checkFiled'
 import { checkField } from '@/utils/checkFiled'
 import { _, api, zPagination } from '@/views/_common'
-import { getToken } from '@/utils/auth'
-import dayjs from 'dayjs'
-import filePreviews from '../../_common/filePreviews.vue'
+
 import CustomDialog from '../../_common/CustomDialog.vue'
+import filePreviews from '../../_common/filePreviews.vue'
 
 export default {
   name: 'issuesType',

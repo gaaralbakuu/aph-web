@@ -70,10 +70,11 @@
 </template>
 
 <script>
-import LangSelect from '@/views/layout/components/LangSelect.vue'
-import SizeSelect from '@/views/layout/components/SizeSelect.vue'
 import screenfull, { toggle } from 'screenfull'
 import { mapGetters, mapMutations } from 'vuex'
+
+import LangSelect from '@/views/layout/components/LangSelect.vue'
+import SizeSelect from '@/views/layout/components/SizeSelect.vue'
 export default {
   name: 'videoAdminLayout',
   components: {

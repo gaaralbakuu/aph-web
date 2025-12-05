@@ -1,0 +1,90 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Rename Admin Views to PascalCase",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\admin\" && ren appVersion.vue AppVersion.vue && ren astrictAuth.vue AstrictAuth.vue && ren banner.vue Banner.vue && ren dictionary.vue Dictionary.vue && ren menu.vue Menu.vue && ren param.vue Param.vue && ren quartz.vue Quartz.vue && ren role.vue Role.vue && ren testUser.vue TestUser.vue && ren user.vue User.vue && ren userfeedback.vue UserFeedback.vue && ren workflowFields.vue WorkflowFields.vue && echo Done renaming all admin files!"
+		},
+		{
+			"label": "Rename Group 4 Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\home\" && ren welcome.vue Welcome.vue && cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\demo\" && ren demo.vue Demo.vue && echo Renamed home and demo files!"
+		},
+		{
+			"label": "Rename register.vue",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\login\" && ren register.vue Register.vue && echo Renamed register.vue!"
+		},
+		{
+			"label": "Rename Sysbasics Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\" && ren epidemic.vue Epidemic.vue && ren publiccode.vue PublicCode.vue && ren sysmesg.vue SysMsg.vue && echo Renamed sysbasics files!"
+		},
+		{
+			"label": "Rename Compliance Main Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\compliance\" && ren accountManagement.vue AccountManagement.vue && ren banner.vue Banner.vue && ren complianceManufacturer.vue ComplianceManufacturer.vue && ren demo3.vue Demo3.vue && ren issuesType.vue IssuesType.vue && ren role.vue Role.vue && ren shareInformation.vue ShareInformation.vue && ren workTable.vue WorkTable.vue && echo Renamed compliance main files!"
+		},
+		{
+			"label": "Rename Improve Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\compliance\" && ren improveAnalysis.vue ImproveAnalysis.vue && ren improveManagement.vue ImproveManagement.vue && ren improveManagementInfo.vue ImproveManagementInfo.vue && echo Renamed improve files!"
+		},
+		{
+			"label": "Rename Investigation Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\compliance\" && ren investigation.vue Investigation.vue && ren investigationInfo.vue InvestigationInfo.vue && echo Renamed investigation files!"
+		},
+		{
+			"label": "Rename Manufacturer Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\compliance\" && ren manufacturer.vue Manufacturer.vue && ren manufacturer2.vue Manufacturer2.vue && echo Renamed manufacturer files!"
+		},
+		{
+			"label": "Delete Lowercase Duplicates",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\compliance\" && del \"improveManagement-details-table.vue\" \"improveManagement-table.vue\" \"improveManagement-table2.vue\" \"investigation-history-table.vue\" \"investigation-table.vue\" \"manufacturer-table.vue\" \"share-contact-table.vue\" \"share-help-manual-table.vue\" && echo Deleted lowercase duplicates!"
+		},
+		{
+			"label": "Rename Compliance2 Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\compliance2\" && ren complianceManufacturer.vue ComplianceManufacturer.vue && ren investigation.vue Investigation.vue && ren investigationInfo.vue InvestigationInfo.vue && ren issuesType.vue IssuesType.vue && ren shareInformation.vue ShareInformation.vue && echo Renamed compliance2 files!"
+		},
+		{
+			"label": "Rename Video Admin Main",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\adminViews\" && ren analyze.vue Analyze.vue && ren exam.vue Exam.vue && ren lesson.vue Lesson.vue && ren system.vue System.vue && ren training.vue Training.vue && echo Renamed video admin main files!"
+		},
+		{
+			"label": "Rename Video Admin Components",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\adminViews\\component\\analyze\" && ren collegeTraining.vue CollegeTraining.vue && cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\adminViews\\component\\exam\" && ren exam.vue Exam.vue && ren question.vue Question.vue && ren questionnaire.vue Questionnaire.vue && cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\adminViews\\component\\lesson\" && ren catalogue.vue Catalogue.vue && ren content.vue Content.vue && ren course.vue Course.vue && ren tag.vue Tag.vue && ren topic.vue Topic.vue && cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\adminViews\\component\\system\" && ren banner.vue Banner.vue && ren college.vue College.vue && ren menu.vue Menu.vue && ren role.vue Role.vue && ren setting.vue Setting.vue && cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\adminViews\\component\\training\" && ren class.vue Class.vue && ren lecturer.vue Lecturer.vue && ren place.vue Place.vue && ren plan.vue Plan.vue && echo Renamed all video admin component files!"
+		},
+		{
+			"label": "Rename Video Layout Files",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\layout\" && ren videoAdminLayout.vue VideoAdminLayout.vue && ren videoUserLayout.vue VideoUserLayout.vue && echo Renamed video layout files!"
+		},
+		{
+			"label": "Rename Video User Views Main",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\userViews\" && ren course.vue Course.vue && ren examDetail.vue ExamDetail.vue && ren home.vue Home.vue && ren mine.vue Mine.vue && ren play.vue Play.vue && ren topic.vue Topic.vue && ren topicDetail.vue TopicDetail.vue && ren trainingDetail.vue TrainingDetail.vue && echo Renamed video user views main files!"
+		},
+		{
+			"label": "Rename Video User Views Components",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\sysbasics\\video\\userViews\\component\" && ren favorite.vue Favorite.vue && ren history.vue History.vue && ren training.vue Training.vue && echo Renamed video user views component files!"
+		},
+		{
+			"label": "Rename Video Standalone",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\video\\layout\" && ren videoUserLayout.vue VideoUserLayout.vue && cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\video\\userViews\" && ren home.vue Home.vue && echo Renamed video standalone files!"
+		},
+		{
+			"label": "Rename Common Components",
+			"type": "shell",
+			"command": "cd /d \"g:\\APH_Workspace\\VueJS\\aph-web\\src\\views\\_common\" && ren chooseUser.vue ChooseUser.vue && ren dentify.vue Dentify.vue && ren filePreviews.vue FilePreviews.vue && ren form.vue Form.vue && ren formDialog.vue FormDialog.vue && ren pagination.vue Pagination.vue && ren table.vue Table.vue && echo Renamed common reusable component files!"
+		}
+	]
+}

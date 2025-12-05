@@ -491,11 +491,12 @@
 </template>
 
 <script>
+  import Sortable from 'sortablejs'
   import {
     mapGetters
   } from 'vuex'
-  import chooseUser from '@/views/_common/chooseUser.vue'
-  import Sortable from 'sortablejs'
+
+  import chooseUser from '@/views/_common/ChooseUser.vue'
   export default {
     name: 'videoAdminClass',
     components: {

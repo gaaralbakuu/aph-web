@@ -19,7 +19,7 @@
 
 <script>
 import { getLangOptions } from '@/mixin/componet'
-import { localSet, localGet } from '@/utils/auth'
+import { localGet,localSet } from '@/utils/auth'
 export default {
   mixins: [getLangOptions],
   data: function () {

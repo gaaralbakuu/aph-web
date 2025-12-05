@@ -116,6 +116,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
 import CustomDialog from '@/views/_common/CustomDialog.vue'
 
 export default {

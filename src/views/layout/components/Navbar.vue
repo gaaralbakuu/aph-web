@@ -70,19 +70,21 @@
 </template>
 
 <script>
+import screenfull, { toggle } from 'screenfull'
+import myUpload from 'vue-image-crop-upload/upload-2'
 import { mapGetters } from 'vuex'
+
+import avatar from '@/assets/default_avatar.png'
+import { getToken } from '@/utils/auth'
+
+import CustomDialog from '../../_common/CustomDialog.vue'
 import Breadcrumb from './Breadcrumb'
-import Hamburger from './Hamburger'
 import ErrorLog from './ErrorLog'
+import Hamburger from './Hamburger'
+import LangSelect from './LangSelect'
 import Screenfull from './Screenfull'
 import SizeSelect from './SizeSelect'
-import LangSelect from './LangSelect'
 import ThemePicker from './ThemePicker'
-import avatar from '@/assets/default_avatar.png'
-import myUpload from 'vue-image-crop-upload/upload-2'
-import CustomDialog from '../../_common/CustomDialog.vue'
-import { getToken } from '@/utils/auth'
-import screenfull, { toggle } from 'screenfull'
 
 const token = getToken()
 

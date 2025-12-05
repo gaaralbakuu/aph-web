@@ -74,17 +74,19 @@
 </template>
 
 <script>
+import myUpload from 'vue-image-crop-upload/upload-2'
 import { mapGetters } from 'vuex'
+
+import avatar from '@/assets/default_avatar.png'
+import { getToken } from '@/utils/auth'
+
 import Breadcrumb from './Breadcrumb'
-import Hamburger from './Hamburger'
 import ErrorLog from './ErrorLog'
+import Hamburger from './Hamburger'
+import LangSelect from './LangSelect'
 import Screenfull from './Screenfull'
 import SizeSelect from './SizeSelect'
-import LangSelect from './LangSelect'
 import ThemePicker from './ThemePicker'
-import avatar from '@/assets/default_avatar.png'
-import myUpload from 'vue-image-crop-upload/upload-2'
-import { getToken } from '@/utils/auth'
 
 const token = getToken()
 

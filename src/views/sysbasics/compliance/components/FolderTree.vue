@@ -142,8 +142,9 @@
 </template>
 
 <script>
-import CustomDialog from '../../../_common/CustomDialog.vue'
 import { api } from '@/views/_common'
+
+import CustomDialog from '../../../_common/CustomDialog.vue'
 
 export default {
   name: 'FolderTree',

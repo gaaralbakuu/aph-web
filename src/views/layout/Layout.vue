@@ -54,11 +54,13 @@
 </template>
 
 <script>
-import { Navbar, SidebarItem, TagsView } from './components'
 import { mapGetters } from 'vuex'
-import ResizeMixin from './mixin/ResizeHandler'
+
 import scuLogo from '@/assets/apache.png'
 import con from '@/config'
+
+import { Navbar, SidebarItem, TagsView } from './components'
+import ResizeMixin from './mixin/ResizeHandler'
 
 // 主页布局配置项
 const config = {

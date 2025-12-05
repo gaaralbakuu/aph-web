@@ -237,12 +237,14 @@
   </div>
 </template>
 <script>
-import { _, api, zTable, zPagination, zFormDialog, initFuncs, zForm } from '@/views/_common'
 import axios from 'axios'
+
+import { _, api, initFuncs, zForm,zFormDialog, zPagination, zTable } from '@/views/_common'
+
 import CustomDialog from '../../_common/CustomDialog.vue'
-import ShareHelpManualTable from './share-help-manual-table.vue'
-import ShareContactTable from './share-contact-table.vue'
 import FolderTree from './components/FolderTree.vue'
+import ShareContactTable from './ShareContactTable.vue'
+import ShareHelpManualTable from './ShareHelpManualTable.vue'
 
 export default {
   name: 'shareInformation',

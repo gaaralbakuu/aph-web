@@ -88,14 +88,18 @@
 </template>
 
 <script>
-  // import videojs from "./video.js"
-  import videojs from "./video.min.js"
+  // Import video.js từ npm package (ES module)
+  import videojs from "./video.js"
+  import "video.js/dist/video-js.css"
+  import "./videojs.watermark.min.js"
+  // import "./videojs-markers.js"
+  
+  // Import jQuery từ npm package
+  import jq from 'jquery'
+
   import {
     getToken,
   } from '@/utils/auth'
-  import jq from '@/utils/jquery.js'
-  import "./videojs.watermark.min.js"
-  import "./videojs-markers.js"
 
   export default {
     name: "videoPlayerCom",

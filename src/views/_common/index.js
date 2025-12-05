@@ -1,10 +1,12 @@
-import api from '@/api'
-import _ from 'lodash'
-import zPagination from './pagination'
-import zForm from './form'
-import zFormDialog from './formDialog'
-import zTable from './table'
 import dayjs from 'dayjs'
+import _ from 'lodash'
+
+import api from '@/api'
+
+import zForm from './Form'
+import zFormDialog from './FormDialog'
+import zPagination from './Pagination'
+import zTable from './Table'
 
 var defaultConfig = {
   // apiList,
@@ -121,7 +123,7 @@ var initFuncs = {
       }
       url = url + '/' + v.id
       this.$request(url, { id: v.id }, 'post')
-        .then(r => {
+        .then(() => {
           this.pageLoading = false
           this.$message({
             message: '操作成功',
@@ -144,7 +146,7 @@ var initFuncs = {
     }
     const data = this.formatBeforeSave(this.data)
     this.$request(url, data, 'post')
-      .then(r => {
+      .then(() => {
         this.submmitLoading = false
         this.$message({
           message: '操作成功',
@@ -234,14 +236,13 @@ var initFuncs = {
   
 export {
   _,
-  dayjs,
   api,
-  zTable,
-  zPagination,
+  dayjs,
+  defaultConfig,
+  initFuncs,
   zForm,
   zFormDialog,
-  initFuncs,
-  defaultConfig,
+  zPagination,
+  zTable,
   // getfeedback
-  
 }

@@ -47,7 +47,7 @@
 
 <script>
 import { arrayToObject, dateTools } from '@/utils';
-import { _, api, zTable, zPagination, zFormDialog } from '@/views/_common';
+import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common';
 
 const emptyData = {};
 export default {

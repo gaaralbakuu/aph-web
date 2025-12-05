@@ -94,8 +94,9 @@
 
 <script>
 import axios from 'axios'
-import { _, api } from '@/views/_common'
+
 import { getToken } from '@/utils/auth'
+import { _, api } from '@/views/_common'
 export default {
   name: 'issuesType',
   data() {

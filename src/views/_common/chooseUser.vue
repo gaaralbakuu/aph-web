@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { _, api, zTable, zPagination } from '@/views/_common'
+import { _, zPagination,zTable } from '@/views/_common'
 export default {
   name: 'chooseUser',
   components: {
@@ -422,7 +422,7 @@ export default {
       this.dialogShow = false
     },
 
-    tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({ rowIndex }) {
       if (rowIndex % 2 == 0) {
         return ''
       } else {

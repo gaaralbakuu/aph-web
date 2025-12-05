@@ -22,6 +22,7 @@
   import {
     mapGetters
   } from 'vuex'
+
   import RecursiveMenu from './RecursiveMenu.vue';
   export default {
     name: type + 'Layout',

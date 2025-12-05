@@ -3,36 +3,17 @@
     <!-- 查询 -->
 
     <div>
-      <el-button type="success" @click="backInvestigation"
-        >{{ $l.backToPreviousPage }}</el-button
-      >
+      <el-button type="success" @click="backInvestigation">{{ $l.backToPreviousPage }}</el-button>
     </div>
     <!-- 内容 -->
     <div>
       <div style="margin-top: 10px">
         <!-- 表格 -->
-        <el-table
-          :data="tableList.list"
-          style="width: 100%"
-          highlight-current-row
-        >
+        <el-table :data="tableList.list" style="width: 100%" highlight-current-row>
           <el-table-column :label="this.$l.basicInformation">
-            <el-table-column
-              v-for="(item, index) in tableList.columns1"
-              :key="index"
-              :prop="item.key"
-              :label="item.title || item.key"
-              :width="item.width"
-              show-overflow-tooltip
-            >
+            <el-table-column v-for="(item, index) in tableList.columns1" :key="index" :prop="item.key" :label="item.title || item.key" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
-                <span
-                  v-if="item.key === 'address'"
-                  :title="scope.row[item.key]"
-                  class="truncate-lines"
-                  v-html="scope.row[item.key]"
-                >
-                </span>
+                <span v-if="item.key === 'address'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
                 <span v-else>
                   {{ scope.row[item.key] }}
                 </span>
@@ -40,36 +21,11 @@
             </el-table-column>
           </el-table-column>
           <el-table-column :label="this.$l.complianceContactInfor">
-            <el-table-column
-              v-for="(item, index) in tableList.columns2"
-              :key="index"
-              :prop="item.key"
-              :label="item.title"
-              :width="item.width"
-              show-overflow-tooltip
-            >
+            <el-table-column v-for="(item, index) in tableList.columns2" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
-                <span
-                  v-if="item.key === 'contact_name'"
-                  :title="scope.row[item.key]"
-                  class="truncate-lines"
-                  v-html="scope.row[item.key]"
-                >
-                </span>
-                <span
-                  v-else-if="item.key === 'contact_phone'"
-                  :title="scope.row[item.key]"
-                  class="truncate-lines"
-                  v-html="scope.row[item.key]"
-                >
-                </span>
-                <span
-                  v-else-if="item.key === 'contact_email'"
-                  :title="scope.row[item.key]"
-                  class="truncate-lines"
-                  v-html="scope.row[item.key]"
-                >
-                </span>
+                <span v-if="item.key === 'contact_name'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
+                <span v-else-if="item.key === 'contact_phone'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
+                <span v-else-if="item.key === 'contact_email'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
                 <span v-else>
                   {{ scope.row[item.key] }}
                 </span>
@@ -77,28 +33,12 @@
             </el-table-column>
           </el-table-column>
           <el-table-column :label="this.$l.seaAudit">
-            <el-table-column
-              v-for="(item, index) in tableList.columns4"
-              :key="index"
-              :prop="item.key"
-              :label="item.title"
-              :width="item.width"
-              show-overflow-tooltip
-            >
+            <el-table-column v-for="(item, index) in tableList.columns4" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
               <template slot-scope="scope">
-                <el-button
-                  v-if="item.key === 'audit_file'"
-                  type="text"
-                  size="small"
-                  @click="clickViewFile(scope.row)"
-                  style="color: orange"
-                >
+                <el-button v-if="item.key === 'audit_file'" type="text" size="small" @click="clickViewFile(scope.row)" style="color: orange">
                   {{ $l.viewFile }}
                 </el-button>
-                <span
-                  v-else-if="item.formatter"
-                  v-html="item.formatter(scope.row[item.key])"
-                ></span>
+                <span v-else-if="item.formatter" v-html="item.formatter(scope.row[item.key])"></span>
                 <span v-else-if="item.key === 'is_submit_cap'">
                   {{ scope.row.is_submit_cap == 'Y' ? $l.yes : $l.no }}
                 </span>
@@ -110,90 +50,30 @@
           </el-table-column>
           <el-table-column fixed="right" :label="this.$c.operation" width="170">
             <template slot-scope="scope">
-              <el-button
-                @click="checkClick(scope.row, scope.$index)"
-                type="text"
-                size="small"
-                >{{ $c.check }}</el-button
-              >
+              <el-button @click="checkClick(scope.row, scope.$index)" type="text" size="small">{{ $c.check }}</el-button>
 
-              <el-button
-                v-show="showAuth.m_audit && scope.row.rec_status === -1"
-                @click="auditNew(scope.row, scope.$index)"
-                type="text"
-                size="small"
-                style="color: green"
-                >{{ $l.newOrder }}</el-button
-              ><el-button
-                v-show="showAuth.m_audit && scope.row.rec_status === 1"
-                @click="auditClick(scope.row, scope.$index)"
-                type="text"
-                size="small"
-                style="color: orange"
-                >{{ $l.audit }}</el-button
-              >
-              <el-button
-                v-show="showAuth.m_audit && scope.row.rec_status === 7"
-                @click="invalid(scope.row, scope.$index)"
-                type="text"
-                size="small"
-                style="color: red"
-                >{{ $l.cancelAudit }}</el-button
-              >
-              <el-button
-                v-show="showAuth.m_audit && scope.row.rec_status === 7"
-                @click="auditClose(scope.row, scope.$index)"
-                type="text"
-                size="small"
-                style="color: green"
-                >{{ $l.end }}</el-button
-              >
+              <el-button v-show="showAuth.m_audit && scope.row.rec_status === -1" @click="auditNew(scope.row, scope.$index)" type="text" size="small" style="color: green">{{ $l.newOrder }}</el-button>
+              <el-button v-show="showAuth.m_audit && scope.row.rec_status === 1" @click="auditClick(scope.row, scope.$index)" type="text" size="small" style="color: orange">{{ $l.audit }}</el-button>
+              <el-button v-show="showAuth.m_audit && scope.row.rec_status === 7" @click="invalid(scope.row, scope.$index)" type="text" size="small" style="color: red">{{ $l.cancelAudit }}</el-button>
+              <el-button v-show="showAuth.m_audit && scope.row.rec_status === 7" @click="auditClose(scope.row, scope.$index)" type="text" size="small" style="color: green">{{ $l.end }}</el-button>
             </template>
           </el-table-column>
         </el-table>
 
-        <z-pagination
-          :pagination="pagination"
-          :total="tableList.total"
-          :page.sync="tableList.curPage"
-          :limit.sync="tableList.pageSize"
-          @change="getList"
-        >
-        </z-pagination>
+        <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList"></z-pagination>
 
-        <z-form-dialog
-          :data="auditSurvey.list"
-          :formProps="auditSurvey.formProps"
-          :fields="auditSurvey.fields1"
-          @submmit="submitAudit"
-          :visible.sync="auditFormsVisible"
-        >
-        </z-form-dialog>
+        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields1" @submmit="submitAudit" :visible.sync="auditFormsVisible"></z-form-dialog>
 
         <!-- 审核 -->
-        <z-form-dialog
-          :data="auditSurvey.list"
-          :formProps="auditSurvey.formProps"
-          :fields="auditSurvey.fields"
-          @submmit="submitAudit"
-          :visible.sync="auditFormVisible"
-        >
-        </z-form-dialog>
+        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields" @submmit="submitAudit" :visible.sync="auditFormVisible"></z-form-dialog>
 
         <!-- 查看 -->
-        <el-dialog
-          width="80%"
-          :lock-scroll="true"
-          :visible.sync="checkFormVisible"
-          custom-class="custom-dialog"
-        >
+        <el-dialog width="80%" :lock-scroll="true" :visible.sync="checkFormVisible" custom-class="custom-dialog">
           <div style="padding: 0 50px">
             <div>
               <el-form :model="checkSurvey.list">
                 <el-col :span="24">
-                  <el-form-item
-                    :label="this.$l.basicInformation"
-                  ></el-form-item>
+                  <el-form-item :label="this.$l.basicInformation"></el-form-item>
                 </el-col>
 
                 <el-form-item :label="this.$l.basicArchives">
@@ -205,53 +85,33 @@
                 <el-col :span="24">
                   <el-form-item :label="this.$l.seaAudit"></el-form-item>
                 </el-col>
-                <el-col :span="6"
-                  ><el-form-item :label="this.$l.dueAuditDate">
-                    <el-date-picker
-                      v-model="checkSurvey.list.due_audit_date"
-                      type="date"
-                      :placeholder="this.$l.pleaseSelectAnApprovalDate"
-                      value-format="yyyy-MM-dd"
-                      style="width: 300px"
-                    ></el-date-picker> </el-form-item
-                ></el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.dueAuditDate">
+                    <el-date-picker v-model="checkSurvey.list.due_audit_date" type="date" :placeholder="this.$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="2">
                   <el-form-item label=""></el-form-item>
                 </el-col>
-                <el-col :span="6"
-                  ><el-form-item :label="this.$l.costPayProgress">
-                    <el-input
-                      v-model="checkSurvey.list.cost_pay_progress"
-                      :placeholder="this.$l.pleaseEnterTheAuditResult"
-                    ></el-input> </el-form-item
-                ></el-col>
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.costPayProgress">
+                    <el-input v-model="checkSurvey.list.cost_pay_progress" :placeholder="this.$l.pleaseEnterTheAuditResult"></el-input>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="2">
                   <el-form-item label=""></el-form-item>
                 </el-col>
-                <el-col :span="6"
-                  ><el-form-item :label="this.$l.realAuditDate">
-                    <el-date-picker
-                      v-model="checkSurvey.list.real_audit_date"
-                      type="date"
-                      :placeholder="this.$l.pleaseSelectAnApprovalDate"
-                      value-format="yyyy-MM-dd"
-                      style="width: 300px"
-                    ></el-date-picker> </el-form-item
-                ></el-col>
-                <el-col :span="8"
-                  ><el-form-item :label="this.$l.isSubmitCap">
-                    <el-radio
-                      v-model="checkSurvey.list.is_submit_cap"
-                      label="Y"
-                      >{{ $l.yes }}</el-radio
-                    >
-                    <el-radio
-                      v-model="checkSurvey.list.is_submit_cap"
-                      label="N"
-                      >{{ $l.no }}</el-radio
-                    >
-                  </el-form-item></el-col
-                >
+                <el-col :span="6">
+                  <el-form-item :label="this.$l.realAuditDate">
+                    <el-date-picker v-model="checkSurvey.list.real_audit_date" type="date" :placeholder="this.$l.pleaseSelectAnApprovalDate" value-format="yyyy-MM-dd" style="width: 300px"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item :label="this.$l.isSubmitCap">
+                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="Y">{{ $l.yes }}</el-radio>
+                    <el-radio v-model="checkSurvey.list.is_submit_cap" label="N">{{ $l.no }}</el-radio>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="24">
                   <el-form-item :label="this.$l.auditFile"></el-form-item>
                 </el-col>
@@ -260,26 +120,10 @@
             <div>
               <!-- 文件表格 -->
               <el-table :data="checkSurvey.fileList" style="width: 90%">
-                <el-table-column
-                  v-for="(item, index) in checkSurvey.columns"
-                  :key="index"
-                  :prop="item.key"
-                  :label="item.title"
-                  :width="item.width"
-                >
-                </el-table-column>
-                <el-table-column
-                  fixed="right"
-                  :label="this.$c.operation"
-                  width="145"
-                >
+                <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+                <el-table-column fixed="right" :label="this.$c.operation" width="145">
                   <template slot-scope="scope">
-                    <el-button
-                      @click="getFilePreview(scope.row.file_url)"
-                      type="text"
-                      size="small"
-                      >{{ $c.check }}</el-button
-                    >
+                    <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -288,36 +132,14 @@
         </el-dialog>
 
         <!-- 查看附件 -->
-        <el-dialog
-          width="50%"
-          :title="$l.chenck_attachment"
-          :lock-scroll="true"
-          :visible.sync="viewFileFormVisible"
-          custom-class="custom-dialog"
-        >
+        <el-dialog width="50%" :title="$l.chenck_attachment" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
           <div style="padding: 0 50px">
             <!-- 文件表格 -->
             <el-table :data="checkFile.fileList" style="width: 100%">
-              <el-table-column
-                v-for="(item, index) in checkFile.columns"
-                :key="index"
-                :prop="item.key"
-                :label="item.title"
-                :width="item.width"
-              >
-              </el-table-column>
-              <el-table-column
-                fixed="right"
-                :label="this.$c.operation"
-                width="100"
-              >
+              <el-table-column v-for="(item, index) in checkFile.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
+              <el-table-column fixed="right" :label="this.$c.operation" width="100">
                 <template slot-scope="scope">
-                  <el-button
-                    @click="getFilePreview(scope.row.file_url)"
-                    type="text"
-                    size="small"
-                    >{{ $c.check }}</el-button
-                  >
+                  <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -327,25 +149,12 @@
     </div>
 
     <!-- 预览 -->
-    <filePreviews
-      v-if="fileUrl"
-      :file-url="fileUrl"
-      :visible="dialogVisible"
-      @update:visible="dialogVisible = $event"
-    />
+    <filePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible" @update:visible="dialogVisible = $event" />
   </div>
 </template>
-      <script>
-import {
-  _,
-  api,
-  zTable,
-  zPagination,
-  zFormDialog,
-  initFuncs,
-  zForm,
-} from '@/views/_common'
-import axios from 'axios'
+<script>
+import { _, api, initFuncs, zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+
 import filePreviews from '../../_common/filePreviews.vue'
 export default {
   name: 'investigation',
@@ -829,10 +638,7 @@ export default {
     // 尽职调查列表
     getList() {
       console.log(this.queryList)
-      this.$request(
-        api.baseUrl + '/Compliance/complianceSurvey/getManufacturerHisList',
-        this.queryList
-      )
+      this.$request(api.baseUrl + '/Compliance/complianceSurvey/getManufacturerHisList', this.queryList)
         .then((r) => {
           this.tableList.list = r.data
           // this.tableList.total = r.data.total
@@ -848,10 +654,7 @@ export default {
     },
     // 获取基础档案
     getManufacturerList() {
-      this.$request(
-        api.baseUrl + '/Compliance/complianceManufacturer/getlist',
-        {}
-      )
+      this.$request(api.baseUrl + '/Compliance/complianceManufacturer/getlist', {})
         .then((r) => {
           console.log(r)
           this.manufacture.list = r.data.list
@@ -913,26 +716,18 @@ export default {
       const formData = new FormData()
       formData.append('file', fileList[0])
       formData.append('attachment_type', addList[0].attachment_type)
-      let r = this.$request(
-        api.baseUrl + '/Compliance/complianceAttachments/uploadAttachment',
-        formData,
-        'post'
-      )
+      let r = this.$request(api.baseUrl + '/Compliance/complianceAttachments/uploadAttachment', formData, 'post')
       return r
     },
     // 删除附件
     removeEditFile(row, index) {
       console.log(row)
       let i = index + 1
-      this.$confirm(
-        '此操作将删除第' + i + '条数据, 是否继续?',
-        '删除帮助手册',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
+      this.$confirm('此操作将删除第' + i + '条数据, 是否继续?', '删除帮助手册', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
         .then(() => {
           this.$request(
             api.baseUrl + '/Compliance/complianceAttachments/deleteAttchment',
@@ -1013,9 +808,7 @@ export default {
 
     // 生成附件后缀
     getFileExtension(file_name) {
-      return file_name.slice(
-        Math.max(0, file_name.lastIndexOf('.')) || Infinity
-      )
+      return file_name.slice(Math.max(0, file_name.lastIndexOf('.')) || Infinity)
     },
 
     // 审核状态
@@ -1059,10 +852,7 @@ export default {
     // 提交审核
     submitAudit() {
       console.log(this.auditSurvey.list)
-      if (
-        !this.auditSurvey.list.rec_status &&
-        this.auditSurvey.list.rec_status == null
-      ) {
+      if (!this.auditSurvey.list.rec_status && this.auditSurvey.list.rec_status == null) {
         this.$message({
           type: 'info',
           message: '请选择审核结果',
@@ -1074,11 +864,7 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          this.$request(
-            api.baseUrl + '/Compliance/complianceSurvey/auditSurvey',
-            this.auditSurvey.list,
-            'post'
-          )
+          this.$request(api.baseUrl + '/Compliance/complianceSurvey/auditSurvey', this.auditSurvey.list, 'post')
             .then((r) => {
               console.log(r)
               this.$message({
@@ -1116,14 +902,10 @@ export default {
 
     // 公共 获取附件
     checkviewFile(id) {
-      let r = this.$request(
-        api.baseUrl +
-          '/Compliance/complianceAttachments/checkManufacturerAttachments',
-        {
-          id: id,
-          file_type: 1,
-        }
-      )
+      let r = this.$request(api.baseUrl + '/Compliance/complianceAttachments/checkManufacturerAttachments', {
+        id: id,
+        file_type: 1,
+      })
       return r
     },
 
@@ -1158,14 +940,10 @@ export default {
       console.log(id)
       this.pageLoading = true
 
-      this.$request(
-        api.baseUrl +
-          '/Compliance/complianceAttachments/checkManufacturerAttachments',
-        {
-          id: id,
-          file_type: 1,
-        }
-      )
+      this.$request(api.baseUrl + '/Compliance/complianceAttachments/checkManufacturerAttachments', {
+        id: id,
+        file_type: 1,
+      })
         .then((r) => {
           console.log(r)
           if (r.data.length == 0) {
@@ -1199,11 +977,9 @@ export default {
     },
 
     backInvestigation() {
-      this.$store
-        .dispatch('delView', this.$router.currentRoute)
-        .then(({ visitedViews }) => {
-          this.$router.push('/compliance/investigation').catch(() => {})
-        })
+      this.$store.dispatch('delView', this.$router.currentRoute).then(({ visitedViews }) => {
+        this.$router.push('/compliance/investigation').catch(() => {})
+      })
     },
     // 获取当前页面用户拥有的操作权限的函数
     getUserAuth() {
@@ -1241,5 +1017,4 @@ export default {
   },
 }
 </script>
-      <style scoped>
-</style>
+<style scoped></style>

@@ -132,7 +132,8 @@
   import {
     mapGetters
   } from 'vuex'
-  import chooseUser from '@/views/_common/chooseUser.vue'
+
+  import chooseUser from '@/views/_common/ChooseUser.vue'
   export default {
     name: 'videoAdminRole',
     components: {

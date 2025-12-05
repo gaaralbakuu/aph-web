@@ -81,7 +81,7 @@
 
 <script>
 import { arrayToObject, dateTools } from '@/utils'
-import { _, api, zTable, zPagination, zFormDialog } from '@/views/_common'
+import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common'
 
 const emptyData = {}
 export default {
@@ -348,7 +348,7 @@ export default {
               i.children.forEach((x) => {
                 this.menuObj.forEach((y) => {
                   if (x.menu_id == y.menu_id) {
-                    ;(x.m_search1 = y.m_search), (x.m_add1 = y.m_add), (x.m_del1 = y.m_del), (x.m_updata1 = y.m_updata), (x.m_import1 = y.m_import), (x.m_export1 = y.m_export), (x.m_upload1 = y.m_upload), (x.m_audit1 = y.m_audit), (x.m_print1 = y.m_print)
+                    (x.m_search1 = y.m_search), (x.m_add1 = y.m_add), (x.m_del1 = y.m_del), (x.m_updata1 = y.m_updata), (x.m_import1 = y.m_import), (x.m_export1 = y.m_export), (x.m_upload1 = y.m_upload), (x.m_audit1 = y.m_audit), (x.m_print1 = y.m_print)
                   }
                 })
               })

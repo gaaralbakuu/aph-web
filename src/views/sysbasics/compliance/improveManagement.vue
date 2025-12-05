@@ -148,7 +148,7 @@
 
               <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $l.surveyYear }}</label>
-                <el-date-picker v-model="form.survey_year" type="date" :placeholder="$c.surveyYearPlaceholder" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" style="width: 100%" />
+                <el-date-picker v-model="form.survey_year" type="year" :placeholder="$c.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
               </div>
 
               <!-- <div class="flex flex-col gap-2">
@@ -369,7 +369,7 @@
 
               <div class="flex flex-col gap-2">
                 <label class="font-light text-sm text-black">{{ $c.surveyYear }}</label>
-                <el-date-picker v-model="editForm.survey_year" type="date" :placeholder="$c.surveyYearPlaceholder" format="yyyy-MM-dd" value-format="yyyy-MM-dd" class="rounded-md w-full" style="width: 100%" />
+                <el-date-picker v-model="editForm.survey_year" type="year" :placeholder="$c.surveyYearPlaceholder" format="yyyy" value-format="yyyy" class="rounded-md w-full" style="width: 100%" />
               </div>
               <!-- 
               <div class="flex flex-col gap-2">
@@ -590,15 +590,17 @@
 
 <script>
 import axios from 'axios'
+import dayjs from 'dayjs'
+
+import { getToken } from '@/utils/auth'
 // import { checkField } from '../../utils/checkFiled'
 import { checkField } from '@/utils/checkFiled'
 import { _, api, zPagination } from '@/views/_common'
-import { getToken } from '@/utils/auth'
-import dayjs from 'dayjs'
-import filePreviews from '../../_common/filePreviews.vue'
+
 import CustomDialog from '../../_common/CustomDialog.vue'
-import ImproveManagementTable from './improveManagement-table.vue'
-import ImproveManagementDetailsTable from './improveManagement-details-table.vue'
+import filePreviews from '../../_common/FilePreviews.vue'
+import ImproveManagementDetailsTable from './ImproveManagementDetailsTable.vue'
+import ImproveManagementTable from './ImproveManagementTable.vue'
 
 export default {
   name: 'improveManagement',

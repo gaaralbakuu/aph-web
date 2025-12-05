@@ -293,11 +293,12 @@
 
 <script>
   import {
-    assignObject
-  } from '@/utils'
-  import {
     mapGetters
   } from 'vuex'
+
+  import {
+    assignObject
+  } from '@/utils'
   export default {
     name: 'videoAdminQuestionnaire',
     data() {

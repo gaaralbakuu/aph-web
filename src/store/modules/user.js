@@ -1,6 +1,6 @@
-import { setToken, removeToken } from '@/utils/auth'
-import { generateTree } from '@/utils'
 import api from '@/api'
+import { generateTree } from '@/utils'
+import { removeToken,setToken } from '@/utils/auth'
 import request from '@/utils/request'
 
 const user = {

@@ -3704,5 +3704,20 @@ export default {
     selectUser: 'Chọn nhân viên',
     userid: 'Mã nhân viên',
     username: 'Tên nhân viên',
+  },
+  videoPlayer: {
+    resume_play_question: 'Lần phát cuối là {time}, bạn có muốn tiếp tục phát không?',
+    submit_answer: 'Nộp bài',
+    seconds_to_close: 'giây để đóng',
+    finish_point: 'Điểm hoàn thành',
+    prevent_leaving: 'Vui lòng không rời khỏi trang này trong quá trình phát video',
+    leaving_detected: 'Phát hiện rời khỏi',
+    playback_speed_no_progress: 'Sử dụng phát nhanh sẽ không tải lên tiến độ, không thể lấy điểm',
+  },
+  VideoUserLayout: {
+    home: 'Trang chủ',
+    course: 'Khóa học',
+    topic: 'Chủ đề',
+    selectChannel: 'Chọn kênh',
   }
 }

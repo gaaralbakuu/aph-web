@@ -3371,5 +3371,20 @@ export default {
     hours: '小時',
     mins: '分鐘',
     seconds: '秒',
+  },
+  videoPlayer: {
+    resume_play_question: '上次播放到{time}，是否繼續播放？',
+    submit_answer: '提交',
+    seconds_to_close: '秒後關閉',
+    finish_point: '完成點位',
+    prevent_leaving: '請不要在視頻播放過程中離開本頁面',
+    leaving_detected: '檢測到離開',
+    playback_speed_no_progress: '使用倍數播放將不上傳進度，無法獲取積分',
+  },
+  VideoUserLayout: {
+    home: '首頁',
+    course: '課程',
+    topic: '主題',
+    selectChannel: '選擇頻道',
   }
 }

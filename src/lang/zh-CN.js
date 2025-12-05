@@ -3537,5 +3537,20 @@ export default {
     selectUser: '人员选择',
     userid: '员工条码',
     username: '员工姓名',
+  },
+  videoPlayer: {
+    resume_play_question: '上次播放到{time}，是否继续播放？',
+    submit_answer: '提交',
+    seconds_to_close: '秒后关闭',
+    finish_point: '完成点位',
+    prevent_leaving: '请不要在视频播放过程中离开本页面',
+    leaving_detected: '检测到离开',
+    playback_speed_no_progress: '使用倍数播放将不上传进度，无法获取积分',
+  },
+  VideoUserLayout: {
+    home: '首页',
+    course: '课程',
+    topic: '主题',
+    selectChannel: '选择频道',
   }
 }

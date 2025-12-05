@@ -28,16 +28,16 @@
   </div>
 </template>
 <script>
+import { localGet } from '@/utils/auth'
 import {
   _,
   api,
-  zTable,
-  zPagination,
-  zFormDialog,
-  initFuncs,
   defaultConfig,
+  initFuncs,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
-import { localGet } from '@/utils/auth'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.auth,
   apiSingle: api.auth + 'GetCAuthBlackById',

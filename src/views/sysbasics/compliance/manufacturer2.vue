@@ -744,13 +744,15 @@
 </template>
 
 <script>
-import { _, api, zTable, zForm, zPagination, zFormDialog, initFuncs, eTable, defaultConfig } from '@/views/_common'
 import axios from 'axios'
-import { getToken, localGet } from '@/utils/auth'
-import filePreviews from '../../_common/filePreviews.vue'
-import CustomDialog from '../../_common/CustomDialog.vue'
 import SparkMD5 from 'spark-md5'
-import ManufacturerTable from './manufacturer-table.vue'
+
+import { getToken, localGet } from '@/utils/auth'
+import { _, api, defaultConfig,initFuncs,  zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+
+import CustomDialog from '../../_common/CustomDialog.vue'
+import filePreviews from '../../_common/filePreviews.vue'
+import ManufacturerTable from './ManufacturerTable.vue'
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.ComplianceManufacturer,
@@ -1157,7 +1159,7 @@ export default {
       this.getList()
     },
     add() {
-      ;(this.manufacturer.data = {
+      (this.manufacturer.data = {
         name_zh: '',
         name_en: '',
         legal_person: '',

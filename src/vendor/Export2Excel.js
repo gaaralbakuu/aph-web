@@ -1,5 +1,5 @@
 /* eslint-disable */
-require('script-loader!file-saver')
+import FileSaver from 'file-saver';
 import XLSX from 'xlsx'
 
 function generateArray(table) {
@@ -146,7 +146,7 @@ export function export_table_to_excel(id) {
     type: 'binary'
   })
 
-  saveAs(
+  FileSaver.saveAs(
     new Blob([s2ab(wbout)], {
       type: 'application/octet-stream'
     }),
@@ -209,7 +209,7 @@ export function export_json_to_excel({
     bookSST: false,
     type: 'binary'
   })
-  saveAs(
+  FileSaver.saveAs(
     new Blob([s2ab(wbout)], {
       type: 'application/octet-stream'
     }),

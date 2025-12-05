@@ -3,7 +3,7 @@
     <div class="page-body">
       <div class="topic-info">
         <div class="cover">
-          <img :src="require('@/assets/logo.png')" width="100px" />
+          <img :src="logoImage" width="100px" />
         </div>
         <div class="info">
           <div class="title">
@@ -62,10 +62,14 @@
   import {
     mapGetters
   } from 'vuex'
+
+  import logoImage from '@/assets/logo.png'
+  
   export default {
     name: "videoUserTopicDetail",
     data() {
       return {
+        logoImage,
         topic: {
           title_label: '',
           detail: []

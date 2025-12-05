@@ -1,39 +1,42 @@
-import Vue from 'vue'
-import App from './App.vue'
-import VueCompositionAPI from '@vue/composition-api'
-import Cookies from 'js-cookie'
-import router from '@/router'
-import store from '@/store'
-import request from '@/utils/request'
-import api from '@/api'
-import '@/assets/css/tailwind.css'
-
-import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
-import '@fontsource-variable/inter'
+import '@fontsource/momo-signature';
+import '@fontsource/momo-trust-display';
+import '@fontsource/momo-trust-sans';
 import 'font-awesome/css/font-awesome.min.css' // font-awesome
 import '@/styles/index.css' // global css
 import '@/router/permission' // permission control
 import '@/icons' // icon
 import '@/utils/errorLog'
+import '@/utils/filter'
+// Import HLS debug utilities (available in window scope)
+import '@/utils/hls-debug'
 
-import { setCookie, localGet, localSet } from '@/utils/auth'
-
+import '@/assets/css/tailwind.css'
+import Element from 'element-ui'
+// import VueCompositionAPI from '@vue/composition-api'
+import Cookies from 'js-cookie'
+import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import zhCn from '@/lang/zh-CN.js'
+import { VueQueryPlugin } from '@tanstack/vue-query'
+
+import api from '@/api'
 import enUS from '@/lang/en-US.js'
+import zhCn from '@/lang/zh-CN.js'
 import zhTW from '@/lang/zh-TW.js'
 import viVN from './lang/vi-VN'
-
 import mixinCommon from '@/mixin/mixin.js'
+import router from '@/router'
+import store from '@/store'
+import { localGet, localSet, setCookie } from '@/utils/auth'
 import dialogEscPlugin from '@/utils/dialogEscPlugin.js'
+import request from '@/utils/request'
 
-import '@/utils/filter'
+import App from './App.vue'
 
 
-Vue.use(VueCompositionAPI)
+// Vue.use(VueCompositionAPI)
 Vue.use(VueI18n)
+Vue.use(VueQueryPlugin)
 const i18n = new VueI18n({
   // 默认语言
   locale: 'vi-VN',

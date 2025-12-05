@@ -195,14 +195,14 @@
 import {
   _,
   api,
-  zTable,
-  zForm,
-  zPagination,
-  zFormDialog,
-  initFuncs,
-  eTable,
   defaultConfig,
+  initFuncs,
+  zForm,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
+
 import filePreviews from '../../_common/filePreviews.vue'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   tableProps: {

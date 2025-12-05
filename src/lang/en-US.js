@@ -3353,4 +3353,19 @@ export default {
     mins: 'Minutes',
     seconds: 'Seconds',
   },
+  videoPlayer: {
+    resume_play_question: 'Last playback was at {time}, do you want to continue?',
+    submit_answer: 'Submit',
+    seconds_to_close: 'seconds to close',
+    finish_point: 'Finish Point',
+    prevent_leaving: 'Please do not leave this page during video playback',
+    leaving_detected: 'Leaving Detected',
+    playback_speed_no_progress: 'Using playback speed will not upload progress and you cannot earn points',
+  },
+  VideoUserLayout: {
+    home: 'Home',
+    course: 'Course',
+    topic: 'Topic',
+    selectChannel: 'Select Channel',
+  },
 }

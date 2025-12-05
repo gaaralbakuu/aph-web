@@ -30,4 +30,4 @@ export function checkField(obj, fields, defaultValue = "") {
     result = defaultValue;
   }
   return result;
-};
+}

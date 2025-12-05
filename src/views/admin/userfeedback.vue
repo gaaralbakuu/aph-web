@@ -106,12 +106,14 @@
 	</div>
 </template>
 <script>
-import { _, api, zTable, zPagination, zFormDialog, initFuncs, defaultConfig } from '@/views/_common';
 //import api from '@/api'
 import 'viewerjs/dist/viewer.css';
+
 import Viewer from 'v-viewer';
 import Vue from 'vue';
 import { createLogger } from 'vuex';
+
+import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common';
 
 Vue.use(Viewer, {
 	defaultOptions: {

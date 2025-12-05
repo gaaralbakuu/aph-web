@@ -149,7 +149,8 @@
 </template>
 
 <script>
-import { _, api, zTable, zForm, zPagination, zFormDialog, initFuncs, eTable, defaultConfig } from '@/views/_common'
+import { _, api, defaultConfig,initFuncs, zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+
 import CustomDialog from '../../_common/CustomDialog.vue'
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {

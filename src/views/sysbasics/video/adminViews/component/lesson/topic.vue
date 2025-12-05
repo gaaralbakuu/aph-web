@@ -206,6 +206,7 @@
   import {
     mapGetters
   } from 'vuex'
+
   import {
     _
   } from '@/views/_common'

@@ -193,13 +193,12 @@
 import {
   _,
   api,
-  zTable,
-  zForm,
-  zPagination,
-  zFormDialog,
-  initFuncs,
-  eTable,
   defaultConfig,
+  initFuncs,
+  zForm,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.ComplianceDictionary,

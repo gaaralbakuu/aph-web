@@ -323,10 +323,10 @@
 
 
 <script>
+  import Sortable from 'sortablejs'
   import {
     mapGetters
   } from 'vuex'
-  import Sortable from 'sortablejs'
   export default {
     name: 'videoAdminPlan',
     data() {

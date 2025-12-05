@@ -1,0 +1,108 @@
+g:\APH_Workspace\VueJS\aph-web\src\components\Tag\Dynamictag.vue
+g:\APH_Workspace\VueJS\aph-web\src\components\videoPlayer\videoPlayer.vue
+g:\APH_Workspace\VueJS\aph-web\src\components\videoPlayer\videoPlayerPlyr.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\appVersion.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\astrictAuth.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\banner.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\dictionary.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\menu.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\param.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\quartz.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\role.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\testUser.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\user.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\userfeedback.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\admin\workflowFields.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\demo\demo.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\errorPage\401.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\errorPage\404.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\home\welcome.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\layout\components\Navbar copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\login\index copy 2.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\login\index copy 3.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\login\index copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\login\register.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\epidemic.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\publiccode.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\sysmesg.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\accountManagement.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\banner.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\complianceManufacturer.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\demo3.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveAnalysis copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveAnalysis.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagement copy 2.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagement copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagement-details-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagement-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagement-table2.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagement.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\improveManagementInfo.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\investigation copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\investigation-history-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\investigation-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\investigation.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\investigationInfo.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\issuesType.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\manufacturer copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\manufacturer-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\manufacturer.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\manufacturer2 copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\manufacturer2.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\role.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\share-contact-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\share-help-manual-table.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\shareInformation.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance\workTable.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance2\complianceManufacturer.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance2\investigation.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance2\investigationInfo.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance2\issuesType.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\compliance2\shareInformation.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\analyze.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\exam.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\lesson.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\system.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\training.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\analyze\collegeTraining.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\exam\exam.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\exam\question.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\exam\questionnaire.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\lesson\catalogue.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\lesson\content.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\lesson\course.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\lesson\tag.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\lesson\topic.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\system\banner.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\system\college.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\system\menu.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\system\role.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\system\setting.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\training\class.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\training\lecturer.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\training\place.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\adminViews\component\training\plan.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\layout\videoAdminLayout.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\layout\videoUserLayout copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\layout\videoUserLayout.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\course.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\examDetail.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\home copy.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\home.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\mine.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\play.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\topic.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\topicDetail.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\trainingDetail.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\component\favorite.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\component\history.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\sysbasics\video\userViews\component\training.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\video\layout\videoUserLayout.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\video\userViews\home.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\chooseUser.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\dentify.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\filePreviews.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\form.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\formDialog.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\pagination.vue
+g:\APH_Workspace\VueJS\aph-web\src\views\_common\table.vue

@@ -244,6 +244,7 @@
   import {
     mapGetters
   } from 'vuex'
+
   import {
     zTable
   } from '@/views/_common'
@@ -650,144 +651,115 @@
     },
   }
 </script>
-<style scoped lang="less">
+<style scoped>
   .img {
     width: 80%;
     height: 60px;
+  }
 
-    .auto-img {
-      position: relative;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 100%;
-      max-height: 100%;
-      cursor: pointer;
-    }
+  .img .auto-img {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+    cursor: pointer;
   }
 
   .banner-container {
     width: 100%;
     height: 100%;
+  }
 
+  .banner-container .drawer-container .title {
+    padding: 20px 0px;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 1px solid #ccc;
+  }
 
-    .drawer-container {
+  .banner-container .drawer-container .form-container {
+    width: 90%;
+    height: 90%;
+    margin: 0 auto;
+    background-color: #fff;
+  }
 
-      //抽屉样式
-      .title {
-        padding: 20px 0px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-      }
+  .banner-container .drawer-container .form-container .cover {
+    position: relative;
+    width: 260px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+  }
 
-      .form-container {
-        width: 90%;
-        height: 90%;
-        margin: 0 auto;
-        background-color: #fff;
+  .banner-container .drawer-container .form-container .cover .auto-img {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+    cursor: pointer;
+  }
 
+  .banner-container .drawer-container .form-container .cover:hover .cover-oprate {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: rgba(167, 167, 167, 0.7);
+    color: white;
+    font-size: 30px;
+  }
 
-        .cover {
-          position: relative;
-          width: 260px;
-          height: 150px;
-          display: flex;
-          align-items: center;
+  .banner-container .drawer-container .form-container .cover .plus-icon {
+    width: 140px;
+    height: 140px;
+    border: 2px dotted #ccc;
+    border-radius: 5px;
+    color: #999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+  }
 
-          .auto-img {
-            position: relative;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 100%;
-            max-height: 100%;
-            cursor: pointer;
-          }
+  .banner-container .drawer-container .form-container .cover .plus-icon:hover {
+    color: #409fee;
+  }
 
-          &:hover {
-            .cover-oprate {
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              top: 0;
-              display: flex;
-              justify-content: space-evenly;
-              align-items: center;
-              background-color: rgba(167, 167, 167, 0.7);
-              color: white;
-              font-size: 30px;
+  .banner-container .drawer-container .form-container .cover .cover-oprate {
+    display: none;
+  }
 
-              .iconZoom {
-                margin-top: 15%;
+  .banner-container .drawer-container .buttonBar {
+    width: 100%;
+    height: 60px;
+    margin: 0 auto;
+    padding: 0 25px;
+    position: absolute;
+    bottom: 0px;
+    border-top: 1px solid #ccc;
+    float: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
 
-                &:hover {
-                  color: #409fee;
-                }
-              }
-
-              .iconRefresh {
-                margin-top: 15%;
-
-                &:hover {
-                  color: #00aa7f;
-                }
-              }
-            }
-          }
-
-          .plus-icon {
-            width: 140px;
-            height: 140px;
-            border: 2px dotted #ccc;
-            border-radius: 5px;
-            color: #999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-
-            &:hover {
-              color: #409fee;
-            }
-          }
-
-          .cover-oprate {
-            display: none;
-
-
-
-          }
-        }
-      }
-
-      .buttonBar {
-        width: 100%;
-        height: 60px;
-        margin: 0 auto;
-        padding: 0 25px;
-        position: absolute;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        float: right;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-      }
-    }
-
-
-
-    .banner-filter {
-      width: 100%;
-      height: 60px;
-      padding: 14px;
-      border-bottom: 1px #ddd solid;
-      display: flex;
-      justify-content: space-between;
-      background-color: white;
-    }
+  .banner-container .banner-filter {
+    width: 100%;
+    height: 60px;
+    padding: 14px;
+    border-bottom: 1px #ddd solid;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
   }
 </style>

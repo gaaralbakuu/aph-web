@@ -647,15 +647,17 @@
   </div>
 </template>
 <script>
-import { _, api, zTable, zPagination, initFuncs, zForm, dayjs } from '@/views/_common'
 import axios from 'axios'
-import { getToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
-import filePreviews from '../../_common/filePreviews.vue'
-import CustomDialog from '../../_common/CustomDialog.vue'
+
+import { getToken } from '@/utils/auth'
+import { _, api, dayjs,initFuncs, zForm, zPagination, zTable } from '@/views/_common'
+
 import exportExcel from '../../../utils/exportExcel'
-import InvestigationTable from './investigation-table.vue'
-import InvestigationHistoryTable from './investigation-history-table.vue'
+import CustomDialog from '../../_common/CustomDialog.vue'
+import filePreviews from '../../_common/FilePreviews.vue'
+import InvestigationHistoryTable from './InvestigationHistoryTable.vue'
+import InvestigationTable from './InvestigationTable.vue'
 
 export default {
   name: 'investigation',

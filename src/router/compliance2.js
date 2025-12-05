@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'complianceManufacturer',
-            component: () => import('@/views/sysbasics/compliance2/complianceManufacturer'),
+            component: () => import('@/views/sysbasics/compliance2/ComplianceManufacturer'),
             name: 'complianceManufacturer',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'investigation',
-            component: () => import('@/views/sysbasics/compliance2/investigation'),
+            component: () => import('@/views/sysbasics/compliance2/Investigation'),
             name: 'investigation',
             meta: {
                 noCache: isDevelopMode
@@ -22,7 +22,7 @@ export default {
         },
         {
             path: 'investigationInfo',
-            component: () => import('@/views/sysbasics/compliance2/investigationInfo'),
+            component: () => import('@/views/sysbasics/compliance2/InvestigationInfo'),
             name: 'investigationInfo',
             meta: {
                 noCache: isDevelopMode
@@ -30,7 +30,7 @@ export default {
         },
         {
             path: 'issuesType',
-            component: () => import('@/views/sysbasics/compliance2/issuesType'),
+            component: () => import('@/views/sysbasics/compliance2/IssuesType'),
             name: 'issuesType',
             meta: {
                 noCache: isDevelopMode
@@ -38,7 +38,7 @@ export default {
         },
         {
             path: 'shareInformation',
-            component: () => import('@/views/sysbasics/compliance2/shareInformation'),
+            component: () => import('@/views/sysbasics/compliance2/ShareInformation'),
             name: 'shareInformation',
             meta: {
                 noCache: isDevelopMode

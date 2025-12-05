@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'Investigation',
-            component: () => import('@/views/sysbasics/compliance/investigation'),
+            component: () => import('@/views/sysbasics/compliance/Investigation'),
             name: 'Investigation',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'ShareInformation',
-            component: () => import('@/views/sysbasics/compliance/shareInformation'),
+            component: () => import('@/views/sysbasics/compliance/ShareInformation'),
             name: 'ShareInformation',
             meta: {
                 noCache: isDevelopMode
@@ -22,7 +22,7 @@ export default {
         },
         {
             path: 'InvestigationInfo',
-            component: () => import('@/views/sysbasics/compliance/investigationInfo'),
+            component: () => import('@/views/sysbasics/compliance/InvestigationInfo'),
             name: 'InvestigationInfo',
             meta: {
                 noCache: isDevelopMode
@@ -30,7 +30,7 @@ export default {
         },
         {
             path: 'AccountManagement',
-            component: () => import('@/views/sysbasics/compliance/accountManagement'),
+            component: () => import('@/views/sysbasics/compliance/AccountManagement'),
             name: 'AccountManagement',
             meta: {
                 noCache: isDevelopMode
@@ -39,7 +39,7 @@ export default {
 
         {
             path: 'Manufacturer',
-            component: () => import('@/views/sysbasics/compliance/manufacturer'),
+            component: () => import('@/views/sysbasics/compliance/Manufacturer'),
             name: 'Manufacturer',
             meta: {
                 noCache: isDevelopMode
@@ -47,23 +47,23 @@ export default {
         },
         {
             path: 'Manufacturer2',
-            component: () => import('@/views/sysbasics/compliance/manufacturer2'),
+            component: () => import('@/views/sysbasics/compliance/Manufacturer2'),
             name: 'Manufacturer2',
             meta: {
                 noCache: isDevelopMode
             }
         },
-        {
-            path: 'Demo3',
-            component: () => import('@/views/sysbasics/compliance/demo3'),
-            name: 'Demo3',
-            meta: {
-                noCache: isDevelopMode
-            }
-        },
+        // {
+        //     path: 'Demo3',
+        //     component: () => import('@/views/sysbasics/compliance/demo3'),
+        //     name: 'Demo3',
+        //     meta: {
+        //         noCache: isDevelopMode
+        //     }
+        // },
         {
             path: 'ImproveAnalysis',
-            component: () => import('@/views/sysbasics/compliance/improveAnalysis'),
+            component: () => import('@/views/sysbasics/compliance/ImproveAnalysis'),
             name: 'ImproveAnalysis',
             meta: {
                 noCache: isDevelopMode
@@ -71,7 +71,7 @@ export default {
         },
         {
             path: 'ImproveManagement',
-            component: () => import('@/views/sysbasics/compliance/improveManagement'),
+            component: () => import('@/views/sysbasics/compliance/ImproveManagement'),
             name: 'ImproveManagement',
             meta: {
                 noCache: isDevelopMode
@@ -79,7 +79,7 @@ export default {
         },
         {
           path: 'ImproveManagementInfo',
-          component: () => import('@/views/sysbasics/compliance/improveManagementInfo'),
+          component: () => import('@/views/sysbasics/compliance/ImproveManagementInfo'),
           name: 'improveManagementInfo',
           meta: {
               noCache: isDevelopMode
@@ -87,7 +87,7 @@ export default {
       },
         {
           path: 'cisbanner',
-          component: () => import('@/views/sysbasics/compliance/banner'),
+          component: () => import('@/views/sysbasics/compliance/Banner'),
           name: 'sysbasicscompliancebanner',
           meta: {
             noCache: true
@@ -95,7 +95,7 @@ export default {
         },
         {
           path: 'cisRole',
-          component: () => import('@/views/sysbasics/compliance/role'),
+          component: () => import('@/views/sysbasics/compliance/Role'),
           name: 'sysbasicscompliancerole',
           meta: {
             noCache: true

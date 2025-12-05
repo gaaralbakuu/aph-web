@@ -318,12 +318,12 @@ import { arrayToObject, dateTools } from '@/utils'
 import {
   _,
   api,
-  zTable,
-  zPagination,
-  zFormDialog,
   initFuncs,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
-import chooseUser from '@/views/_common/chooseUser.vue'
+import chooseUser from '@/views/_common/ChooseUser.vue'
 
 const emptyData = {}
 export default {
@@ -665,7 +665,7 @@ export default {
               i.children.forEach((x) => {
                 this.menuObj.forEach((y) => {
                   if (x.menu_id == y.menu_id) {
-                    ;(x.m_search1 = y.m_search),
+                    (x.m_search1 = y.m_search),
                       (x.m_add1 = y.m_add),
                       (x.m_del1 = y.m_del),
                       (x.m_updata1 = y.m_updata),

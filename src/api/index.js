@@ -1,9 +1,9 @@
-const baseUrl = process.env.VUE_APP_API
+const baseUrl = import.meta.env.VITE_API
 let url = baseUrl + '/'
 //url = 'http://192.168.31.18:65301/'
 
 // Video API Configuration
-const videoBaseUrl = process.env.VUE_APP_VIDEO_API
+const videoBaseUrl = import.meta.env.VITE_VIDEO_API
 let videoUrl = videoBaseUrl + '/'
 
 const api = {

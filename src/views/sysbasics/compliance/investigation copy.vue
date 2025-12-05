@@ -552,12 +552,14 @@
   </div>
 </template>
 <script>
-import { _, api, zTable, zPagination, zFormDialog, initFuncs, zForm, dayjs } from '@/views/_common'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import filePreviews from '../../_common/filePreviews.vue'
-import CustomDialog from '../../_common/CustomDialog.vue'
+
+import { _, api, dayjs,initFuncs, zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+
 import exportExcel from '../../../utils/exportExcel'
+import CustomDialog from '../../_common/CustomDialog.vue'
+import filePreviews from '../../_common/filePreviews.vue'
 
 export default {
   name: 'investigation',

@@ -149,6 +149,11 @@
 
 <script>
 import axios from 'axios'
+import dayjs from 'dayjs';
+
+import {
+  getToken
+} from '@/utils/auth'
 import {
   checkField
 } from '@/utils/checkFiled'
@@ -156,11 +161,8 @@ import {
   _,
   api,
 } from '@/views/_common'
-import {
-  getToken
-} from '@/utils/auth'
+
 import filePreviews from '../../_common/filePreviews.vue'
-import dayjs from 'dayjs';
 export default {
   name: 'issuesType',
   components: {

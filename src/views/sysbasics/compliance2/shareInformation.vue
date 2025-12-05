@@ -263,16 +263,18 @@
   </div>
 </template>
       <script>
+import axios from 'axios'
+
 import {
   _,
   api,
-  zTable,
-  zPagination,
-  zFormDialog,
   initFuncs,
   zForm,
+  zFormDialog,
+  zPagination,
+  zTable,
 } from '@/views/_common'
-import axios from 'axios'
+
 import filePreviews from '../../_common/filePreviews.vue'
 export default {
   name: 'shareInformation',

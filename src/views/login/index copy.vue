@@ -88,9 +88,10 @@
 </template>
 
 <script>
-import con from '@/config'
-import bg from '@/assets/bg.jpg'
 import dayjs from 'dayjs'
+
+import bg from '@/assets/bg.jpg'
+import con from '@/config'
 
 export default {
   name: 'loginIndex',
