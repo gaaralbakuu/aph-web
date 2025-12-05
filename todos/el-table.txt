@@ -1,0 +1,5 @@
+Danh sách các file Vue sử dụng el-table:
+
+- src/views/sysbasics/compliance/ImproveManagement.vue
+- src/views/_common/chooseUser.vue
+- src/views/sysbasics/video/userViews/trainingDetail.vue

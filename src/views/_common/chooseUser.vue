@@ -59,35 +59,16 @@
                   icon="el-icon-search"
                   @click="getUser"></el-button>
               </el-input>
-              <el-button type="success" class="fr" @click="addList">
-                {{ $l.deliver }}
-              </el-button>
             </div>
           </div>
-          <el-table
-            ref="userTable"
-            :data="userTable.userList"
-            max-height="500px"
-            highlight-current-row
-            :row-class-name="tableRowClassName"
-            show-overflow-tooltip
-            @selection-change="userMulChange">
-            <el-table-column type="selection" width="40"></el-table-column>
-            <el-table-column
-              property="userid"
-              :label="$c.userid"></el-table-column>
-            <el-table-column
-              property="username"
-              :label="$c.username"
-              show-overflow-tooltip></el-table-column>
-            <!-- <el-table-column
-              property="work_name"
-              :label="$c.workName"
-              width="50"></el-table-column> -->
-            <!-- <el-table-column
-              property="department_t"
-              :label="$c.dept"></el-table-column> -->
-          </el-table>
+          <z-table
+            :list="userTable.userList"
+            :columns="userTable.columns"
+            :tableProps="userTable.tableProps">
+            <template #operation="{row}">
+              <el-button @click="addUser(row)" type="text" size="small">{{ $l.add || 'Add' }}</el-button>
+            </template>
+          </z-table>
           <z-pagination
             :pagination="userTable.pagination"
             :total="userTable.total"
@@ -192,11 +173,20 @@ export default {
       userTable: {
         //中间用户表格
         userList: [], //保存查询结果
-        multipleSelection: [], //保存中间表格被选择的数据
         tableProps: {
           hideOperations: false,
           maxHeight: '500px',
         },
+        columns: [
+          {
+            key: 'userid',
+            title: this.$c.userid,
+          },
+          {
+            key: 'username',
+            title: this.$c.username,
+          },
+        ],
         total: 0,
         query: {
           queryString: '',
@@ -354,30 +344,16 @@ export default {
       this.selectedObj.deleteList = []
     },
 
-    userMulChange(val) {
-      //用户表多选数据
-      this.userTable.multipleSelection = val
-    },
-
     selectMulChange(val) {
       //选中表多选数据
       this.selectedObj.multipleSelection = val
     },
 
-    addList() {
-      //把用户表多选数据添加到选中列表
-      this.selectedObj.list = Array.from(
-        new Set(this.selectedObj.list.concat(this.userTable.multipleSelection))
-      )
-
-      /* 
-				注释代码与上面代码结果一致，都是合并数组并去重
-				this.userTable.multipleSelection.forEach(i => {
-					if (this.selectedObj.list.indexOf(i) == -1) {
-						this.selectedObj.list.push(i)
-					}
-				}) */
-      this.$refs.userTable.clearSelection()
+    addUser(row) {
+      //把单个用户添加到选中列表
+      if (!this.selectedObj.list.find(item => item.userid === row.userid)) {
+        this.selectedObj.list.push(row)
+      }
     },
 
     deleteUser(r, i) {
@@ -420,14 +396,6 @@ export default {
       this.$emit('update:list', this.selectedObj.list) //更新选择用户组件
       this.$emit('submmit') //可以触发后续动作，只需传入回调函数
       this.dialogShow = false
-    },
-
-    tableRowClassName({ rowIndex }) {
-      if (rowIndex % 2 == 0) {
-        return ''
-      } else {
-        return 'warning-row'
-      }
     },
   },
 

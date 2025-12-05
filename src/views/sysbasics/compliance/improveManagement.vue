@@ -170,14 +170,11 @@
 
               <div class="col-span-full" v-if="form.fileList.length > 0">
                 <div class="">
-                  <el-table :data="form.fileList" class="rounded-lg">
-                    <el-table-column v-for="(item, index) in form.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                    <el-table-column fixed="right" :label="$c.operation" width="145">
-                      <template slot-scope="scope">
-                        <el-button @click="removeAddClick(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ $c.delete }}</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
+                  <z-table :list="form.fileList" :columns="form.columns">
+                    <template #operation="{row, $index}">
+                      <el-button @click="removeAddClick(row, $index)" type="text" size="small" class="text-red-500">{{ $c.delete }}</el-button>
+                    </template>
+                  </z-table>
                 </div>
               </div>
             </div>
@@ -543,14 +540,11 @@
     <el-dialog :visible.sync="fileTableVisable" :title="$l.viewDocument">
       <div>
         <!-- 文件表格 -->
-        <el-table :data="file.list" style="width: 90%">
-          <el-table-column v-for="(item, index) in file.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-          <el-table-column fixed="right" :label="this.$c.operation" width="145">
-            <template slot-scope="scope">
-              <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <z-table :list="file.list" :columns="file.columns">
+          <template #operation="{row, $index}">
+            <el-button @click="getFilePreview(row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
+          </template>
+        </z-table>
       </div>
     </el-dialog>
 
@@ -565,25 +559,19 @@
               <el-form-item :label="$l.emailNotificationRole"></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-table :data="roleList.list" style="width: 90%">
-                <el-table-column v-for="(item, index) in roleList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                <el-table-column fixed="right" :label="this.$c.operation" width="145">
-                  <template slot-scope="scope">
-                    <el-button @click="addRoleItem(scope.row)" type="text" size="small">{{ $l.addNotification }}</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <z-table :list="roleList.list" :columns="roleList.columns">
+                <template #operation="{row, $index}">
+                  <el-button @click="addRoleItem(row)" type="text" size="small">{{ $l.addNotification }}</el-button>
+                </template>
+              </z-table>
             </el-col>
 
             <el-col :span="12">
-              <el-table :data="recEmailList.list" style="width: 90%">
-                <el-table-column v-for="(item, index) in recEmailList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
-                <el-table-column fixed="right" :label="this.$c.operation" width="145">
-                  <template slot-scope="scope">
-                    <el-button @click="deleteRoleItem(scope.row)" type="text" size="small" style="color: red">{{ $l.cancellationNotice }}</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <z-table :list="recEmailList.list" :columns="recEmailList.columns">
+                <template #operation="{row, $index}">
+                  <el-button @click="deleteRoleItem(row)" type="text" size="small" style="color: red">{{ $l.cancellationNotice }}</el-button>
+                </template>
+              </z-table>
             </el-col>
 
             <el-col :span="24">
@@ -632,7 +620,7 @@ import dayjs from 'dayjs'
 import { getToken } from '@/utils/auth'
 // import { checkField } from '../../utils/checkFiled'
 import { checkField } from '@/utils/checkFiled'
-import { _, api, zPagination } from '@/views/_common'
+import { _, api, zPagination, zTable } from '@/views/_common'
 
 import CustomDialog from '../../_common/CustomDialog.vue'
 import FilePreviews from '../../_common/FilePreviews.vue'
@@ -645,6 +633,7 @@ export default {
     FilePreviews,
     zPagination,
     CustomDialog,
+    zTable,
     ImproveManagementTable,
     ImproveManagementDetailsTable,
   },
