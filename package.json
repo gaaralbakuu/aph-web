@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "dev:debug": "cross-env NODE_ENV=development DEBUG=* vite",
+    "dev:production": "vite --mode production",
+    "dev:test": "vite --mode test",
+    "dev:debug": "vite --debug",
     "build": "vite build --mode production",
     "build:test": "vite build --mode test",
     "build:debug": "vite build --debug",

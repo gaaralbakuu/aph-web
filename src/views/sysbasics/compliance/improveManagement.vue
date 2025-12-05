@@ -255,24 +255,41 @@
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="'Select Manufacturer'" :visible.sync="dialogSelectManufacture" :height="'100%'">
+    <CustomDialog :title="$l.selectManufacture" :visible.sync="dialogSelectManufacture" :height="'100%'">
       <template #content>
-        <div class="flex flex-col overflow-hidden h-full">
-          <div class="flex-1 overflow-auto">
-            <el-input v-show="false" v-model="manufacture.query.manufacture_name"></el-input>
-            <el-button v-show="false" @click="getManufactureList"></el-button>
-            <el-table :data="manufacture.tableData">
-              <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key"></el-table-column>
-              <el-table-column align="right">
+        <div class="flex flex-col overflow-hidden h-full gap-3">
+          <!-- Search Section -->
+          <!-- <div class="flex gap-2">
+            <div class="relative flex-1">
+              <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+                  <path d="m8 13 4-7 4 7" />
+                  <path d="M9.1 11h5.7" />
+                </svg>
+              </div>
+              <input type="text" :placeholder="$l.manufactureName" v-model="manufacture.query.manufacture_name" class="h-9 pr-3 pl-10 w-full border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+            </div>
+            <button @click="getManufactureList" class="h-9 rounded flex items-center bg-black text-white px-4 hover:bg-gray-800 transition-colors duration-150">
+              {{ $l.search }}
+            </button>
+          </div> -->
+
+          <!-- Table Section -->
+          <div class="flex-1 overflow-auto border border-gray-200 rounded">
+            <el-table :data="manufacture.tableData" v-loading="manufacture.loading" stripe>
+              <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key" min-width="150"></el-table-column>
+              <el-table-column align="right" label="Action" width="100" fixed="right">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
+                  <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">{{ $c.select || 'Select' }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </div>
 
           <!-- Pagination for manufacturer list -->
-          <div class="mt-3">
+          <div class="flex justify-between items-center">
+            <div class="text-sm text-gray-500">{{ $l.total }}: {{ manufacture.total }}</div>
             <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.query.page" :limit.sync="manufacture.query.pageSize" @change="getManufactureList" />
           </div>
         </div>
@@ -720,10 +737,6 @@ export default {
             key: 'manufacture_id',
             label: 'manufacture_id',
           },
-          // {
-          //   key: 'name_zh',
-          //   label: this.$l.CNname,
-          // },
           {
             key: 'name_en',
             label: this.$l.ENname,
@@ -731,6 +744,7 @@ export default {
         ],
         tableData: [],
         total: 0,
+        loading: false,
         query: {
           page: 1,
           pageSize: 15,
@@ -1534,17 +1548,33 @@ export default {
       this.getManufactureList()
     },
     getManufactureList() {
+      this.manufacture.loading = true
       const params = {
         page: this.manufacture.query.page,
         pageSize: this.manufacture.query.pageSize,
         manufacture_name: this.manufacture.query.manufacture_name,
       }
-      this.$request(api.baseUrl + '/Compliance/complianceManufacturer/getlist', params, 'get').then((response) => {
-        // Assume API returns { list: [...], total: number }
-        this.manufacture.tableData = response.data.list || []
-        this.manufacture.total = response.data.total || (response.data.list ? response.data.list.length : 0)
-        console.log('manufacture list', this.manufacture.tableData, 'total', this.manufacture.total)
-      })
+      this.$request(api.baseUrl + '/Compliance/complianceManufacturer/getlist', params, 'get')
+        .then((response) => {
+          console.log('✅ API Response:', response)
+          // Make sure to assign to new object to trigger reactivity
+          const tableData = response.data.list || []
+          const total = response.data.total || tableData.length
+          
+          // Force reactivity update
+          this.$set(this.manufacture, 'tableData', tableData)
+          this.$set(this.manufacture, 'total', total)
+          
+          console.log('✅ Updated tableData:', this.manufacture.tableData)
+          console.log('✅ Updated total:', this.manufacture.total)
+        })
+        .catch((error) => {
+          console.error('❌ Error fetching manufacturers:', error)
+          this.$message.error(error.response?.data?.message || this.$l.loadDataFailed)
+        })
+        .finally(() => {
+          this.manufacture.loading = false
+        })
     },
     selectManufacture(index, item) {
       this.form.manufacture_id = item.manufacture_id
