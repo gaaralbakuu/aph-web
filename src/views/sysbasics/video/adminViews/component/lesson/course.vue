@@ -3,7 +3,7 @@
 
     <div class="components">
       <!-- 文件预览 -->
-      <filePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews"
+      <FilePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews"
         @update:visible="showObj.filePreviews = $event" />
 
       <input ref="attachmentInput" type="file" @change="uploadattAchmentChange" style="display: none;" />
@@ -726,12 +726,12 @@
   import {
     _
   } from '@/views/_common'
-  import filePreviews from '@/views/_common/filePreviews.vue'
+  import FilePreviews from '@/views/_common/FilePreviews.vue'
   export default {
     name: 'videoAdminCourse',
     components: {
       videoPlayer,
-      filePreviews
+      FilePreviews
     },
     data() {
       return {

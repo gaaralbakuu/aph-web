@@ -277,14 +277,34 @@
 
           <!-- Table Section -->
           <div class="flex-1 overflow-auto border border-gray-200 rounded">
-            <el-table :data="manufacture.tableData" v-loading="manufacture.loading" stripe>
-              <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key" min-width="150"></el-table-column>
-              <el-table-column align="right" label="Action" width="100" fixed="right">
-                <template slot-scope="scope">
-                  <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">{{ $c.select || 'Select' }}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <div v-if="manufacture.loading" class="flex items-center justify-center h-32">
+              <div class="text-gray-500">{{ $l.loading || 'Loading...' }}</div>
+            </div>
+            <div v-else-if="manufacture.tableData.length === 0" class="flex items-center justify-center h-32">
+              <div class="text-gray-500">{{ $l.noData || 'No data available' }}</div>
+            </div>
+            <table v-else class="w-full border-collapse">
+              <thead class="bg-gray-50 sticky top-0">
+                <tr>
+                  <th v-for="(item, index) in manufacture.column" :key="index" class="px-4 py-3 text-left text-sm font-semibold text-gray-900 border-b border-gray-200">
+                    {{ item.label }}
+                  </th>
+                  <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900 border-b border-gray-200">{{ $c.operation || 'Action' }}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr v-for="(row, rowIndex) in manufacture.tableData" :key="rowIndex" class="hover:bg-gray-50 transition-colors">
+                  <td v-for="(item, colIndex) in manufacture.column" :key="colIndex" class="px-4 py-3 text-sm text-gray-900 border-b border-gray-100">
+                    {{ row[item.key] }}
+                  </td>
+                  <td class="px-4 py-3 text-sm text-right border-b border-gray-100">
+                    <button @click="selectManufacture(rowIndex, row)" class="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded transition-colors duration-150">
+                      {{ $c.select || 'Select' }}
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <!-- Pagination for manufacturer list -->
@@ -601,7 +621,7 @@
       </div>
     </el-dialog>
 
-    <filePreviews v-if="file.fileUrl" :file-url="file.fileUrl" :visible="fileDialogVisible" @update:visible="fileDialogVisible = $event" />
+    <FilePreviews v-if="file.fileUrl" :file-url="file.fileUrl" :visible="fileDialogVisible" @update:visible="fileDialogVisible = $event" />
   </div>
 </template>
 
@@ -615,14 +635,14 @@ import { checkField } from '@/utils/checkFiled'
 import { _, api, zPagination } from '@/views/_common'
 
 import CustomDialog from '../../_common/CustomDialog.vue'
-import filePreviews from '../../_common/FilePreviews.vue'
+import FilePreviews from '../../_common/FilePreviews.vue'
 import ImproveManagementDetailsTable from './ImproveManagementDetailsTable.vue'
 import ImproveManagementTable from './ImproveManagementTable.vue'
 
 export default {
   name: 'improveManagement',
   components: {
-    filePreviews,
+    FilePreviews,
     zPagination,
     CustomDialog,
     ImproveManagementTable,

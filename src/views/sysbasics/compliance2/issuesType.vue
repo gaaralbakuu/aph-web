@@ -142,7 +142,7 @@
       </div>
     </el-dialog>
 
-    <filePreviews v-if="file.fileUrl" :file-url="file.fileUrl" :visible="fileDialogVisible"
+    <FilePreviews v-if="file.fileUrl" :file-url="file.fileUrl" :visible="fileDialogVisible"
       @update:visible="fileDialogVisible = $event" />
   </div>
 </template>
@@ -162,7 +162,7 @@ import {
   api,
 } from '@/views/_common'
 
-import filePreviews from '../../_common/filePreviews.vue'
+import FilePreviews from '../../_common/FilePreviews.vue'
 export default {
   name: 'issuesType',
   components: {

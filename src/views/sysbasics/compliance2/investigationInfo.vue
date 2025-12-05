@@ -333,7 +333,7 @@
     </div>
 
     <!-- 预览 -->
-    <filePreviews
+    <FilePreviews
       v-if="fileUrl"
       :file-url="fileUrl"
       :visible="dialogVisible"
@@ -354,7 +354,7 @@ import {
   zTable,
 } from '@/views/_common'
 
-import filePreviews from '../../_common/filePreviews.vue'
+import FilePreviews from '../../_common/FilePreviews.vue'
 export default {
   name: 'investigation',
   components: {

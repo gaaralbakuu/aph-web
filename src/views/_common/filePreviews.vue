@@ -39,7 +39,7 @@ import VuePptxViewer from '@vue-office/pptx'
 
 import CustomDialog from './CustomDialog.vue'
 export default {
-  name: 'FilePreview',
+  name: 'FilePreviews',
   components: {
     VueDocxViewer,
     VueExcelViewer,

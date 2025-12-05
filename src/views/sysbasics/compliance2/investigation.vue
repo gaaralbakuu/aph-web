@@ -501,7 +501,7 @@
     </div>
 
     <!-- 预览 -->
-    <filePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible"
+    <FilePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible"
       @update:visible="dialogVisible = $event" />
   </div>
 </template>
@@ -519,7 +519,7 @@ import {
   zTable,
 } from '@/views/_common'
 
-import filePreviews from '../../_common/filePreviews.vue'
+import FilePreviews from '../../_common/FilePreviews.vue'
 export default {
   name: 'investigation',
   components: {

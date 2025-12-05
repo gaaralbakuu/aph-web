@@ -1,7 +1,7 @@
 <template>
   <div class="play-container">
     附件预览
-    <filePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews"
+    <FilePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews"
       @update:visible="showObj.filePreviews = $event" />
 
     <el-dialog class="examRecord-dialog" :title="$l.examRecord" :visible.sync="showObj.examDialog" width="50%">
@@ -249,13 +249,13 @@
   } from 'vuex'
 
   import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
-  import filePreviews from '@/views/_common/filePreviews.vue'
+  import FilePreviews from '@/views/_common/FilePreviews.vue'
 
   export default {
     name: 'videoUserPlay',
     components: {
       videoPlayer,
-      filePreviews
+      FilePreviews
     },
 
     computed: {
