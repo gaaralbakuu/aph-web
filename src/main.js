@@ -60,6 +60,7 @@ Vue.use(Element, {
     return i18n.t(key, value)
   },
 })
+
 Vue.config.productionTip = false
 
 Vue.prototype.$request = request

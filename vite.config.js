@@ -117,14 +117,15 @@ export default defineConfig(({ mode }) => {
 
     optimizeDeps: {
       // CHỈ include những package cần prebundle để tránh prebundle toàn bộ
-      include: ['vue', 'vue-router', 'vuex'],
-      // nếu element-ui hoặc 1 cjs lớn gây chậm, exclude nó khỏi pre-bundling:
-      // exclude: ['element-ui', 'some-other-cjs'],
+      include: ['vue', 'vue-router', 'vuex', 'element-ui'],
+      // Element UI là CJS, cần prebundle để build đúng
+      exclude: [],
     },
 
-    // nếu dùng nhiều CJS + ESM lẫn lộn, tinh chỉnh CommonJS transform
-    // commonjsOptions: {
-    //   transformMixedEsModules: true
-    // }
+    // Element UI là CJS, cần transform đúng cách
+    commonjsOptions: {
+      transformMixedEsModules: true,
+      include: [/element-ui/]
+    }
   }
 })
