@@ -23,6 +23,7 @@
     "@fontsource/momo-trust-sans": "^5.2.2",
     "@tailwindcss/vite": "^4.1.17",
     "@tanstack/vue-query": "^5.51.21",
+    "ant-design-vue": "^1.7.8",
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clipboard": "^2.0.6",

@@ -9,15 +9,19 @@ import PluginInspect from 'vite-plugin-inspect'
 import progress from 'vite-plugin-progress'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
   console.log('Main API:', env.VITE_API)
   console.log('Video API:', env.VITE_VIDEO_API)
+  console.log('Build mode:', mode)
+  console.log('Build command:', command)
 
   const isDev = mode === 'development'
   const enableVisualizer = false // bật true khi bạn muốn phân tích bundle thủ công
 
   return {
+    // 📋 Log config chi tiết khi build
+    logLevel: command === 'build' ? 'info' : 'warn',
     // 1) cacheDir để giảm cold-start
     cacheDir: 'node_modules/.vite_cache',
 
@@ -86,15 +90,15 @@ export default defineConfig(({ mode }) => {
       target: 'es2018',
       sourcemap: false,
       minify: 'esbuild',
-      reportCompressedSize: false,
+      reportCompressedSize: true, // Báo cáo size nén để debug
       // Tăng warning limit nếu bạn có chunk lớn (chỉ cảnh báo)
       chunkSizeWarningLimit: 2000,
 
       rollupOptions: {
+        // Không dùng external, thay vào đó fix CJS conversion
         output: {
           manualChunks(id) {
             if (!id) return
-            // chỉ xử lý node_modules (giảm số lần includes)
             if (id.includes('node_modules')) {
               if (id.includes('@vue-office/pdf')) return 'vo-pdf'
               if (id.includes('@vue-office/excel')) return 'vo-excel'
@@ -104,6 +108,16 @@ export default defineConfig(({ mode }) => {
             }
           },
         },
+        onwarn(warning, warn) {
+          if (warning.code === 'THIS_IS_UNDEFINED') return
+          if (warning.code === 'EVAL') return
+          if (warning.code === 'CIRCULAR_DEPENDENCY') return
+          console.warn(`[Rollup Warning] ${warning.code}: ${warning.message}`)
+          if (warning.loc) {
+            console.warn(`  File: ${warning.loc.file}:${warning.loc.line}:${warning.loc.column}`)
+          }
+          warn(warning)
+        }
       },
 
       // CommonJS options - QUAN TRỌNG cho Element UI
@@ -114,8 +128,12 @@ export default defineConfig(({ mode }) => {
         include: [/node_modules/],
         // Giữ default export khi Rollup chuyển CJS -> ESM để Vue.use(Element) không bị rỗng trong build
         defaultIsModuleExports: 'auto',
+        // Không bỏ qua dynamic require (Element UI dùng cho locale / utils)
+        ignoreDynamicRequires: false,
         // Đặc biệt cho element-ui
         requireReturnsDefault: 'auto',
+        // Giữ named exports - QUAN TRỌNG để component được export đúng
+        esmExternals: true,
       },
 
       // nếu dự án nhiều file lớn trong public, cân nhắc false để copy thủ công
@@ -123,7 +141,9 @@ export default defineConfig(({ mode }) => {
     },
 
     define: {
+      // Đảm bảo cả process.env và process.env.NODE_ENV được inline cho CJS (element-ui dựa vào NODE_ENV)
       'process.env': { NODE_ENV: JSON.stringify(mode) },
+      'process.env.NODE_ENV': JSON.stringify(mode),
       __DEV__: isDev,
     },
 
@@ -152,8 +172,11 @@ export default defineConfig(({ mode }) => {
       // Giữ interop CJS cho element-ui (fix Table/Form mất props khi build)
       needsInterop: ['element-ui'],
       exclude: [],
+      // 🔍 Bật log prebundle chi tiết
+      entries: null, // auto-detect
+
       // Force prebundle lại khi có thay đổi
-      force: false,
+      force: true,
       esbuildOptions: {
         // Hỗ trợ CommonJS modules
         target: 'es2018',

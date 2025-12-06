@@ -1,4 +1,5 @@
 import 'element-ui/lib/theme-chalk/index.css'
+import 'ant-design-vue/dist/antd.css'
 import '@fontsource/momo-signature';
 import '@fontsource/momo-trust-display';
 import '@fontsource/momo-trust-sans';
@@ -13,6 +14,7 @@ import '@/utils/hls-debug'
 
 import '@/assets/css/tailwind.css'
 import Element from 'element-ui'
+import Antd from 'ant-design-vue'
 // import VueCompositionAPI from '@vue/composition-api'
 import Cookies from 'js-cookie'
 import Vue from 'vue'
@@ -37,6 +39,7 @@ import App from './App.vue'
 // Vue.use(VueCompositionAPI)
 Vue.use(VueI18n)
 Vue.use(VueQueryPlugin)
+Vue.use(Antd)
 const i18n = new VueI18n({
   // 默认语言
   locale: 'vi-VN',
