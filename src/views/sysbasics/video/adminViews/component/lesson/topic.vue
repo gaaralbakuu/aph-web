@@ -70,9 +70,35 @@
                 @click="addMultipleCourseToTopic">{{ $l.batchAdd }}</el-button>
             </el-form-item>
           </el-form>
-          <a-table ref="toBeAddedTable" class='video-table' :data-source="courseObj.list" :columns="courseColumns" :row-key="record => record.id"
-            :row-selection="{ selectedRowKeys: courseObj.selectedList.map(i => i.id), onChange: handleSelectionChange }"
-            bordered :scroll="{ y: 500 }" :pagination="false" :customRow="customCourseRow"></a-table>
+          <a-table ref="toBeAddedTable" class='video-table' :dataSource="courseObj.list" rowKey="id" bordered :scroll="{ y: 500 }" :rowSelection="{ onChange: handleSelectionChange }">
+            <a-table-column :title="$c.ordinal" width="50">
+              <template slot-scope="text, record, index">{{ index + 1 }}</template>
+            </a-table-column>
+            <a-table-column :title="$l.cover">
+              <template slot-scope="text, record">
+                <div class="img" v-if="record.thumbnail_path">
+                  <img class="auto-img" :src="$api.videoServer+'/'+ record.thumbnail_path" />
+                </div>
+                <div v-else style="text-align: center;width: 100%;">
+                  <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
+                  <div>{{ $l.noCover }}</div>
+                </div>
+              </template>
+            </a-table-column>
+            <a-table-column :title="$l.name" dataIndex="name_zh"></a-table-column>
+            <a-table-column :title="$l.description" dataIndex="description"></a-table-column>
+            <a-table-column :title="$l.belongCollege">
+              <template slot-scope="text, record">
+                {{returnPublicObjLabel(record.college_id,'id','name_label','allCollegeList')}}
+              </template>
+            </a-table-column>
+            <a-table-column :title="$l.action" width="120" fixed="right">
+              <template slot-scope="text, record">
+                <a-button type="link" style="color: green;" @click="toPlay(record.id)">{{ $l.preview }}</a-button>
+                <a-button type="link" @click="addSingleCourseToTopic(record)">{{ $l.select }}</a-button>
+              </template>
+            </a-table-column>
+          </a-table>
           <el-pagination @size-change="handleCourseSizeChange" @current-change="handleCoursePageChange"
             :current-page="courseObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
             :page-size="courseObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper"
@@ -122,54 +148,53 @@
 
     <div class="recommendation-pageBody">
       <div style="width: 38%;">
-        <el-table ref="topicTable" :data="topicObj.list" row-key='id' tooltip-effect="dark" highlight-current-row
-          highlight-selection-row stripe border @row-click="getDetailList">
-          <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
-          <el-table-column :label="$l.topicName" prop="title_label"></el-table-column>
-          <el-table-column :label="$l.lastModifier" prop="modify_user"></el-table-column>
-          <el-table-column :label="$l.displayPage" prop="page"></el-table-column>
-          <el-table-column :label="$l.isEnabled" prop="is_valid" width="80"></el-table-column>
-          <el-table-column :label="$l.action" width="120" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' @click="editTopic(scope.row)">{{ $l.edit }}</el-button>
-              <el-button v-show="scope.row.is_valid=='Y'" class='text-red' type='text'
-                @click="modifyTopicStatus(scope.row)">{{ $l.disableAction }}</el-button>
-              <el-button v-show="scope.row.is_valid=='N'" class='text-green' type='text'
-                @click="modifyTopicStatus(scope.row)">{{ $l.enableAction }}</el-button>
+        <a-table ref="topicTable" :dataSource="topicObj.list" rowKey="id" bordered @rowClick="getDetailList">
+          <a-table-column :title="$c.ordinal" width="50">
+            <template slot-scope="text, record, index">{{ index + 1 }}</template>
+          </a-table-column>
+          <a-table-column :title="$l.topicName" dataIndex="title_label"></a-table-column>
+          <a-table-column :title="$l.lastModifier" dataIndex="modify_user"></a-table-column>
+          <a-table-column :title="$l.displayPage" dataIndex="page"></a-table-column>
+          <a-table-column :title="$l.isEnabled" dataIndex="is_valid" width="80"></a-table-column>
+          <a-table-column :title="$l.action" width="120" fixed="right">
+            <template slot-scope="text, record">
+              <a-button type="link" @click="editTopic(record)">{{ $l.edit }}</a-button>
+              <a-button v-if="record.is_valid=='Y'" type="link" style="color: red;" @click="modifyTopicStatus(record)">{{ $l.disableAction }}</a-button>
+              <a-button v-if="record.is_valid=='N'" type="link" style="color: green;" @click="modifyTopicStatus(record)">{{ $l.enableAction }}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
+          </a-table-column>
+        </a-table>
         <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
           :current-page="topicObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="topicObj.query.pageSize"
           layout="total, sizes, prev, pager, next, jumper" :total="topicObj.total" style="float: right;">
         </el-pagination>
       </div>
       <div style="width: 60%;">
-        <el-table ref="topicTable" :data="detailObj.list" row-key='course_id' tooltip-effect="dark"
-          highlight-current-row highlight-selection-row stripe border>
-          <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
-          <el-table-column prop="thumbnail_path" :label="$l.cover">
-            <template slot-scope="scope">
-              <div class="img" v-if="scope.row.thumbnail_path">
-                <img class="auto-img" :src="$api.videoServer+'/'+ scope.row.thumbnail_path" />
+        <a-table ref="topicTable" :dataSource="detailObj.list" rowKey="course_id" bordered>
+          <a-table-column :title="$c.ordinal" width="50">
+            <template slot-scope="text, record, index">{{ index + 1 }}</template>
+          </a-table-column>
+          <a-table-column :title="$l.cover">
+            <template slot-scope="text, record">
+              <div class="img" v-if="record.thumbnail_path">
+                <img class="auto-img" :src="$api.videoServer+'/'+ record.thumbnail_path" />
               </div>
               <div v-else style="text-align: center;width: 100%;">
                 <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
                 <div>{{ $l.noCover }}</div>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column :label="$l.courseName" prop="course_name_label"></el-table-column>
-          <el-table-column :label="$l.courseDescription" prop="description"></el-table-column>
-          <el-table-column :label="$l.isEnabled" prop="is_valid" width="80"></el-table-column>
-          <el-table-column :label="$l.action" width="120" fixed="right">
-            <template slot-scope="scope">
-              <el-button class="text-green" type='text'
-                @click="toPlay(scope.row.course_primary_id)">{{ $l.preview }}</el-button>
-              <el-button class='text-red' type='text' @click="deleteDetail(scope.$index)">{{ $l.remove }}</el-button>
+          </a-table-column>
+          <a-table-column :title="$l.courseName" dataIndex="course_name_label"></a-table-column>
+          <a-table-column :title="$l.courseDescription" dataIndex="description"></a-table-column>
+          <a-table-column :title="$l.isEnabled" dataIndex="is_valid" width="80"></a-table-column>
+          <a-table-column :title="$l.action" width="120" fixed="right">
+            <template slot-scope="text, record, index">
+              <a-button type="link" style="color: green;" @click="toPlay(record.course_primary_id)">{{ $l.preview }}</a-button>
+              <a-button type="link" style="color: red;" @click="deleteDetail(index)">{{ $l.remove }}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
+          </a-table-column>
+        </a-table>
       </div>
     </div>
   </div>
@@ -183,7 +208,6 @@
   import {
     _
   } from '@/views/_common'
-  
   export default {
     name: 'videoAdminTopic',
     data() {
@@ -264,70 +288,6 @@
     },
     computed: {
       ...mapGetters(['isAdmin']),
-      
-      courseColumns() {
-        return [
-          {
-            title: this.$c.ordinal,
-            key: 'index',
-            width: 50,
-            customRender: ({ index }) => (this.courseObj.query.page - 1) * this.courseObj.query.pageSize + index + 1
-          },
-          {
-            title: this.$l.cover,
-            key: 'thumbnail_path',
-            customRender: ({ record }) => {
-              if (record.thumbnail_path) {
-                return h('div', { class: 'img' }, [
-                  h('img', { class: 'auto-img', src: this.$api.videoServer + '/' + record.thumbnail_path })
-                ])
-              } else {
-                return h('div', { style: 'text-align: center;width: 100%;' }, [
-                  h('span', { style: 'font-size: 60px; color: #ccc;' }, '🖼️'),
-                  h('div', {}, this.$l.noCover)
-                ])
-              }
-            }
-          },
-          {
-            title: this.$l.name,
-            dataIndex: 'name_zh',
-            key: 'name_zh'
-          },
-          {
-            title: this.$l.description,
-            dataIndex: 'description',
-            key: 'description'
-          },
-          {
-            title: this.$l.belongCollege,
-            key: 'college_id',
-            customRender: ({ record }) => this.returnPublicObjLabel(record.college_id, 'id', 'name_label', 'allCollegeList')
-          },
-          {
-            title: this.$l.action,
-            key: 'action',
-            width: 120,
-            fixed: 'right',
-            customRender: ({ record }) => h('div', {}, [
-              h('a', { 
-                class: 'ant-btn-link', 
-                style: 'margin-right: 8px;', 
-                onClick: () => this.editTopic(record) 
-              }, this.$l.edit),
-              record.is_valid === 'Y' ? h('a', { 
-                class: 'ant-btn-link', 
-                style: 'color: #ff4d4f;', 
-                onClick: () => this.modifyTopicStatus(record) 
-              }, this.$l.disableAction) : h('a', { 
-                class: 'ant-btn-link', 
-                style: 'color: #52c41a;', 
-                onClick: () => this.modifyTopicStatus(record) 
-              }, this.$l.enableAction)
-            ])
-          }
-        ]
-      }
     },
 
     watch: {
@@ -346,21 +306,6 @@
 
 
     methods: {
-      customCourseRow(record) {
-        return {
-          onClick: () => {
-            const isSelected = this.courseObj.selectedList.some(item => item.id === record.id)
-            let newSelectedList
-            if (isSelected) {
-              newSelectedList = this.courseObj.selectedList.filter(item => item.id !== record.id)
-            } else {
-              newSelectedList = [...this.courseObj.selectedList, record]
-            }
-            this.courseObj.selectedList = newSelectedList
-          }
-        }
-      },
-      
       handleSizeChange(i) {
         this.topicObj.query.page = 1
         this.topicObj.query.pageSize = i
