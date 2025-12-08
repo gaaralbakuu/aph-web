@@ -737,6 +737,7 @@ export default {
     delete_error: '刪除資料異常',
     choose: '請選擇',
     info: '取消刪除操作',
+    operation: '操作',
   },
   manufacturer: {
     contact_info_notice: '此聯絡資訊將用於與製造商溝通合規與合作相關事宜。請填寫正確且完整的資訊。',

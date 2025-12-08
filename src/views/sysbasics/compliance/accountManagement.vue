@@ -46,24 +46,24 @@
     <el-divider></el-divider>
     <el-button v-show="showAuth.m_add" type="primary" class="create_btn" size="medium" @click="add">{{ $c.create }}</el-button>
     <!-- 表格 -->
-    <z-table :list="account.list" :tableProps="tableProps" :columns="account.columns" @editItem="editItem" @deleteItem="deleteItem">
-      <template v-slot:operation="v">
-        <a v-if="v.row.is_valid == 'N'" href="#" class="text-blue">
+    <a-table :dataSource="account.list" :columns="account.columns" :pagination="false" :bordered="tableProps.border" rowKey="id">
+      <template slot="operation" slot-scope="text, record, index">
+        <a v-if="record.is_valid == 'N'" href="#" class="text-blue">
           {{ $c.enable }}
         </a>
         <a v-else href="#" class="text-blue">
           {{ $c.disable }}
         </a>
         <span>&nbsp;</span>
-        <a v-show="showAuth.m_updata" href="#" class="text-green" @click.prevent="editItem(v.row, v.$index)">
+        <a v-show="showAuth.m_updata" href="#" class="text-green" @click.prevent="editItem(record, index)">
           {{ $c.edit }}
         </a>
         <span>&nbsp;</span>
-        <a v-show="showAuth.m_del" href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">
+        <a v-show="showAuth.m_del" href="#" class="text-red" @click.prevent="deleteItem(record, index)">
           {{ $c.delete }}
         </a>
       </template>
-    </z-table>
+    </a-table>
     <!-- 分页 -->
     <z-pagination :pagination="pagination" :total="account.total" :page.sync="account.query.page" :limit.sync="account.query.pageSize" @change="getUser"></z-pagination>
     <!-- 创建、编辑表单 -->
@@ -135,21 +135,21 @@
     <!-- 选择分类对话框 -->
     <CustomDialog :title="$l.baseFile_select" :visible.sync="manufacturer.dialogVisible" width="100%" :maxWidth="'600px'">
       <el-input style="width: 200px; margin-bottom: 10px" prefix-icon="el-icon-search" :placeholder="$l.manufacture_name" clearable class="filter-item" @keyup.enter.native="getManufacturer" @clear="getManufacturer" @blur="getManufacturer" v-model="manufacturer.manufacture_name"></el-input>
-      <z-table :list="manufacturer.list" :tableProps="tableProps" :columns="manufacturer.columns" @row-dblclick="sendManufacturerItem">
-        <template v-slot:operation="v">
-          <a href="#" class="text-blue" @click.prevent="sendManufacturerItem(v.row, v.$index)">
+      <a-table :dataSource="manufacturer.list" :columns="manufacturer.columns" :pagination="false" :bordered="tableProps.border" rowKey="manufacture_id" @row="sendManufacturerItem">
+        <template slot="operation" slot-scope="text, record, index">
+          <a href="#" class="text-blue" @click.prevent="sendManufacturerItem(record, index)">
             {{ $l.select }}
           </a>
           &nbsp;
         </template>
-      </z-table>
+      </a-table>
       <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
     </CustomDialog>
   </div>
 </template>
 
 <script>
-import { _, api, defaultConfig,initFuncs, zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+import { _, api, defaultConfig,initFuncs, zForm, zFormDialog, zPagination } from '@/views/_common'
 
 import CustomDialog from '../../_common/CustomDialog.vue'
 
@@ -168,7 +168,6 @@ const config = Object.assign({}, _.cloneDeep(defaultConfig), {
 export default {
   name: 'accountManagement',
   components: {
-    zTable,
     zFormDialog,
     zPagination,
     CustomDialog,
@@ -225,39 +224,44 @@ export default {
         columns: [
           {
             title: this.$l.account,
-            key: 'account',
+            dataIndex: 'account',
             fixed: true,
             width: 110,
           },
           {
             title: this.$l.account_name,
-            key: 'account_name',
+            dataIndex: 'account_name',
             fixed: true,
             width: 110,
           },
           {
             title: this.$l.manufacture_name,
-            key: 'company_name',
+            dataIndex: 'company_name',
           },
           {
             title: this.$l.email,
-            key: 'email',
+            dataIndex: 'email',
           },
           {
             title: this.$l.phone,
-            key: 'phone',
+            dataIndex: 'phone',
           },
           // {
           //   title: this.$l.account_type,
-          //   key: 'role_type_name',
+          //   dataIndex: 'role_type_name',
           // },
           {
             title: this.$l.create_time,
-            key: 'create_time',
+            dataIndex: 'create_time',
           },
           {
             title: this.$l.status,
-            key: 'is_valid',
+            dataIndex: 'is_valid',
+          },
+          {
+            title: this.$l.operation,
+            scopedSlots: { customRender: 'operation' },
+            width: 150,
           },
         ],
         fields: [
@@ -342,20 +346,25 @@ export default {
         columns: [
           {
             title: this.$l.manufacture_name,
-            key: 'name_en',
+            dataIndex: 'name_en',
             fixed: true,
             width: 500,
           },
           // {
           //   title: this.$l.legal_person,
-          //   key: 'legal_person',
+          //   dataIndex: 'legal_person',
           //   fixed: true,
           //   width: 110,
           // },
           // {
           //   title: this.$l.requestor_facility_name,
-          //   key: 'requestor_facility_name',
+          //   dataIndex: 'requestor_facility_name',
           // },
+          {
+            title: this.$l.operation,
+            scopedSlots: { customRender: 'operation' },
+            width: 100,
+          },
         ],
         dialogVisible: false,
       },

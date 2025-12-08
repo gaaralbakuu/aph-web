@@ -723,6 +723,7 @@ export default {
     delete_error: 'Error deleting data',
     info: 'Cancel delete operation',
     choose: 'choose',
+    operation: 'Operation',
   },
   manufacturer: {
     contact_info_notice: 'This contact information will be used to communicate with the manufacturer regarding compliance and cooperation issues. Please provide accurate and complete information.',

@@ -99,6 +99,7 @@ export default {
     reset: '重置',
     select: '选择',
     status: '状态',
+    operation: '操作',
   },
   adminAppVersion: {
     app_id: 'APP代号',

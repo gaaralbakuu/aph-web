@@ -97,6 +97,7 @@ export default {
     reset: 'Thiết lập lại',
     select: 'Lựa chọn',
     status: 'Trạng thái',
+    operation: 'Thao tác',
   },
   adminAppVersion: {
     app_id: 'Mã ứng dụng',
