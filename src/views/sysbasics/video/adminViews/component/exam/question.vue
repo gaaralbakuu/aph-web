@@ -254,35 +254,20 @@
         </div>
         <div class="questionList">
           <div ref="tableContainer" style="height: calc(100% - 40px)">
-            <el-table ref="examTable" :data="questionObj.list" tooltip-effect="dark" style="width: 100%" highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight" show-overflow-tooltip row-key="id">
-              <el-table-column type="index" width="50" :label="$l.serialNumber"></el-table-column>
-              <el-table-column :label="$l.question" prop="name_label"></el-table-column>
-              <el-table-column :label="$l.difficulty" prop="difficulty_level"></el-table-column>
-              <el-table-column :label="$l.questionTypeColumn" prop="question_type">
-                <template slot-scope="scope">
-                  {{ returnPublicObjLabel(scope.row.question_type, 'value', 'label', 'question_type') }}
-                </template>
-              </el-table-column>
-
-              <el-table-column :label="$l.publishStatusColumn" prop="question_status">
-                <template slot-scope="scope">
-                  {{ returnPublicObjLabel(scope.row.question_status, 'value', 'label', 'question_status') }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$l.status" prop="is_valid">
-                <template slot-scope="scope">
-                  {{ scope.row.is_valid == 'Y' ? $l.enableStatus : $l.disableStatus }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$l.actions" fixed="right">
-                <template slot-scope="scope">
-                  <el-button type="text" @click="editQuestion(scope.row)">{{ $l.edit }}</el-button>
-                  <el-button v-if="scope.row.is_valid == 'Y'" type="text" style="color: #ff0000" @click="toggleQuestionStatus(scope.row)">{{ $l.disable }}</el-button>
-                  <el-button v-else class="text-green" type="text" @click="toggleQuestionStatus(scope.row)">{{ $l.enable }}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
+          <a-table :dataSource="questionObj.list" :columns="tableColumns" :scroll="{ y: cssObj.tableMaxHeight }" rowKey="id">
+            <template slot="question_type" slot-scope="text, record">
+              {{ returnPublicObjLabel(record.question_type, 'value', 'label', 'question_type') }}
+            </template>
+            <template slot="question_status" slot-scope="text, record">
+              {{ returnPublicObjLabel(record.question_status, 'value', 'label', 'question_status') }}
+            </template>
+            <template slot="actions" slot-scope="text, record">
+              <el-button type="text" @click="editQuestion(record)">{{ $l.edit }}</el-button>
+              <el-button v-if="record.is_valid == 'Y'" type="text" style="color: #ff0000" @click="toggleQuestionStatus(record)">{{ $l.disable }}</el-button>
+              <el-button v-else class="text-green" type="text" @click="toggleQuestionStatus(record)">{{ $l.enable }}</el-button>
+            </template>
+          </a-table>
+        </div>
           <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange" :current-page="questionObj.query.page" :page-sizes="[5, 10, 15, 30, 50, 100]" :page-size="questionObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="questionObj.total" style="float: right"></el-pagination>
         </div>
       </div>
@@ -348,12 +333,6 @@ export default {
       cssObj: {
         tableMaxHeight: '500px',
         popoverWidth: '600px',
-        headerRowStyle: {
-          background: '#f2f4f9',
-          color: '#505050',
-          fontSize: '14px',
-          height: '50px',
-        },
       },
       questionObj: {
         query: {
@@ -417,6 +396,51 @@ export default {
 
   computed: {
     ...mapGetters(['isAdmin']),
+    tableColumns() {
+      return [
+        {
+          title: this.$l.serialNumber,
+          dataIndex: 'index',
+          key: 'index',
+          width: 50,
+          customRender: (text, record, index) => index + 1
+        },
+        {
+          title: this.$l.question,
+          dataIndex: 'name_label',
+          key: 'name_label'
+        },
+        {
+          title: this.$l.difficulty,
+          dataIndex: 'difficulty_level',
+          key: 'difficulty_level'
+        },
+        {
+          title: this.$l.questionTypeColumn,
+          dataIndex: 'question_type',
+          key: 'question_type',
+          scopedSlots: { customRender: 'question_type' }
+        },
+        {
+          title: this.$l.publishStatusColumn,
+          dataIndex: 'question_status',
+          key: 'question_status',
+          scopedSlots: { customRender: 'question_status' }
+        },
+        {
+          title: this.$l.status,
+          dataIndex: 'is_valid',
+          key: 'is_valid',
+          customRender: (text) => text == 'Y' ? this.$l.enableStatus : this.$l.disableStatus
+        },
+        {
+          title: this.$l.actions,
+          key: 'actions',
+          fixed: 'right',
+          scopedSlots: { customRender: 'actions' }
+        }
+      ]
+    }
   },
 
   watch: {

@@ -41,36 +41,8 @@
           </div>
           <div class="questionContent">
             <div class="questionList">
-              <el-table ref="questionTable" :data="questionObj.list" tooltip-effect="dark" style="width: 100%"
-                highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-                :max-height="cssObj.tableMaxHeight" show-overflow-tooltip>
-                <el-table-column type="index" width="50" :label='$l.serialNumber'>
-                </el-table-column>
-
-                <el-table-column :label="$l.question" prop="name_label"></el-table-column>
-                <el-table-column :label="$l.difficulty" prop="difficulty_level"></el-table-column>
-                <el-table-column :label="$l.questionType" prop="question_type">
-                  <template slot-scope="scope">
-                    {{returnPublicObjLabel(scope.row.question_type,'value','label','question_type')}}
-                  </template>
-                </el-table-column>
-
-                <el-table-column :label="$l.publishStatus" prop="question_status">
-                  <template slot-scope="scope">
-                    {{returnPublicObjLabel(scope.row.question_status,'value','label','question_status')}}
-                  </template>
-                </el-table-column>
-                <el-table-column :label="$l.status" prop="is_valid">
-                  <template slot-scope="scope">
-                    {{scope.row.is_valid=='Y'? $l.enabled : $l.disabled}}
-                  </template>
-                </el-table-column>
-                <el-table-column :label="$l.operation" fixed="right">
-                  <template slot-scope="scope">
-                    <el-button type='text' @click="selectQuestion(scope.row)">{{ $l.select }}</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <a-table :columns="questionColumns" :dataSource="questionObj.list" :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
+              </a-table>
             </div>
           </div>
         </div>
@@ -251,40 +223,10 @@
       <div class="questionnaireContent">
         <div class="questionnaireList">
           <div ref="tableContainer" style="height:calc(100% - 40px) ;">
-            <el-table ref="questionnaireTable" :data="questionnaireObj.list" tooltip-effect="dark" style="width: 100%"
-              highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-              :max-height="cssObj.tableMaxHeight" show-overflow-tooltip>
-              <el-table-column type="index" width="50" :label='$l.serialNumber'>
-              </el-table-column>
-
-              <el-table-column :label="$l.nameZh" prop="name_zh"></el-table-column>
-              <el-table-column :label="$l.nameTw" prop="name_tw"></el-table-column>
-              <el-table-column :label="$l.nameEn" prop="name_en"></el-table-column>
-              <el-table-column :label="$l.nameVi" prop="name_vi"></el-table-column>
-              <el-table-column :label="$l.createTime" prop="create_time"></el-table-column>
-              <el-table-column :label="$l.updateTime" prop="create_time"></el-table-column>
-              <el-table-column :label="$l.status" prop="is_valid">
-                <template slot-scope="scope">
-                  {{scope.row.is_valid=='Y'? $l.enabled : $l.disabled}}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$l.operation" fixed="right">
-                <template slot-scope="scope">
-                  <el-button type='text' class="text-yellow" @click="previewQuestionnaire(scope.row.id)">{{ $l.preview }}</el-button>
-                  <el-button type='text' @click="editQuestionnaire(scope.row.id)">{{ $l.edit }}</el-button>
-                  <el-button v-if="scope.row.is_valid=='Y'" type='text' class="text-red"
-                    @click="toggleQuestionnaireStatus(scope.row)">{{ $l.disable }}</el-button>
-                  <el-button v-else type='text' class="text-green"
-                    @click="toggleQuestionnaireStatus(scope.row)">{{ $l.enable }}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <a-table :columns="questionnaireColumns" :dataSource="questionnaireObj.list" :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
+            </a-table>
           </div>
-          <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
-            :current-page="questionnaireObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
-            :page-size="questionnaireObj.query.pageSize" :layout="$l.paginationLayout"
-            :total="questionnaireObj.total" style="float: right;">
-          </el-pagination>
+          <a-pagination :current.sync="questionnaireObj.query.page" :pageSize.sync="questionnaireObj.query.pageSize" :total="questionnaireObj.total" :pageSizeOptions="['5','10','15','30','50','100']" showSizeChanger @change="handlePageChange" @showSizeChange="handleSizeChange" style="float: right;" />
         </div>
       </div>
     </div>
@@ -399,6 +341,34 @@
 
     computed: {
       ...mapGetters(['isAdmin']),
+      questionColumns() {
+        return [
+          { title: this.$l.serialNumber, key: 'index', width: 50, customRender: (text, record, index) => index + 1 },
+          { title: this.$l.question, dataIndex: 'name_label', key: 'question' },
+          { title: this.$l.difficulty, dataIndex: 'difficulty_level', key: 'difficulty' },
+          { title: this.$l.questionType, dataIndex: 'question_type', key: 'questionType', customRender: (text) => this.returnPublicObjLabel(text, 'value', 'label', 'question_type') },
+          { title: this.$l.publishStatus, dataIndex: 'question_status', key: 'publishStatus', customRender: (text) => this.returnPublicObjLabel(text, 'value', 'label', 'question_status') },
+          { title: this.$l.status, dataIndex: 'is_valid', key: 'status', customRender: (text) => text === 'Y' ? this.$l.enabled : this.$l.disabled },
+          { title: this.$l.operation, key: 'operation', fixed: 'right', customRender: (text, record, index) => this.$createElement('a-button', { props: { type: 'text' }, on: { click: () => this.selectQuestion(record) } }, this.$l.select) }
+        ]
+      },
+      questionnaireColumns() {
+        return [
+          { title: this.$l.serialNumber, key: 'index', width: 50, customRender: (text, record, index) => index + 1 },
+          { title: this.$l.nameZh, dataIndex: 'name_zh', key: 'nameZh' },
+          { title: this.$l.nameTw, dataIndex: 'name_tw', key: 'nameTw' },
+          { title: this.$l.nameEn, dataIndex: 'name_en', key: 'nameEn' },
+          { title: this.$l.nameVi, dataIndex: 'name_vi', key: 'nameVi' },
+          { title: this.$l.createTime, dataIndex: 'create_time', key: 'createTime' },
+          { title: this.$l.updateTime, dataIndex: 'create_time', key: 'updateTime' },
+          { title: this.$l.status, dataIndex: 'is_valid', key: 'status', customRender: (text) => text === 'Y' ? this.$l.enabled : this.$l.disabled },
+          { title: this.$l.operation, key: 'operation', fixed: 'right', customRender: (text, record, index) => this.$createElement('div', {}, [
+            this.$createElement('a-button', { props: { type: 'text' }, attrs: { class: 'text-yellow' }, on: { click: () => this.previewQuestionnaire(record.id) } }, this.$l.preview),
+            this.$createElement('a-button', { props: { type: 'text' }, on: { click: () => this.editQuestionnaire(record.id) } }, this.$l.edit),
+            record.is_valid === 'Y' ? this.$createElement('a-button', { props: { type: 'text' }, attrs: { class: 'text-red' }, on: { click: () => this.toggleQuestionnaireStatus(record) } }, this.$l.disable) : this.$createElement('a-button', { props: { type: 'text' }, attrs: { class: 'text-green' }, on: { click: () => this.toggleQuestionnaireStatus(record) } }, this.$l.enable)
+          ]) }
+        ]
+      }
     },
 
     methods: {
@@ -439,13 +409,14 @@
         })
       },
 
-      handleSizeChange(i) {
-        this.questionnaireObj.query.pageSize = i
+      handleSizeChange(current, size) {
+        this.questionnaireObj.query.page = current
+        this.questionnaireObj.query.pageSize = size
         this.getQuestionnaireList()
       },
 
-      handlePageChange(i) {
-        this.questionnaireObj.query.page = i
+      handlePageChange(page) {
+        this.questionnaireObj.query.page = page
         this.getQuestionnaireList()
       },
 

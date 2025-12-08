@@ -81,27 +81,11 @@
             <el-button type="success" @click="getQuestionnaireList">{{ $l.search }}</el-button>
           </el-form-item>
         </el-form>
-        <el-table ref="questionnaireTable" :data="questionnaireObj.list" tooltip-effect="dark" style="width: 100%"
-          highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-          :max-height="cssObj.tableMaxHeight" show-overflow-tooltip>
-          <el-table-column type="index" width="50" label='No'></el-table-column>
-          <el-table-column :label="$l.nameZhColumn" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.nameTwColumn" prop="name_tw"></el-table-column>
-          <el-table-column :label="$l.nameEnColumn" prop="name_en"></el-table-column>
-          <el-table-column :label="$l.nameViColumn" prop="name_vi"></el-table-column>
-          <el-table-column :label="$l.createTimeColumn" prop="create_time"></el-table-column>
-          <el-table-column :label="$l.updateTimeColumn" prop="modify_time"></el-table-column>
-          <el-table-column :label="$l.statusColumn" prop="is_valid">
-            <template slot-scope="scope">
-              {{ scope.row.is_valid == 'Y' ? $l.statusEnabled : $l.statusDisabled }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$l.operationColumn" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' class="text-green" @click="selectQueertionnarire(scope.row)">{{ $l.chooseButton }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <a-table ref="questionnaireTable" :dataSource="questionnaireObj.list" :columns="questionnaireColumns" :pagination="false" :scroll="{ y: cssObj.tableMaxHeight }" rowKey="id">
+          <template slot="operation" slot-scope="text, record">
+            <a-button type="link" class="text-green" @click="selectQueertionnarire(record)">{{ $l.chooseButton }}</a-button>
+          </template>
+        </a-table>
       </el-dialog>
     </div>
 
@@ -141,33 +125,13 @@
       <div class="examContent">
         <div class="examList">
           <div ref="tableContainer" style="height:calc(100% - 40px);">
-            <el-table ref="examTable" :data="examObj.list" tooltip-effect="dark" style="width: 100%"
-              highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-              :max-height="cssObj.tableMaxHeight" show-overflow-tooltip>
-              <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-              <el-table-column type="index" width="50" label='No'></el-table-column>
-              <el-table-column :label="$l.examNameColumn" prop="name_label"></el-table-column>
-              <!-- <el-table-column :label="$l.nameZhColumn" prop="name_zh"></el-table-column> -->
-              <!-- <el-table-column :label="$l.nameTwColumn" prop="name_tw"></el-table-column> -->
-              <!-- <el-table-column :label="$l.nameEnColumn" prop="name_en"></el-table-column> -->
-              <el-table-column :label="$l.passScoreColumn" prop="pass_score"></el-table-column>
-              <el-table-column :label="$l.maxReplyNumColumn" prop="max_reply_num"></el-table-column>
-              <el-table-column :label="$l.testDurationColumn" prop="test_duration"></el-table-column>
-              <el-table-column :label="$l.startTimeColumn" prop="start_time"></el-table-column>
-              <el-table-column :label="$l.endTimeColumn" prop="end_time"></el-table-column>
-              <el-table-column :label="$l.isValidColumn" prop="is_valid"></el-table-column>
-              <el-table-column :label="$l.operationColumn" fixed="right" width="180">
-                <template slot-scope="scope">
-                  <el-button class="text-yellow" type='text'
-                    @click="previewExam(scope.row.questionnaire_id)">{{ $l.previewButton }}</el-button>
-                  <el-button type='text' @click="editExam(scope.row)">{{ $l.editButton }}</el-button>
-                  <el-button class="text-red" v-if="scope.row.is_valid=='Y'" type='text'
-                    @click="toggleExamStatus(scope.row)">{{ $l.disableButton }}</el-button>
-                  <el-button class="text-green" v-else type='text'
-                    @click="toggleExamStatus(scope.row)">{{ $l.enableButton }}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <a-table ref="examTable" :dataSource="examObj.list" :columns="examColumns" :pagination="false" :scroll="{ y: cssObj.tableMaxHeight }" rowKey="id">
+              <template slot="operation" slot-scope="text, record">
+                <a-button type="link" class="text-yellow" @click="previewExam(record.questionnaire_id)">{{ $l.previewButton }}</a-button>
+                <a-button type="link" @click="editExam(record)">{{ $l.editButton }}</a-button>
+                <a-button type="link" :class="record.is_valid=='Y' ? 'text-red' : 'text-green'" @click="toggleExamStatus(record)">{{ record.is_valid=='Y' ? $l.disableButton : $l.enableButton }}</a-button>
+              </template>
+            </a-table>
           </div>
           <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
             :current-page="examObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="examObj.query.pageSize"
@@ -291,6 +255,32 @@
 
     computed: {
       ...mapGetters(['isAdmin']),
+      questionnaireColumns() {
+        return [
+          { title: 'No', dataIndex: '', key: 'index', width: 50, customRender: (text, record, index) => index + 1 },
+          { title: this.$l.nameZhColumn, dataIndex: 'name_zh' },
+          { title: this.$l.nameTwColumn, dataIndex: 'name_tw' },
+          { title: this.$l.nameEnColumn, dataIndex: 'name_en' },
+          { title: this.$l.nameViColumn, dataIndex: 'name_vi' },
+          { title: this.$l.createTimeColumn, dataIndex: 'create_time' },
+          { title: this.$l.updateTimeColumn, dataIndex: 'modify_time' },
+          { title: this.$l.statusColumn, dataIndex: 'is_valid', customRender: (text) => text == 'Y' ? this.$l.statusEnabled : this.$l.statusDisabled },
+          { title: this.$l.operationColumn, key: 'operation', fixed: 'right', scopedSlots: { customRender: 'operation' } }
+        ]
+      },
+      examColumns() {
+        return [
+          { title: 'No', dataIndex: '', key: 'index', width: 50, customRender: (text, record, index) => index + 1 },
+          { title: this.$l.examNameColumn, dataIndex: 'name_label' },
+          { title: this.$l.passScoreColumn, dataIndex: 'pass_score' },
+          { title: this.$l.maxReplyNumColumn, dataIndex: 'max_reply_num' },
+          { title: this.$l.testDurationColumn, dataIndex: 'test_duration' },
+          { title: this.$l.startTimeColumn, dataIndex: 'start_time' },
+          { title: this.$l.endTimeColumn, dataIndex: 'end_time' },
+          { title: this.$l.isValidColumn, dataIndex: 'is_valid' },
+          { title: this.$l.operationColumn, key: 'operation', fixed: 'right', width: 180, scopedSlots: { customRender: 'operation' } }
+        ]
+      },
     },
 
     methods: {
