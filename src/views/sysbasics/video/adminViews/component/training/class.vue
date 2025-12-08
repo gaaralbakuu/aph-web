@@ -78,52 +78,49 @@
             <el-button type="success" @click="getExamRecord">{{$l.search}}</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="examObj.record" stripe style="width: 100%" max-height="350px" :empty-text="$l.tempNoData">
-          <el-table-column type="index" :label="$l.serialNumber"></el-table-column>
-          <el-table-column prop="create_time" :label="$l.examTime">
-          </el-table-column>
-          <el-table-column prop="create_user" :label="$l.studentName">
-          </el-table-column>
-          <el-table-column prop="score" :label="$l.score">
-          </el-table-column>
-          <el-table-column :label="$l.operation" width="150" align="center" fixed="right">
-            <template slot-scope="scope">
-              <el-button class="text-green" type="text" size="mini"
-                @click="reviewExam(scope.row)">{{$l.viewDetails}}</el-button>
-              <el-button type="text" size="mini" @click="readExam(scope.row)">{{$l.correctPapers}}</el-button>
+        <a-table :dataSource="examObj.record" :scroll="{ y: 350 }" style="width: 100%">
+          <a-table-column :title="$l.serialNumber" type="index"></a-table-column>
+          <a-table-column :title="$l.examTime" dataIndex="create_time">
+          </a-table-column>
+          <a-table-column :title="$l.studentName" dataIndex="create_user">
+          </a-table-column>
+          <a-table-column :title="$l.score" dataIndex="score">
+          </a-table-column>
+          <a-table-column :title="$l.operation" :width="150" align="center" fixed="right">
+            <template slot-scope="text, record, index">
+              <a-button class="text-green" type="link" size="small" @click="reviewExam(record)">{{$l.viewDetails}}</a-button>
+              <a-button type="link" size="small" @click="readExam(record)">{{$l.correctPapers}}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination @size-change="handleRecordSizeChange" @current-change="handleRecordPageChange"
-          :current-page="examObj.recordQuery.page" :page-sizes="[5,10, 15, 30, 50,100]"
-          :page-size="examObj.recordQuery.pageSize" layout="total, sizes, prev, pager, next, jumper"
+          </a-table-column>
+        </a-table>
+        <a-pagination @showSizeChange="handleRecordSizeChange" @change="handleRecordPageChange"
+          :current="examObj.recordQuery.page" :pageSizeOptions="[5,10, 15, 30, 50,100]"
+          :pageSize="examObj.recordQuery.pageSize" :showSizeChanger="true" :showQuickJumper="true" :showTotal="(total, range) => `共 ${total} 条`"
           :total="examObj.recordTotal" style="float: right;">
-        </el-pagination>
+        </a-pagination>
         <div slot="footer">
           <el-button type="primary" @click="showObj.recordDialog = false">{{$l.close}}</el-button>
         </div>
       </el-dialog>
 
       <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.courseDialog" width="70%">
-        <el-table :data='learningObj.unfinishCourse' tooltip-effect="dark" style="width: 100%" highlight-current-row
-          highlight-selection-row stripe>
-          <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
-          <el-table-column :label="$l.name" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.description" prop="description"></el-table-column>
-        </el-table>
+        <a-table :dataSource='learningObj.unfinishCourse' style="width: 100%">
+          <a-table-column :title='$l.serialNumber' type="index" :width="50"></a-table-column>
+          <a-table-column :title="$l.name" dataIndex="name_zh"></a-table-column>
+          <a-table-column :title="$l.description" dataIndex="description"></a-table-column>
+        </a-table>
       </el-dialog>
 
       <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.examDialog" width="70%">
-        <el-table :data='learningObj.unfinishExam' tooltip-effect="dark" style="width: 100%" highlight-current-row
-          highlight-selection-row stripe>
-          <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
-          <el-table-column :label="$l.name" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.passScore" prop="pass_score"></el-table-column>
-          <el-table-column :label="$l.maxAttempts" prop="max_reply_num"></el-table-column>
-          <el-table-column :label="$l.examDuration" prop="test_duration"></el-table-column>
-          <el-table-column :label="$l.startTime" prop="start_time"></el-table-column>
-          <el-table-column :label="$l.endTime" prop="end_time"></el-table-column>
-        </el-table>
+        <a-table :dataSource='learningObj.unfinishExam' style="width: 100%">
+          <a-table-column :title='$l.serialNumber' type="index" :width="50"></a-table-column>
+          <a-table-column :title="$l.name" dataIndex="name_zh"></a-table-column>
+          <a-table-column :title="$l.passScore" dataIndex="pass_score"></a-table-column>
+          <a-table-column :title="$l.maxAttempts" dataIndex="max_reply_num"></a-table-column>
+          <a-table-column :title="$l.examDuration" dataIndex="test_duration"></a-table-column>
+          <a-table-column :title="$l.startTime" dataIndex="start_time"></a-table-column>
+          <a-table-column :title="$l.endTime" dataIndex="end_time"></a-table-column>
+        </a-table>
       </el-dialog>
 
       <!-- 选择培训dialog -->
@@ -153,25 +150,24 @@
         </div>
 
         <div class="tableContainer" ref="tableContainer">
-          <el-table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
-            highlight-selection-row stripe>
-            <el-table-column type="index" width="50" :label='$l.serialNumber'>
-            </el-table-column>
-            <el-table-column :label="$l.simplifiedChinese" prop="name_zh"></el-table-column>
-            <el-table-column :label="$l.college" prop="college_id">
-              <template slot-scope="scope">
-                {{returnCollegeLabel(scope.row.college_id)}}
+          <a-table :dataSource='trainingObj.list' style="width: 100%">
+            <a-table-column :title='$l.serialNumber' type="index" :width="50">
+            </a-table-column>
+            <a-table-column :title="$l.simplifiedChinese" dataIndex="name_zh"></a-table-column>
+            <a-table-column :title="$l.college" dataIndex="college_id">
+              <template slot-scope="text, record, index">
+                {{returnCollegeLabel(record.college_id)}}
               </template>
-            </el-table-column>
-            <el-table-column :label="$l.startTime" prop="start_date"></el-table-column>
-            <el-table-column :label="$l.endTime" prop="end_date"></el-table-column>
-            <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-            <el-table-column :label="$l.operation" fixed="right">
-              <template slot-scope="scope">
-                <el-button type='text' @click="selectTraining(scope.row)">{{$l.select}}</el-button>
+            </a-table-column>
+            <a-table-column :title="$l.startTime" dataIndex="start_date"></a-table-column>
+            <a-table-column :title="$l.endTime" dataIndex="end_date"></a-table-column>
+            <a-table-column :title="$l.status" dataIndex="is_valid"></a-table-column>
+            <a-table-column :title="$l.operation" fixed="right">
+              <template slot-scope="text, record, index">
+                <a-button type='link' @click="selectTraining(record)">{{$l.select}}</a-button>
               </template>
-            </el-table-column>
-          </el-table>
+            </a-table-column>
+          </a-table>
         </div>
       </el-dialog>
 
@@ -192,22 +188,20 @@
           <el-form-item> <el-button type="success" @click="getUserList">{{$l.search}}</el-button></el-form-item>
         </el-form>
         <div class="tableContainer" ref="tableContainer">
-          <el-table :data='userObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
-            highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" max-height="400px"
-            :row-style="{height:'60px',fontSize:'14px'}">
-            <el-table-column type="index" width="50" :label='$l.serialNumber'>
-            </el-table-column>
-            <el-table-column :label="$l.jobNumber" prop="userid"></el-table-column>
-            <el-table-column :label="$l.name" prop="username"></el-table-column>
-            <el-table-column :label="$l.department" prop="department_t"></el-table-column>
-            <el-table-column :label="$l.position" prop="work_name"></el-table-column>
-            <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-            <el-table-column :label="$l.operation" fixed="right">
-              <template slot-scope="scope">
-                <el-button type='text' @click="selectUser(scope.row)">{{$l.select}}</el-button>
+          <a-table :dataSource='userObj.list' :scroll="{ y: 400 }" style="width: 100%">
+            <a-table-column :title='$l.serialNumber' type="index" :width="50">
+            </a-table-column>
+            <a-table-column :title="$l.jobNumber" dataIndex="userid"></a-table-column>
+            <a-table-column :title="$l.name" dataIndex="username"></a-table-column>
+            <a-table-column :title="$l.department" dataIndex="department_t"></a-table-column>
+            <a-table-column :title="$l.position" dataIndex="work_name"></a-table-column>
+            <a-table-column :title="$l.status" dataIndex="is_valid"></a-table-column>
+            <a-table-column :title="$l.operation" fixed="right">
+              <template slot-scope="text, record, index">
+                <a-button type='link' @click="selectUser(record)">{{$l.select}}</a-button>
               </template>
-            </el-table-column>
-          </el-table>
+            </a-table-column>
+          </a-table>
         </div>
         <div
           style="width: 100%;display: flex;align-items: center;height: 50px;justify-content: flex-end;padding-right: 20px;">
@@ -287,29 +281,26 @@
             </div>
           </el-tab-pane>
           <el-tab-pane :label="$l.taskList" name='task'>
-            <el-table :data="classObj.taskList" row-key='bind_id' tooltip-effect="dark" style="width: 100%"
-              highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-              :max-height="cssObj.tableMaxHeight">
-              <el-table-column type="index" width="55"></el-table-column>
-              <el-table-column prop="name_label" :label="$l.name"></el-table-column>
-              <el-table-column prop="type" :label="$l.type">
-                <template slot-scope="scope">
-                  {{scope.row.type==1?$l.exam:$l.course}}
+            <a-table :dataSource="classObj.taskList" :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
+              <a-table-column :title="$l.serialNumber" type="index" :width="55"></a-table-column>
+              <a-table-column :title="$l.name" dataIndex="name_label"></a-table-column>
+              <a-table-column :title="$l.type" dataIndex="type">
+                <template slot-scope="text, record, index">
+                  {{record.type==1?$l.exam:$l.course}}
                 </template>
-              </el-table-column>
-              <el-table-column prop="is_must" :label="$l.required">
-                <template slot-scope="scope">
-                  {{scope.row.is_must==1?$l.required:$l.elective}}
+              </a-table-column>
+              <a-table-column :title="$l.required" dataIndex="is_must">
+                <template slot-scope="text, record, index">
+                  {{record.is_must==1?$l.required:$l.elective}}
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.operation" fixed="right">
-                <template slot-scope="scope">
-                  <el-button class="text-green" type='text' @click="previewDetail(scope.row)">{{$l.preview}}</el-button>
-                  <el-button v-show="scope.row.type==1" type='text'
-                    @click="getExamRecord(scope.row)">{{$l.statistics}}</el-button>
+              </a-table-column>
+              <a-table-column :title="$l.operation" fixed="right">
+                <template slot-scope="text, record, index">
+                  <a-button class="text-green" type='link' @click="previewDetail(record)">{{$l.preview}}</a-button>
+                  <a-button v-show="record.type==1" type='link' @click="getExamRecord(record)">{{$l.statistics}}</a-button>
                 </template>
-              </el-table-column>
-            </el-table>
+              </a-table-column>
+            </a-table>
           </el-tab-pane>
           <el-tab-pane :label="$l.classStudents" name="student">
             <div style="margin-bottom: 10px;display: flex;justify-content: space-between;">
@@ -332,79 +323,70 @@
                 <el-button type="primary" plain @click="showObj.selectStudent = true">{{$l.addStudents}}</el-button>
               </div>
             </div>
-            <el-table ref="examListTable" class="draggable-table-exam" :data="studentObj.classmateList" row-key='id'
-              tooltip-effect="dark" style="width: 100%" highlight-current-row highlight-selection-row stripe
-              :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight">
-              <el-table-column type="index" width="55"></el-table-column>
-              <el-table-column :label="$l.barcode" prop="userId"></el-table-column>
-              <el-table-column :label="$l.name" prop="userName"></el-table-column>
-              <el-table-column :label="$l.department" prop="department"></el-table-column>
-              <el-table-column :label="$l.position" prop="workName"></el-table-column>
-              <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-              <el-table-column :label="$l.operation" fixed="right">
-                <template slot-scope="scope">
-                  <el-button type='text' :class="scope.row.is_valid=='Y'?'text-red':'text-green'"
-                    @click="toggleStudentStatus(scope.row)">{{scope.row.is_valid=='Y'?$l.disable:$l.enable}}</el-button>
+            <a-table :dataSource="studentObj.classmateList" :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
+              <a-table-column :title="$l.serialNumber" type="index" :width="55"></a-table-column>
+              <a-table-column :title="$l.barcode" dataIndex="userId"></a-table-column>
+              <a-table-column :title="$l.name" dataIndex="userName"></a-table-column>
+              <a-table-column :title="$l.department" dataIndex="department"></a-table-column>
+              <a-table-column :title="$l.position" dataIndex="workName"></a-table-column>
+              <a-table-column :title="$l.status" dataIndex="is_valid"></a-table-column>
+              <a-table-column :title="$l.operation" fixed="right">
+                <template slot-scope="text, record, index">
+                  <a-button type='link' :class="record.is_valid=='Y'?'text-red':'text-green'" @click="toggleStudentStatus(record)">{{record.is_valid=='Y'?$l.disable:$l.enable}}</a-button>
                 </template>
-              </el-table-column>
-            </el-table>
+              </a-table-column>
+            </a-table>
           </el-tab-pane>
           <el-tab-pane :label="$l.completionStatus" name="status" v-if='class_id!=""'>
-            <el-table :data='learningObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
-              highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-              :max-height="cssObj.tableMaxHeight" :row-style="{height:'60px',fontSize:'14px'}">
-              <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
-              <el-table-column :label="$l.jobNumber" prop="userid"></el-table-column>
-              <el-table-column :label="$l.name" prop="name_t"></el-table-column>
-              <el-table-column :label="$l.department" prop="dept_no"></el-table-column>
-              <el-table-column :label="$l.departmentName" prop="department_t"></el-table-column>
-              <el-table-column :label="$l.courseCount" prop="course_num">
-                <template slot-scope="scope">
+            <a-table :dataSource='learningObj.list' :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
+              <a-table-column :title='$l.serialNumber' type="index" :width="50"></a-table-column>
+              <a-table-column :title="$l.jobNumber" dataIndex="userid"></a-table-column>
+              <a-table-column :title="$l.name" dataIndex="name_t"></a-table-column>
+              <a-table-column :title="$l.department" dataIndex="dept_no"></a-table-column>
+              <a-table-column :title="$l.departmentName" dataIndex="department_t"></a-table-column>
+              <a-table-column :title="$l.courseCount" dataIndex="course_num">
+                <template slot-scope="text, record, index">
                   <div class='total-num'>
-                    {{scope.row.course_num}}
+                    {{record.course_num}}
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.completedCourses" prop="finsh_course_num">
-                <template slot-scope="scope">
-                  <div @click="checkCourse(scope.row.finsh_course_List,$l.completedCourses)" class='finish-num'>
-                    {{scope.row.finsh_course_num}}
+              </a-table-column>
+              <a-table-column :title="$l.completedCourses" dataIndex="finsh_course_num">
+                <template slot-scope="text, record, index">
+                  <div @click="checkCourse(record.finsh_course_List,$l.completedCourses)" class='finish-num'>
+                    {{record.finsh_course_num}}
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.unfinishedCourses" prop="finsh_course_num">
-                <template slot-scope="scope">
-                  <div @click="checkCourse(scope.row.no_finsh_course_List,$l.unfinishedCourses)" class='unfinish-num'>
-                    {{scope.row.no_finsh_course_List.length}}
+              </a-table-column>
+              <a-table-column :title="$l.unfinishedCourses" dataIndex="finsh_course_num">
+                <template slot-scope="text, record, index">
+                  <div @click="checkCourse(record.no_finsh_course_List,$l.unfinishedCourses)" class='unfinish-num'>
+                    {{record.no_finsh_course_List.length}}
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.examCount" prop="exam_num">
-                <template slot-scope="scope">
+              </a-table-column>
+              <a-table-column :title="$l.examCount" dataIndex="exam_num">
+                <template slot-scope="text, record, index">
                   <div class='total-num'>
-                    {{scope.row.exam_num}}
+                    {{record.exam_num}}
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.completedExams" prop="finsh_exam_num">
-                <template slot-scope="scope">
-                  <div
-                    @click="checkExam([...scope.row.finsh_course_exam_List,...scope.row.finsh_train_exam_List],$l.completedExams)"
-                    class='finish-num'>
-                    {{scope.row.finsh_exam_num}}
+              </a-table-column>
+              <a-table-column :title="$l.completedExams" dataIndex="finsh_exam_num">
+                <template slot-scope="text, record, index">
+                  <div @click="checkExam([...record.finsh_course_exam_List,...record.finsh_train_exam_List],$l.completedExams)" class='finish-num'>
+                    {{record.finsh_exam_num}}
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.unfinishedExams" prop="finsh_course_num">
-                <template slot-scope="scope">
-                  <div
-                    @click="checkExam([...scope.row.no_finsh_course_exam_List,...scope.row.no_finsh_train_exam_List],$l.unfinishedExams)"
-                    class='unfinish-num'>
-                    {{scope.row.no_finsh_course_exam_List.length + scope.row.no_finsh_train_exam_List.length}}
+              </a-table-column>
+              <a-table-column :title="$l.unfinishedExams" dataIndex="finsh_course_num">
+                <template slot-scope="text, record, index">
+                  <div @click="checkExam([...record.no_finsh_course_exam_List,...record.no_finsh_train_exam_List],$l.unfinishedExams)" class='unfinish-num'>
+                    {{record.no_finsh_course_exam_List.length + record.no_finsh_train_exam_List.length}}
                   </div>
                 </template>
-              </el-table-column>
-            </el-table>
+              </a-table-column>
+            </a-table>
           </el-tab-pane>
         </el-tabs>
         <div class="buttonBar">
@@ -445,46 +427,43 @@
       </div>
 
       <div class="tableContainer" ref="tableContainer">
-        <el-table :data='classObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
-          highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
-          :row-style="{height:'60px',fontSize:'14px'}">
-          <el-table-column type="index" width="50" :label='$l.serialNumber'>
-          </el-table-column>
-          <el-table-column :label="$l.simplifiedChinese" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.college" prop="college_id">
-            <template slot-scope="scope">
-              {{returnCollegeLabel(scope.row.college_id)}}
+        <a-table :dataSource='classObj.list' :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
+          <a-table-column :title='$l.serialNumber' type="index" :width="50">
+          </a-table-column>
+          <a-table-column :title="$l.simplifiedChinese" dataIndex="name_zh"></a-table-column>
+          <a-table-column :title="$l.college" dataIndex="college_id">
+            <template slot-scope="text, record, index">
+              {{returnCollegeLabel(record.college_id)}}
             </template>
-          </el-table-column>
-          <el-table-column :label="$l.affiliatedPlan" prop="train_name_label"></el-table-column>
-          <el-table-column :label="$l.trainingContent" prop="train_content"></el-table-column>
-          <el-table-column :label="$l.trainingObjective" prop="train_target"></el-table-column>
-          <el-table-column :label="$l.trainingTarget" prop="train_object"></el-table-column>
-          <el-table-column :label="$l.classTeacher" prop="class_teacher">
-            <template slot-scope="scope">
-              <div v-if="scope.row.class_teacher"> {{scope.row.tearcher[0].name_t}}</div>
+          </a-table-column>
+          <a-table-column :title="$l.affiliatedPlan" dataIndex="train_name_label"></a-table-column>
+          <a-table-column :title="$l.trainingContent" dataIndex="train_content"></a-table-column>
+          <a-table-column :title="$l.trainingObjective" dataIndex="train_target"></a-table-column>
+          <a-table-column :title="$l.trainingTarget" dataIndex="train_object"></a-table-column>
+          <a-table-column :title="$l.classTeacher" dataIndex="class_teacher">
+            <template slot-scope="text, record, index">
+              <div v-if="record.class_teacher"> {{record.tearcher[0].name_t}}</div>
             </template>
-          </el-table-column>
-          <el-table-column :label="$l.startTime" prop="start_date"></el-table-column>
-          <el-table-column :label="$l.endTime" prop="end_date"></el-table-column>
-          <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-          <el-table-column :label="$l.operation" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' @click="modifyClass(scope.row)">{{$l.manage}}</el-button>
-              <el-button v-if="scope.row.is_valid=='N'" type='text' style="color: seagreen;"
-                @click="modifyStatus(scope.row)">{{$l.enable}}</el-button>
-              <el-button v-else type='text' style="color: red;"
-                @click="modifyStatus(scope.row)">{{$l.disable}}</el-button>
+          </a-table-column>
+          <a-table-column :title="$l.startTime" dataIndex="start_date"></a-table-column>
+          <a-table-column :title="$l.endTime" dataIndex="end_date"></a-table-column>
+          <a-table-column :title="$l.status" dataIndex="is_valid"></a-table-column>
+          <a-table-column :title="$l.operation" fixed="right">
+            <template slot-scope="text, record, index">
+              <a-button type='link' @click="modifyClass(record)">{{$l.manage}}</a-button>
+              <a-button v-if="record.is_valid=='N'" type='link' style="color: seagreen;" @click="modifyStatus(record)">{{$l.enable}}</a-button>
+              <a-button v-else type='link' style="color: red;" @click="modifyStatus(record)">{{$l.disable}}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
+          </a-table-column>
+        </a-table>
       </div>
 
       <div class="trainingManage-pagenation">
-        <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
-          :current-page="classObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="classObj.query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper" :total="classObj.total" style="float: right;">
-        </el-pagination>
+        <a-pagination @showSizeChange="handleSizeChange" @change="handlePageChange"
+          :current="classObj.query.page" :pageSizeOptions="[5,10, 15, 30, 50,100]" :pageSize="classObj.query.pageSize"
+          :showSizeChanger="true" :showQuickJumper="true" :showTotal="(total, range) => `共 ${total} 条`"
+          :total="classObj.total" style="float: right;">
+        </a-pagination>
       </div>
     </div>
   </div>

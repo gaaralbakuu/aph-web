@@ -20,3 +20,7 @@ const route = instance.proxy.$route
 const router = instance.proxy.$router
 const { $request } = instance.proxy
 const { l, c } = useLocalI18n('videoUserPlay')
+
+refactor code:
+el-table -> a-table (của antd 1.7) phù hợp cho vue 2.7.16
+Không cần phải import vì đã Vue.use trong main rồi

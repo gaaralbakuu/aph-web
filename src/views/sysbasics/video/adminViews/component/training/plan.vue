@@ -26,25 +26,26 @@
             </el-form-item>
           </el-form>
 
-          <el-table ref="examDialogTable" :data="examObj.list" tooltip-effect="dark" style="width: 100%"
-            highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-            :max-height="cssObj.tableMaxHeight" show-overflow-tooltip @selection-change="examSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column type="index" width="50" :label='$l.serialNumber'></el-table-column>
-            <el-table-column :label="$l.examName" prop="name_label"></el-table-column>
-            <el-table-column :label="$l.passingScore" prop="pass_score"></el-table-column>
-            <el-table-column :label="$l.maxAttempts" prop="max_reply_num"></el-table-column>
-            <el-table-column :label="$l.examDuration" prop="test_duration"></el-table-column>
-            <el-table-column :label="$l.startTime" prop="start_time"></el-table-column>
-            <el-table-column :label="$l.endTime" prop="end_time"></el-table-column>
-            <el-table-column :label="$l.enableStatus" prop="is_valid"></el-table-column>
-            <el-table-column :label="$l.actions" fixed="right">
-              <template slot-scope="scope">
-                <el-button class="text-green" type='text' @click="previewDetail(scope.row)">{{$l.preview}}</el-button>
-                <el-button type='text' @click="selectItemToDetail(scope.row)">{{$l.select}}</el-button>
+          <a-table ref="examDialogTable" :dataSource="examObj.list" bordered :scroll="{ y: cssObj.tableMaxHeight }" :rowSelection="{ onChange: examSelectionChange }">
+            <a-table-column :title="$l.serialNumber" width="50">
+              <template #default="text, record, index">
+                {{ index + 1 }}
               </template>
-            </el-table-column>
-          </el-table>
+            </a-table-column>
+            <a-table-column :title="$l.examName" dataIndex="name_label"></a-table-column>
+            <a-table-column :title="$l.passingScore" dataIndex="pass_score"></a-table-column>
+            <a-table-column :title="$l.maxAttempts" dataIndex="max_reply_num"></a-table-column>
+            <a-table-column :title="$l.examDuration" dataIndex="test_duration"></a-table-column>
+            <a-table-column :title="$l.startTime" dataIndex="start_time"></a-table-column>
+            <a-table-column :title="$l.endTime" dataIndex="end_time"></a-table-column>
+            <a-table-column :title="$l.enableStatus" dataIndex="is_valid"></a-table-column>
+            <a-table-column :title="$l.actions" fixed="right" :width="200">
+              <template #default="text, record">
+                <a-button type="link" style="color: green;" @click="previewDetail(record)">{{$l.preview}}</a-button>
+                <a-button type="link" @click="selectItemToDetail(record)">{{$l.select}}</a-button>
+              </template>
+            </a-table-column>
+          </a-table>
         </div>
       </el-dialog>
 
@@ -75,39 +76,35 @@
             </div>
           </el-form-item>
         </el-form>
-        <el-table ref="courseDialogTable" :data="courseObj.list" tooltip-effect="dark" style="width: 100%"
-          @selection-change="courseSelectionChange" highlight-current-row highlight-selection-row stripe
-          :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
-          :row-style="{height:'100px',fontSize:'14px'}">
-
-          <el-table-column type="selection" width="55">
-          </el-table-column>
-          <el-table-column type="index" width="50" :label='$l.serialNumber'>
-          </el-table-column>
-          <el-table-column :label="$l.cover" prop="thumbnail_path">
-            <template slot-scope="scope">
-              <div class="img" v-if="scope.row.thumbnail_path">
-                <img class="auto-img" @click="coverPreview($api.videoServer+'/'+ scope.row.thumbnail_path)"
-                  :src="$api.videoServer+'/'+ scope.row.thumbnail_path" />
+        <a-table ref="courseDialogTable" :dataSource="courseObj.list" bordered :scroll="{ y: cssObj.tableMaxHeight }" :custom-row="() => ({ style: { height: '100px', fontSize: '14px' } })" :rowSelection="{ onChange: courseSelectionChange }">
+          <a-table-column :title="$l.serialNumber" width="50">
+            <template #default="text, record, index">
+              {{ index + 1 }}
+            </template>
+          </a-table-column>
+          <a-table-column :title="$l.cover">
+            <template #default="text, record">
+              <div class="img" v-if="record.thumbnail_path">
+                <img class="auto-img" @click="coverPreview($api.videoServer+'/'+ record.thumbnail_path)"
+                  :src="$api.videoServer+'/'+ record.thumbnail_path" />
               </div>
               <div v-else style="text-align: center;width: 100%;">
                 <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
                 <div>{{$l.noCover}}</div>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column :label="$l.courseName" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.courseDescription" prop="description" show-overflow-tooltip></el-table-column>
-          <el-table-column :label="$l.affiliation" prop="org_id">
-          </el-table-column>
-          <el-table-column :label="$l.courseCredit" prop="score"></el-table-column>
-          <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-          <el-table-column :label="$l.actions" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' @click="selectItemToDetail(scope.row)">{{$l.add}}</el-button>
+          </a-table-column>
+          <a-table-column :title="$l.courseName" dataIndex="name_zh"></a-table-column>
+          <a-table-column :title="$l.courseDescription" dataIndex="description" :ellipsis="true"></a-table-column>
+          <a-table-column :title="$l.affiliation" dataIndex="org_id"></a-table-column>
+          <a-table-column :title="$l.courseCredit" dataIndex="score"></a-table-column>
+          <a-table-column :title="$l.status" dataIndex="is_valid"></a-table-column>
+          <a-table-column :title="$l.actions" fixed="right" :width="200">
+            <template #default="text, record">
+              <a-button type="link" @click="selectItemToDetail(record)">{{$l.add}}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
+          </a-table-column>
+        </a-table>
         <div class="lessonList-pagenation">
           <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
             :current-page="courseObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
@@ -223,32 +220,27 @@
               <el-button type="success" plain @click="showObj.selectExam = true">{{$l.addExam}}</el-button>
               <el-button type="danger" plain @click="removeMultipleItemFormDetail">{{$l.batchRemove}}</el-button>
             </div>
-            <el-table ref="detailTable" class="draggable-table-detail" :data="tableObj.detail" row-key='bind_id'
-              tooltip-effect="dark" style="width: 100%" highlight-current-row highlight-selection-row stripe
-              :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
-              :row-style="{height:'90px',fontSize:'14px'}" @selection-change="detailSelectionChange">
-              <el-table-column type="selection" width="55">
-              </el-table-column>
-              <el-table-column prop="name_label" :label="$l.name">
-              </el-table-column>
-              <el-table-column prop="type" :label="$l.type">
-                <template slot-scope="scope">
-                  {{scope.row.type==1?$l.exam:$l.courseName}}
+            <a-table ref="detailTable" class="draggable-table-detail" :dataSource="tableObj.detail" rowKey='bind_id' bordered :scroll="{ y: cssObj.tableMaxHeight }" :custom-row="() => ({ style: { height: '90px', fontSize: '14px' } })" :rowSelection="{ onChange: detailSelectionChange }">
+              <a-table-column :title="$l.name" dataIndex="name_label">
+              </a-table-column>
+              <a-table-column :title="$l.type">
+                <template #default="text, record">
+                  {{record.type==1?$l.exam:$l.courseName}}
                 </template>
-              </el-table-column>
-              <el-table-column prop="is_must" :label="$l.required">
-                <template slot-scope="scope">
-                  <el-switch v-model="scope.row.is_must" :active-value="1" :inactive-value="0">
-                  </el-switch>
+              </a-table-column>
+              <a-table-column :title="$l.required">
+                <template #default="text, record">
+                  <a-switch v-model:checked="record.is_must" :checked-value="1" :un-checked-value="0">
+                  </a-switch>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.actions" fixed="right">
-                <template slot-scope="scope">
-                  <el-button class="text-green" type='text' @click="previewDetail(scope.row)">{{$l.preview}}</el-button>
-                  <el-button class="text-red" type="text" @click="removeItemFormDetail(scope.$index)">{{$l.remove}}</el-button>
+              </a-table-column>
+              <a-table-column :title="$l.actions" fixed="right" :width="200">
+                <template #default="text, record, index">
+                  <a-button type="link" style="color: green;" @click="previewDetail(record)">{{$l.preview}}</a-button>
+                  <a-button type="link" style="color: red;" @click="removeItemFormDetail(index)">{{$l.remove}}</a-button>
                 </template>
-              </el-table-column>
-            </el-table>
+              </a-table-column>
+            </a-table>
           </el-tab-pane>
         </el-tabs>
 
@@ -289,25 +281,25 @@
       </div>
 
       <div class="tableContainer" ref="tableContainer">
-        <el-table :data='trainingObj.list' tooltip-effect="dark" style="width: 100%" highlight-current-row
-          highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
-          :row-style="{height:'60px',fontSize:'14px'}">
-          <el-table-column type="index" width="50" :label='$l.serialNumber'>
-          </el-table-column>
-          <el-table-column :label="$l.simplifiedTitle" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.description" prop="description"></el-table-column>
-          <el-table-column :label="$l.startTime" prop="start_date"></el-table-column>
-          <el-table-column :label="$l.endTime" prop="end_date"></el-table-column>
-          <el-table-column :label="$l.enableStatus" prop="is_valid"></el-table-column>
-          <el-table-column :label="$l.actions" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' @click="modifyTraining(scope.row)">{{$l.manage}}</el-button>
-              <el-button v-if="scope.row.is_valid=='N'" type='text' style="color: seagreen;"
-                @click="modifyStatus(scope.row)">{{$l.enable}}</el-button>
-              <el-button v-else type='text' style="color: red;" @click="modifyStatus(scope.row)">{{$l.disable}}</el-button>
+        <a-table :dataSource='trainingObj.list' bordered :scroll="{ y: cssObj.tableMaxHeight }" :custom-row="() => ({ style: { height: '60px', fontSize: '14px' } })">
+          <a-table-column :title="$l.serialNumber" width="50">
+            <template #default="text, record, index">
+              {{ index + 1 }}
             </template>
-          </el-table-column>
-        </el-table>
+          </a-table-column>
+          <a-table-column :title="$l.simplifiedTitle" dataIndex="name_zh"></a-table-column>
+          <a-table-column :title="$l.description" dataIndex="description"></a-table-column>
+          <a-table-column :title="$l.startTime" dataIndex="start_date"></a-table-column>
+          <a-table-column :title="$l.endTime" dataIndex="end_date"></a-table-column>
+          <a-table-column :title="$l.enableStatus" dataIndex="is_valid"></a-table-column>
+          <a-table-column :title="$l.actions" fixed="right" :width="250">
+            <template #default="text, record">
+              <a-button type="link" @click="modifyTraining(record)">{{$l.manage}}</a-button>
+              <a-button v-if="record.is_valid=='N'" type="link" style="color: seagreen;" @click="modifyStatus(record)">{{$l.enable}}</a-button>
+              <a-button v-else type="link" style="color: red;" @click="modifyStatus(record)">{{$l.disable}}</a-button>
+            </template>
+          </a-table-column>
+        </a-table>
       </div>
 
       <div class="trainingManage-pagenation">
@@ -599,16 +591,16 @@
         this.$refs.detailTable.clearSelection();
       },
 
-      courseSelectionChange(val) {
-        this.tableObj.courseSelection = val
+      courseSelectionChange(selectedRowKeys, selectedRows) {
+        this.tableObj.courseSelection = selectedRows
       },
 
-      examSelectionChange(val) {
-        this.tableObj.examSelection = val
+      examSelectionChange(selectedRowKeys, selectedRows) {
+        this.tableObj.examSelection = selectedRows
       },
 
-      detailSelectionChange(val) {
-        this.tableObj.detailSelection = val
+      detailSelectionChange(selectedRowKeys, selectedRows) {
+        this.tableObj.detailSelection = selectedRows
       },
 
       swiperTab(v) {

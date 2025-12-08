@@ -105,21 +105,13 @@
       </el-form>
     </div>
     <div style="height: calc(100% - 60px);">
-      <el-table :data="trainPlaceList.data" style="width: 100%" max-height="720px" ref="userTable">
-        <el-table-column type="index" :label="$l.serialNumber"></el-table-column>
-        <el-table-column v-for="(item, index) in trainPlaceList.columns" :key="index" :prop="item.key" :label="item.title"
-          :width="item.width">
-        </el-table-column>
-        <el-table-column fixed="right" :label="$l.operation" width="100">
-          <template slot-scope="scope">
-            <el-button @click="editLecturer(scope.row)" type="text" size="small">{{$l.edit}}</el-button>
-            <el-button v-if="scope.row.is_valid == 'Y'" @click="deleteLecturer(scope.row)" type="text" size="small" style="color: red">
-              {{$l.disable}}</el-button>
-            <el-button v-else @click="deleteLecturer(scope.row)" type="text" size="small" style="color: rgb(58, 188, 19)">
-              {{$l.enable}}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <a-table :dataSource="trainPlaceList.data" :columns="tableColumns" :scroll="{ y: 720 }" ref="userTable">
+        <template slot="operation" slot-scope="text, record">
+          <el-button @click="editLecturer(record)" type="text" size="small">{{ $l.edit }}</el-button>
+          <el-button v-if="record.is_valid == 'Y'" @click="deleteLecturer(record)" type="text" size="small" style="color: red">{{ $l.disable }}</el-button>
+          <el-button v-else @click="deleteLecturer(record)" type="text" size="small" style="color: rgb(58, 188, 19)">{{ $l.enable }}</el-button>
+        </template>
+      </a-table>
 
       <z-pagination :pagination="pagination" :total="trainPlaceList.total" :page.sync="trainPlaceList.form.page"
         :limit.sync="trainPlaceList.form.pageSize" @change="getTrainPlaceList">
@@ -130,7 +122,8 @@
 
 <script>
   import {
-    zPagination
+    zPagination,
+    _
   } from '@/views/_common'
   export default {
     name: 'videoAdminPlace',
@@ -219,6 +212,31 @@
           isIndeterminate: true,
           checkedEquipment: [],
         },
+      }
+    },
+    computed: {
+      tableColumns() {
+        return [
+          {
+            title: this.$l.serialNumber,
+            dataIndex: 'index',
+            key: 'index',
+            customRender: (text, record, index) => index + 1
+          },
+          ...this.trainPlaceList.columns.map(col => ({
+            title: col.title,
+            dataIndex: col.key,
+            key: col.key,
+            width: col.width
+          })),
+          {
+            title: this.$l.operation,
+            key: 'operation',
+            fixed: 'right',
+            width: 100,
+            scopedSlots: { customRender: 'operation' }
+          }
+        ]
       }
     },
     watch: {},

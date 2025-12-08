@@ -127,18 +127,13 @@
       </el-form>
     </div>
     <div style="height: calc(100% - 60px);">
-      <el-table :data="lecturerList.data" style="width: 100%" max-height="720px" ref="userTable">
-        <el-table-column v-for="(item, index) in lecturerList.columns" :key="index" :prop="item.key" :label="item.title"
-          :width="item.width">
-        </el-table-column>
-        <el-table-column fixed="right" :label="$l.operation" width="100">
-          <template slot-scope="scope">
-            <el-button @click="editLecturer(scope.row)" type="text" size="small">{{$l.edit}}</el-button>
-            <el-button @click="deleteLecturer(scope.row)" type="text" size="small" style="color: red">
-              {{$l.delete}}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <a-table :dataSource="lecturerList.data" :columns="lecturerList.columns" :scroll="{ y: 720 }">
+        <template slot="operation" slot-scope="text, record">
+          <a-button @click="editLecturer(record)" type="link" size="small">{{$l.edit}}</a-button>
+          <a-button @click="deleteLecturer(record)" type="link" size="small" style="color: red">
+            {{$l.delete}}</a-button>
+        </template>
+      </a-table>
 
       <z-pagination :pagination="pagination" :total="lecturerList.total" :page.sync="lecturerList.form.page"
         :limit.sync="lecturerList.form.pageSize" @change="getLecturerList">
@@ -150,7 +145,8 @@
 <script>
   import {
     api,
-    zPagination
+    zPagination,
+    _
   } from '@/views/_common'
   export default {
     name: 'videoAdminLecturer',
@@ -189,48 +185,54 @@
           ],
           columns: [{
               title: this.$l.cardNumber,
-              key: 'ic_card',
+              dataIndex: 'ic_card',
               width: 60,
             },
             {
               title: this.$l.name,
-              key: 'name_zh',
+              dataIndex: 'name_zh',
               width: 140,
             },
             {
               title: this.$l.gender,
-              key: 'sex',
+              dataIndex: 'sex',
               width: 100,
             },
             {
               title: this.$l.birthday,
-              key: 'birthday',
+              dataIndex: 'birthday',
               width: 180,
             },
             {
               title: this.$l.phoneNumber,
-              key: 'phone',
+              dataIndex: 'phone',
               width: 120,
             },
             {
               title: this.$l.country,
-              key: 'country',
+              dataIndex: 'country',
               width: 140,
             },
             {
               title: this.$l.address,
-              key: 'address',
+              dataIndex: 'address',
               width: 260,
             },
             {
               title: this.$l.company,
-              key: 'company',
+              dataIndex: 'company',
               width: 260,
             },
             {
               title: this.$l.email,
-              key: 'email',
+              dataIndex: 'email',
               width: 230,
+            },
+            {
+              title: this.$l.operation,
+              fixed: 'right',
+              width: 100,
+              scopedSlots: { customRender: 'operation' },
             },
           ],
         },
