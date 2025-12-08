@@ -1,230 +1,233 @@
 <template>
   <div ref="lesssonCatalogue-container" class="lesssonCatalogue-container">
 
-    <el-dialog :visible.sync="showObj.selectCourse" @open='getCourseList' width="90%" top='7vh'
-      :title="$l.addCourseToCatalogue">
+    <a-modal v-model:open="showObj.selectCourse" @afterOpen='getCourseList' width="90%" style="top: 7vh"
+      :title="l.addCourseToCatalogue">
       <div class="CourseSelect-dialog">
-        <el-row :gutter="24">
-          <el-col :span="12">
-            <el-form inline>
-              <el-form-item :label="$l.college">
-                <el-select v-model="courseObj.query.college_id" @change="getCourseList"
-                  :placeholder="$l.emptyIsPublicCourse" clearable>
-                  <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                    :value="i.id"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item :label="$l.title">
-                <el-input :placeholder="$l.keyword" v-model="courseObj.query.name" clearable @clear='getCourseList'
-                  @keyup.native.enter="getCourseList"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="getCourseList">{{$l.search}}</el-button>
-                <el-button type="success" @click="multipleAdd">{{$l.multipleAdd}}</el-button>
-              </el-form-item>
-            </el-form>
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form layout="inline">
+              <a-form-item :label="l.college">
+                <a-select v-model:value="courseObj.query.college_id" @change="getCourseList"
+                  :placeholder="l.emptyIsPublicCourse" allow-clear>
+                  <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+                </a-select>
+              </a-form-item>
+              <a-form-item :label="l.title">
+                <a-input :placeholder="l.keyword" v-model:value="courseObj.query.name" allow-clear @clear='getCourseList'
+                  @pressEnter="getCourseList"></a-input>
+              </a-form-item>
+              <a-form-item>
+                <a-button type="primary" @click="getCourseList">{{l.search}}</a-button>
+                <a-button type="default" @click="multipleAdd">{{l.multipleAdd}}</a-button>
+              </a-form-item>
+            </a-form>
 
-            <el-table ref="toBeAddedTable" class='video-table' :data="courseObj.courseList" tooltip-effect="dark"
-              row-key="id" highlight-current-row highlight-selection-row stripe border max-height="500px"
+            <a-table ref="toBeAddedTable" class='video-table' :dataSource="courseObj.courseList"
+              row-key="id" :pagination="false" :scroll="{ y: 500 }"
               @selection-change="handleSelectionChangeToBeAdded">
-              <el-table-column type="selection" width="55">
-              </el-table-column>
-              <el-table-column type="index" width="50" label='No'>
-              </el-table-column>
-              <el-table-column prop="thumbnail_path" :label="$l.cover">
-                <template slot-scope="scope">
-                  <div class="img" v-if="scope.row.thumbnail_path">
-                    <img class="auto-img" :src="api.baseUrl+'/'+ scope.row.thumbnail_path" />
+              <a-table-column type="selection" width="55">
+              </a-table-column>
+              <a-table-column title="No" width="50">
+                <template #default="{ index }">
+                  {{ index + 1 }}
+                </template>
+              </a-table-column>
+              <a-table-column :title="l.cover">
+                <template #default="{ record }">
+                  <div class="img" v-if="record.thumbnail_path">
+                    <img class="auto-img" :src="api.baseUrl+'/'+ record.thumbnail_path" />
                   </div>
                   <div v-else style="text-align: center;width: 100%;">
                     <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                    <div>{{$l.noCover}}</div>
+                    <div>{{l.noCover}}</div>
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column prop="name_zh" :label="$l.title">
-              </el-table-column>
-              <el-table-column prop="description" :label="$l.desc">
-              </el-table-column>
-              <el-table-column :label="$c.operation" width="80">
-                <template slot-scope="scope">
-                  <el-button type="text" @click="addCourse(scope.row)">{{$l.select}}</el-button>
+              </a-table-column>
+              <a-table-column :title="l.title" data-index="name_zh">
+              </a-table-column>
+              <a-table-column :title="l.desc" data-index="description">
+              </a-table-column>
+              <a-table-column :title="c.operation" width="80">
+                <template #default="{ record }">
+                  <a-button type="link" @click="addCourse(record)">{{l.select}}</a-button>
                 </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-          <el-col :span="12">
-            <el-form inline>
-              <el-form-item :label="$l.toBeAddedList">
-                <el-button type="danger" @click="multipleRemove">{{$l.multipleRemove}}</el-button>
-              </el-form-item>
-            </el-form>
+              </a-table-column>
+            </a-table>
+          </a-col>
+          <a-col :span="12">
+            <a-form layout="inline">
+              <a-form-item :label="l.toBeAddedList">
+                <a-button type="primary" danger @click="multipleRemove">{{l.multipleRemove}}</a-button>
+              </a-form-item>
+            </a-form>
 
-            <el-table ref="toBeRemovedTable" :data="courseObj.form" tooltip-effect="dark"
-              style="width: 95%;margin: 0 auto;" highlight-current-row highlight-selection-row stripe border
+            <a-table ref="toBeRemovedTable" :dataSource="courseObj.form"
+              style="width: 95%;margin: 0 auto;" :pagination="false"
               @selection-change="handleSelectionChangeToBeRemoved">
-              <el-table-column type="selection" width="55">
-              </el-table-column>
-              <el-table-column type="index" width="50" label='No'>
-              </el-table-column>
-              <el-table-column :label="$l.cover" prop="thumbnail_path">
-                <template slot-scope="scope">
-                  <div class="img" v-if="scope.row.thumbnail_path">
-                    <img class="auto-img" :src="api.baseUrl+'/'+ scope.row.thumbnail_path" />
+              <a-table-column type="selection" width="55">
+              </a-table-column>
+              <a-table-column title="No" width="50">
+                <template #default="{ index }">
+                  {{ index + 1 }}
+                </template>
+              </a-table-column>
+              <a-table-column :title="l.cover">
+                <template #default="{ record }">
+                  <div class="img" v-if="record.thumbnail_path">
+                    <img class="auto-img" :src="api.baseUrl+'/'+ record.thumbnail_path" />
                   </div>
                   <div v-else style="text-align: center;width: 100%;">
                     <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                    <div>{{$l.noCover}}</div>
+                    <div>{{l.noCover}}</div>
                   </div>
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.title" prop="name_zh"></el-table-column>
-              <el-table-column :label="$l.desc" prop="description" show-overflow-tooltip></el-table-column>
-              <el-table-column :label="$l.score" prop="score"></el-table-column>
-              <el-table-column :label="$c.operation" width="80">
-                <template slot-scope="scope">
-                  <el-button type='text' @click="removeCourse(scope.$index)">{{$l.remove}}111</el-button>
+              </a-table-column>
+              <a-table-column :title="l.title" data-index="name_zh"></a-table-column>
+              <a-table-column :title="l.desc" data-index="description" ellipsis></a-table-column>
+              <a-table-column :title="l.score" data-index="score"></a-table-column>
+              <a-table-column :title="c.operation" width="80">
+                <template #default="{ record, index }">
+                  <a-button type='link' @click="removeCourse(index)">{{l.remove}}</a-button>
                 </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-        </el-row>
-
-
-        <!-- <el-pagination @size-change="handleVideoSizeChange" @current-change="handleVideoPageChange"
-          :current-page="videoListObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
-          :page-size="videoListObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper"
-          :total="videoListObj.total" style="float: right;">
-        </el-pagination> -->
+              </a-table-column>
+            </a-table>
+          </a-col>
+        </a-row>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="bindCourseToCatalog">{{$l.submit}}</el-button>
-        <el-button type="primary" plain @click="cancelBindCourse">{{$l.giveup}}</el-button>
-      </div>
-    </el-dialog>
+      <template #footer>
+        <a-button type="primary" @click="bindCourseToCatalog">{{l.submit}}</a-button>
+        <a-button @click="cancelBindCourse">{{l.giveup}}</a-button>
+      </template>
+    </a-modal>
 
-    <el-drawer class="drawer-container" :visible.sync="showObj.course_show" :wrapperClosable='false' size="85%"
-      direction='btt'>
-      <div slot='title' class="title">
-        <div>{{$l.courseManage}}</div>
-        <div class="title-btn">
-          <el-button type="primary" size="small" @click="beforeOpenCourseDialog">{{$l.addCourse}}</el-button>
+    <a-drawer class="drawer-container" :visible="showObj.course_show" :closable="false" :width="600"
+      placement="bottom" @close="showObj.course_show = false">
+      <template #title>
+        <div class="title">
+          <div>{{l.courseManage}}</div>
+          <div class="title-btn">
+            <a-button type="primary" size="small" @click="beforeOpenCourseDialog">{{l.addCourse}}</a-button>
+          </div>
         </div>
-      </div>
+      </template>
       <div class="form-container">
-        <el-table ref="multipleTable" :data="courseObj.list" tooltip-effect="dark" row-key="id"
-          style="width: 95%;margin: 0 auto;" highlight-current-row highlight-selection-row stripe border>
-          <el-table-column type="index" width="50" label='No'>
-          </el-table-column>
-          <el-table-column :label="$l.cover" prop="thumbnail_path">
-            <template slot-scope="scope">
-              <div class="img" v-if="scope.row.thumbnail_path">
-                <img class="auto-img" :src="api.baseUrl+'/'+ scope.row.thumbnail_path" />
+        <a-table ref="multipleTable" :dataSource="courseObj.list" row-key="id"
+          style="width: 95%;margin: 0 auto;" :pagination="false">
+          <a-table-column title="No" width="50">
+            <template #default="{ index }">
+              {{ index + 1 }}
+            </template>
+          </a-table-column>
+          <a-table-column :title="l.cover">
+            <template #default="{ record }">
+              <div class="img" v-if="record.thumbnail_path">
+                <img class="auto-img" :src="api.baseUrl+'/'+ record.thumbnail_path" />
               </div>
               <div v-else style="text-align: center;width: 100%;">
                 <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                <div>{{$l.noCover}}</div>
+                <div>{{l.noCover}}</div>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column :label="$l.title" prop="name_zh"></el-table-column>
-          <el-table-column :label="$l.desc" prop="description" show-overflow-tooltip></el-table-column>
-          <el-table-column :label="$l.score" prop="score"></el-table-column>
-          <el-table-column :label="$l.status" prop="is_valid"></el-table-column>
-          <el-table-column :label="$c.operation">
-            <template slot-scope="scope">
-              <el-button type='text' @click="toggleCourseStatus(scope.row)">{{$l.remove}}</el-button>
+          </a-table-column>
+          <a-table-column :title="l.title" data-index="name_zh"></a-table-column>
+          <a-table-column :title="l.desc" data-index="description" ellipsis></a-table-column>
+          <a-table-column :title="l.score" data-index="score"></a-table-column>
+          <a-table-column :title="l.status" data-index="is_valid"></a-table-column>
+          <a-table-column :title="c.operation">
+            <template #default="{ record }">
+              <a-button type='link' @click="toggleCourseStatus(record)">{{l.remove}}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
+          </a-table-column>
+        </a-table>
         <div class="buttonBar">
-          <el-button type="primary" plain @click="showObj.course_show= false">{{$c.close}}</el-button>
+          <a-button type="primary" @click="showObj.course_show = false">{{c.close}}</a-button>
         </div>
       </div>
+    </a-drawer>
 
-    </el-drawer>
-
-    <el-drawer class="drawer-container" :visible.sync="showObj.catalog_show" :wrapperClosable='true' size="40%"
-      :before-close="getCatalogList">
-      <div slot='title' class="title">{{$l.addOrEditCatalogue}}</div>
+    <a-drawer class="drawer-container" :visible="showObj.catalog_show" :closable="true" :width="600"
+      @close="showObj.catalog_show = false">
+      <template #title>
+        <div class="title">{{l.addOrEditCatalogue}}</div>
+      </template>
       <div class="form-container">
         <div class="form">
-          <el-form label-width="100px" size="medium">
-            <el-form-item :label="$l.name_zh" required>
-              <el-input v-model="catalogObj.form.name_zh"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.name_tw">
-              <el-input v-model="catalogObj.form.name_tw"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.name_en">
-              <el-input v-model="catalogObj.form.name_en"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.name_vi">
-              <el-input v-model="catalogObj.form.name_vi"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.belongCollege" required>
-              <el-select v-model="catalogObj.form.college_id" style="width: 100%;" @change="collegeChange">
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.parentCatalogue" v-show="catalogObj.form.college_id">
-              <el-cascader v-model="catalogObj.form.pid" :options="catalogObj.list" clearable
-                :placeholder="$l.emptyIsRootCatalogue" style="width: 100%;" :props="catalogObj.cascaderProps">
-              </el-cascader>
-            </el-form-item>
-          </el-form>
-
+          <a-form :label-col="{ span: 6 }" size="middle">
+            <a-form-item :label="l.name_zh" required>
+              <a-input v-model:value="catalogObj.form.name_zh"></a-input>
+            </a-form-item>
+            <a-form-item :label="l.name_tw">
+              <a-input v-model:value="catalogObj.form.name_tw"></a-input>
+            </a-form-item>
+            <a-form-item :label="l.name_en">
+              <a-input v-model:value="catalogObj.form.name_en"></a-input>
+            </a-form-item>
+            <a-form-item :label="l.name_vi">
+              <a-input v-model:value="catalogObj.form.name_vi"></a-input>
+            </a-form-item>
+            <a-form-item :label="l.belongCollege" required>
+              <a-select v-model:value="catalogObj.form.college_id" style="width: 100%;" @change="collegeChange">
+                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :label="l.parentCatalogue" v-show="catalogObj.form.college_id">
+              <a-cascader v-model:value="catalogObj.form.pid" :options="catalogObj.list" allow-clear
+                :placeholder="l.emptyIsRootCatalogue" style="width: 100%;" :field-names="catalogObj.cascaderProps">
+              </a-cascader>
+            </a-form-item>
+          </a-form>
         </div>
         <div class="buttonBar">
-          <el-button type="primary" @click="submitCatalog">{{$l.submit}}</el-button>
-          <el-button type="danger" @click="showObj.catalog_show = false">{{$l.giveup}}</el-button>
+          <a-button type="primary" @click="submitCatalog">{{l.submit}}</a-button>
+          <a-button type="primary" danger @click="showObj.catalog_show = false">{{l.giveup}}</a-button>
         </div>
       </div>
-    </el-drawer>
+    </a-drawer>
 
     <div style="display: flex;justify-content: space-around;height: 100%;">
       <div style="width: 30%;height: 100%;">
         <div class="org_filter" style="display: flex;height: 60px;padding: 14px 0px;">
-          <el-input :placeholder="$l.keyword" v-model="filterOrgText"></el-input>
-          <el-button type="success" @click="getCollegeList" style="margin-left: 10px;">{{$l.refresh}}</el-button>
+          <a-input :placeholder="l.keyword" v-model:value="filterOrgText"></a-input>
+          <a-button type="default" @click="getCollegeList" style="margin-left: 10px;">{{l.refresh}}</a-button>
         </div>
         <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true"
           :data="publicCodeObj.collegeList" :filter-node-method="filterOrg">
-          <div class="org-tree-node" slot-scope="{ node, data }" @click="clickCollege(data.id)">
-            <span> {{ data.name_label }}</span>
-          </div>
+          <template #default="{ node, data }">
+            <div class="org-tree-node" @click="clickCollege(data.id)">
+              <span> {{ data.name_label }}</span>
+            </div>
+          </template>
         </el-tree>
       </div>
       <div class="catalogBox">
         <div class="catalog_filter">
-          <el-select v-model="catalogObj.query.is_valid" @change="getCatalogList">
-            <el-option :label="$c.all" value=""></el-option>
-            <el-option :label="$c.enable" value="Y"></el-option>
-            <el-option :label="$c.disable" value="N"></el-option>
-          </el-select>
-          <el-input :placeholder="$l.keyword" v-model="filterCatalogText"></el-input>
+          <a-select v-model:value="catalogObj.query.is_valid" @change="getCatalogList">
+            <a-select-option :value="''">{{c.all}}</a-select-option>
+            <a-select-option :value="'Y'">{{c.enable}}</a-select-option>
+            <a-select-option :value="'N'">{{c.disable}}</a-select-option>
+          </a-select>
+          <a-input :placeholder="l.keyword" v-model:value="filterCatalogText"></a-input>
 
-          <el-button type="success" @click="getCatalogList" style="margin-left: 10px;">{{$l.refresh}}</el-button>
-          <el-button type="primary" @click="addCatalog" style="margin-left: 10px;">{{$l.addCatalog}}</el-button>
+          <a-button type="default" @click="getCatalogList" style="margin-left: 10px;">{{l.refresh}}</a-button>
+          <a-button type="primary" @click="addCatalog" style="margin-left: 10px;">{{l.addCatalog}}</a-button>
         </div>
         <div class="catalog-tree">
           <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data"
             :filter-node-method="filterCatalog"
-            :empty-text='catalogObj.query.college_id?$l.emptyCatalogue:$l.plsSelectCollegeToManage'>
-            <div class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ data.name_label }}</span>
-              <span class="opera-button">
-                <el-button class="text-green" type="text"
-                  @click.prevent.stop="addCatalog(data)">{{$l.addChildCatalog}}</el-button>
-                <el-button type="text" @click.prevent.stop="editCatalog(data)">{{$c.edit}}</el-button>
-                <el-button class="text-green" type="text" v-show="data.is_valid=='N'"
-                  @click.prevent.stop="modifyCatalogStatus(data)">{{$c.enable}}</el-button>
-                <el-button class="text-red" type="text" v-show="data.is_valid=='Y'"
-                  @click.prevent.stop="modifyCatalogStatus(data)">{{$c.disable}}</el-button>
-                <el-button class="text-yellow" type="text" @click="getCourseListById(data.id)">{{$l.manage}}</el-button>
-              </span>
-            </div>
+            :empty-text="catalogObj.query.college_id ? l.emptyCatalogue : l.plsSelectCollegeToManage">
+            <template #default="{ node, data }">
+              <div class="custom-tree-node">
+                <span>{{ data.name_label }}</span>
+                <span class="opera-button">
+                  <a-button type="link" @click.stop="addCatalog(data)">{{l.addChildCatalog}}</a-button>
+                  <a-button type="link" @click.stop="editCatalog(data)">{{c.edit}}</a-button>
+                  <a-button type="link" v-show="data.is_valid=='N'" @click.stop="modifyCatalogStatus(data)">{{c.enable}}</a-button>
+                  <a-button type="link" danger v-show="data.is_valid=='Y'" @click.stop="modifyCatalogStatus(data)">{{c.disable}}</a-button>
+                  <a-button type="link" @click="getCourseListById(data.id)">{{l.manage}}</a-button>
+                </span>
+              </div>
+            </template>
           </el-tree>
         </div>
       </div>
@@ -232,13 +235,398 @@
   </div>
 </template>
 
-<script>
-  import {
-    api
-  } from '@/views/_common';
+<script setup>
+import { reactive, computed, onMounted, watch, getCurrentInstance, ref } from 'vue'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import api from '@/api'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import store from '@/store'
 
-  export default {
-    name: 'videoAdminCatalogue',
+const instance = getCurrentInstance()
+const route = instance.proxy.$route
+const router = instance.proxy.$router
+const { $request, $message, $prompt } = instance.proxy
+const { l, c } = useLocalI18n('videoAdminCatalogue')
+const queryClient = useQueryClient()
+
+const multipleSelectionObj = reactive({
+  toBeAdded: [],
+  toBeRemoved: []
+})
+
+const showObj = reactive({
+  org_show: false,
+  catalog_show: false,
+  course_show: false,
+  selectCourse: false
+})
+
+const filterOrgText = ref('')
+const filterCatalogText = ref('')
+
+const publicCodeObj = reactive({
+  collegeList: []
+})
+
+const catalogObj = reactive({
+  cascaderProps: {
+    expandTrigger: 'hover',
+    checkStrictly: true,
+    emitPath: false,
+    value: 'id',
+    label: 'name_label'
+  },
+  data: [],
+  list: [],
+  query: {
+    college_id: "",
+    is_valid: ''
+  },
+  form: {
+    id: "",
+    pid: "",
+    college_id: "",
+    name_zh: "",
+    name_en: "",
+    name_tw: "",
+    name_vi: "",
+    sort: 0
+  }
+})
+
+const defaultProps = reactive({
+  children: 'children',
+  label: 'label'
+})
+
+const courseObj = reactive({
+  currentIndex: '',
+  catalog_id: '',
+  query: {
+    page: 1,
+    pageSize: 10,
+    college_id: "",
+    is_public: "",
+    name: "",
+    is_his: 0
+  },
+  form: [],
+  total: 0,
+  list: [],
+  courseList: []
+})
+
+// Queries
+const { data: collegeListData, refetch: refetchCollege } = useQuery({
+  queryKey: ['collegeList'],
+  queryFn: () => $request(api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
+    resource_path: route.path
+  })
+})
+
+watch(() => collegeListData.value, (newVal) => {
+  if (newVal) {
+    publicCodeObj.collegeList = newVal.data
+  }
+})
+
+const { data: catalogListData, refetch: refetchCatalog } = useQuery({
+  queryKey: ['catalogList', () => catalogObj.query],
+  queryFn: () => {
+    if (catalogObj.query.college_id) {
+      return $request(api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', catalogObj.query)
+    }
+    return Promise.resolve({ data: [] })
+  },
+  enabled: computed(() => !!catalogObj.query.college_id)
+})
+
+watch(() => catalogListData.value, (newVal) => {
+  if (newVal) {
+    catalogObj.data = newVal.data
+    showObj.catalog_show = false
+  }
+})
+
+const { data: catalogListByIdData, refetch: refetchCatalogById } = useQuery({
+  queryKey: ['catalogListById', () => ({ id: catalogObj.form.college_id, is_valid: catalogObj.query.is_valid })],
+  queryFn: ({ queryKey }) => {
+    const [, params] = queryKey
+    return $request(api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', {
+      college_id: params.id,
+      is_valid: params.is_valid
+    })
+  },
+  enabled: false
+})
+
+watch(() => catalogListByIdData.value, (newVal) => {
+  if (newVal) {
+    catalogObj.list = newVal.data
+  }
+})
+
+const { data: courseListData, refetch: refetchCourseList } = useQuery({
+  queryKey: ['courseList', () => courseObj.query],
+  queryFn: () => {
+    courseObj.query.is_public = ""
+    if (!isAdmin.value) {
+      if (courseObj.query.college_id == '') {
+        courseObj.query.is_public = 1
+      }
+    }
+    return $request(api.videoServer + '/Video/VideoCourseCatalog/getCourseList', courseObj.query, 'post')
+  },
+  enabled: false
+})
+
+watch(() => courseListData.value, (newVal) => {
+  if (newVal) {
+    courseObj.courseList = newVal.data.list
+    courseObj.total = newVal.data.total
+  }
+})
+
+const { data: courseListByIdData, refetch: refetchCourseListById } = useQuery({
+  queryKey: ['courseListById', () => ({ catalog_id: courseObj.catalog_id })],
+  queryFn: ({ queryKey }) => {
+    const [, params] = queryKey
+    return $request(api.videoServer + '/Video/VideoCourseCatalog/getCourseList', {
+      page: 1,
+      pageSize: 10,
+      catalog_id: params.catalog_id,
+      is_his: 0
+    }, 'post')
+  },
+  enabled: false
+})
+
+watch(() => courseListByIdData.value, (newVal) => {
+  if (newVal) {
+    courseObj.list = newVal.data.list
+    showObj.course_show = true
+  }
+})
+
+// Mutations
+const submitCatalogMutation = useMutation({
+  mutationFn: (formData) => $request(api.baseUrl + '/Video/VideoCourseCatalog/addOrModifyCatalog', formData, 'post'),
+  onSuccess: (r) => {
+    if (r.httpCode == 200) {
+      $message.success(l.oprateSuccess)
+      setTimeout(() => {
+        showObj.catalog_show = false
+        refetchCatalog()
+      }, 1500)
+    }
+  }
+})
+
+const changeCatalogStatusMutation = useMutation({
+  mutationFn: ({ key, value, remark }) => $request(api.baseUrl + '/Video/VideoCourseCatalog/changeCatalogIsValid', {
+    key, value, remark
+  }, 'post'),
+  onSuccess: () => {
+    $message.success(l.oprateSuccess)
+    refetchCatalog()
+  }
+})
+
+const addCourseToCatalogMutation = useMutation({
+  mutationFn: (postData) => $request(api.videoServer + '/Video/VideoCourseCatalog/addCourseToCatalog', postData, 'post'),
+  onSuccess: (r) => {
+    if (r.httpCode == 200) {
+      $message.success(l.oprateSuccess)
+      setTimeout(() => {
+        courseObj.form = []
+        showObj.selectCourse = false
+        refetchCourseListById()
+      }, 1500)
+    }
+  }
+})
+
+const deleteCourseFromCatalogMutation = useMutation({
+  mutationFn: ({ course_id, catalog_id, is_valid }) => $request(api.baseUrl + '/Video/VideoCourseCatalog/deleteCourseFromCatalog', {
+    course_id, catalog_id, is_valid
+  }, 'post'),
+  onSuccess: () => {
+    $message.success(l.oprateSuccess)
+    refetchCourseListById()
+  }
+})
+
+// Computed
+const isAdmin = computed(() => {
+  // Assuming some logic to determine if admin
+  return true // Placeholder
+})
+
+// Watchers
+watch(filterOrgText, (val) => {
+  instance.refs.orgTree?.filter(val)
+})
+
+watch(filterCatalogText, (val) => {
+  instance.refs.catalogTree?.filter(val)
+})
+
+// Functions
+const collegeChange = (v) => {
+  catalogObj.form.pid = ''
+  refetchCatalogById()
+}
+
+const clickCollege = (id) => {
+  catalogObj.query.college_id = id
+  refetchCatalog()
+}
+
+const handleSelectionChangeToBeAdded = (val) => {
+  multipleSelectionObj.toBeAdded = val
+}
+
+const handleSelectionChangeToBeRemoved = (val) => {
+  multipleSelectionObj.toBeRemoved = val
+}
+
+const multipleAdd = () => {
+  const allVideoArray = [...courseObj.list, ...courseObj.form]
+  const videoIdSet = new Set(allVideoArray.map(i => i.id))
+  multipleSelectionObj.toBeAdded.forEach(i => {
+    if (!videoIdSet.has(i.id)) {
+      courseObj.form.push(i)
+    }
+  })
+  instance.refs.toBeAddedTable?.clearSelection()
+  $message.success(l.addToListSuccess)
+}
+
+const multipleRemove = () => {
+  const idsToDelete = multipleSelectionObj.toBeRemoved.map(item => item.id)
+  courseObj.form = courseObj.form.filter(item => !idsToDelete.includes(item.id))
+  instance.refs.toBeRemovedTable?.clearSelection()
+}
+
+const filterOrg = (value, data) => {
+  if (!value) return true
+  return data.name_label.indexOf(value) !== -1
+}
+
+const filterCatalog = (value, data) => {
+  if (!value) return true
+  return data.name_label.indexOf(value) !== -1
+}
+
+const addCatalog = async (data) => {
+  if (catalogObj.list.length == 0) {
+    await refetchCatalogById()
+  }
+  Object.assign(catalogObj.form, {
+    id: "",
+    pid: data ? data.id : "",
+    college_id: data ? data.college_id : "",
+    name_zh: "",
+    name_en: "",
+    name_tw: "",
+    name_vi: "",
+  })
+  showObj.catalog_show = true
+}
+
+const editCatalog = (data) => {
+  Object.assign(catalogObj.form, data)
+  showObj.catalog_show = true
+}
+
+const modifyCatalogStatus = (i) => {
+  const msg = i.is_valid == 'Y' ? l.disable + '《' + i.name_label + '》？' + l.confirmTips : l.enable + '《' + i.name_label + '》？' + l.confirmTips
+  const status = i.is_valid == 'Y' ? 'N' : 'Y'
+  $prompt(msg, {
+    type: 'warning',
+    inputPattern: /^[Y]{1}$/i,
+    inputErrorMessage: l.inputErrorMessage,
+    confirmButtonText: l.confirmText,
+    cancelButtonText: l.cancelText
+  }).then(() => {
+    changeCatalogStatusMutation.mutate({ key: i.id, value: status, remark: '' })
+  }).catch(() => {
+    console.log('取消操作')
+  })
+}
+
+const submitCatalog = () => {
+  if (!catalogObj.form.college_id) {
+    $message.error(l.plsSelectBelongCollege)
+    return
+  }
+  if (!catalogObj.form.name_zh) {
+    $message.error(l.plsInputName_zh)
+    return
+  }
+  submitCatalogMutation.mutate(catalogObj.form)
+}
+
+const addCourse = (data) => {
+  if (courseObj.list.some(i => i.id === data.id)) {
+    $message.error(l.alreadyExistedInCatalogue)
+  } else {
+    if (courseObj.form.some(i => i.id === data.id)) {
+      $message.error(l.alreadyExistedInToBeAddedList)
+    } else {
+      courseObj.form.push(data)
+    }
+  }
+}
+
+const removeCourse = (i) => {
+  courseObj.form.splice(i, 1)
+}
+
+const beforeOpenCourseDialog = () => {
+  courseObj.form = []
+  showObj.selectCourse = true
+}
+
+const bindCourseToCatalog = () => {
+  const postData = courseObj.form.map(i => ({
+    id: "",
+    catalog_id: courseObj.catalog_id,
+    course_id: i.course_id
+  }))
+  addCourseToCatalogMutation.mutate(postData)
+}
+
+const cancelBindCourse = () => {
+  showObj.selectCourse = false
+}
+
+const toggleCourseStatus = (data) => {
+  const value = data.is_valid == 'Y' ? 'N' : 'Y'
+  const msg = data.is_valid == 'Y' 
+    ? `您确定要禁用当前目录下《${data.name_zh}》这张课程吗？请输入Y后再次确认操作`
+    : `您确定要启用当前目录下《${data.name_zh}》这张课程吗？请输入Y后再次确认操作`
+  $prompt(msg, {
+    type: 'warning',
+    inputPattern: /^[Y]{1}$/i,
+    inputErrorMessage: '输入验证信息错误',
+    confirmButtonText: "确认",
+    cancelButtonText: "取消"
+  }).then(() => {
+    deleteCourseFromCatalogMutation.mutate({
+      course_id: data.course_id,
+      catalog_id: courseObj.catalog_id,
+      is_valid: value
+    })
+  }).catch(() => {
+    console.log('取消操作')
+  })
+}
+
+onMounted(() => {
+  refetchCollege()
+})
+</script>
     data() {
       return {
         api: api,

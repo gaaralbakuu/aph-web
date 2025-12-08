@@ -240,7 +240,6 @@ import { useLocalI18n } from '@/composables/useLocalI18n'
 import api from '@/api'
 
 import VideoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
-import FilePreviews from '@/views/_common/FilePreviews.vue'
 
 const instance = getCurrentInstance()
 const route = instance.proxy.$route

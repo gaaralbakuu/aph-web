@@ -3,24 +3,27 @@
     <div class="components">
       <input ref="videoInput" type="file" @change="videoChange" style="display: none" accept="video/*" />
       <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none" accept="image/*" />
-      <el-dialog :visible.sync="showObj.coverDialog" :title="$l.preview">
-        <img width="100%" :src="coverObj.dialogImageUrl" alt="" fit="fill" />
-      </el-dialog>
 
-      <el-dialog :visible.sync="showObj.previewVideo" :title="$l.preview" :before-close="videoClose">
+      <!-- Image Preview Modal -->
+      <a-modal v-model:open="showObj.coverDialog" :title="l.preview" :footer="null" :width="600">
+        <img width="100%" :src="coverObj.dialogImageUrl" alt="" />
+      </a-modal>
+
+      <!-- Video Preview Modal -->
+      <a-modal v-model:open="showObj.previewVideo" :title="l.preview" :footer="null" :width="800" @cancel="videoClose">
         <div style="width: 100%; aspect-ratio: 1.8">
-          <videoPlayer ref="videoPlayer" :src="showObj.videoUrl"></videoPlayer>
+          <videoPlayer ref="videoPlayerRef" :src="showObj.videoUrl"></videoPlayer>
         </div>
-      </el-dialog>
+      </a-modal>
 
-      <el-drawer class="upload-container" :visible.sync="showObj.uploadVideo" :wrapperClosable="false" size="50%">
-        <div slot="title" class="title">{{ $l.uploadVideo }}</div>
+      <!-- Upload Video Drawer -->
+      <a-drawer :visible="showObj.uploadVideo" class="upload-container" :title="l.uploadVideo" :width="800" @close="showObj.uploadVideo = false">
         <div class="form-container">
           <div class="video">
             <div class="plus-icon" v-if="!flagObj.selectVideo" @click="videoSelect">
               <i class="el-icon-upload" style="font-size: 30px"></i>
               <div>
-                {{ $l.selectVideo }}
+                {{ l.selectVideo }}
               </div>
             </div>
             <div v-else class="video-card">
@@ -41,82 +44,89 @@
                   </div>
                 </div>
                 <div class="status">
-                  <span>{{ $l.alreadyUploaded }}：{{ uploadVideoObj.uploadSize }} / {{ uploadVideoObj.size }}</span>
-                  <span>{{ $l.currentSpeed }}：{{ uploadVideoObj.uploadEvent.speed }}</span>
-                  <span>{{ $l.remainTime }}：{{ uploadVideoObj.uploadEvent.restTime }}</span>
+                  <span>{{ l.alreadyUploaded }}：{{ uploadVideoObj.uploadSize }} / {{ uploadVideoObj.size }}</span>
+                  <span>{{ l.currentSpeed }}：{{ uploadVideoObj.uploadEvent.speed }}</span>
+                  <span>{{ l.remainTime }}：{{ uploadVideoObj.uploadEvent.restTime }}</span>
                 </div>
-                <el-progress :percentage="uploadVideoObj.uploadPercent" :show-text="false"></el-progress>
+                <a-progress :percent="uploadVideoObj.uploadPercent" :show-info="false"></a-progress>
               </div>
             </div>
           </div>
 
           <div class="video-form">
-            <el-form label-width="80px" size="medium">
-              <el-form-item :label="$l.cover">
+            <a-form layout="vertical">
+              <a-form-item :label="l.cover">
                 <div v-if="coverObj.imageUrl == ''" class="cover">
                   <div class="plus-icon" @click="coverSelect('upload')">
                     <i class="el-icon-upload" style="font-size: 30px"></i>
                     <div>
-                      {{ $l.selectCover }}
+                      {{ l.selectCover }}
                     </div>
                   </div>
                 </div>
                 <div v-else class="cover">
                   <img class="auto-img" :src="coverObj.imageUrl" height="150px" />
                   <div class="cover-oprate">
-                    <i class="el-icon-zoom-in iconZoom" @click="coverPreview(coverObj.imageUrl)" :alt="$l.preview"></i>
+                    <i class="el-icon-zoom-in iconZoom" @click="coverPreview(coverObj.imageUrl)" :alt="l.preview"></i>
                     <i class="el-icon-refresh-left iconZoom" @click="drawCoverByFile(uploadVideoObj.file, Math.random(0, 1) * uploadVideoObj.duration)"></i>
                     <i class="el-icon-folder-opened iconZoom" @click="coverSelect('upload')"></i>
                   </div>
                 </div>
-              </el-form-item>
-              <el-form-item :label="$l.title">
-                <el-input v-model="uploadVideoObj.name"></el-input>
-              </el-form-item>
-              <!-- <el-form-item :label="$l.type">
-              视频类型已隐藏
-                <el-input v-model="uploadVideoObj.type"></el-input>
-              </el-form-item> -->
+              </a-form-item>
+              <a-form-item :label="l.title">
+                <a-input v-model:value="uploadVideoObj.name"></a-input>
+              </a-form-item>
 
-              <el-row :gutter="16">
-                <el-col :span="18">
-                  <el-form-item :label="$l.college">
-                    <el-select v-model="uploadVideoObj.college_id" :placeholder="$l.selectCollegePd" style="width: 100%">
-                      <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label" :value="i.id"></el-option>
-                    </el-select>
-                    <span class="text-red-500 italic text-xs">* {{ $c.required }}</span>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item :label="$l.republic">
-                    <el-switch v-model="uploadVideoObj.is_public" active-color="#13ce66" :active-value="1" :inactive-value="0"></el-switch>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-form-item :label="$l.introduce">
-                <el-input v-model="uploadVideoObj.description" type="textarea" :placeholder="$l.introducePd" :rows="4"></el-input>
-                <span class="text-red-500 italic text-xs">* {{ $c.required }}</span>
-              </el-form-item>
-            </el-form>
-            <div class="buttonBar">
-              <el-button type="primary" @click="handleSubmit('uploadVideo')" :disabled="!flagObj.uploadAble">{{ $l.uploadVideo }}</el-button>
-              <el-button type="danger" @click="abortUploadVideo" :disabled="!flagObj.uploading">{{ $l.giveup }}</el-button>
+              <a-row :gutter="16">
+                <a-col :span="18">
+                  <a-form-item :label="l.college">
+                    <a-select v-model:value="uploadVideoObj.college_id" :placeholder="l.selectCollegePd">
+                      <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+                    </a-select>
+                    <span class="text-red-500 italic text-xs">* {{ c.required }}</span>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="l.republic">
+                    <a-switch v-model:checked="uploadVideoObj.is_public" :checked-value="1" :un-checked-value="0"></a-switch>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-form-item :label="l.introduce">
+                <a-textarea v-model:value="uploadVideoObj.description" :placeholder="l.introducePd" :rows="4"></a-textarea>
+                <span class="text-red-500 italic text-xs">* {{ c.required }}</span>
+              </a-form-item>
+            </a-form>
+            <div
+              :style="{
+                position: 'absolute',
+                bottom: 0,
+                width: '100%',
+                borderTop: '1px solid #e8e8e8',
+                padding: '10px 16px',
+                textAlign: 'right',
+                left: 0,
+                background: '#fff',
+                borderRadius: '0 0 4px 4px',
+              }">
+              <a-button type="primary" @click="handleSubmit('uploadVideo')" :disabled="!flagObj.uploadAble">{{ l.uploadVideo }}</a-button>
+              <a-button danger @click="abortUploadVideo" :disabled="!flagObj.uploading">{{ l.giveup }}</a-button>
             </div>
           </div>
         </div>
-      </el-drawer>
+      </a-drawer>
 
-      <el-drawer class="upload-container" :visible.sync="showObj.modifyVideo" :wrapperClosable="false" size="50%">
-        <div slot="title" class="title">{{ $l.modifyVideo }}</div>
+      <!-- Modify Video Drawer -->
+      <a-drawer :visible="showObj.modifyVideo" class="upload-container" :title="l.modifyVideo" :width="800" @close="showObj.modifyVideo = false">
         <div class="form-container">
           <div class="video-form">
-            <el-form label-width="80px" size="medium">
-              <el-form-item :label="$l.cover">
+            <a-form layout="vertical">
+              <a-form-item :label="l.cover">
                 <div class="modifyCover">
                   <div class="cover">
-                    <img class="auto-img" :src="$api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" height="150px" />
+                    <img class="auto-img" :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" height="150px" />
                     <div class="cover-oprate">
-                      <i class="el-icon-zoom-in iconZoom" @click="coverPreview($api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path)"></i>
+                      <i class="el-icon-zoom-in iconZoom" @click="coverPreview(api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path)"></i>
                     </div>
                   </div>
                   <div class="change"><i class="el-icon-right"></i></div>
@@ -125,7 +135,7 @@
                       <div class="plus-icon" @click="coverSelect('upload')">
                         <i class="el-icon-upload" style="font-size: 30px"></i>
                         <div>
-                          {{ $l.selectNewCover }}
+                          {{ l.selectNewCover }}
                         </div>
                       </div>
                     </div>
@@ -138,79 +148,73 @@
                     </div>
                   </div>
                 </div>
-              </el-form-item>
-              <el-form-item :label="$l.title">
-                <el-input v-model="modifyVideoObj.form.title"></el-input>
-              </el-form-item>
-              <!-- <el-form-item :label="$l.type">
-                <el-input v-model="modifyVideoObj.form.type"></el-input>
-              </el-form-item> -->
-              <el-row :gutter="16">
-                <el-col :span="18">
-                  <el-form-item :label="$l.college">
-                    <el-select v-model="modifyVideoObj.form.college_id" :placeholder="$l.selectCollegePd" style="width: 100%">
-                      <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label" :value="i.id"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item :label="$l.republic">
-                    <el-switch v-model="modifyVideoObj.form.is_public" active-color="#13ce66" :active-value="1" :inactive-value="0"></el-switch>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-form-item :label="$l.introduce">
-                <el-input v-model="modifyVideoObj.form.description" type="textarea" :placeholder="$l.introducePd" :rows="4"></el-input>
-              </el-form-item>
-            </el-form>
+              </a-form-item>
+              <a-form-item :label="l.title">
+                <a-input v-model:value="modifyVideoObj.form.title"></a-input>
+              </a-form-item>
+              <a-row :gutter="16">
+                <a-col :span="18">
+                  <a-form-item :label="l.college">
+                    <a-select v-model:value="modifyVideoObj.form.college_id" :placeholder="l.selectCollegePd">
+                      <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="l.republic">
+                    <a-switch v-model:checked="modifyVideoObj.form.is_public" :checked-value="1" :un-checked-value="0"></a-switch>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-form-item :label="l.introduce">
+                <a-textarea v-model:value="modifyVideoObj.form.description" :placeholder="l.introducePd" :rows="4"></a-textarea>
+              </a-form-item>
+            </a-form>
             <div class="buttonBar">
-              <el-button type="primary" @click="handleSubmit('modifyVideo')">{{ $l.updateVideo }}</el-button>
-              <el-button type="danger" @click="showObj.modifyVideo = false">{{ $l.giveup }}</el-button>
+              <a-button type="primary" @click="handleSubmit('modifyVideo')">{{ l.updateVideo }}</a-button>
+              <a-button danger @click="showObj.modifyVideo = false">{{ l.giveup }}</a-button>
             </div>
           </div>
         </div>
-      </el-drawer>
+      </a-drawer>
     </div>
 
     <div class="pageBody">
       <div class="videoFilter">
         <div>
-          <el-form inline>
-            <el-form-item :label="$l.college">
-              <el-select v-model="videoListObj.query.college_id" :placeholder="$l.notAdmin" clearable>
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label" :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.title">
-              <el-input v-model="videoListObj.query.title" clearable @clear="getVideoList" @keyup.native.enter="getVideoList"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.republic">
-              <el-select v-model="videoListObj.query.is_public" :disabled="!isAdmin && videoListObj.query.college_id == ''" style="width: 100px" @change="getVideoList">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option :label="$l.public" :value="1"></el-option>
-                <el-option :label="$l.privite" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <!-- <el-form-item label="视频类型">
-            已隐藏
-              <el-input v-model="videoListObj.query.type" clearable @clear='getVideoList'
-                @keyup.native.enter="getVideoList"></el-input>
-            </el-form-item> -->
-            <el-form-item :label="$l.TransformFormat">
-              <el-select v-model="videoListObj.query.status" style="width: 100px" @change="getVideoList">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option :label="$l.pengding" value="pengding"></el-option>
-                <el-option :label="$l.Completed" value="Completed"></el-option>
-                <el-option :label="$l.Faild" value="Faild"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="success" @click="getVideoList">{{ $l.search }}</el-button>
-            </el-form-item>
-          </el-form>
+          <a-space>
+            <div>
+              <span class="mr-2">{{ l.college }}</span>
+              <a-select v-model:value="videoListObj.query.college_id" :placeholder="l.notAdmin" style="width: 150px" clearable allow-clear>
+                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+              </a-select>
+            </div>
+            <div>
+              <span class="mr-2">{{ l.title }}</span>
+              <a-input v-model:value="videoListObj.query.title" style="width: 150px" clearable allow-clear @change="getVideoList" @pressEnter="getVideoList"></a-input>
+            </div>
+            <div>
+              <span class="mr-2">{{ l.republic }}</span>
+              <a-select v-model:value="videoListObj.query.is_public" :disabled="!isAdmin && videoListObj.query.college_id == ''" style="width: 100px" @change="getVideoList">
+                <a-select-option value="">{{ c.all }}</a-select-option>
+                <a-select-option :value="1">{{ l.public }}</a-select-option>
+                <a-select-option :value="0">{{ l.privite }}</a-select-option>
+              </a-select>
+            </div>
+            <div>
+              <span class="mr-2">{{ l.TransformFormat }}</span>
+              <a-select v-model:value="videoListObj.query.status" style="width: 100px" @change="getVideoList">
+                <a-select-option value="">{{ c.all }}</a-select-option>
+                <a-select-option value="pengding">{{ l.pengding }}</a-select-option>
+                <a-select-option value="Completed">{{ l.Completed }}</a-select-option>
+                <a-select-option value="Faild">{{ l.Faild }}</a-select-option>
+              </a-select>
+            </div>
+            <a-button type="primary" @click="getVideoList">{{ l.search }}</a-button>
+          </a-space>
         </div>
         <div>
-          <el-button type="primary" @click="uploadNewVideo">{{ $l.uploadVideo }}</el-button>
+          <a-button type="primary" @click="uploadNewVideo">{{ l.uploadVideo }}</a-button>
         </div>
       </div>
 
@@ -218,25 +222,24 @@
         <div class="video-content">
           <div class="video-item" v-for="i in videoListObj.list" :key="i.id">
             <div class="cover">
-              <img class="auto-img" :src="$api.videoServer + '/' + i.thumbnail_path" height="130px" @click="coverPreview($api.videoServer + '/' + i.thumbnail_path)" />
+              <img class="auto-img" :src="api.videoServer + '/' + i.thumbnail_path" height="130px" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)" />
             </div>
             <div class="content">
               <div class="video-name text-clamp-1">
                 {{ i.title }}
                 <span class="tag">
-                  <el-tag size="mini">{{ i.is_public == 1 ? $l.public : $l.privite }}</el-tag>
+                  <a-tag>{{ i.is_public == 1 ? l.public : l.privite }}</a-tag>
                 </span>
               </div>
               <div class="video-desc text-clamp-2">
-                {{ $l.introduce + '：' + i.description || $l.noIntroduce }}
+                {{ l.introduce + '：' + i.description || l.noIntroduce }}
               </div>
               <div class="video-info">
-                <span>{{ $l.duration }}：{{ formatDuration(i.duration) }}</span>
-                <!-- <span>视频归属：{{returnCollegeName(i.college_id)}}</span> -->
+                <span>{{ l.duration }}：{{ formatDuration(i.duration) }}</span>
               </div>
               <div class="video-info">
-                <span>{{ $l.create_user }}：{{ i.create_user }}</span>
-                <span>{{ $l.create_time }}：{{ i.create_time }}</span>
+                <span>{{ l.create_user }}：{{ i.create_user }}</span>
+                <span>{{ l.create_time }}：{{ i.create_time }}</span>
               </div>
             </div>
 
@@ -248,639 +251,564 @@
             </div>
 
             <div class="btn-right">
-              <el-button type="primary" plain @click="beforeModifyVideo(i)">{{ $l.edit }}</el-button>
+              <a-button type="primary" @click="beforeModifyVideo(i)">{{ l.edit }}</a-button>
             </div>
           </div>
         </div>
       </div>
-      <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange" :current-page="videoListObj.query.page" :page-sizes="[5, 10, 15, 30, 50, 100]" :page-size="videoListObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="videoListObj.total" style="float: right"></el-pagination>
+      <a-pagination v-model:current="videoListObj.query.page" v-model:page-size="videoListObj.query.pageSize" :total="videoListObj.total" :page-size-options="['5', '10', '15', '30', '50', '100']" @change="handlePageChange" style="float: right; margin-top: 16px"></a-pagination>
     </div>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-
+<script setup>
+import { reactive, computed, watch, onMounted, onBeforeUnmount, ref, getCurrentInstance } from 'vue'
+import { message } from 'ant-design-vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import api from '@/api'
+import store from '@/store'
 import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
 
-let axiosController
+// Global instance access
+const instance = getCurrentInstance()
+const route = instance.proxy.$route
+const router = instance.proxy.$router
+const { $request } = instance.proxy
 
-export default {
-  name: 'videoAdminContent',
-  components: {
-    videoPlayer,
+// Internationalization
+const { l, c } = useLocalI18n('videoAdminContent')
+
+// Refs
+const videoInput = ref()
+const coverInput = ref()
+const videoPlayerRef = ref()
+
+// Computed
+const isAdmin = computed(() => store.getters.isAdmin)
+
+// Reactive data
+const coverObj = reactive({
+  dialogImageUrl: '',
+  imageUrl: '',
+  file: {
+    name: '',
   },
-  data() {
-    return {
-      coverObj: {
-        dialogImageUrl: '',
-        imageUrl: '',
-        file: {
-          //选择的视频文件信息
-          name: '',
-        },
-      },
-      uploadVideoObj: {
-        id: '',
-        name: '', //视频名称
-        duration: '',
-        type: '', //视频类型
-        college_id: '', //所属学院
-        is_public: '', //是否为公开课
-        size: 0, //视频大小
-        uploadSize: '0 B', //已上传大小
-        uploadPercent: 0, //已上传比例
-        uploadEvent: {
-          //axios上传事件
-          uploadSize: 0,
-          speed: '0 B/s',
-          oTime: 0,
-          restTime: this.$l.notStart,
-        },
-        thumbnail: '', //选择的封面
-        thumbnail_path: '', //封面上传后端后回传的路径
-        description: '', //视频简介
-        file: {
-          //选择的视频文件信息
-          name: '',
-        },
-      },
-      modifyVideoObj: {
-        form: {
-          id: '',
-          title: '',
-          type: '',
-          college_id: '',
-          is_public: '',
-          oldthumbnail_path: '',
-          thumbnail_path: '',
-          description: '',
-        },
-      },
-      videoListObj: {
-        query: {
-          college_id: '',
-          title: '',
-          type: '',
-          status: '',
-          is_public: '',
-          page: 1,
-          pageSize: 15,
-        },
-        total: 0,
-        list: [],
-      },
-      flagObj: {
-        selectVideo: false, //用户是否选择了视频
-        uploadAble: false, //视频是否可以上传
-        uploading: false, //视频处于上传过程中
-      },
-      showObj: {
-        videoUrl: '',
-        uploadVideo: false, //选择上传视频抽屉弹窗
-        modifyVideo: false, //编辑视频信息
-        coverDialog: false, //预览图片
-        previewVideo: false, //预览视频
-      },
+})
 
-      publicCodeObj: {
-        collegeList: [],
-      },
+const uploadVideoObj = reactive({
+  id: '',
+  name: '',
+  duration: '',
+  type: '',
+  college_id: '',
+  is_public: 0,
+  size: 0,
+  uploadSize: '0 B',
+  uploadPercent: 0,
+  uploadEvent: {
+    uploadSize: 0,
+    speed: '0 B/s',
+    oTime: 0,
+    restTime: l.value.notStart || 'Not started',
+  },
+  thumbnail: '',
+  thumbnail_path: '',
+  description: '',
+  file: {
+    name: '',
+  },
+})
+
+const modifyVideoObj = reactive({
+  form: {
+    id: '',
+    title: '',
+    type: '',
+    college_id: '',
+    is_public: '',
+    oldthumbnail_path: '',
+    thumbnail_path: '',
+    description: '',
+  },
+})
+
+const videoListObj = reactive({
+  query: {
+    college_id: '',
+    title: '',
+    type: '',
+    status: '',
+    is_public: '',
+    page: 1,
+    pageSize: 15,
+  },
+  total: 0,
+  list: [],
+})
+
+const flagObj = reactive({
+  selectVideo: false,
+  uploadAble: false,
+  uploading: false,
+})
+
+const showObj = reactive({
+  videoUrl: '',
+  uploadVideo: false,
+  modifyVideo: false,
+  coverDialog: false,
+  previewVideo: false,
+})
+
+const publicCodeObj = reactive({
+  collegeList: [],
+})
+
+let axiosController = null
+
+// Watchers
+watch(
+  () => videoListObj.query.college_id,
+  (newVal, oldVal) => {
+    if (newVal && oldVal === '') {
+      videoListObj.query.is_public = ''
     }
-  },
-
-  computed: {
-    ...mapGetters(['isAdmin']),
-  },
-
-  watch: {
-    'videoListObj.query.college_id'(newVal, oldVal) {
-      if (newVal && oldVal === '') {
-        this.videoListObj.query.is_public = ''
+    if (!isAdmin.value) {
+      if (newVal == '') {
+        videoListObj.query.is_public = 1
       }
-      if (!this.isAdmin) {
-        if (newVal == '') {
-          this.videoListObj.query.is_public = 1
-        }
-      }
-      this.getVideoList()
-    },
-  },
-
-  methods: {
-    returnCollegeName(id) {
-      let college = this.publicCodeObj.collegeList.find((i) => i.id == id)
-      if (college) {
-        return college.name_label
-      } else {
-        return id
-      }
-    },
-
-    uploadNewVideo() {
-      this.uploadVideoObj = {
-        id: '',
-        name: '', //视频名称
-        duration: '',
-        type: '', //视频类型
-        college_id: this.isAdmin ? '' : this.publicCodeObj.collegeList[0].id, //所属学院
-        is_public: 0, //是否为公开课
-        size: 0, //视频大小
-        uploadSize: '0 B', //已上传大小
-        uploadPercent: 0, //已上传比例
-        uploadEvent: {
-          //axios上传事件
-          uploadSize: 0,
-          speed: '0 B/s',
-          oTime: 0,
-          restTime: this.$l.notStart,
-        },
-        thumbnail: '', //选择的封面
-        thumbnail_path: '', //封面上传后端后回传的路径
-        description: '', //视频简介
-        file: {
-          //选择的视频文件信息
-          name: '',
-        },
-      }
-      this.showObj.uploadVideo = true
-    },
-
-    handleSizeChange(i) {
-      this.videoListObj.query.pageSize = i
-      this.getVideoList()
-    },
-
-    handlePageChange(i) {
-      this.videoListObj.query.page = i
-      this.getVideoList()
-    },
-
-    previewVideo(i) {
-      if (i.url) {
-        this.showObj.videoUrl = this.$api.videoServer + i.url
-      }
-      this.showObj.previewVideo = true
-    },
-    videoClose() {
-      this.$refs.videoPlayer.onPause()
-      this.showObj.previewVideo = false
-    },
-
-    handleSubmit(type) {
-      if (type == 'uploadVideo') {
-        if (!this.uploadVideoObj.file) {
-          return this.$message.error(this.$l.plsSelectVideo)
-        }
-
-        if (!this.uploadVideoObj.name) {
-          return this.$message.error(this.$l.plsInputTitle)
-        }
-
-        if (!this.uploadVideoObj.type) {
-          this.uploadVideoObj.type = 'Video'
-          //return this.$message.error(this.$l.plsSelectType)
-        }
-
-        if (!this.uploadVideoObj.description) {
-          return this.$message.error(this.$l.plsInputDesc)
-        }
-
-        if (!this.uploadVideoObj.college_id) {
-          return this.$message.error(this.$l.plsSelectCollege)
-        }
-
-        this.uploadCover(type)
-      } else if (type == 'modifyVideo') {
-        if (!this.modifyVideoObj.form.title) {
-          return this.$message.error(this.$l.plsInputTitle)
-        }
-
-        if (!this.modifyVideoObj.form.type) {
-          return this.$message.error(this.$l.plsSelectType)
-        }
-
-        if (!this.modifyVideoObj.form.description) {
-          return this.$message.error(this.$l.plsSelectCollege)
-        }
-
-        if (!this.coverObj.file.name) {
-          //没有选择封面，直接修改视频信息
-          this.modifyVideo()
-        } else {
-          //有选择新封面，先上传封面
-          this.uploadCover(type)
-        }
-      }
-    },
-
-    getCollegeList() {
-      // 根据页面路由获取管理学院
-      this.$request(this.$api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
-        resource_path: this.$route.path,
-      })
-        .then((r) => {
-          this.publicCodeObj.collegeList = r.data
-          this.videoListObj.query.college_id = r.data[0].id
-          // this.getVideoList()
-        })
-        .catch((e) => {
-          this.$message.error(e.message)
-        })
-    },
-
-    /*********   视频封面  start   *********/
-
-    coverSelect(filed) {
-      this.$refs.coverInput.click()
-    },
-
-    coverPreview(url) {
-      if (!url) return
-      this.coverObj.dialogImageUrl = url
-      this.showObj.coverDialog = true
-    },
-
-    uploadCoverChange(e) {
-      let file = e.target.files[0]
-      if (!file) return
-      // 使用 FileReader 读取文件
-      let reader = new FileReader()
-      reader.onload = (r) => {
-        this.coverObj.imageUrl = r.target.result // 将读取的结果赋值给 imageUrl
-      }
-      reader.readAsDataURL(file) // 读取文件为 Data URL
-      this.coverObj.file = file
-    },
-
-    uploadCover(next) {
-      //上传封面
-      let formData = new FormData()
-      formData.append('formFile', this.coverObj.file)
-      this.$request(this.$api.videoServer + '/Video/VideoManage/uploadPicture', formData, 'post')
-        .then((r) => {
-          if (r.httpCode == 200 && r.data.url) {
-            if (next == 'uploadVideo') {
-              this.uploadVideoObj.thumbnail_path = r.data.url
-              this.uploadVideo()
-            } else if (next == 'modifyVideo') {
-              this.modifyVideoObj.form.thumbnail_path = r.data.url
-              this.modifyVideo()
-            }
-            this.coverObj = {
-              dialogImageUrl: '',
-              imageUrl: '',
-              file: '',
-            }
-            this.$refs.coverInput.value = '' //清空文件选择的内容
-          }
-        })
-        .catch((e) => {
-          // this.uploadStatus = e.message
-        })
-    },
-
-    /*********   视频封面  end   *********/
-
-    /*********   视频上传  start   *********/
-
-    videoSelect() {
-      //模拟点击，打开window文件选择器
-      this.$refs.videoInput.click()
-    },
-
-    videoChange(e) {
-      //选择视频文件变更
-      this.videoRemove()
-      let file = e.target.files[0]
-
-      this.uploadVideoObj.file = file
-
-      if (file.type.split('/')[0] !== 'video') {
-        this.videoRemove(true)
-        return this.$message.error(this.$l.plsSelectVideo)
-      } else {
-        this.flagObj.selectVideo = true
-        this.flagObj.uploadAble = true
-        this.flagObj.uploading = false
-      }
-
-      this.uploadVideoObj.name = file.name.split('.')[0]
-      // this.uploadVideoObj.type = file.type.split('/')[0]
-      this.uploadVideoObj.size = this.formatFileSize(file.size)
-
-      this.drawCoverByFile(file)
-    },
-
-    drawCoverByFile(videoFile, time = 0) {
-      let that = this
-      if (videoFile) {
-        let video = document.createElement('video')
-        video.currentTime = time // 设置视频停留到指定时间帧
-        video.preload = 'auto' // 只预加载元数据
-        video.muted = true
-        video.autoplay = true // 设置视频加载完后自动播放，这样才能加载到指定时间的画面
-        video.src = URL.createObjectURL(videoFile) // 创建对象URL指向文件
-        video.oncanplay = function () {
-          that.uploadVideoObj.duration = video.duration
-          let canvas = document.createElement('canvas')
-          // 在视频数据加载完成后执行
-          canvas.width = video.videoWidth
-          canvas.height = video.videoHeight
-          let ctx = canvas.getContext('2d')
-          ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
-          let imgDataUrl = canvas.toDataURL('image/png')
-          that.coverObj.imageUrl = imgDataUrl
-          fetch(imgDataUrl)
-            .then((res) => res.blob())
-            .then((blob) => {
-              let coverFile = new File([blob], that.uploadVideoObj.name + '.png', {
-                type: 'image/png',
-              })
-              that.coverObj.file = coverFile
-            })
-        }
-      }
-    },
-
-    rightCheck(i, tosat = false) {
-      if (this.isAdmin) {
-        return true
-      } else {
-        if (this.publicCodeObj.collegeList.some((c) => c.id == i.college_id)) {
-          return true
-        } else {
-          if (toast) {
-            this.$message({
-              type: 'error',
-              message: this.$l.noRightToEdit,
-            })
-          }
-          return false
-        }
-      }
-    },
-
-    beforeModifyVideo(i) {
-      if (this.rightCheck(i, true)) {
-        this.modifyVideoObj.form = {
-          id: i.id,
-          title: i.title,
-          type: i.type,
-          college_id: i.college_id,
-          is_public: i.is_public,
-          oldthumbnail_path: i.thumbnail_path,
-          thumbnail_path: '',
-          description: i.description,
-        }
-        ;(this.coverObj = {
-          dialogImageUrl: '',
-          imageUrl: '',
-          file: {
-            //选择的视频文件信息
-            name: '',
-          },
-        }),
-          (this.showObj.modifyVideo = true)
-      }
-    },
-
-    modifyVideo() {
-      if (!this.modifyVideoObj.form.thumbnail_path) {
-        //没有选择更新封面的情况，把旧封面作为保留
-        this.modifyVideoObj.form.thumbnail_path = this.modifyVideoObj.form.oldthumbnail_path
-      }
-      this.$request(this.$api.videoServer + '/Video/VideoManage/modifyVideoInfo', this.modifyVideoObj.form, 'post')
-        .then((r) => {
-          if (r.httpCode == 200) {
-            this.$message({
-              type: 'success',
-              message: this.$l.updateSuccess,
-            })
-            let timer = setTimeout(() => {
-              this.showObj.modifyVideo = false
-              this.getVideoList()
-              clearTimeout(timer)
-            }, 1500)
-          }
-        })
-        .catch((e) => {
-          this.$message.error(e.message)
-          console.log(e)
-        })
-    },
-
-    deleteVideo(i) {
-      if (this.rightCheck(i, true)) {
-        this.$prompt(`《${i.title}》` + this.$l.deleteVideoConfirm, {
-          type: 'warning',
-          inputPattern: /^[Y]{1}$/i,
-          inputErrorMessage: this.$l.inputErrorMessage,
-          confirmButtonText: this.$l.confirmtext,
-          cancelButtonText: this.$l.cancelText,
-        })
-          .then(() => {
-            this.$request(
-              this.$api.videoServer + '/Video/VideoManage/deleteVideo',
-              {
-                id: i.id,
-              },
-              'post'
-            ).then((r) => {
-              this.$message({
-                type: 'success',
-                message: this.$l.deleteSuccess,
-              })
-              this.getVideoList()
-            })
-          })
-          .catch(() => {
-            // console.log('取消操作');
-          })
-      }
-    },
-
-    uploadVideo() {
-      //上传视频 - sử dụng streaming endpoint để hỗ trợ file lớn (>1GB)
-      let that = this
-
-      axiosController = new AbortController()
-      let formData = new FormData()
-      // Thứ tự: file trước, các field khác sau (để streaming xử lý đúng)
-      formData.append('file', this.uploadVideoObj.file)
-      let fields = ['id', 'college_id', 'is_public', 'name', 'type', 'thumbnail_path', 'description']
-      fields.forEach((i) => {
-        formData.append(i, this.uploadVideoObj[i])
-      })
-      let customConfig = {
-        onUploadProgress: function (progressEvent) {
-          let uploadPart = progressEvent.loaded - that.uploadVideoObj.uploadEvent.uploadSize //计算该分段上传的文件大小，单位b
-          let uploadTime = (new Date().getTime() - that.uploadVideoObj.uploadEvent.oTime) / 1000 //计算出上次调用该方法时到现在的时间差，单位为s
-          let speed = uploadPart / uploadTime
-          let restTime = (progressEvent.total - progressEvent.loaded) / speed
-          that.$set(that.uploadVideoObj.uploadEvent, 'speed', that.formatFileSize(speed) + '/s')
-          that.$set(that.uploadVideoObj.uploadEvent, 'restTime', that.formatSeconds(restTime, true))
-          that.$set(that.uploadVideoObj.uploadEvent, 'uploadSize', progressEvent.loaded)
-          that.$set(that.uploadVideoObj.uploadEvent, 'oTime', new Date().getTime())
-          that.$set(that.uploadVideoObj, 'uploadPercent', Math.round((progressEvent.loaded * 100) / progressEvent.total))
-          that.$set(that.uploadVideoObj, 'uploadSize', that.formatFileSize(progressEvent.loaded))
-        },
-      }
-
-      this.flagObj.uploading = true
-      this.$set(this.uploadVideoObj.uploadEvent, 'oTime', new Date().getTime())
-      // Sử dụng endpoint streaming mới để tránh OutOfMemoryException với file lớn
-      this.$request(this.$api.videoServer + '/Video/VideoManage/uploadVideoStreaming', formData, 'post', 'noErrorDialog', customConfig, axiosController)
-        .then((r) => {
-          if (r.httpCode == 200) {
-            this.$message({
-              type: 'success',
-              message: this.$l.uploadSuccess,
-            })
-            let timer = setTimeout(() => {
-              this.flagObj.uploadAble = false
-              this.getVideoList()
-              this.showObj.uploadVideo = false
-              clearTimeout(timer)
-              this.videoRemove(true)
-            }, 1500)
-          }
-        })
-        .catch((e) => {
-          this.flagObj.uploading = false
-          return this.$message.error(e.message)
-        })
-    },
-
-    videoRemove(flag) {
-      if (flag) {
-        this.$refs.videoInput.value = '' //清空文件选择的内容
-      }
-      //删除视频文件
-      this.flagObj.selectVideo = false
-      this.flagObj.uploadAble = false
-      this.uploadVideoObj = {
-        id: '',
-        name: '', //视频名称
-        duration: '',
-        type: '', //视频类型
-        college_id: this.isAdmin ? '' : this.publicCodeObj.collegeList[0].id, //所属学院
-        is_public: 0, //是否为公开课
-        size: 0, //视频大小
-        uploadSize: '0 B', //已上传大小
-        uploadPercent: 0, //已上传比例
-        uploadEvent: {
-          //axios上传事件
-          uploadSize: 0,
-          speed: '0 B/s',
-          oTime: 0,
-          restTime: '未开始',
-        },
-        thumbnail: '', //选择的封面
-        thumbnail_path: '', //封面上传后端后回传的路径
-        description: '', //视频简介
-        file: {
-          //选择的视频文件信息
-          name: '',
-        },
-      }
-    },
-
-    abortUploadVideo() {
-      //终止视频上传任务
-      this.flagObj.uploading = false
-      axiosController.abort()
-    },
-
-    /*********   视频上传  end   *********/
-
-    /*********   已上传视频操作  start   *********/
-
-    getVideoList() {
-      this.$request(this.$api.videoServer + '/Video/VideoManage/getVideoList', this.videoListObj.query)
-        .then((r) => {
-          if (r.httpCode == 200) {
-            this.videoListObj.list = r.data.list
-            this.videoListObj.total = r.data.total
-            if (r.data.total == 0) {
-              this.videoListObj.list = []
-              // this.$message({
-              //   type: 'info',
-              //   message: '暂无数据'
-              // })
-            }
-          }
-        })
-        .catch((e) => {
-          console.log(e)
-        })
-    },
-
-    /*********   已上传视频操作  end   *********/
-
-    /*********   工具函数  start   *********/
-
-    formatFileSize(bytes) {
-      if (bytes === 0) return '0 B'
-      let k = 1024 // 或者使用1000，这取决于你是否想使用二进制前缀
-      let sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-      let i = Math.floor(Math.log(bytes) / Math.log(k))
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    },
-
-    //格式化秒数到时分秒格式
-    formatSeconds(seconds, chinese) {
-      let hours = Math.floor(seconds / 3600)
-      let minutes = Math.floor((seconds % 3600) / 60)
-      let remainingSeconds = parseInt(seconds % 60)
-      let fractionalHours
-      if (chinese) {
-        if (hours > 0) {
-          fractionalHours = hours + minutes / 60
-          return `${fractionalHours.toFixed(1)}` + this.$l.hours
-        } else if (minutes > 0) {
-          return `${minutes}` + this.$l.mins
-        } else {
-          return `${remainingSeconds}` + this.$l.seconds
-        }
-      } else {
-        if (hours > 0) {
-          fractionalHours = hours + minutes / 60
-          return `${fractionalHours.toFixed(1)} hours`
-        } else if (minutes > 0) {
-          return `${minutes} minutes`
-        } else {
-          return `${remainingSeconds} seconds`
-        }
-      }
-    },
-
-    formatDuration(totalSeconds, unit) {
-      let duration = Math.floor(totalSeconds)
-      let hours = Math.floor(duration / 3600)
-      let minutes = Math.floor((duration % 3600) / 60)
-      let seconds = duration % 60
-
-      if (unit) {
-        return [hours > 0 ? `${hours + this.$l.hours}` : '', minutes.toString().padStart(2, '0') + this.$l.mins, seconds.toString().padStart(2, '0') + this.$l.seconds].filter(Boolean).join('')
-      } else {
-        return [hours > 0 ? `${hours}:` : '', minutes.toString().padStart(2, '0') + ':', seconds.toString().padStart(2, '0')].filter(Boolean).join('')
-      }
-    },
-
-    /*********   工具函数  end   *********/
-  },
-
-  beforeDestroy() {
-    if (this.$refs.videoPlayer) {
-      this.$refs.videoPlayer.onDestroy()
     }
-  },
+    getVideoList()
+  }
+)
 
-  mounted() {
-    this.getCollegeList()
-  },
+// Methods
+const returnCollegeName = (id) => {
+  let college = publicCodeObj.collegeList.find((i) => i.id == id)
+  if (college) {
+    return college.name_label
+  } else {
+    return id
+  }
 }
+
+const uploadNewVideo = () => {
+  uploadVideoObj.id = ''
+  uploadVideoObj.name = ''
+  uploadVideoObj.duration = ''
+  uploadVideoObj.type = ''
+  uploadVideoObj.college_id = isAdmin.value ? '' : publicCodeObj.collegeList[0].id
+  uploadVideoObj.is_public = 0
+  uploadVideoObj.size = 0
+  uploadVideoObj.uploadSize = '0 B'
+  uploadVideoObj.uploadPercent = 0
+  uploadVideoObj.uploadEvent = {
+    uploadSize: 0,
+    speed: '0 B/s',
+    oTime: 0,
+    restTime: l.value.notStart,
+  }
+  uploadVideoObj.thumbnail = ''
+  uploadVideoObj.thumbnail_path = ''
+  uploadVideoObj.description = ''
+  uploadVideoObj.file = { name: '' }
+  showObj.uploadVideo = true
+}
+
+const handleSizeChange = (pageSize) => {
+  videoListObj.query.pageSize = pageSize
+  getVideoList()
+}
+
+const handlePageChange = (page) => {
+  videoListObj.query.page = page
+  getVideoList()
+}
+
+const previewVideo = (i) => {
+  if (i.url) {
+    showObj.videoUrl = api.videoServer + i.url
+  }
+  showObj.previewVideo = true
+}
+
+const videoClose = () => {
+  if (videoPlayerRef.value) {
+    videoPlayerRef.value.onPause()
+  }
+  showObj.previewVideo = false
+}
+
+const handleSubmit = (type) => {
+  if (type == 'uploadVideo') {
+    if (!uploadVideoObj.file) {
+      return message.error(l.value.plsSelectVideo)
+    }
+    if (!uploadVideoObj.name) {
+      return message.error(l.value.plsInputTitle)
+    }
+    if (!uploadVideoObj.type) {
+      uploadVideoObj.type = 'Video'
+    }
+    if (!uploadVideoObj.description) {
+      return message.error(l.value.plsInputDesc)
+    }
+    if (!uploadVideoObj.college_id) {
+      return message.error(l.value.plsSelectCollege)
+    }
+    uploadCover(type)
+  } else if (type == 'modifyVideo') {
+    if (!modifyVideoObj.form.title) {
+      return message.error(l.value.plsInputTitle)
+    }
+    if (!modifyVideoObj.form.type) {
+      return message.error(l.value.plsSelectType)
+    }
+    if (!modifyVideoObj.form.description) {
+      return message.error(l.value.plsSelectCollege)
+    }
+    if (!coverObj.file.name) {
+      modifyVideo()
+    } else {
+      uploadCover(type)
+    }
+  }
+}
+
+const getCollegeList = () => {
+  $request(api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
+    resource_path: route.path,
+  })
+    .then((r) => {
+      publicCodeObj.collegeList = r.data
+      videoListObj.query.college_id = r.data[0].id
+    })
+    .catch((e) => {
+      message.error(e.message)
+    })
+}
+
+// Cover methods
+const coverSelect = () => {
+  coverInput.value.click()
+}
+
+const coverPreview = (url) => {
+  if (!url) return
+  coverObj.dialogImageUrl = url
+  showObj.coverDialog = true
+}
+
+const uploadCoverChange = (e) => {
+  let file = e.target.files[0]
+  if (!file) return
+  let reader = new FileReader()
+  reader.onload = (r) => {
+    coverObj.imageUrl = r.target.result
+  }
+  reader.readAsDataURL(file)
+  coverObj.file = file
+}
+
+const uploadCover = (next) => {
+  let formData = new FormData()
+  formData.append('formFile', coverObj.file)
+  $request(api.videoServer + '/Video/VideoManage/uploadPicture', formData, 'post')
+    .then((r) => {
+      if (r.httpCode == 200 && r.data.url) {
+        if (next == 'uploadVideo') {
+          uploadVideoObj.thumbnail_path = r.data.url
+          uploadVideo()
+        } else if (next == 'modifyVideo') {
+          modifyVideoObj.form.thumbnail_path = r.data.url
+          modifyVideo()
+        }
+        coverObj.imageUrl = ''
+        coverObj.file = ''
+        coverInput.value.value = ''
+      }
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
+// Video upload methods
+const videoSelect = () => {
+  videoInput.value.click()
+}
+
+const videoChange = (e) => {
+  videoRemove()
+  let file = e.target.files[0]
+  uploadVideoObj.file = file
+
+  if (file.type.split('/')[0] !== 'video') {
+    videoRemove(true)
+    return message.error(l.value.plsSelectVideo)
+  } else {
+    flagObj.selectVideo = true
+    flagObj.uploadAble = true
+    flagObj.uploading = false
+  }
+
+  uploadVideoObj.name = file.name.split('.')[0]
+  uploadVideoObj.size = formatFileSize(file.size)
+  drawCoverByFile(file)
+}
+
+const drawCoverByFile = (videoFile, time = 0) => {
+  if (videoFile) {
+    let video = document.createElement('video')
+    video.currentTime = time
+    video.preload = 'auto'
+    video.muted = true
+    video.autoplay = true
+    video.src = URL.createObjectURL(videoFile)
+    video.oncanplay = function () {
+      uploadVideoObj.duration = video.duration
+      let canvas = document.createElement('canvas')
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      let ctx = canvas.getContext('2d')
+      ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
+      let imgDataUrl = canvas.toDataURL('image/png')
+      coverObj.imageUrl = imgDataUrl
+      fetch(imgDataUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          let coverFile = new File([blob], uploadVideoObj.name + '.png', {
+            type: 'image/png',
+          })
+          coverObj.file = coverFile
+        })
+    }
+  }
+}
+
+const rightCheck = (i, toast = false) => {
+  if (isAdmin.value) {
+    return true
+  } else {
+    if (publicCodeObj.collegeList.some((c) => c.id == i.college_id)) {
+      return true
+    } else {
+      if (toast) {
+        message.error(l.value.noRightToEdit)
+      }
+      return false
+    }
+  }
+}
+
+const beforeModifyVideo = (i) => {
+  if (rightCheck(i, true)) {
+    modifyVideoObj.form = {
+      id: i.id,
+      title: i.title,
+      type: i.type,
+      college_id: i.college_id,
+      is_public: i.is_public,
+      oldthumbnail_path: i.thumbnail_path,
+      thumbnail_path: '',
+      description: i.description,
+    }
+    coverObj.imageUrl = ''
+    coverObj.file = { name: '' }
+    showObj.modifyVideo = true
+  }
+}
+
+const modifyVideo = () => {
+  if (!modifyVideoObj.form.thumbnail_path) {
+    modifyVideoObj.form.thumbnail_path = modifyVideoObj.form.oldthumbnail_path
+  }
+  $request(api.videoServer + '/Video/VideoManage/modifyVideoInfo', modifyVideoObj.form, 'post')
+    .then((r) => {
+      if (r.httpCode == 200) {
+        message.success(l.value.updateSuccess)
+        let timer = setTimeout(() => {
+          showObj.modifyVideo = false
+          getVideoList()
+          clearTimeout(timer)
+        }, 1500)
+      }
+    })
+    .catch((e) => {
+      message.error(e.message)
+      console.log(e)
+    })
+}
+
+const deleteVideo = (i) => {
+  if (rightCheck(i, true)) {
+    const confirmed = window.confirm(`《${i.title}》${l.value.deleteVideoConfirm}`)
+    if (confirmed) {
+      $request(api.videoServer + '/Video/VideoManage/deleteVideo', { id: i.id }, 'post')
+        .then((r) => {
+          message.success(l.value.deleteSuccess)
+          getVideoList()
+        })
+        .catch((e) => {
+          message.error(e.message)
+        })
+    }
+  }
+}
+
+const uploadVideo = () => {
+  axiosController = new AbortController()
+  let formData = new FormData()
+  formData.append('file', uploadVideoObj.file)
+  let fields = ['id', 'college_id', 'is_public', 'name', 'type', 'thumbnail_path', 'description']
+  fields.forEach((i) => {
+    formData.append(i, uploadVideoObj[i])
+  })
+  let customConfig = {
+    onUploadProgress: function (progressEvent) {
+      let uploadPart = progressEvent.loaded - uploadVideoObj.uploadEvent.uploadSize
+      let uploadTime = (new Date().getTime() - uploadVideoObj.uploadEvent.oTime) / 1000
+      let speed = uploadPart / uploadTime
+      let restTime = (progressEvent.total - progressEvent.loaded) / speed
+      uploadVideoObj.uploadEvent.speed = formatFileSize(speed) + '/s'
+      uploadVideoObj.uploadEvent.restTime = formatSeconds(restTime, true)
+      uploadVideoObj.uploadEvent.uploadSize = progressEvent.loaded
+      uploadVideoObj.uploadEvent.oTime = new Date().getTime()
+      uploadVideoObj.uploadPercent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+      uploadVideoObj.uploadSize = formatFileSize(progressEvent.loaded)
+    },
+  }
+
+  flagObj.uploading = true
+  uploadVideoObj.uploadEvent.oTime = new Date().getTime()
+  $request(api.videoServer + '/Video/VideoManage/uploadVideoStreaming', formData, 'post', 'noErrorDialog', customConfig, axiosController)
+    .then((r) => {
+      if (r.httpCode == 200) {
+        message.success(l.value.uploadSuccess)
+        let timer = setTimeout(() => {
+          flagObj.uploadAble = false
+          getVideoList()
+          showObj.uploadVideo = false
+          clearTimeout(timer)
+          videoRemove(true)
+        }, 1500)
+      }
+    })
+    .catch((e) => {
+      flagObj.uploading = false
+      return message.error(e.message)
+    })
+}
+
+const videoRemove = (flag) => {
+  if (flag) {
+    videoInput.value.value = ''
+  }
+  flagObj.selectVideo = false
+  flagObj.uploadAble = false
+  uploadVideoObj.id = ''
+  uploadVideoObj.name = ''
+  uploadVideoObj.duration = ''
+  uploadVideoObj.type = ''
+  uploadVideoObj.college_id = isAdmin.value ? '' : publicCodeObj.collegeList[0].id
+  uploadVideoObj.is_public = 0
+  uploadVideoObj.size = 0
+  uploadVideoObj.uploadSize = '0 B'
+  uploadVideoObj.uploadPercent = 0
+  uploadVideoObj.uploadEvent = {
+    uploadSize: 0,
+    speed: '0 B/s',
+    oTime: 0,
+    restTime: 'Not started',
+  }
+  uploadVideoObj.thumbnail = ''
+  uploadVideoObj.thumbnail_path = ''
+  uploadVideoObj.description = ''
+  uploadVideoObj.file = { name: '' }
+}
+
+const abortUploadVideo = () => {
+  flagObj.uploading = false
+  if (axiosController) {
+    axiosController.abort()
+  }
+}
+
+// Video list methods
+const getVideoList = () => {
+  $request(api.videoServer + '/Video/VideoManage/getVideoList', videoListObj.query)
+    .then((r) => {
+      if (r.httpCode == 200) {
+        videoListObj.list = r.data.list
+        videoListObj.total = r.data.total
+        if (r.data.total == 0) {
+          videoListObj.list = []
+        }
+      }
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+}
+
+// Utility functions
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 B'
+  let k = 1024
+  let sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  let i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+const formatSeconds = (seconds, chinese) => {
+  let hours = Math.floor(seconds / 3600)
+  let minutes = Math.floor((seconds % 3600) / 60)
+  let remainingSeconds = parseInt(seconds % 60)
+  let fractionalHours
+  if (chinese) {
+    if (hours > 0) {
+      fractionalHours = hours + minutes / 60
+      return `${fractionalHours.toFixed(1)}${l.value.hours}`
+    } else if (minutes > 0) {
+      return `${minutes}${l.value.mins}`
+    } else {
+      return `${remainingSeconds}${l.value.seconds}`
+    }
+  } else {
+    if (hours > 0) {
+      fractionalHours = hours + minutes / 60
+      return `${fractionalHours.toFixed(1)} hours`
+    } else if (minutes > 0) {
+      return `${minutes} minutes`
+    } else {
+      return `${remainingSeconds} seconds`
+    }
+  }
+}
+
+const formatDuration = (totalSeconds, unit) => {
+  let duration = Math.floor(totalSeconds)
+  let hours = Math.floor(duration / 3600)
+  let minutes = Math.floor((duration % 3600) / 60)
+  let seconds = duration % 60
+
+  if (unit) {
+    return [hours > 0 ? `${hours}${l.value.hours}` : '', minutes.toString().padStart(2, '0') + `${l.value.mins}`, seconds.toString().padStart(2, '0') + `${l.value.seconds}`].filter(Boolean).join('')
+  } else {
+    return [hours > 0 ? `${hours}:` : '', minutes.toString().padStart(2, '0') + ':', seconds.toString().padStart(2, '0')].filter(Boolean).join('')
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  getCollegeList()
+})
+
+onBeforeUnmount(() => {
+  if (videoPlayerRef.value) {
+    videoPlayerRef.value.onDestroy()
+  }
+})
 </script>
 
 <style>

@@ -8,275 +8,280 @@
 
       <input ref="attachmentInput" type="file" @change="uploadattAchmentChange" style="display: none;" />
 
-      <el-dialog :visible.sync="showObj.attachment" title="上传附件" width="50%">
-        <el-form>
-          <el-form-item label="简中名字" required>
-            <el-input v-model="attachmentObj.file_name_zh"></el-input>
-          </el-form-item>
-          <el-form-item label="繁中名字">
-            <el-input v-model="attachmentObj.file_name_tw"></el-input>
-          </el-form-item>
-          <el-form-item label="英文名字">
-            <el-input v-model="attachmentObj.file_name_en"></el-input>
-          </el-form-item>
-          <el-form-item label="越南名字">
-            <el-input v-model="attachmentObj.file_name_vi"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer">
-          <el-button @click="showObj.attachment = false">取 消</el-button>
-          <el-button type="primary" @click="uploadAttachment">提 交</el-button>
-        </div>
-      </el-dialog>
+      <a-modal :visible="showObj.attachment" title="上传附件" width="50%" @cancel="showObj.attachment = false">
+        <a-form>
+          <a-form-item label="简中名字" required>
+            <a-input v-model:value="attachmentObj.file_name_zh"></a-input>
+          </a-form-item>
+          <a-form-item label="繁中名字">
+            <a-input v-model:value="attachmentObj.file_name_tw"></a-input>
+          </a-form-item>
+          <a-form-item label="英文名字">
+            <a-input v-model:value="attachmentObj.file_name_en"></a-input>
+          </a-form-item>
+          <a-form-item label="越南名字">
+            <a-input v-model:value="attachmentObj.file_name_vi"></a-input>
+          </a-form-item>
+        </a-form>
+        <template #footer>
+          <a-button @click="showObj.attachment = false">取 消</a-button>
+          <a-button type="primary" @click="uploadAttachment">提 交</a-button>
+        </template>
+      </a-modal>
 
       <!-- 选择图片input -->
       <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none;" accept="image/*" />
 
       <!-- 预览图片dialog -->
-      <el-dialog :visible.sync="showObj.coverDialog" :title="$l.preview">
+      <a-modal :visible="showObj.coverDialog" :title="$l.preview" @cancel="showObj.coverDialog = false">
         <img width="100%" :src="coverObj.dialogImageUrl" alt="" fit='fill'>
-      </el-dialog>
+      </a-modal>
 
       <!-- 管理播放中答题dialog -->
-      <el-dialog :visible.sync="showObj.processQuestion" :title="$l.addQuestion" width="75%" :before-close="videoClose">
-        <el-row>
-          <el-col :span="10">
+      <a-modal :visible="showObj.processQuestion" :title="$l.addQuestion" width="75%" @cancel="videoClose">
+        <a-row>
+          <a-col :span="10">
             <div style="width: 100%;aspect-ratio: 1.8;">
               <videoPlayer ref="videoPlayer" :src="showObj.videoUrl" :markers="manageObj.questionList">
               </videoPlayer>
             </div>
-          </el-col>
-          <el-col :span="14">
+          </a-col>
+          <a-col :span="14">
             <div style="float: right;margin-bottom: 10px;">
-              <el-button type="success" plain @click="flashMarkers">{{$l.refreshMarkers}}</el-button>
-              <el-button type="primary" plain @click="getQuestionList">{{$l.addQuestion}}</el-button>
-              <el-button type="danger" plain @click="removeMultipleQuestion">{{$l.multipleRemove}}</el-button>
+              <a-button type="primary" ghost @click="flashMarkers">{{$l.refreshMarkers}}</a-button>
+              <a-button type="primary" @click="getQuestionList">{{$l.addQuestion}}</a-button>
+              <a-button type="primary" danger @click="removeMultipleQuestion">{{$l.multipleRemove}}</a-button>
             </div>
-            <el-table ref="questionTable" :data="manageObj.questionList" tooltip-effect="dark" style="width: 100%"
-              highlight-current-row highlight-selection-row stripe show-overflow-tooltip
-              @selection-change="questionSelectionChange">
-              <el-table-column type="selection" width="50"></el-table-column>
-              <el-table-column type="index" width="50" label='No.'></el-table-column>
-              <el-table-column :label="$l.question" prop="name_label"></el-table-column>
-              <el-table-column :label="$l.activeTime" prop="time" width="120">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.time"></el-input>
+            <a-table ref="questionTable" :dataSource="manageObj.questionList" style="width: 100%"
+              :row-selection="{ selectedRowKeys: questionSelectedRowKeys, onChange: questionSelectionChange }"
+              :scroll="{ y: 300 }">
+              <a-table-column title="No." width="50">
+                <template #default="text, record, index">
+                  {{ index + 1 }}
                 </template>
-              </el-table-column>
-              <el-table-column :label="$l.diffcult" prop="difficulty_level" width="80"></el-table-column>
-              <el-table-column :label="$l.questionType" prop="question_type" width="80">
-                <template slot-scope="scope">
-                  {{returnPublicObjLabel(scope.row.question_type,'value','label','question_type')}}
+              </a-table-column>
+              <a-table-column :title="$l.question" dataIndex="name_label"></a-table-column>
+              <a-table-column :title="$l.activeTime" dataIndex="time" width="120">
+                <template #default="text, record">
+                  <a-input-number v-model:value="record.time"></a-input-number>
                 </template>
-              </el-table-column>
-              <!-- <el-table-column :label="$l.publishStatus" prop="question_status" width="80">
-                <template slot-scope="scope">
-                  {{returnPublicObjLabel(scope.row.question_status,'value','label','question_status')}}
+              </a-table-column>
+              <a-table-column :title="$l.diffcult" dataIndex="difficulty_level" width="80"></a-table-column>
+              <a-table-column :title="$l.questionType" dataIndex="question_type" width="80">
+                <template #default="text">
+                  {{returnPublicObjLabel(text,'value','label','question_type')}}
                 </template>
-              </el-table-column> -->
-              <!-- <el-table-column :label="$l.status" prop="is_valid">
-                  <template slot-scope="scope">
-                    {{scope.row.is_valid=='Y'?'$c.enable:$c.disable}}
+              </a-table-column>
+              <!-- <a-table-column :title="$l.publishStatus" dataIndex="question_status" width="80">
+                <template #default="text">
+                  {{returnPublicObjLabel(text,'value','label','question_status')}}
+                </template>
+              </a-table-column> -->
+              <!-- <a-table-column :title="$l.status" dataIndex="is_valid">
+                  <template #default="text">
+                    {{text=='Y'?'$c.enable:$c.disable}}
                   </template>
-                </el-table-column> -->
-              <el-table-column :label="$c.operation" width="80" fixed="right">
-                <template slot-scope="scope">
-                  <el-button type='text' class="text-red"
-                    @click="removeQuestion(scope.$index)">{{$c.remove}}</el-button>
+                </a-table-column> -->
+              <a-table-column :title="$c.operation" width="80" fixed="right">
+                <template #default="text, record, index">
+                  <a-button type="link" danger
+                    @click="removeQuestion(index)">{{$c.remove}}</a-button>
                 </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
+              </a-table-column>
+            </a-table>
+          </a-col>
 
 
-        </el-row>
+        </a-row>
 
-        <div slot="footer" class="">
-          <el-button @click="showObj.processQuestion = false">{{$l.giveup}}</el-button>
-          <el-button type="primary" @click="submitProcessQuestion">{{$l.submit}}</el-button>
-        </div>
-      </el-dialog>
+        <template #footer>
+          <a-button @click="showObj.processQuestion = false">{{$l.giveup}}</a-button>
+          <a-button type="primary" @click="submitProcessQuestion">{{$l.submit}}</a-button>
+        </template>
+      </a-modal>
 
       <!-- 添加答题dialog -->
-      <el-dialog :visible.sync="showObj.selectQuestion" :title="$l.addQuestion" width="50%">
-        <el-form inline label-width="40px">
-          <el-form-item :label="$c.title">
-            <el-input v-model="questionObj.query.name"></el-input>
-          </el-form-item>
-          <el-form-item :label="$l.questionType">
-            <el-select v-model="questionObj.query.question_type" @change="getQuestionList" style="width: 100px;">
-              <el-option :label="$c.all" value=""></el-option>
-              <el-option v-for="i in publicCodeObj.question_type" :key='i.value' :label="i.label"
-                :value="i.value"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item :label="$l.status">
-            <el-select v-model="questionObj.query.question_status" @change="getQuestionList" style="width: 100px;">
-              <el-option :label="$c.all" value=""></el-option>
-              <el-option v-for="i in publicCodeObj.question_status" :key='i.value' :label="i.label"
-                :value="i.value"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" plain @click="getQuestionList">{{$l.search}}</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" plain @click="selectMultipleQuestion">{{$l.multipleAdd}}</el-button>
-          </el-form-item>
-        </el-form>
-        <el-table ref="questionDialogTable" :data="questionObj.list" tooltip-effect="dark" style="width: 100%"
-          highlight-current-row highlight-selection-row stripe show-overflow-tooltip
-          @selection-change="questionSelectionChange">
-          <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column type="index" width="50" label='No.'></el-table-column>
-          <el-table-column :label="$l.question" prop="name_label"></el-table-column>
-          <el-table-column :label="$l.diffcult" prop="difficulty_level" width="80"></el-table-column>
-          <el-table-column :label="$l.questionType" prop="question_type" width="80">
-            <template slot-scope="scope">
-              {{returnPublicObjLabel(scope.row.question_type,'value','label','question_type')}}
+      <a-modal :visible="showObj.selectQuestion" :title="$l.addQuestion" width="50%" @cancel="showObj.selectQuestion = false">
+        <a-form layout="inline" :label-col="{ span: 4 }">
+          <a-form-item :label="$c.title">
+            <a-input v-model:value="questionObj.query.name"></a-input>
+          </a-form-item>
+          <a-form-item :label="$l.questionType">
+            <a-select v-model:value="questionObj.query.question_type" @change="getQuestionList" style="width: 100px;">
+              <a-select-option value="">{{$c.all}}</a-select-option>
+              <a-select-option v-for="i in publicCodeObj.question_type" :key='i.value' :value="i.value">{{i.label}}</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item :label="$l.status">
+            <a-select v-model:value="questionObj.query.question_status" @change="getQuestionList" style="width: 100px;">
+              <a-select-option value="">{{$c.all}}</a-select-option>
+              <a-select-option v-for="i in publicCodeObj.question_status" :key='i.value' :value="i.value">{{i.label}}</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" ghost @click="getQuestionList">{{$l.search}}</a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="selectMultipleQuestion">{{$l.multipleAdd}}</a-button>
+          </a-form-item>
+        </a-form>
+        <a-table ref="questionDialogTable" :dataSource="questionObj.list" style="width: 100%"
+          :row-selection="{ selectedRowKeys: questionSelectedRowKeys, onChange: questionSelectionChange }"
+          :scroll="{ y: 300 }">
+          <a-table-column title="No." width="50">
+            <template #default="text, record, index">
+              {{ index + 1 }}
             </template>
-          </el-table-column>
-          <el-table-column :label="$l.publishStatus" prop="question_status" width="80">
-            <template slot-scope="scope">
-              {{returnPublicObjLabel(scope.row.question_status,'value','label','question_status')}}
+          </a-table-column>
+          <a-table-column :title="$l.question" dataIndex="name_label"></a-table-column>
+          <a-table-column :title="$l.diffcult" dataIndex="difficulty_level" width="80"></a-table-column>
+          <a-table-column :title="$l.questionType" dataIndex="question_type" width="80">
+            <template #default="text">
+              {{returnPublicObjLabel(text,'value','label','question_type')}}
             </template>
-          </el-table-column>
-          <!-- <el-table-column :label="$l.stastus" prop="is_valid">
-              <template slot-scope="scope">
-                {{scope.row.is_valid=='Y'?$c.enable:'$c.disable}}
+          </a-table-column>
+          <a-table-column :title="$l.publishStatus" dataIndex="question_status" width="80">
+            <template #default="text">
+              {{returnPublicObjLabel(text,'value','label','question_status')}}
+            </template>
+          </a-table-column>
+          <!-- <a-table-column :title="$l.stastus" dataIndex="is_valid">
+              <template #default="text">
+                {{text=='Y'?$c.enable:'$c.disable}}
               </template>
-            </el-table-column> -->
-          <el-table-column :label="$c.operation" width="80" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' @click="selectQuestion(scope.row)">{{$l.add}}</el-button>
+            </a-table-column> -->
+          <a-table-column :title="$c.operation" width="80" fixed="right">
+            <template #default="text, record">
+              <a-button type="link" @click="selectQuestion(record)">{{$l.add}}</a-button>
             </template>
-          </el-table-column>
-        </el-table>
-      </el-dialog>
+          </a-table-column>
+        </a-table>
+      </a-modal>
 
       <!-- 选择视频dialog -->
-      <el-dialog :visible.sync="showObj.selectVideo" @open='getVideoList' :title="$l.addVideo" width="70%">
+      <a-modal :visible="showObj.selectVideo" @after-open='getVideoList' :title="$l.addVideo" width="70%" @cancel="showObj.selectVideo = false">
         <div class="videoSelect-dialog">
-          <el-form inline>
-            <el-form-item :label="$l.belongCollege">
-              <el-select v-model="videoListObj.query.college_id" :placeholder="$l.emptyIsPublicCourse" clearable>
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.title">
-              <el-input v-model="videoListObj.query.title" clearable @clear='getVideoList'
-                @keyup.native.enter="getVideoList"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.videoType">
-              <el-select v-model="videoListObj.query.is_public" :disabled="!isAdmin&&videoListObj.query.college_id==''"
+          <a-form layout="inline">
+            <a-form-item :label="$l.belongCollege">
+              <a-select v-model:value="videoListObj.query.college_id" :placeholder="$l.emptyIsPublicCourse" allow-clear>
+                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{i.name_label}}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :label="$l.title">
+              <a-input v-model:value="videoListObj.query.title" allow-clear @clear='getVideoList'
+                @keyup.enter="getVideoList"></a-input>
+            </a-form-item>
+            <a-form-item :label="$l.videoType">
+              <a-select v-model:value="videoListObj.query.is_public" :disabled="!isAdmin&&videoListObj.query.college_id==''"
                 style="width: 100px;" @change="getVideoList">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option :label="$l.public" :value="1"></el-option>
-                <el-option :label="$l.private" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="getVideoList">{{$l.search}}</el-button>
-              <el-button type="success" @click="selectMultipleVideo">{{$l.multipleAdd}}</el-button>
-            </el-form-item>
-          </el-form>
-          <el-table ref="videoDialogTable" class='video-table' :data="videoListObj.list" tooltip-effect="dark"
-            highlight-current-row highlight-selection-row stripe border max-height="500px"
-            @selection-change="videoSelectionChange">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column type="index" width="50" label='No.'>
-            </el-table-column>
-            <el-table-column prop="thumbnail_path" :label="$l.cover">
-              <template slot-scope="scope">
-                <img class="auto-img" :src="$api.videoServer+'/'+scope.row.thumbnail_path" height="50px"
-                  @click="coverPreview($api.videoServer+'/'+ scope.row.thumbnail_path)" />
+                <a-select-option value="">{{$c.all}}</a-select-option>
+                <a-select-option :value="1">{{$l.public}}</a-select-option>
+                <a-select-option :value="0">{{$l.private}}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" @click="getVideoList">{{$l.search}}</a-button>
+              <a-button type="primary" @click="selectMultipleVideo">{{$l.multipleAdd}}</a-button>
+            </a-form-item>
+          </a-form>
+          <a-table ref="videoDialogTable" class='video-table' :dataSource="videoListObj.list"
+            :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }"
+            :scroll="{ y: 500 }" bordered>
+            <a-table-column title="No." width="50">
+              <template #default="text, record, index">
+                {{ index + 1 }}
               </template>
-            </el-table-column>
-            <el-table-column prop="title" :label="$l.title">
-            </el-table-column>
-            <el-table-column prop="description" :label="$l.desc">
-            </el-table-column>
-            <el-table-column :label="$l.belongCollege">
-              <template slot-scope="scope">
-                {{returnPublicObjLabel(scope.row.college_id,'id','name_label','allCollegeList')}}
+            </a-table-column>
+            <a-table-column :title="$l.cover" dataIndex="thumbnail_path">
+              <template #default="text">
+                <img class="auto-img" :src="$api.videoServer+'/'+text" height="50px"
+                  @click="coverPreview($api.videoServer+'/'+ text)" />
               </template>
-            </el-table-column>
-            <el-table-column :label="$l.duration">
-              <template slot-scope="scope">
-                {{formatDuration(scope.row.duration,true)}}
+            </a-table-column>
+            <a-table-column :title="$l.title" dataIndex="title"></a-table-column>
+            <a-table-column :title="$l.desc" dataIndex="description"></a-table-column>
+            <a-table-column :title="$l.belongCollege" dataIndex="college_id">
+              <template #default="text">
+                {{returnPublicObjLabel(text,'id','name_label','allCollegeList')}}
               </template>
-            </el-table-column>
-            <el-table-column :label="$c.operation" fixed="right">
-              <template slot-scope="scope">
-                <el-button type="text" @click="selectVideo(scope.row)">{{$l.add}}</el-button>
+            </a-table-column>
+            <a-table-column :title="$l.duration" dataIndex="duration">
+              <template #default="text">
+                {{formatDuration(text,true)}}
               </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination @size-change="handleVideoSizeChange" @current-change="handleVideoPageChange"
-            :current-page="videoListObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
-            :page-size="videoListObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper"
-            :total="videoListObj.total" style="float: right;">
-          </el-pagination>
+            </a-table-column>
+            <a-table-column :title="$c.operation" fixed="right">
+              <template #default="text, record">
+                <a-button type="link" @click="selectVideo(record)">{{$l.add}}</a-button>
+              </template>
+            </a-table-column>
+          </a-table>
+          <a-pagination @change="handleVideoPageChange" @showSizeChange="handleVideoSizeChange"
+            :current="videoListObj.query.page" :pageSizeOptions="['5','10', '15', '30', '50','100']"
+            :pageSize="videoListObj.query.pageSize" show-size-changer show-quick-jumper
+            :total="videoListObj.total" style="float: right; margin-top: 16px;" />
         </div>
-      </el-dialog>
+      </a-modal>
 
       <!-- 选择考试dialog -->
-      <el-dialog :visible.sync="showObj.selectExam" @open='getExamList' :title="$l.addExam" width="70%">
+      <a-modal :visible="showObj.selectExam" @after-open='getExamList' :title="$l.addExam" width="70%" @cancel="showObj.selectExam = false">
         <div class="videoSelect-dialog">
-          <el-form inline label-width="60px">
-            <el-form-item :label="$l.title">
-              <el-input v-model="examObj.query.name" clearable @clear='getExamList'
-                @keyup.native.enter="getExamList"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.status">
-              <el-select v-model="examObj.query.is_valid" style="width: 100px;" @change="getExamList">
-                <el-option :label="$c.all" value=""></el-option>
-                <el-option :label="$c.enable" value="Y"></el-option>
-                <el-option :label="$c.disable" value="N"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="success" @click="getExamList">{{$l.search}}</el-button>
-              <el-button type="primary" plain @click="selectMultipleExam">{{$l.multipleAdd}}</el-button>
-            </el-form-item>
-          </el-form>
-          <el-table ref="examDialogTable" :data="examObj.list" tooltip-effect="dark" style="width: 100%"
-            highlight-current-row highlight-selection-row stripe :header-cell-style="cssObj.headerRowStyle"
-            :max-height="cssObj.tableMaxHeight" show-overflow-tooltip @selection-change="examSelectionChange">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column type="index" width="50" label='No.'></el-table-column>
-            <el-table-column :label="$l.title" prop="name_label"></el-table-column>
-            <el-table-column :label="$l.passScore" prop="pass_score"></el-table-column>
-            <el-table-column :label="$l.maxReplyNum" prop="max_reply_num"></el-table-column>
-            <el-table-column :label="$l.examDuration" prop="test_duration"></el-table-column>
-            <el-table-column :label="$l.startTime" prop="start_time"></el-table-column>
-            <el-table-column :label="$l.endTime" prop="end_time"></el-table-column>
-            <el-table-column :label="$l.statuts" prop="is_valid"></el-table-column>
-            <el-table-column :label="$c.operation" fixed="right">
-              <template slot-scope="scope">
-                <el-button class="text-green" type='text' @click="previewExam(scope.row)">{{$l.preview}}</el-button>
-                <el-button type='text' @click="selectExam(scope.row)">{{$l.add}}</el-button>
+          <a-form layout="inline" :label-col="{ span: 6 }">
+            <a-form-item :label="$l.title">
+              <a-input v-model:value="examObj.query.name" allow-clear @clear='getExamList'
+                @keyup.enter="getExamList"></a-input>
+            </a-form-item>
+            <a-form-item :label="$l.status">
+              <a-select v-model:value="examObj.query.is_valid" style="width: 100px;" @change="getExamList">
+                <a-select-option value="">{{$c.all}}</a-select-option>
+                <a-select-option value="Y">{{$c.enable}}</a-select-option>
+                <a-select-option value="N">{{$c.disable}}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" @click="getExamList">{{$l.search}}</a-button>
+              <a-button type="primary" ghost @click="selectMultipleExam">{{$l.multipleAdd}}</a-button>
+            </a-form-item>
+          </a-form>
+          <a-table ref="examDialogTable" :dataSource="examObj.list" style="width: 100%"
+            :row-selection="{ selectedRowKeys: examSelectedRowKeys, onChange: examSelectionChange }"
+            :scroll="{ y: cssObj.tableMaxHeight }">
+            <a-table-column title="No." width="50">
+              <template #default="text, record, index">
+                {{ index + 1 }}
               </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination @size-change="handleExamSizeChange" @current-change="handleExamPageChange"
-            :current-page="examObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="examObj.query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper" :total="examObj.total" style="float: right;">
-          </el-pagination>
+            </a-table-column>
+            <a-table-column :title="$l.title" dataIndex="name_label"></a-table-column>
+            <a-table-column :title="$l.passScore" dataIndex="pass_score"></a-table-column>
+            <a-table-column :title="$l.maxReplyNum" dataIndex="max_reply_num"></a-table-column>
+            <a-table-column :title="$l.examDuration" dataIndex="test_duration"></a-table-column>
+            <a-table-column :title="$l.startTime" dataIndex="start_time"></a-table-column>
+            <a-table-column :title="$l.endTime" dataIndex="end_time"></a-table-column>
+            <a-table-column :title="$l.statuts" dataIndex="is_valid"></a-table-column>
+            <a-table-column :title="$c.operation" fixed="right">
+              <template #default="text, record">
+                <a-button type="link" style="color: green;" @click="previewExam(record)">{{$l.preview}}</a-button>
+                <a-button type="link" @click="selectExam(record)">{{$l.add}}</a-button>
+              </template>
+            </a-table-column>
+          </a-table>
+          <a-pagination @change="handleExamPageChange" @showSizeChange="handleExamSizeChange"
+            :current="examObj.query.page" :pageSizeOptions="['5','10', '15', '30', '50','100']"
+            :pageSize="examObj.query.pageSize" show-size-changer show-quick-jumper
+            :total="examObj.total" style="float: right; margin-top: 16px;" />
         </div>
-      </el-dialog>
+      </a-modal>
 
       <!-- 新增或修改课程以及配套资源 -->
-      <el-drawer class="drawer-container" direction='btt' :visible.sync="showObj.addOrModifyCourse"
-        :wrapperClosable='false' size="92%" @opened="getPopoverWidth">
-        <div slot='title' class="title">{{$l.manageCourse}}</div>
-        <el-tabs type="border-card" class="form-container" @tab-click="tabClick" v-model="showObj.activeTabName">
-          <el-tab-pane :label="$l.basicalInfo" name="data">
-            <el-form label-width="100px" size="medium">
-              <el-form-item :label="$l.cover" v-if="courseObj.newForm.id==''">
+      <a-drawer class="drawer-container" placement="bottom" :visible="showObj.addOrModifyCourse"
+        :mask-closable='false' height="92%" @after-visible-change="getPopoverWidth" @close="showObj.addOrModifyCourse = false">
+        <template #title>
+          <div class="title">{{$l.manageCourse}}</div>
+        </template>
+        <a-tabs type="card" class="form-container" @change="tabClick" v-model:activeKey="showObj.activeTabName">
+          <a-tab-pane :tab="$l.basicalInfo" key="data">
+            <a-form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+              <a-form-item :label="$l.cover" v-if="courseObj.newForm.id==''">
                 <div v-if="coverObj.imageUrl==''" class="cover">
                   <div class="plus-icon" @click="coverSelect">
                     <i class="el-icon-upload" style="font-size: 30px;"></i>
@@ -286,17 +291,17 @@
                   </div>
                 </div>
                 <div v-else class="cover">
-                  <el-image :src="coverObj.imageUrl" style="height: 150px;"></el-image>
+                  <a-image :src="coverObj.imageUrl" style="height: 150px;"></a-image>
                   <div class="cover-oprate">
                     <i class="el-icon-zoom-in iconZoom" @click="coverPreview(coverObj.imageUrl)"></i>
                     <i class="el-icon-refresh-left iconRefresh" @click="coverSelect"></i>
                   </div>
                 </div>
-              </el-form-item>
-              <el-form-item :label="$l.cover" v-else>
+              </a-form-item>
+              <a-form-item :label="$l.cover" v-else>
                 <div class="modifyCover">
                   <div class="cover">
-                    <el-image :src="$api.videoServer+'/'+ courseObj.newForm.thumbnail_path"></el-image>
+                    <a-image :src="$api.videoServer+'/'+ courseObj.newForm.thumbnail_path"></a-image>
                     <div class="cover-oprate">
                       <i class="el-icon-zoom-in iconZoom"
                         @click="coverPreview($api.videoServer+'/'+ courseObj.newForm.oldthumbnail_path)"></i>
@@ -313,7 +318,7 @@
                       </div>
                     </div>
                     <div v-else class="cover">
-                      <el-image :src="coverObj.imageUrl"></el-image>
+                      <a-image :src="coverObj.imageUrl"></a-image>
                       <div class="cover-oprate">
                         <i class="el-icon-zoom-in iconZoom" @click="coverPreview(coverObj.imageUrl)"></i>
                         <i class="el-icon-refresh-left iconRefresh" @click="coverSelect"></i>
@@ -321,113 +326,110 @@
                     </div>
                   </div>
                 </div>
-              </el-form-item>
-              <el-row v-if="isAdmin">
-                <el-col :span="12">
-                  <el-form-item :label="$l.belongCollege" required>
-                    <el-select v-model="courseObj.newForm.college_id" :placeholder="$l.pleaseSelectCollege"
-                      style="width: 100%;" clearable>
-                      <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                        :value="i.id"></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <!-- <el-form-item label="组织编码" required>
-                    <el-select v-model="courseObj.newForm.org_id" style="width: 100%;">
-                      <el-option v-for="i in publicCodeObj.org_id" :key="i.id" :label="i.label"
-                        :value="i.value"></el-option>
-                    </el-select>
-                  </el-form-item> -->
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item :label="$l.courseType">
-                    <el-switch v-model="courseObj.newForm.is_public" active-color="#13ce66" :active-value="1"
-                      :active-text="$l.public" :inactive-value="0">
-                    </el-switch>
-                  </el-form-item>
-                </el-col>
-                <!-- <el-col :span="6">
-                  <el-form-item label="课程学分">
-                    <el-input v-model="courseObj.newForm.score"></el-input>
-                  </el-form-item>
-                </el-col> -->
-              </el-row>
-              <el-row v-else>
-                <el-col :span="12">
-                  <el-form-item :label="$l.belongCollege">
-                    <el-select v-model="courseObj.newForm.college_id" :placeholder="$l.pleaseSelectCollege"
+              </a-form-item>
+              <a-row v-if="isAdmin">
+                <a-col :span="12">
+                  <a-form-item :label="$l.belongCollege" required>
+                    <a-select v-model:value="courseObj.newForm.college_id" :placeholder="$l.pleaseSelectCollege"
+                      style="width: 100%;" allow-clear>
+                      <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{i.name_label}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                  <!-- <a-form-item label="组织编码" required>
+                    <a-select v-model:value="courseObj.newForm.org_id" style="width: 100%;">
+                      <a-select-option v-for="i in publicCodeObj.org_id" :key="i.id" :value="i.value">{{i.label}}</a-select-option>
+                    </a-select>
+                  </a-form-item> -->
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="$l.courseType">
+                    <a-switch v-model:checked="courseObj.newForm.is_public" :checked-value="1"
+                      :un-checked-value="0">
+                      <template #checkedChildren>{{$l.public}}</template>
+                    </a-switch>
+                  </a-form-item>
+                </a-col>
+                <!-- <a-col :span="6">
+                  <a-form-item label="课程学分">
+                    <a-input v-model:value="courseObj.newForm.score"></a-input>
+                  </a-form-item>
+                </a-col> -->
+              </a-row>
+              <a-row v-else>
+                <a-col :span="12">
+                  <a-form-item :label="$l.belongCollege">
+                    <a-select v-model:value="courseObj.newForm.college_id" :placeholder="$l.pleaseSelectCollege"
                       style="width: 100%;">
-                      <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                        :value="i.id"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+                      <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{i.name_label}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+              </a-row>
 
 
 
-              <el-row>
-                <el-col :span="6">
-                  <el-form-item :label="$l.name_zh" required>
-                    <el-input v-model="courseObj.newForm.name_zh"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item :label="$l.name_tw">
-                    <el-input v-model="courseObj.newForm.name_tw"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item :label="$l.name_en">
-                    <el-input v-model="courseObj.newForm.name_en"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item :label="$l.name_vi">
-                    <el-input v-model="courseObj.newForm.name_vi"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item :label="$l.courseCatalog" required>
-                    <el-select v-model="courseObj.newForm.type" :placeholder="$l.courseCatalogPd" style="width: 100%;">
-                      <el-option v-for="i in publicCodeObj.courseCatalog" :key="i.value" :label="i.label"
-                        :value="i.value"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item :label="$l.lecturer" required>
-                    <el-select v-model="courseObj.newForm.lecturer" :placeholder="$l.lecturerPd" style="width: 100%;">
-                      <el-option v-for="i in publicCodeObj.lecturer_status" :key="i.value" :label="i.label"
-                        :value="i.value"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item :label="$l.trainLanguage" required>
-                    <el-select v-model="courseObj.newForm.language" :placeholder="$l.trainLanguagePd"
+              <a-row>
+                <a-col :span="6">
+                  <a-form-item :label="$l.name_zh" required>
+                    <a-input v-model:value="courseObj.newForm.name_zh"></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="$l.name_tw">
+                    <a-input v-model:value="courseObj.newForm.name_tw"></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="$l.name_en">
+                    <a-input v-model:value="courseObj.newForm.name_en"></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="$l.name_vi">
+                    <a-input v-model:value="courseObj.newForm.name_vi"></a-input>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="8">
+                  <a-form-item :label="$l.courseCatalog" required>
+                    <a-select v-model:value="courseObj.newForm.type" :placeholder="$l.courseCatalogPd" style="width: 100%;">
+                      <a-select-option v-for="i in publicCodeObj.courseCatalog" :key="i.value" :value="i.value">{{i.label}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="8">
+                  <a-form-item :label="$l.lecturer" required>
+                    <a-select v-model:value="courseObj.newForm.lecturer" :placeholder="$l.lecturerPd" style="width: 100%;">
+                      <a-select-option v-for="i in publicCodeObj.lecturer_status" :key="i.value" :value="i.value">{{i.label}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="8">
+                  <a-form-item :label="$l.trainLanguage" required>
+                    <a-select v-model:value="courseObj.newForm.language" :placeholder="$l.trainLanguagePd"
                       style="width: 100%;">
-                      <el-option v-for="i in publicCodeObj.language_type" :key="i.value" :label="i.label"
-                        :value="i.value"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item :label="$l.tag">
-                    <el-popover placement="bottom" :width.sync="cssObj.popoverWidth" trigger="click">
-                      <div class="tag-container">
-                        <div class="tag-title" style="margin-bottom: 10px;">{{$l.tagPd}}</div>
-                        <el-tag style=" margin: 5px 10px;padding: 0 10px;white-space: nowrap;"
-                          v-for="(i,index) in tagObj.list" :key="index" @click="selectTag(i)"
-                          :effect="selectedTags.includes(i)?'dark':'plain'">{{i.name_label}}</el-tag>
-                      </div>
-                      <div ref="tagInput" slot="reference" class="tagInput">
+                      <a-select-option v-for="i in publicCodeObj.language_type" :key="i.value" :value="i.value">{{i.label}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="8">
+                  <a-form-item :label="$l.tag">
+                    <a-popover placement="bottom" trigger="click">
+                      <template #content>
+                        <div class="tag-container" :style="{width: cssObj.popoverWidth}">
+                          <div class="tag-title" style="margin-bottom: 10px;">{{$l.tagPd}}</div>
+                          <a-tag style=" margin: 5px 10px;padding: 0 10px;white-space: nowrap;"
+                            v-for="(i,index) in tagObj.list" :key="index" @click="selectTag(i)"
+                            :color="selectedTags.includes(i)?'blue':''" :bordered="!selectedTags.includes(i)">{{i.name_label}}</a-tag>
+                        </div>
+                      </template>
+                      <div ref="tagInput" class="tagInput">
                         <div v-if="selectedTags.length>0">
-                          <el-tag class="tags" closable v-for="(i,index) in selectedTags" :key="index"
-                            @close="selectTag(i)">{{i.name_label}}</el-tag>
+                          <a-tag class="tags" closable v-for="(i,index) in selectedTags" :key="index"
+                            @close="selectTag(i)">{{i.name_label}}</a-tag>
                         </div>
                         <div v-else style="margin-left: 1em;color: #aaa;">{{$l.chooseTagPd}}</div>
                         <div style="margin-right: 1em;color: #aaa;">
@@ -435,282 +437,289 @@
                           <span><i class="el-icon-arrow-down"></i></span>
                         </div>
                       </div>
-                    </el-popover>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item :label="$l.applicableGroup" required>
-                    <el-input v-model="courseObj.newForm.applicable_group"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item :label="$l.profit" required>
-                    <el-input v-model="courseObj.newForm.profit"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+                    </a-popover>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="8">
+                  <a-form-item :label="$l.applicableGroup" required>
+                    <a-input v-model:value="courseObj.newForm.applicable_group"></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="8">
+                  <a-form-item :label="$l.profit" required>
+                    <a-input v-model:value="courseObj.newForm.profit"></a-input>
+                  </a-form-item>
+                </a-col>
+              </a-row>
 
-              <el-form-item :label="$l.desc">
-                <el-input v-model="courseObj.newForm.description" type="textarea" :rows="4"></el-input>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-          <el-tab-pane :label="$l.courseVideo" name='video'>
+              <a-form-item :label="$l.desc">
+                <a-textarea v-model:value="courseObj.newForm.description" :rows="4"></a-textarea>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+          <a-tab-pane :tab="$l.courseVideo" key='video'>
             <div style="float: right;margin-bottom: 10px;" v-show="rightCheck(courseObj.newForm)">
-              <el-button type="primary" plain @click="showObj.selectVideo = true">{{$l.addVideo}}</el-button>
-              <el-button type="danger" plain @click="removeMultipleVideo">{{$l.multipleRemove}}</el-button>
+              <a-button type="primary" @click="showObj.selectVideo = true">{{$l.addVideo}}</a-button>
+              <a-button type="primary" danger @click="removeMultipleVideo">{{$l.multipleRemove}}</a-button>
             </div>
-            <el-table ref="videoListTable" class="draggable-table-video" :data="manageObj.selectedVideoList"
-              row-key='id' tooltip-effect="dark" style="width: 100%" highlight-current-row highlight-selection-row
-              stripe :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight - 130"
-              :row-style="{height:'90px',fontSize:'14px'}" @selection-change="videoSelectionChange">
-              <el-table-column type="selection" width="55">
-              </el-table-column>
-              <!-- <el-table-column type="index" width="50" label='序号'></el-table-column> -->
-              <el-table-column prop="thumbnail_path" :label="$l.cover">
-                <template slot-scope="scope">
-                  <img class="auto-img" :src="$api.videoServer+'/'+scope.row.thumbnail_path" height="80px"
-                    @click="coverPreview($api.videoServer+'/'+ scope.row.thumbnail_path)" />
+            <a-table ref="videoListTable" class="draggable-table-video" :dataSource="manageObj.selectedVideoList"
+              row-key='id' style="width: 100%" 
+              :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }"
+              :scroll="{ y: cssObj.tableMaxHeight - 130 }"
+              :custom-row="() => ({ style: { height: '90px', fontSize: '14px' } })">
+              <!-- <a-table-column title="序号" width="50">
+                <template #default="text, record, index">
+                  {{ index + 1 }}
                 </template>
-              </el-table-column>
-              <el-table-column prop="title" :label="$l.title"></el-table-column>
-              <el-table-column prop="description" :label="$l.desc"></el-table-column>
-              <el-table-column :label="$l.duration">
-                <template slot-scope="scope">
-                  {{formatDuration(scope.row.duration,true)}}
+              </a-table-column> -->
+              <a-table-column :title="$l.cover" dataIndex="thumbnail_path">
+                <template #default="text">
+                  <img class="auto-img" :src="$api.videoServer+'/'+text" height="80px"
+                    @click="coverPreview($api.videoServer+'/'+ text)" />
                 </template>
-              </el-table-column>
-              <!-- <el-table-column :label="$l.needToLearn">
-                <template slot-scope="scope">
-                  <el-input type="number" v-model.number="scope.row.finish_time" :placeholder="$l.needToLearnPd"
-                    :max="100" :min="0" :maxlength="3" :minlength="0"></el-input>
+              </a-table-column>
+              <a-table-column :title="$l.title" dataIndex="title"></a-table-column>
+              <a-table-column :title="$l.desc" dataIndex="description" :width="400" :ellipsis="true"></a-table-column>
+              <a-table-column :title="$l.duration" dataIndex="duration">
+                <template #default="text">
+                  {{formatDuration(text,true)}}
+                </template>
+              </a-table-column>
+              <!-- <a-table-column :title="$l.needToLearn">
+                <template #default="text, record">
+                  <a-input-number v-model:value="record.finish_time" :placeholder="$l.needToLearnPd"
+                    :max="100" :min="0"></a-input-number>
+                </template>
+              </a-table-column> -->
+              <a-table-column :title="$l.playQuestion" dataIndex="is_process_question">
+                <template #default="text, record">
+                  <a-switch v-model:checked="record.is_process_question" 
+                    :checked-value="true" :un-checked-value="false">
+                  </a-switch>
+                  <a-button v-show="record.is_process_question" type="link" style="color: green;"
+                    @click="openProcessQuestion(record)">{{$l.playQuestionManage}}</a-button>
+                </template>
+              </a-table-column>
+              <!-- <a-table-column :title="$l.score" dataIndex="score">
+                <template #default="text, record">
+                  <a-input-number v-model:value="record.score" :placeholder="$l.scorePd"></a-input-number>
+                </template>
+              </a-table-column> -->
+              <a-table-column :title="$c.operation" fixed="right">
+                <template #default="text, record, index">
+                  <a-button v-show="rightCheck(courseObj.newForm)" type="link" danger
+                    @click="removeVideo(index)">{{$l.remove}}</a-button>
+                </template>
+              </a-table-column>
+            </a-table>
+          </a-tab-pane>
 
-                </template>
-              </el-table-column> -->
-              <el-table-column prop="is_process_question" :label="$l.playQuestion">
-                <template slot-scope="scope">
-                  <el-switch v-model="scope.row.is_process_question" active-color="#13ce66" inactive-color="#ccc"
-                    :active-value="true" :inactive-value="false">
-                  </el-switch>
-                  <el-button v-show="scope.row.is_process_question" class="text-green" type="text"
-                    @click="openProcessQuestion(scope.row)">{{$l.playQuestionManage}}</el-button>
-                </template>
-              </el-table-column>
-              <!-- <el-table-column prop="score" :label="$l.score">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.score" :placeholder="$l.scorePd"></el-input>
-                </template>
-              </el-table-column> -->
-              <el-table-column :label="$c.operation" fixed="right">
-                <template slot-scope="scope">
-                  <el-button v-show="rightCheck(courseObj.newForm)" class="text-red" type="text"
-                    @click="removeVideo(scope.$index)">{{$l.remove}}</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-
-          <el-tab-pane :label="$l.courseExam" name="exam">
+          <a-tab-pane :tab="$l.courseExam" key="exam">
             <div style="float: right;margin-bottom: 10px;" v-show="rightCheck(courseObj.newForm)">
-              <el-button type="primary" plain @click="showObj.selectExam = true">{{$l.addExam}}</el-button>
-              <el-button type="danger" plain @click="removeMultipleExam">{{$l.multipleRemove}}</el-button>
+              <a-button type="primary" @click="showObj.selectExam = true">{{$l.addExam}}</a-button>
+              <a-button type="primary" danger @click="removeMultipleExam">{{$l.multipleRemove}}</a-button>
             </div>
-            <el-table ref="examListTable" class="draggable-table-exam" :data="manageObj.selectedExamList" row-key='id'
-              tooltip-effect="dark" style="width: 100%" highlight-current-row highlight-selection-row stripe
-              :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight - 130"
-              @selection-change="examSelectionChange">
-              <el-table-column type="selection" width="55"></el-table-column>
-              <!-- <el-table-column type="index" width="50" label='序号'></el-table-column> -->
-              <el-table-column :label="$l.title" prop="name_label"></el-table-column>
-              <el-table-column :label="$l.passScore" prop="pass_score"></el-table-column>
-              <el-table-column :label="$l.maxReplyNum" prop="max_reply_num"></el-table-column>
-              <el-table-column :label="$l.examDuration" prop="test_duration"></el-table-column>
-              <el-table-column :label="$l.startTime" prop="start_time"></el-table-column>
-              <el-table-column :label="$l.endTime" prop="end_time"></el-table-column>
-              <!-- <el-table-column :label="$l.status" prop="is_valid"></el-table-column> -->
-              <!-- <el-table-column prop="score" :label="$l.score">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.score" :placeholder="$l.scorePd"></el-input>
+            <a-table ref="examListTable" class="draggable-table-exam" :dataSource="manageObj.selectedExamList" row-key='id'
+              style="width: 100%" 
+              :row-selection="{ selectedRowKeys: examSelectedRowKeys, onChange: examSelectionChange }"
+              :scroll="{ y: cssObj.tableMaxHeight - 130 }">
+              <!-- <a-table-column title="序号" width="50">
+                <template #default="text, record, index">
+                  {{ index + 1 }}
                 </template>
-              </el-table-column> -->
-              <el-table-column :label="$c.operation" fixed="right">
-                <template slot-scope="scope">
+              </a-table-column> -->
+              <a-table-column :title="$l.title" dataIndex="name_label"></a-table-column>
+              <a-table-column :title="$l.passScore" dataIndex="pass_score"></a-table-column>
+              <a-table-column :title="$l.maxReplyNum" dataIndex="max_reply_num"></a-table-column>
+              <a-table-column :title="$l.examDuration" dataIndex="test_duration"></a-table-column>
+              <a-table-column :title="$l.startTime" dataIndex="start_time"></a-table-column>
+              <a-table-column :title="$l.endTime" dataIndex="end_time"></a-table-column>
+              <!-- <a-table-column :title="$l.status" dataIndex="is_valid"></a-table-column> -->
+              <!-- <a-table-column :title="$l.score" dataIndex="score">
+                <template #default="text, record">
+                  <a-input-number v-model:value="record.score" :placeholder="$l.scorePd"></a-input-number>
+                </template>
+              </a-table-column> -->
+              <a-table-column :title="$c.operation" fixed="right">
+                <template #default="text, record, index">
                   <div v-show="rightCheck(courseObj.newForm)">
-                    <el-button class="text-green" type='text' @click="previewExam(scope.row)">{{$l.preview}}</el-button>
-                    <el-button class='text-red' type='text' @click="removeExam(scope.$index)">{{$l.remove}}</el-button>
+                    <a-button type="link" style="color: green;" @click="previewExam(record)">{{$l.preview}}</a-button>
+                    <a-button type="link" danger @click="removeExam(index)">{{$l.remove}}</a-button>
                   </div>
                 </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
+              </a-table-column>
+            </a-table>
+          </a-tab-pane>
 
-          <el-tab-pane :label="$l.courseAttachments" name="attachment">
+          <a-tab-pane :tab="$l.courseAttachments" key="attachment">
             <div style="float: right;margin-bottom: 10px;" v-show="rightCheck(courseObj.newForm)">
-              <el-button type="warning" plain @click="attachmentWarning">{{$l.importantNotice}}</el-button>
-              <el-button :disabled='courseObj.newForm.id==""' type="primary" plain
-                @click="attachmentSelect">{{$l.addAttachment}}</el-button>
-              <el-button :disabled='courseObj.newForm.id==""' type="danger" plain
-                @click="removeMultipleAttachment">{{$l.batchRemove}}</el-button>
+              <a-button type="primary" ghost @click="attachmentWarning">{{$l.importantNotice}}</a-button>
+              <a-button :disabled='courseObj.newForm.id==""' type="primary"
+                @click="attachmentSelect">{{$l.addAttachment}}</a-button>
+              <a-button :disabled='courseObj.newForm.id==""' type="primary" danger
+                @click="removeMultipleAttachment">{{$l.batchRemove}}</a-button>
             </div>
-            <el-table ref="attachmentsListTable" :data="manageObj.attachmentsList" row-key='id' tooltip-effect="dark"
-              style="width: 100%" highlight-current-row highlight-selection-row stripe
-              :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight - 130"
-              @selection-change="attachmentSelectionChange">
-              <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="name_zh" :label="$l.simplifiedChineseName"></el-table-column>
-              <el-table-column prop="file_type" :label="$l.fileType" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="file_size" :label="$l.fileSize" show-overflow-tooltip>
-                <template slot-scope="scope">
-                  {{formatBytes(scope.row.file_size)}}
+            <a-table ref="attachmentsListTable" :dataSource="manageObj.attachmentsList" row-key='id'
+              style="width: 100%" 
+              :row-selection="{ selectedRowKeys: attachmentSelectedRowKeys, onChange: attachmentSelectionChange }"
+              :scroll="{ y: cssObj.tableMaxHeight - 130 }">
+              <a-table-column :title="$l.simplifiedChineseName" dataIndex="name_zh"></a-table-column>
+              <a-table-column :title="$l.fileType" dataIndex="file_type" :width="120" :ellipsis="true"></a-table-column>
+              <a-table-column :title="$l.fileSize" dataIndex="file_size" :width="100" :ellipsis="true">
+                <template #default="text">
+                  {{formatBytes(text)}}
                 </template>
-              </el-table-column>
-              <!-- <el-table-column prop="file_url" label="地址" show-overflow-tooltip></el-table-column> -->
-              <el-table-column :label="$l.operations" fixed="right">
-                <template slot-scope="scope">
+              </a-table-column>
+              <!-- <a-table-column title="地址" dataIndex="file_url" ellipsis></a-table-column> -->
+              <a-table-column :title="$l.operations" fixed="right">
+                <template #default="text, record, index">
                   <div v-show="rightCheck(courseObj.newForm)">
-                    <el-button class="text-green" type='text' @click="previewFile(scope.row.file_url)">{{$l.preview}}</el-button>
-                    <el-button class='text-red' type='text' @click="removeAttachment(scope.$index)">{{$l.remove}}</el-button>
+                    <a-button type="link" style="color: green;" @click="previewFile(record.file_url)">{{$l.preview}}</a-button>
+                    <a-button type="link" danger @click="removeAttachment(index)">{{$l.remove}}</a-button>
                   </div>
                 </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-        </el-tabs>
+              </a-table-column>
+            </a-table>
+          </a-tab-pane>
+        </a-tabs>
 
         <div class="buttonBar">
-          <el-button v-show="rightCheck(courseObj.newForm)" type="primary"
-            @click="handleSubmit">{{$l.submit}}</el-button>
-          <el-button type="danger" @click="showObj.addOrModifyCourse = false">{{$l.giveup}}</el-button>
+          <a-button v-show="rightCheck(courseObj.newForm)" type="primary"
+            @click="handleSubmit">{{$l.submit}}</a-button>
+          <a-button type="primary" danger @click="showObj.addOrModifyCourse = false">{{$l.giveup}}</a-button>
         </div>
-      </el-drawer>
+      </a-drawer>
     </div>
 
     <!-- 主界面 -->
     <div class="lessonList-filter">
-      <el-form inline>
-        <el-form-item :label="$l.college">
-          <el-select v-model="courseObj.query.college_id" @change="getCourseList"
-            :placeholder="$l.emptyOnlyCanCheckPublic" clearable>
-            <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-              :value="i.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$l.title">
-          <el-input v-model="courseObj.query.name" clearable @clear='getCourseList'
-            @keyup.native.enter="getCourseList"></el-input>
-        </el-form-item>
-        <el-form-item :label="$l.desc">
-          <el-input v-model="courseObj.query.description" clearable @clear='getCourseList'
-            @keyup.native.enter="getCourseList"></el-input>
-        </el-form-item>
+      <a-form layout="inline">
+        <a-form-item :label="$l.college">
+          <a-select v-model:value="courseObj.query.college_id" @change="getCourseList"
+            :placeholder="$l.emptyOnlyCanCheckPublic" allow-clear>
+            <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{i.name_label}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item :label="$l.title">
+          <a-input v-model:value="courseObj.query.name" allow-clear @clear='getCourseList'
+            @keyup.enter="getCourseList"></a-input>
+        </a-form-item>
+        <a-form-item :label="$l.desc">
+          <a-input v-model:value="courseObj.query.description" allow-clear @clear='getCourseList'
+            @keyup.enter="getCourseList"></a-input>
+        </a-form-item>
 
-        <!-- <el-form-item :label="$l.catalog">
-          <el-cascader  v-model="courseObj.query.catalog_id" :options="catalogObj.data" clearable :placeholder="$l.emptyIsRootCatalog"
-            style="width: 100%;" :props="catalogObj.cascaderProps">
-          </el-cascader>
-        </el-form-item> -->
+        <!-- <a-form-item :label="$l.catalog">
+          <a-cascader v-model:value="courseObj.query.catalog_id" :options="catalogObj.data" allow-clear :placeholder="$l.emptyIsRootCatalog"
+            style="width: 100%;" :field-names="catalogObj.cascaderProps">
+          </a-cascader>
+        </a-form-item> -->
 
-        <el-form-item :label="$l.courseType">
-          <el-select v-model="courseObj.query.is_public" :disabled="!isAdmin&&courseObj.query.college_id==''"
+        <a-form-item :label="$l.courseType">
+          <a-select v-model:value="courseObj.query.is_public" :disabled="!isAdmin&&courseObj.query.college_id==''"
             style="width: 100px;" @change="getCourseList">
-            <el-option :label="$c.all" value=""></el-option>
-            <el-option :label="$l.public" :value="1"></el-option>
-            <el-option :label="$l.private" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
+            <a-select-option value="">{{$c.all}}</a-select-option>
+            <a-select-option :value="1">{{$l.public}}</a-select-option>
+            <a-select-option :value="0">{{$l.private}}</a-select-option>
+          </a-select>
+        </a-form-item>
 
-        <el-form-item :label="$l.status">
+        <a-form-item :label="$l.status">
           <div class="frcc">
-            <el-select v-model="courseObj.query.is_valid" @change="getCourseList" style="width: 100px;">
-              <el-option :label="$c.all" value=""></el-option>
-              <el-option :label="$c.enable" value="Y"></el-option>
-              <el-option :label="$c.disable" value="N"></el-option>
-            </el-select>
-            <el-button type="success" @click="getCourseList" style="margin-left:20px ;">{{$l.search}}</el-button>
+            <a-select v-model:value="courseObj.query.is_valid" @change="getCourseList" style="width: 100px;">
+              <a-select-option value="">{{$c.all}}</a-select-option>
+              <a-select-option value="Y">{{$c.enable}}</a-select-option>
+              <a-select-option value="N">{{$c.disable}}</a-select-option>
+            </a-select>
+            <a-button type="primary" @click="getCourseList" style="margin-left:20px ;">{{$l.search}}</a-button>
           </div>
-        </el-form-item>
-      </el-form>
+        </a-form-item>
+      </a-form>
     </div>
 
     <div class="lessonList-oprate">
-      <el-button type="primary" plain @click="addCourse">{{$l.addCourse}}</el-button>
-      <!-- <el-button type="primary" plain>批量发布</el-button> -->
-      <!-- <el-button type="primary" plain>批量取消发布</el-button> -->
-      <!-- <el-button type="primary" plain>导出课程</el-button> -->
+      <a-button type="primary" @click="addCourse">{{$l.addCourse}}</a-button>
+      <!-- <a-button type="primary">批量发布</a-button> -->
+      <!-- <a-button type="primary">批量取消发布</a-button> -->
+      <!-- <a-button type="primary">导出课程</a-button> -->
     </div>
 
     <div class="lessonList-table" ref="tableContainer">
-      <el-table ref="multipleTable" :data="courseObj.list" tooltip-effect="dark" style="width: 100%"
-        @selection-change="handleSelectionChange" highlight-current-row highlight-selection-row stripe
-        :header-cell-style="cssObj.headerRowStyle" :max-height="cssObj.tableMaxHeight"
-        :row-style="{height:'100px',fontSize:'14px'}">
+      <a-table ref="multipleTable" :dataSource="courseObj.list" style="width: 100%"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: handleSelectionChange }"
+        :scroll="{ y: cssObj.tableMaxHeight }"
+        :custom-row="() => ({ style: { height: '113px', fontSize: '14px' } })">
 
-        <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-        <el-table-column type="index" width="50" label='No.'></el-table-column>
-        <el-table-column :label="$l.cover" prop="thumbnail_path">
-          <template slot-scope="scope">
-            <div class="img" v-if="scope.row.thumbnail_path">
-              <img class="auto-img" @click="coverPreview($api.videoServer+'/'+ scope.row.thumbnail_path)"
-                :src="$api.videoServer+'/'+ scope.row.thumbnail_path" />
+        <!-- <a-table-column type="selection" width="55"></a-table-column> -->
+        <a-table-column title="No." width="50">
+          <template #default="text, record, index">
+            {{ index + 1 }}
+          </template>
+        </a-table-column>
+        <a-table-column :title="$l.cover" dataIndex="thumbnail_path">
+          <template #default="text">
+            <div class="img" v-if="text">
+              <img class="auto-img" @click="coverPreview($api.videoServer+'/'+ text)"
+                :src="$api.videoServer+'/'+ text" />
             </div>
             <div v-else style="text-align: center;width: 100%;">
               <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-              <div>{{$l.noCover}}</div>
+              <!-- <div>{{$l.noCover}}</div> -->
             </div>
           </template>
-        </el-table-column>
-        <el-table-column :label="$l.title" prop="name_zh"></el-table-column>
-        <el-table-column :label="$l.desc" prop="description" show-overflow-tooltip></el-table-column>
-        <el-table-column :label="$l.courseCatalog" prop="name_zh">
-          <template slot-scope="scope">
-            {{returnPublicObjLabel(scope.row.type,'value','label','courseCatalog')}}
+        </a-table-column>
+        <a-table-column :title="$l.title" dataIndex="name_zh" :width="250" :ellipsis="true"></a-table-column>
+        <a-table-column :title="$l.desc" dataIndex="description" :width="250" :ellipsis="true"></a-table-column>
+        <a-table-column :title="$l.courseCatalog" dataIndex="type">
+          <template #default="text">
+            {{returnPublicObjLabel(text,'value','label','courseCatalog')}}
           </template>
-        </el-table-column>
-        <el-table-column :label="$l.belongCollege">
-          <template slot-scope="scope">
-            {{returnPublicObjLabel(scope.row.college_id,'id','name_label','allCollegeList')}}
+        </a-table-column>
+        <a-table-column :title="$l.belongCollege" dataIndex="college_id">
+          <template #default="text">
+            {{returnPublicObjLabel(text,'id','name_label','allCollegeList')}}
           </template>
-        </el-table-column>
-        <el-table-column :label="$l.score" prop="score" width="100px"></el-table-column>
-        <el-table-column :label="$l.duration" width="100px">
-          <template slot-scope="scope">
-            {{formatDuration(scope.row.duration) }}
+        </a-table-column>
+        <a-table-column :title="$l.score" dataIndex="score" width="100"></a-table-column>
+        <a-table-column :title="$l.duration" dataIndex="duration" width="100">
+          <template #default="text">
+            {{formatDuration(text) }}
           </template>
-        </el-table-column>
-        <el-table-column :label="$l.lecturer" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.lecturer==1?$l.externalLecturer:$l.internalLecturer}}
+        </a-table-column>
+        <a-table-column :title="$l.lecturer" dataIndex="lecturer" width="100" :ellipsis="true"">
+          <template #default="text">
+            {{text==1?$l.externalLecturer:$l.internalLecturer}}
           </template>
-        </el-table-column>
-        <!-- <el-table-column label="版本" prop="version"></el-table-column> -->
+        </a-table-column>
+        <!-- <a-table-column title="版本" dataIndex="version"></a-table-column> -->
 
-        <el-table-column :label="$l.courseType" width="100px" fixed="right">
-          <template slot-scope="scope">
-            {{scope.row.is_public==1?$l.public:$l.private}}
+        <a-table-column :title="$l.courseType" dataIndex="is_public" width="100" fixed="right">
+          <template #default="text">
+            {{text==1?$l.public:$l.private}}
           </template>
-        </el-table-column>
+        </a-table-column>
 
-        <!-- <el-table-column label="$l.status" prop="is_valid"></el-table-column> -->
-        <el-table-column :label="$c.operation" width="150px" fixed="right">
-          <template slot-scope="scope">
-            <el-button v-if="rightCheck(scope.row)==false" type='text' style="color: #67c23a;"
-              @click="modifyCourseBinding(scope.row)">{{$l.check}}</el-button>
-            <el-button v-else-if="rightCheck(scope.row)==true" type='text' style="color: #409fee;"
-              @click="modifyCourseBinding(scope.row)">{{$l.manage}}</el-button>
-            <el-button v-if="scope.row.is_valid=='N'&&rightCheck(scope.row)" type='text' style="color: seagreen;"
-              @click="modifyCourseStatus(scope.row)">$c.enable</el-button>
-            <el-button v-if="scope.row.is_valid=='Y'&&rightCheck(scope.row)" type='text' style="color: red;"
-              @click="modifyCourseStatus(scope.row)">{{$c.disable}}</el-button>
+        <!-- <a-table-column title="$l.status" dataIndex="is_valid"></a-table-column> -->
+        <a-table-column :title="$c.operation" width="150" fixed="right">
+          <template #default="text, record">
+            <a-button v-if="rightCheck(record)==false" type="link" style="color: #67c23a;"
+              @click="modifyCourseBinding(record)">{{$l.check}}</a-button>
+            <a-button v-else-if="rightCheck(record)==true" type="link" style="color: #409fee;"
+              @click="modifyCourseBinding(record)">{{$l.manage}}</a-button>
+            <a-button v-if="record.is_valid=='N'&&rightCheck(record)" type="link" style="color: seagreen;"
+              @click="modifyCourseStatus(record)">{{$c.enable}}</a-button>
+            <a-button v-if="record.is_valid=='Y'&&rightCheck(record)" type="link" style="color: red;"
+              @click="modifyCourseStatus(record)">{{$c.disable}}</a-button>
           </template>
-        </el-table-column>
-      </el-table>
+        </a-table-column>
+      </a-table>
     </div>
 
     <div class="lessonList-pagenation">
-      <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
-        :current-page="courseObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="courseObj.query.pageSize"
-        layout="total, sizes, prev, pager, next, jumper" :total="courseObj.total" style="float: right;">
-      </el-pagination>
+      <a-pagination @change="handlePageChange" @showSizeChange="handleSizeChange"
+        :current="courseObj.query.page" :pageSizeOptions="['5','10', '15', '30', '50','100']" 
+        :pageSize="courseObj.query.pageSize" show-size-changer show-quick-jumper
+        :total="courseObj.total" style="float: right;" />
     </div>
   </div>
 </template>
@@ -735,6 +744,13 @@
     },
     data() {
       return {
+        // Ant Design table selection support
+        selectedRowKeys: [],
+        questionSelectedRowKeys: [],
+        videoSelectedRowKeys: [],
+        examSelectedRowKeys: [],
+        attachmentSelectedRowKeys: [],
+        
         initSortableObj: {
           video: false,
           exam: false
