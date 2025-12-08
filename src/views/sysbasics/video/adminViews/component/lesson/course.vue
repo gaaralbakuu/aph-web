@@ -458,7 +458,7 @@
             </a-form>
           </a-tab-pane>
           <a-tab-pane :tab="$l.courseVideo" key='video'>
-            <div style="float: right;margin-bottom: 10px;" v-show="rightCheck(courseObj.newForm)">
+            <div style="float: right;margin-bottom: 10px; position: relative; z-index: 10;" v-show="rightCheck(courseObj.newForm)">
               <a-button type="primary" @click="showObj.selectVideo = true">{{$l.addVideo}}</a-button>
               <a-button type="primary" danger @click="removeMultipleVideo">{{$l.multipleRemove}}</a-button>
             </div>
@@ -515,7 +515,7 @@
           </a-tab-pane>
 
           <a-tab-pane :tab="$l.courseExam" key="exam">
-            <div style="float: right;margin-bottom: 10px;" v-show="rightCheck(courseObj.newForm)">
+            <div style="float: right;margin-bottom: 10px; position: relative; z-index: 10;" v-show="rightCheck(courseObj.newForm)">
               <a-button type="primary" @click="showObj.selectExam = true">{{$l.addExam}}</a-button>
               <a-button type="primary" danger @click="removeMultipleExam">{{$l.multipleRemove}}</a-button>
             </div>
@@ -552,7 +552,7 @@
           </a-tab-pane>
 
           <a-tab-pane :tab="$l.courseAttachments" key="attachment">
-            <div style="float: right;margin-bottom: 10px;" v-show="rightCheck(courseObj.newForm)">
+            <div style="float: right;margin-bottom: 10px; position: relative; z-index: 10;" v-show="rightCheck(courseObj.newForm)">
               <a-button type="primary" ghost @click="attachmentWarning">{{$l.importantNotice}}</a-button>
               <a-button :disabled='courseObj.newForm.id==""' type="primary"
                 @click="attachmentSelect">{{$l.addAttachment}}</a-button>
