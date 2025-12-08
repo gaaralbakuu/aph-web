@@ -1,175 +1,150 @@
 <template>
   <div class="recommendation-container">
     <div class="components">
-      <el-drawer class="drawer-container" :visible.sync="showObj.topicShow" :wrapperClosable='false' size="50%">
-        <div slot='title' class="title">{{ $l.editTopic }}</div>
+      <a-drawer class="drawer-container" :visible="showObj.topicShow" @close="showObj.topicShow = false" :maskClosable="false" width="50%">
+        <div slot="title" class="title">{{ $l.editTopic }}</div>
         <div class="form-container">
-          <el-form label-width="80px" size="medium">
-            <el-form-item :label="$l.selectCollege">
-              <el-select v-model="topicObj.form.college_id" :placeholder="$l.selectCollege" style="width: 100%;">
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.selectType">
-              <el-select v-model="topicObj.form.type" :placeholder="$l.selectType" style="width: 100%;">
-                <el-option v-for="i in publicCodeObj.type" :key="i.value" :label="i.label" :value="i.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.selectPage">
-              <el-select v-model="topicObj.form.page" :placeholder="$l.selectPage" style="width: 100%;">
-                <el-option :label="$l.notShow" value=""></el-option>
-                <el-option v-for="i in publicCodeObj.page" :key="i.value" :label="i.label" :value="i.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.titleZh">
-              <el-input v-model="topicObj.form.title_zh"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.titleTw">
-              <el-input v-model="topicObj.form.title_tw"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.titleEn">
-              <el-input v-model="topicObj.form.title_en"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.titleVi">
-              <el-input v-model="topicObj.form.title_vi"></el-input>
-            </el-form-item>
-          </el-form>
+          <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+            <a-form-item :label="$l.selectCollege">
+              <a-select v-model:value="topicObj.form.college_id" :placeholder="$l.selectCollege" style="width: 100%;">
+                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :label="$l.selectType">
+              <a-select v-model:value="topicObj.form.type" :placeholder="$l.selectType" style="width: 100%;">
+                <a-select-option v-for="i in publicCodeObj.type" :key="i.value" :value="i.value">{{ i.label }}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :label="$l.selectPage">
+              <a-select v-model:value="topicObj.form.page" :placeholder="$l.selectPage" style="width: 100%;">
+                <a-select-option :label="$l.notShow" value="">{{ $l.notShow }}</a-select-option>
+                <a-select-option v-for="i in publicCodeObj.page" :key="i.value" :value="i.value">{{ i.label }}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :label="$l.titleZh">
+              <a-input v-model:value="topicObj.form.title_zh" />
+            </a-form-item>
+            <a-form-item :label="$l.titleTw">
+              <a-input v-model:value="topicObj.form.title_tw" />
+            </a-form-item>
+            <a-form-item :label="$l.titleEn">
+              <a-input v-model:value="topicObj.form.title_en" />
+            </a-form-item>
+            <a-form-item :label="$l.titleVi">
+              <a-input v-model:value="topicObj.form.title_vi" />
+            </a-form-item>
+          </a-form>
         </div>
         <div class="buttonBar">
-          <el-button type="primary" @click="submitTopic">{{ $l.submit }}</el-button>
-          <el-button type="danger" @click="showObj.topicShow = false">{{ $l.cancel }}</el-button>
+          <a-button type="primary" @click="submitTopic">{{ $l.submit }}</a-button>
+          <a-button danger @click="showObj.topicShow = false">{{ $l.cancel }}</a-button>
         </div>
-      </el-drawer>
+      </a-drawer>
 
-      <el-dialog :visible.sync="showObj.courseDialog" @open='getCourseList' width="60%"
-        :title="$l.addCourseDialogTitle">
+      <a-modal :visible="showObj.courseDialog" @cancel="showObj.courseDialog = false" @ok="showObj.courseDialog = false" width="60%"
+        :title="$l.addCourseDialogTitle" :afterClose="getCourseList">
         <div class="CourseSelect-dialog">
-          <el-form inline>
-            <el-form-item :label="$l.selectCollege">
-              <el-select v-model="courseObj.query.college_id" :placeholder="$l.publicCourseTip" clearable>
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.keywordSearch">
-              <el-input :placeholder="$l.keywordSearch" v-model="courseObj.query.name" clearable @clear='getCourseList'
-                @keyup.native.enter="getCourseList"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.courseType">
-              <el-select v-model="courseObj.query.is_public" :disabled="!isAdmin&&courseObj.query.college_id==''"
+          <a-form layout="inline">
+            <a-form-item :label="$l.selectCollege">
+              <a-select v-model:value="courseObj.query.college_id" :placeholder="$l.publicCourseTip" allowClear>
+                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :label="$l.keywordSearch">
+              <a-input :placeholder="$l.keywordSearch" v-model:value="courseObj.query.name" allowClear @change="getCourseList"
+                @pressEnter="getCourseList" />
+            </a-form-item>
+            <a-form-item :label="$l.courseType">
+              <a-select v-model:value="courseObj.query.is_public" :disabled="!isAdmin&&courseObj.query.college_id==''"
                 style="width: 100px;" @change="getCourseList">
-                <el-option :label="$l.all" value=""></el-option>
-                <el-option :label="$l.public" :value="1"></el-option>
-                <el-option :label="$l.private" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="getCourseList">{{ $l.search }}</el-button>
-              <el-button type="success" :disabled="courseObj.selectedList.length==0"
-                @click="addMultipleCourseToTopic">{{ $l.batchAdd }}</el-button>
-            </el-form-item>
-          </el-form>
+                <a-select-option value="">{{ $l.all }}</a-select-option>
+                <a-select-option :value="1">{{ $l.public }}</a-select-option>
+                <a-select-option :value="0">{{ $l.private }}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" @click="getCourseList">{{ $l.search }}</a-button>
+              <a-button type="primary" :disabled="courseObj.selectedList.length==0"
+                @click="addMultipleCourseToTopic" style="background-color: #67c23a; border-color: #67c23a;">{{ $l.batchAdd }}</a-button>
+            </a-form-item>
+          </a-form>
           <a-table ref="toBeAddedTable" class='video-table' :data-source="courseObj.list" :columns="courseColumns" :row-key="record => record.id"
             :row-selection="{ selectedRowKeys: courseObj.selectedList.map(i => i.id), onChange: handleSelectionChange }"
-            bordered :scroll="{ y: 500 }" :pagination="false" :customRow="customCourseRow"></a-table>
-          <el-pagination @size-change="handleCourseSizeChange" @current-change="handleCoursePageChange"
-            :current-page="courseObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
-            :page-size="courseObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper"
-            :total="courseObj.total" style="float: right;">
-          </el-pagination>
+            bordered :scroll="{ y: 500 }" :pagination="false">
+          </a-table>
+          <a-pagination
+            v-model:current="courseObj.query.page"
+            v-model:page-size="courseObj.query.pageSize"
+            :page-size-options="['5','10', '15', '30', '50','100']"
+            :total="courseObj.total"
+            show-size-changer
+            show-quick-jumper
+            :show-total="total => `Total ${total} items`"
+            @change="handleCoursePageChange"
+            @showSizeChange="handleCourseSizeChange"
+            style="float: right; margin-top: 16px;" />
         </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button style="width: 8em;" type="primary" plain
-            @click="showObj.courseDialog = false">{{ $l.close }}</el-button>
-        </div>
-      </el-dialog>
+        <template #footer>
+          <a-button style="width: 8em;" type="primary"
+            @click="showObj.courseDialog = false">{{ $l.close }}</a-button>
+        </template>
+      </a-modal>
     </div>
     <div class="recommendation-filter">
-      <el-form inline>
-        <el-form-item :label="$l.selectManageCollege">
-          <el-select v-model="topicObj.query.college_id" :placeholder="$l.selectManageCollege" @change="getTopicList"
-            :clearable="isAdmin">
-            <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-              :value="i.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$l.displayPage">
-          <el-select v-model="topicObj.query.web_page" :placeholder="$l.selectPage" @change="getTopicList"
+      <a-form layout="inline">
+        <a-form-item :label="$l.selectManageCollege">
+          <a-select v-model:value="topicObj.query.college_id" :placeholder="$l.selectManageCollege" @change="getTopicList"
+            :allowClear="isAdmin">
+            <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item :label="$l.displayPage">
+          <a-select v-model:value="topicObj.query.web_page" :placeholder="$l.selectPage" @change="getTopicList"
             style="width: 100px;">
-            <el-option :label="$l.all" value=""></el-option>
-            <el-option v-for="i in publicCodeObj.page" :key="i.value" :label="i.label" :value="i.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$l.status">
-          <el-select v-model="topicObj.query.is_valid" style="width: 100px;">
-            <el-option :label="$l.all" value=""></el-option>
-            <el-option :label="$l.enable" value="Y"></el-option>
-            <el-option :label="$l.disable" value="N"></el-option>
-          </el-select>
-          <el-button type="success" @click="getTopicList" style="margin-left:20px ;">{{ $l.search }}</el-button>
-          <el-button type="primary" @click="addTopic" style="margin-left:20px ;">{{ $l.newTopic }}</el-button>
-        </el-form-item>
-      </el-form>
+            <a-select-option value="">{{ $l.all }}</a-select-option>
+            <a-select-option v-for="i in publicCodeObj.page" :key="i.value" :value="i.value">{{ i.label }}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item :label="$l.status">
+          <a-select v-model:value="topicObj.query.is_valid" style="width: 100px;">
+            <a-select-option value="">{{ $l.all }}</a-select-option>
+            <a-select-option value="Y">{{ $l.enable }}</a-select-option>
+            <a-select-option value="N">{{ $l.disable }}</a-select-option>
+          </a-select>
+          <a-button type="primary" @click="getTopicList" style="margin-left:20px; background-color: #67c23a; border-color: #67c23a;">{{ $l.search }}</a-button>
+          <a-button type="primary" @click="addTopic" style="margin-left:20px ;">{{ $l.newTopic }}</a-button>
+        </a-form-item>
+      </a-form>
 
       <div v-show="detailObj.currentId" style="height: 51px;">
-        <el-button v-show="detailObj.list.length!=topicObj.form.detail.length" type="success" style="margin-left:20px ;"
-          @click="updateDetailList">{{ $l.updateList }}</el-button>
-        <el-button type="primary" @click="showObj.courseDialog = true"
-          style="margin-left:20px ;">{{ $l.bindCourse }}</el-button>
+        <a-button v-show="detailObj.list.length!=topicObj.form.detail.length" type="primary" style="margin-left:20px; background-color: #67c23a; border-color: #67c23a;"
+          @click="updateDetailList">{{ $l.updateList }}</a-button>
+        <a-button type="primary" @click="showObj.courseDialog = true"
+          style="margin-left:20px ;">{{ $l.bindCourse }}</a-button>
       </div>
     </div>
 
     <div class="recommendation-pageBody">
       <div style="width: 38%;">
-        <el-table ref="topicTable" :data="topicObj.list" row-key='id' tooltip-effect="dark" highlight-current-row
-          highlight-selection-row stripe border @row-click="getDetailList">
-          <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
-          <el-table-column :label="$l.topicName" prop="title_label"></el-table-column>
-          <el-table-column :label="$l.lastModifier" prop="modify_user"></el-table-column>
-          <el-table-column :label="$l.displayPage" prop="page"></el-table-column>
-          <el-table-column :label="$l.isEnabled" prop="is_valid" width="80"></el-table-column>
-          <el-table-column :label="$l.action" width="120" fixed="right">
-            <template slot-scope="scope">
-              <el-button type='text' @click="editTopic(scope.row)">{{ $l.edit }}</el-button>
-              <el-button v-show="scope.row.is_valid=='Y'" class='text-red' type='text'
-                @click="modifyTopicStatus(scope.row)">{{ $l.disableAction }}</el-button>
-              <el-button v-show="scope.row.is_valid=='N'" class='text-green' type='text'
-                @click="modifyTopicStatus(scope.row)">{{ $l.enableAction }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
-          :current-page="topicObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="topicObj.query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper" :total="topicObj.total" style="float: right;">
-        </el-pagination>
+        <a-table ref="topicTable" :data-source="topicObj.list" :columns="topicColumns" :row-key="record => record.id"
+          bordered :pagination="false" :customRow="customTopicRow">
+        </a-table>
+        <a-pagination
+          v-model:current="topicObj.query.page"
+          v-model:page-size="topicObj.query.pageSize"
+          :page-size-options="['5','10', '15', '30', '50','100']"
+          :total="topicObj.total"
+          show-size-changer
+          show-quick-jumper
+          :show-total="total => `Total ${total} items`"
+          @change="handlePageChange"
+          @showSizeChange="handleSizeChange"
+          style="float: right; margin-top: 16px;" />
       </div>
       <div style="width: 60%;">
-        <el-table ref="topicTable" :data="detailObj.list" row-key='course_id' tooltip-effect="dark"
-          highlight-current-row highlight-selection-row stripe border>
-          <el-table-column type="index" width="50" :label='$c.ordinal'></el-table-column>
-          <el-table-column prop="thumbnail_path" :label="$l.cover">
-            <template slot-scope="scope">
-              <div class="img" v-if="scope.row.thumbnail_path">
-                <img class="auto-img" :src="$api.videoServer+'/'+ scope.row.thumbnail_path" />
-              </div>
-              <div v-else style="text-align: center;width: 100%;">
-                <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                <div>{{ $l.noCover }}</div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$l.courseName" prop="course_name_label"></el-table-column>
-          <el-table-column :label="$l.courseDescription" prop="description"></el-table-column>
-          <el-table-column :label="$l.isEnabled" prop="is_valid" width="80"></el-table-column>
-          <el-table-column :label="$l.action" width="120" fixed="right">
-            <template slot-scope="scope">
-              <el-button class="text-green" type='text'
-                @click="toPlay(scope.row.course_primary_id)">{{ $l.preview }}</el-button>
-              <el-button class='text-red' type='text' @click="deleteDetail(scope.$index)">{{ $l.remove }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <a-table ref="detailTable" :data-source="detailObj.list" :columns="detailColumns" :row-key="record => record.course_id"
+          bordered :pagination="false">
+        </a-table>
       </div>
     </div>
   </div>
@@ -183,7 +158,6 @@
   import {
     _
   } from '@/views/_common'
-  
   export default {
     name: 'videoAdminTopic',
     data() {
@@ -265,6 +239,63 @@
     computed: {
       ...mapGetters(['isAdmin']),
       
+      topicColumns() {
+        return [
+          {
+            title: this.$c.ordinal,
+            key: 'index',
+            width: 50,
+            customRender: ({ index }) => (this.topicObj.query.page - 1) * this.topicObj.query.pageSize + index + 1
+          },
+          {
+            title: this.$l.topicName,
+            dataIndex: 'title_label',
+            key: 'title_label'
+          },
+          {
+            title: this.$l.lastModifier,
+            dataIndex: 'modify_user',
+            key: 'modify_user'
+          },
+          {
+            title: this.$l.displayPage,
+            dataIndex: 'page',
+            key: 'page'
+          },
+          {
+            title: this.$l.isEnabled,
+            dataIndex: 'is_valid',
+            key: 'is_valid',
+            width: 80
+          },
+          {
+            title: this.$l.action,
+            key: 'action',
+            width: 120,
+            fixed: 'right',
+            customRender: ({ record }) => {
+              return (
+                <div>
+                  <a-button type="link" onClick={(e) => { e.stopPropagation(); this.editTopic(record); }}>
+                    {this.$l.edit}
+                  </a-button>
+                  {record.is_valid === 'Y' && (
+                    <a-button type="link" danger onClick={(e) => { e.stopPropagation(); this.modifyTopicStatus(record); }}>
+                      {this.$l.disableAction}
+                    </a-button>
+                  )}
+                  {record.is_valid === 'N' && (
+                    <a-button type="link" style="color: #67c23a;" onClick={(e) => { e.stopPropagation(); this.modifyTopicStatus(record); }}>
+                      {this.$l.enableAction}
+                    </a-button>
+                  )}
+                </div>
+              )
+            }
+          }
+        ]
+      },
+      
       courseColumns() {
         return [
           {
@@ -278,14 +309,18 @@
             key: 'thumbnail_path',
             customRender: ({ record }) => {
               if (record.thumbnail_path) {
-                return h('div', { class: 'img' }, [
-                  h('img', { class: 'auto-img', src: this.$api.videoServer + '/' + record.thumbnail_path })
-                ])
+                return (
+                  <div class="img">
+                    <img class="auto-img" src={this.$api.videoServer + '/' + record.thumbnail_path} />
+                  </div>
+                )
               } else {
-                return h('div', { style: 'text-align: center;width: 100%;' }, [
-                  h('span', { style: 'font-size: 60px; color: #ccc;' }, '🖼️'),
-                  h('div', {}, this.$l.noCover)
-                ])
+                return (
+                  <div style="text-align: center;width: 100%;">
+                    <picture-outlined style="font-size: 60px;" />
+                    <div>{this.$l.noCover}</div>
+                  </div>
+                )
               }
             }
           },
@@ -309,22 +344,79 @@
             key: 'action',
             width: 120,
             fixed: 'right',
-            customRender: ({ record }) => h('div', {}, [
-              h('a', { 
-                class: 'ant-btn-link', 
-                style: 'margin-right: 8px;', 
-                onClick: () => this.editTopic(record) 
-              }, this.$l.edit),
-              record.is_valid === 'Y' ? h('a', { 
-                class: 'ant-btn-link', 
-                style: 'color: #ff4d4f;', 
-                onClick: () => this.modifyTopicStatus(record) 
-              }, this.$l.disableAction) : h('a', { 
-                class: 'ant-btn-link', 
-                style: 'color: #52c41a;', 
-                onClick: () => this.modifyTopicStatus(record) 
-              }, this.$l.enableAction)
-            ])
+            customRender: ({ record }) => (
+              <div>
+                <a-button type="link" style="color: #67c23a;" onClick={() => this.toPlay(record.id)}>
+                  {this.$l.preview}
+                </a-button>
+                <a-button type="link" onClick={() => this.addSingleCourseToTopic(record)}>
+                  {this.$l.select}
+                </a-button>
+              </div>
+            )
+          }
+        ]
+      },
+      
+      detailColumns() {
+        return [
+          {
+            title: this.$c.ordinal,
+            key: 'index',
+            width: 50,
+            customRender: ({ index }) => index + 1
+          },
+          {
+            title: this.$l.cover,
+            key: 'thumbnail_path',
+            customRender: ({ record }) => {
+              if (record.thumbnail_path) {
+                return (
+                  <div class="img">
+                    <img class="auto-img" src={this.$api.videoServer + '/' + record.thumbnail_path} />
+                  </div>
+                )
+              } else {
+                return (
+                  <div style="text-align: center;width: 100%;">
+                    <picture-outlined style="font-size: 60px;" />
+                    <div>{this.$l.noCover}</div>
+                  </div>
+                )
+              }
+            }
+          },
+          {
+            title: this.$l.courseName,
+            dataIndex: 'course_name_label',
+            key: 'course_name_label'
+          },
+          {
+            title: this.$l.courseDescription,
+            dataIndex: 'description',
+            key: 'description'
+          },
+          {
+            title: this.$l.isEnabled,
+            dataIndex: 'is_valid',
+            key: 'is_valid',
+            width: 80
+          },
+          {
+            title: this.$l.action,
+            key: 'action',
+            width: 120,
+            fixed: 'right',
+            customRender: ({ record, index }) => (
+              <div>
+                <a-button type="link" style="color: #67c23a;" onClick={() => this.toPlay(record.course_primary_id)}>
+                  {this.$l.preview}
+                </a-button>
+                <a-button type="link" danger onClick={() => this.deleteDetail(index)}>
+                  {this.$l.remove}
+                </a-button>
+              </div>
+            )
           }
         ]
       }
@@ -346,17 +438,10 @@
 
 
     methods: {
-      customCourseRow(record) {
+      customTopicRow(record) {
         return {
           onClick: () => {
-            const isSelected = this.courseObj.selectedList.some(item => item.id === record.id)
-            let newSelectedList
-            if (isSelected) {
-              newSelectedList = this.courseObj.selectedList.filter(item => item.id !== record.id)
-            } else {
-              newSelectedList = [...this.courseObj.selectedList, record]
-            }
-            this.courseObj.selectedList = newSelectedList
+            this.getDetailList(record)
           }
         }
       },

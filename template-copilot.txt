@@ -2,6 +2,8 @@
 
 * thực hiện chuyển đổi các tag của el- sang antdesign
 - các a-drawer sử dụng thì dùng :visible thay vì v-model:open và @close="showObj.xxx = false"
+- không chuyển đổi el-tree
+- mấy cái value="" thì đừng dùng :value=""
 
 
 * chuyển đổi API options thành composition API (script setup) cho tôi, thực hiện sử dụng tanstack query
