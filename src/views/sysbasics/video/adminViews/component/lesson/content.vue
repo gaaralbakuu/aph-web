@@ -228,8 +228,8 @@
 
     <div class="flex-1 flex flex-col overflow-hidden">
       <div class="flex justify-between border-b border-gray-200 px-4 py-3 h-16">
-        <div>
-          <a-space>
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2">
             <div>
               <span class="mr-2">{{ l.college }}</span>
               <a-select v-model:value="videoListObj.query.college_id" :placeholder="l.notAdmin" style="width: 150px" clearable allow-clear>
@@ -258,9 +258,9 @@
               </a-select>
             </div>
             <a-button type="primary" @click="getVideoList">{{ l.search }}</a-button>
-          </a-space>
+          </div>
         </div>
-        <div>
+        <div class="flex items-center gap-4">
           <a-button type="primary" @click="uploadNewVideo">{{ l.uploadVideo }}</a-button>
         </div>
       </div>
@@ -320,10 +320,10 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col items-center justify-center gap-2 px-4 py-4 border-l border-gray-100 bg-gray-50 group">
-                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors" @click="beforeModifyVideo(i)" title="编辑">
+                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-200 transition-colors" @click="beforeModifyVideo(i)" title="编辑">
                     <i class="el-icon-edit text-lg"></i>
                   </button>
-                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors" @click="deleteVideo(i)" title="删除">
+                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-200 transition-colors" @click="deleteVideo(i)" title="删除">
                     <i class="el-icon-delete text-lg"></i>
                   </button>
                 </div>

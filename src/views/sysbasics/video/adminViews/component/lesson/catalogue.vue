@@ -331,7 +331,7 @@ watch(() => collegeListData.value, (newVal) => {
 })
 
 const { data: catalogListData, refetch: refetchCatalog } = useQuery({
-  queryKey: ['catalogList', () => catalogObj.query],
+  queryKey: ['catalogList', catalogObj.query],
   queryFn: () => {
     if (catalogObj.query.college_id) {
       return $request(api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', catalogObj.query)
@@ -349,12 +349,11 @@ watch(() => catalogListData.value, (newVal) => {
 })
 
 const { data: catalogListByIdData, refetch: refetchCatalogById } = useQuery({
-  queryKey: ['catalogListById', () => ({ id: catalogObj.form.college_id, is_valid: catalogObj.query.is_valid })],
+  queryKey: ['catalogListById', catalogObj.form.college_id, catalogObj.query.is_valid],
   queryFn: ({ queryKey }) => {
-    const [, params] = queryKey
     return $request(api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', {
-      college_id: params.id,
-      is_valid: params.is_valid
+      college_id: catalogObj.form.college_id,
+      is_valid: catalogObj.query.is_valid
     })
   },
   enabled: false
@@ -367,7 +366,7 @@ watch(() => catalogListByIdData.value, (newVal) => {
 })
 
 const { data: courseListData, refetch: refetchCourseList } = useQuery({
-  queryKey: ['courseList', () => courseObj.query],
+  queryKey: ['courseList', courseObj.query],
   queryFn: () => {
     courseObj.query.is_public = ""
     if (!isAdmin.value) {
@@ -388,13 +387,12 @@ watch(() => courseListData.value, (newVal) => {
 })
 
 const { data: courseListByIdData, refetch: refetchCourseListById } = useQuery({
-  queryKey: ['courseListById', () => ({ catalog_id: courseObj.catalog_id })],
-  queryFn: ({ queryKey }) => {
-    const [, params] = queryKey
+  queryKey: ['courseListById', courseObj.catalog_id],
+  queryFn: () => {
     return $request(api.videoServer + '/Video/VideoCourseCatalog/getCourseList', {
       page: 1,
       pageSize: 10,
-      catalog_id: params.catalog_id,
+      catalog_id: courseObj.catalog_id,
       is_his: 0
     }, 'post')
   },
@@ -458,8 +456,7 @@ const deleteCourseFromCatalogMutation = useMutation({
 
 // Computed
 const isAdmin = computed(() => {
-  // Assuming some logic to determine if admin
-  return true // Placeholder
+  return store.getters.roles && store.getters.roles.includes('admin')
 })
 
 // Watchers
@@ -472,6 +469,33 @@ watch(filterCatalogText, (val) => {
 })
 
 // Functions
+const getCollegeList = () => {
+  refetchCollege()
+}
+
+const getCatalogList = () => {
+  if (catalogObj.query.college_id) {
+    refetchCatalog()
+  } else {
+    showObj.catalog_show = false
+  }
+}
+
+const getCatalogListById = (id) => {
+  refetchCatalogById()
+}
+
+const getCourseList = () => {
+  refetchCourseList()
+}
+
+const getCourseListById = (id) => {
+  if (id) {
+    courseObj.catalog_id = id
+  }
+  refetchCourseListById()
+}
+
 const collegeChange = (v) => {
   catalogObj.form.pid = ''
   refetchCatalogById()
@@ -626,394 +650,6 @@ const toggleCourseStatus = (data) => {
 onMounted(() => {
   refetchCollege()
 })
-</script>
-    data() {
-      return {
-        api: api,
-        multipleSelectionObj: {
-          toBeAdded: [],
-          toBeRemoved: []
-        },
-        showObj: {
-          org_show: false,
-          catalog_show: false,
-          course_show: false,
-          selectCourse: false
-        },
-        filterOrgText: '',
-        filterCatalogText: '',
-
-        publicCodeObj: {
-          collegeList: []
-        },
-        catalogObj: {
-          cascaderProps: {
-            expandTrigger: 'hover',
-            checkStrictly: true,
-            emitPath: false,
-            value: 'id',
-            label: 'name_label'
-          },
-          data: [],
-          list: [],
-          query: {
-            college_id: "",
-            is_valid: ''
-          },
-          form: {
-            id: "",
-            pid: "",
-            college_id: "",
-            name_zh: "",
-            name_en: "",
-            name_tw: "",
-            name_vi: "",
-            sort: 0
-          },
-
-        },
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        courseObj: {
-          currentIndex: '',
-          catalog_id: '',
-          query: {
-            page: 1,
-            pageSize: 10,
-            college_id: "",
-            is_public: "",
-            // catalog_id: "",
-            name: "",
-            is_his: 0
-          },
-          form: [],
-          total: 0,
-          list: [],
-          courseList: []
-        }
-      };
-    },
-    watch: {
-      filterOrgText(val) {
-        this.$refs.orgTree.filter(val);
-      },
-
-      filterCatalogText(val) {
-        this.$refs.catalogTree.filter(val);
-      }
-    },
-
-    methods: {
-      collegeChange(v) {
-        this.catalogObj.form.pid = ''
-        this.getCatalogListById(v)
-      },
-
-      clickCollege(id) {
-        this.catalogObj.query.college_id = id
-        this.getCatalogList()
-      },
-
-      handleSelectionChangeToBeAdded(val) {
-        this.multipleSelectionObj.toBeAdded = val
-      },
-
-      handleSelectionChangeToBeRemoved(val) {
-        this.multipleSelectionObj.toBeRemoved = val
-      },
-
-      multipleAdd() {
-        let allVideoArray = this.courseObj.list.concat(this.courseObj.form)
-        let videoIdSet = new Set(allVideoArray.map(i => i.id))
-        this.multipleSelectionObj.toBeAdded.forEach(i => {
-          if (!videoIdSet.has(i.id)) {
-            this.courseObj.form.push(i)
-          }
-        })
-        this.$refs.toBeAddedTable.clearSelection();
-        this.$message({
-          type: 'success',
-          message: this.$l.addToListSuccess
-        })
-      },
-
-      multipleRemove() {
-        let idsToDelete = this.multipleSelectionObj.toBeRemoved.map(item => item.id); // 假设每行有一个唯一的id属性
-        this.courseObj.form = this.courseObj.form.filter(item => !idsToDelete.includes(item.id));
-        // 如果有需要，还可以重置选中状态
-        this.$refs.toBeRemovedTable.clearSelection();
-      },
-
-
-      filterOrg(value, data) {
-        if (!value) return true;
-        return data.name_label.indexOf(value) !== -1;
-      },
-
-      filterCatalog(value, data) {
-        if (!value) return true;
-        return data.name_label.indexOf(value) !== -1;
-      },
-
-
-
-      getCollegeList() {
-        // 根据页面路由获取管理学院
-        this.$request(this.$api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
-            resource_path: this.$route.path
-          })
-          .then((r) => {
-            this.publicCodeObj.collegeList = r.data
-          })
-          .catch((e) => {
-            this.$message.error(e.message)
-          })
-      },
-
-      getCatalogList() {
-        if (this.catalogObj.query.college_id) {
-          this.$request(this.api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', this.catalogObj.query)
-            .then(r => {
-              this.catalogObj.data = r.data
-              this.showObj.catalog_show = false
-            })
-        } else {
-          this.showObj.catalog_show = false
-        }
-      },
-
-      getCatalogListById(id) {
-        this.$request(this.api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', {
-            college_id: id,
-            is_valid: this.catalogObj.query.is_valid
-          })
-          .then(r => {
-            this.catalogObj.list = r.data
-          })
-      },
-
-      async addCatalog(data) {
-        if (this.catalogObj.list.length == 0) {
-          await this.getCatalogListById(data.college_id)
-        }
-        this.catalogObj.form = Object.assign(this.catalogObj.form, {
-          id: "",
-          pid: data ? data.id : "",
-          college_id: data ? data.college_id : "",
-          name_zh: "",
-          name_en: "",
-          name_tw: "",
-          name_vi: "",
-        })
-        this.showObj.catalog_show = true
-        this.$forceUpdate()
-      },
-
-      editCatalog(data) {
-        this.catalogObj.form = Object.assign(this.catalogObj.form, data)
-        this.showObj.catalog_show = true
-      },
-
-      modifyCatalogStatus(i) {
-        let msg
-        let status
-        if (i.is_valid == 'Y') {
-          msg = this.$l.disable + '《' + i.name_label + '》？' + this.confirmTips
-          status = 'N'
-        } else {
-          msg = this.$l.enable + '《' + i.name_label + '》？' + this.confirmTips
-          status = 'Y'
-        }
-        this.$prompt(msg, {
-            type: 'warning',
-            inputPattern: /^[Y]{1}$/i,
-            inputErrorMessage: this.$l.inputErrorMessage,
-            confirmButtonText: this.$l.confirmText,
-            cancelButtonText: this.$l.cancelText
-          }).then(() => {
-            this.$request(this.api.baseUrl + '/Video/VideoCourseCatalog/changeCatalogIsValid', {
-              key: i.id,
-              value: status,
-              remark: ''
-
-            }, 'post').then(r => {
-              this.$message({
-                type: 'success',
-                message: this.$l.oprateSuccess
-              })
-              this.getCatalogList()
-            })
-          })
-          .catch(() => {
-            console.log('取消操作');
-          })
-      },
-
-      submitCatalog() {
-        if (!this.catalogObj.form.college_id) {
-          return this.$message.error(this.$l.plsSelectBelongCollege)
-        }
-
-        if (!this.catalogObj.form.name_zh) {
-          return this.$message.error(this.$l.plsInputName_zh)
-        }
-
-        this.$request(this.api.baseUrl + '/Video/VideoCourseCatalog/addOrModifyCatalog', this.catalogObj.form, 'post')
-          .then(r => {
-            if (r.httpCode == 200) {
-              this.$message({
-                type: 'success',
-                message: this.$l.oprateSuccess
-              })
-              let timer = setTimeout(() => {
-                this.showObj.catalog_show = false
-                this.getCatalogList()
-                clearTimeout(timer)
-              }, 1500)
-            }
-          })
-          .catch(e => {
-            console.log(e);
-          })
-      },
-
-      getCourseList() {
-        this.courseObj.query.is_public = ""
-        if (!this.isAdmin) {
-          if (this.courseObj.query.college_id == '') {
-            this.courseObj.query.is_public = 1
-          }
-        }
-        this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList', this.courseObj.query, 'post')
-          .then(r => {
-            this.courseObj.courseList = r.data.list
-            this.courseObj.total = r.data.total
-            // this.showObj.course_show = true
-          })
-      },
-
-      getCourseListById(id) {
-        if (id) {
-          this.courseObj.catalog_id = id
-        }
-        this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList', {
-            page: 1,
-            pageSize: 10,
-            catalog_id: id,
-            is_his: 0
-          }, 'post')
-          .then(r => {
-            this.courseObj.list = r.data.list
-            // this.courseObj.total = r.data.total
-            this.showObj.course_show = true
-          })
-      },
-
-      addCourse(data) {
-        if (this.courseObj.list.some(i => i.id === data.id)) {
-          this.$message.error(this.$l.alreadyExistedInCatalogue)
-        } else {
-          if (this.courseObj.form.some(i => i.id === data.id)) {
-            this.$message.error(this.$l.alreadyExistedInToBeAddedList)
-          } else {
-            this.courseObj.form.push(data)
-          }
-        }
-      },
-
-      removeCourse(i) {
-        this.courseObj.form.splice(i, 1)
-      },
-
-      beforeOpenCourseDialog() {
-        this.courseObj.form = []
-        this.showObj.selectCourse = true
-      },
-
-      bindCourseToCatalog() {
-        let postData = []
-        this.courseObj.form.forEach(i => {
-          postData.push({
-            id: "",
-            catalog_id: this.courseObj.catalog_id,
-            course_id: i.course_id
-          })
-        })
-        this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/addCourseToCatalog', postData, 'post')
-          .then(r => {
-            if (r.httpCode == 200) {
-              this.$message({
-                type: 'success',
-                message: this.$l.oprateSuccess
-              })
-              let timer = setTimeout(() => {
-                this.courseObj.form = []
-                this.showObj.selectCourse = false
-                this.getCourseListById(this.courseObj.catalog_id)
-                clearTimeout(timer)
-              }, 1500)
-            }
-          })
-      },
-
-      cancelBindCourse() {
-        this.showObj.selectCourse = false
-      },
-
-      openSelectCourse(index) {
-        this.courseObj.currentIndex = index
-        this.showObj.selectCourse = true
-      },
-
-
-
-
-      toggleCourseStatus(data) {
-        let msg
-        let value
-        if (data.is_valid == 'Y') {
-          value = 'N'
-          msg = `您确定要禁用当前目录下《${data.name_zh}》这张课程吗？请输入Y后再次确认操作`
-        } else {
-          value = 'Y'
-          msg = `您确定要启用当前目录下《${data.name_zh}》这张课程吗？请输入Y后再次确认操作`
-        }
-        this.$prompt(msg, {
-            type: 'warning',
-            inputPattern: /^[Y]{1}$/i,
-            inputErrorMessage: '输入验证信息错误',
-            confirmButtonText: "确认",
-            cancelButtonText: "取消"
-          }).then(() => {
-
-            this.$request(this.api.baseUrl + '/Video/VideoCourseCatalog/deleteCourseFromCatalog', {
-              course_id: data.course_id,
-              catalog_id: this.courseObj.catalog_id,
-              is_valid: value
-            }, 'post').then(r => {
-              this.$message({
-                type: 'success',
-                message: this.$l.oprateSuccess
-              })
-              this.getCourseListById(this.courseObj.catalog_id)
-            })
-          })
-          .catch(() => {
-            console.log('取消操作');
-          })
-      }
-
-
-    },
-    mounted() {
-      this.getCollegeList()
-      // this.getCatalogList()
-
-
-    }
-  };
 </script>
 
 <style>

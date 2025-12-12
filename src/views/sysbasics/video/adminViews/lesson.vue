@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 flex">
+  <div class="flex-1 flex overflow-hidden">
     <div class="h-full w-64 border-r border-gray-200 flex flex-col">
       <div class="menu-label">{{$c.lessonLayout}}</div>
       <div class="menu-wrapper">
