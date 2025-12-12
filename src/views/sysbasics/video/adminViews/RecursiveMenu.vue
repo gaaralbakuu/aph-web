@@ -17,15 +17,18 @@
 </template>
 
 <script>
-  export default {
-    name: 'RecursiveMenu', // 必须与组件名相同，以便递归引用
-    props: {
-      menuItems: {
-        type: Array,
-        required: true
-      }
-    }
+export default {
+  name: 'RecursiveMenu'
+}
+</script>
+
+<script setup>
+defineProps({
+  menuItems: {
+    type: Array,
+    required: true
   }
+})
 </script>
 
 <style scoped>

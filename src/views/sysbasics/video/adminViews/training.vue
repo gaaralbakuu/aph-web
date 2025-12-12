@@ -4,10 +4,12 @@
       <div class="menu-label">{{$c.trainingLayout}}</div>
       <div class="menu-wrapper">
         <el-menu :default-active="defaultIndex">
-          <template v-for="nav in menu">
-            <!-- 假设我们不直接遍历第一层导航栏，而是遍历其下的子菜单 -->
-            <recursive-menu :menu-items="nav.children"></recursive-menu>
-          </template>
+          <!-- 假设我们不直接遍历第一层导航栏，而是遍历其下的子菜单 -->
+          <recursive-menu
+            v-for="nav in menu"
+            :key="nav.menu_id"
+            :menu-items="nav.children"
+          ></recursive-menu>
         </el-menu>
       </div>
     </div>
@@ -17,61 +19,55 @@
   </div>
 </template>
 
-
 <script>
-  let type = 'training'
-  import {
-    mapGetters
-  } from 'vuex'
+export default {
+  name: 'trainingLayout'
+}
+</script>
 
-  import RecursiveMenu from './RecursiveMenu.vue';
-  export default {
-    name: type + 'Layout',
-    components: {
-      RecursiveMenu
-    },
-    data() {
-      return {
-        type: type,
-        defaultIndex: null,
-        menu: []
-      }
-    },
-    computed: {
-      ...mapGetters(['videoMenu'])
-    },
-    watch: {
-      videoMenu(newVal) {
-        this.updateMenu(newVal);
-      }
-    },
-    methods: {
-      updateMenu(videoMenu) {
-        // 过滤出包含 'lesson' 的菜单项
-        this.menu = videoMenu.filter(item => item.resource_path.includes(this.type));
-        // 查找第一个 resource_type 为 'menu' 的 menu_id
-        const firstMenuItem = this.findFirstMenuItem(this.menu);
-        this.defaultIndex = firstMenuItem ? firstMenuItem.menu_id : null;
-      },
-      findFirstMenuItem(menuItems) {
-        for (let item of menuItems) {
-          if (item.resource_type === 'menu') {
-            return item;
-          }
-          if (item.children && item.children.length > 0) {
-            const foundItem = this.findFirstMenuItem(item.children);
-            if (foundItem) return foundItem;
-          }
-        }
-        return null;
-      }
-    },
-    mounted() {
-      if (this.videoMenu && this.videoMenu.length > 0) {
-        this.updateMenu(this.videoMenu);
-      }
+<script setup>
+import { ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
+import RecursiveMenu from './RecursiveMenu.vue'
+
+const type = 'training'
+const { proxy } = getCurrentInstance()
+
+const defaultIndex = ref(null)
+const menu = ref([])
+
+const videoMenu = computed(() => proxy.$store.getters.videoMenu)
+
+const findFirstMenuItem = (menuItems) => {
+  for (let item of menuItems) {
+    if (item.resource_type === 'menu') {
+      return item
+    }
+    if (item.children && item.children.length > 0) {
+      const foundItem = findFirstMenuItem(item.children)
+      if (foundItem) return foundItem
     }
   }
+  return null
+}
+
+const updateMenu = (videoMenuData) => {
+  // 过滤出包含 'training' 的菜单项
+  // Note: The original code might have had copy-paste errors in comments, correcting logic based on 'type'.
+  menu.value = videoMenuData.filter(item => item.resource_path.includes(type))
+  // 查找第一个 resource_type 为 'menu' 的 menu_id
+  const firstMenuItem = findFirstMenuItem(menu.value)
+  defaultIndex.value = firstMenuItem ? firstMenuItem.menu_id : null
+}
+
+watch(videoMenu, (newVal) => {
+  updateMenu(newVal)
+})
+
+onMounted(() => {
+  if (videoMenu.value && videoMenu.value.length > 0) {
+    updateMenu(videoMenu.value)
+  }
+})
 </script>
 
 <style scoped>
