@@ -201,288 +201,330 @@
 </template>
 
 <script>
-  import {
-    mapGetters
-  } from 'vuex'
+export default {
+  name: 'videoAdminTopic'
+}
+</script>
 
-  import {
-    _
-  } from '@/views/_common'
-  export default {
-    name: 'videoAdminTopic',
-    data() {
-      return {
-        topicObj: {
-          query: {
-            web_page: "",
-            college_id: "",
-            type: "",
-            page: 1,
-            pageSize: 15,
-            is_valid: "Y"
-          },
-          form: {
-            id: "",
-            college_id: "",
-            title_zh: "",
-            title_en: "",
-            title_tw: "",
-            title_vi: "",
-            page: "",
-            sort: "",
-            type: "",
-            is_valid: "",
-            rec_status: "",
-            detail: [{
-              id: "",
-              course_id: "",
-              pid: "",
-              title_zh: "",
-              title_en: "",
-              title_tw: "",
-              title_vi: "",
-              icon_app: "",
-              icon_web: "",
-              url: "",
-              is_valid: "",
-              rec_status: "",
-            }]
-          },
-          list: [],
-          total: 0,
-        },
-        detailObj: {
-          currentId: "",
-          list: []
-        },
-        courseObj: {
-          query: {
-            page: 1,
-            pageSize: 10,
-            college_id: "",
-            is_public: "",
-            name: "",
-            is_his: 0
-          },
-          total: 0,
-          list: [],
-          selectedList: [] //待添加的课程列表
-        },
-        publicCodeObj: {
-          allCollegeList:[],
-          collegeList: [],
-          type: [{
-            label: this.$l.topic,
-            value: "topic"
-          }],
-          page: [{
-            label: this.$l.homePage,
-            value: "home"
-          }]
-        },
-        showObj: {
-          topicShow: false,
-          courseDialog: false
-        }
+<script setup>
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  getCurrentInstance
+} from 'vue'
+
+import {
+  _
+} from '@/views/_common'
+
+const {
+  proxy
+} = getCurrentInstance()
+const $l = proxy.$l
+const $c = proxy.$c
+const $api = proxy.$api
+const $request = proxy.$request
+const $message = proxy.$message
+const $confirm = proxy.$confirm
+const $router = proxy.$router
+const $route = proxy.$route
+const $store = proxy.$store
+
+const topicObj = reactive({
+  query: {
+    web_page: "",
+    college_id: "",
+    type: "",
+    page: 1,
+    pageSize: 15,
+    is_valid: "Y"
+  },
+  form: {
+    id: "",
+    college_id: "",
+    title_zh: "",
+    title_en: "",
+    title_tw: "",
+    title_vi: "",
+    page: "",
+    sort: "",
+    type: "",
+    is_valid: "",
+    rec_status: "",
+    detail: [{
+      id: "",
+      course_id: "",
+      pid: "",
+      title_zh: "",
+      title_en: "",
+      title_tw: "",
+      title_vi: "",
+      icon_app: "",
+      icon_web: "",
+      url: "",
+      is_valid: "",
+      rec_status: "",
+    }]
+  },
+  list: [],
+  total: 0,
+})
+
+const detailObj = reactive({
+  currentId: "",
+  list: []
+})
+
+const courseObj = reactive({
+  query: {
+    page: 1,
+    pageSize: 10,
+    college_id: "",
+    is_public: "",
+    name: "",
+    is_his: 0
+  },
+  total: 0,
+  list: [],
+  selectedList: [] //待添加的课程列表
+})
+
+const publicCodeObj = reactive({
+  allCollegeList: [],
+  collegeList: [],
+  type: [{
+    label: $l.topic,
+    value: "topic"
+  }],
+  page: [{
+    label: $l.homePage,
+    value: "home"
+  }]
+})
+
+const showObj = reactive({
+  topicShow: false,
+  courseDialog: false
+})
+
+const isAdmin = computed(() => $store.getters.isAdmin)
+
+watch(() => courseObj.query.college_id, (newVal, oldVal) => {
+  if (newVal && oldVal === '') {
+    courseObj.query.is_public = ''
+  }
+  if (!isAdmin.value) {
+    if (newVal == '') {
+      courseObj.query.is_public = 1
+    }
+  }
+  getCourseList()
+})
+
+const handleSizeChange = (i) => {
+  topicObj.query.page = 1
+  topicObj.query.pageSize = i
+  getTopicList()
+}
+
+const handlePageChange = (i) => {
+  topicObj.query.page = i
+  getTopicList()
+}
+
+const handleCourseSizeChange = (i) => {
+  courseObj.query.page = 1
+  courseObj.query.pageSize = i
+  getCourseList()
+}
+
+const handleCoursePageChange = (i) => {
+  courseObj.query.page = i
+  getCourseList()
+}
+
+const getAllCollegeList = () => {
+  $request($api.videoServer + '/Video/VideoCollege/getCollegeList', {
+      page: 1,
+      pageSize: 9999
+    })
+    .then((r) => {
+      publicCodeObj.allCollegeList = r.data.list
+    })
+    .catch((e) => {
+      $message.error(e.message)
+    })
+}
+
+const getCourseList = () => {
+  $request($api.videoServer + '/Video/VideoCourseCatalog/getCourseList', courseObj.query, 'post')
+    .then(r => {
+      courseObj.list = r.data.list
+      courseObj.total = r.data.total
+    })
+    .catch(e => {
+      console.log(e);
+    })
+}
+
+const getCollegeList = () => {
+  // 根据页面路由获取管理学院
+  $request($api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
+      resource_path: $route.path
+    })
+    .then((r) => {
+      publicCodeObj.collegeList = r.data
+
+      topicObj.query.college_id = publicCodeObj.collegeList[0].id
+      courseObj.query.college_id = publicCodeObj.collegeList[0].id
+
+      getTopicList()
+    })
+    .catch((e) => {
+      $message.error(e.message)
+    })
+}
+
+const getTopicList = () => {
+  $request($api.videoServer + "/Video/VideoPageTag/getlist", topicObj.query)
+    .then(r => {
+      topicObj.list = r.data.list
+      topicObj.total = r.data.total
+      if (r.data.total == 0) {
+        detailObj.currentId = ''
+        detailObj.list = []
       }
-    },
-    computed: {
-      ...mapGetters(['isAdmin']),
-    },
+    })
+}
 
-    watch: {
-      "courseObj.query.college_id"(newVal, oldVal) {
-        if (newVal && oldVal === '') {
-          this.courseObj.query.is_public = ''
-        }
-        if (!this.isAdmin) {
-          if (newVal == '') {
-            this.courseObj.query.is_public = 1
-          }
-        }
-        this.getCourseList()
-      }
-    },
+const addTopic = () => {
+  topicObj.form = {
+    id: "",
+    college_id: "",
+    title_zh: "",
+    title_en: "",
+    title_tw: "",
+    title_vi: "",
+    page: "",
+    sort: "10",
+    type: "topic",
+    is_valid: "Y",
+    rec_status: 1,
+    detail: []
+  }
+  console.log("addTopic", topicObj.form)
+  showObj.topicShow = true
+}
 
+const editTopic = (i) => {
+  console.log("editTopic", i)
+  topicObj.form = i
+  showObj.topicShow = true
+}
 
-    methods: {
-      handleSizeChange(i) {
-        this.topicObj.query.page = 1
-        this.topicObj.query.pageSize = i
-        this.getTopicList()
-      },
+const modifyTopicStatus = (row) => {
+  let is_valid
+  let oprateText
+  if (row.is_valid == 'Y') {
+    is_valid = "N"
+    oprateText = $l.confirmDisable
+  } else {
+    is_valid = "Y"
+    oprateText = $l.confirmEnable
+  }
+  $confirm(oprateText, $l.recommendationTopic, {
+      confirmButtonText: $l.confirm,
+      cancelButtonText: $l.cancel,
+      type: 'warning',
+    })
+    .then(() => {
+      $request(
+          $api.videoServer + '/Video/VideoPageTag/DeleteOrRecoveryById', {
+            key: row.id,
+            value: is_valid
+          }, 'post'
+        )
+        .then((r) => {
+          $message.success($l.modifySuccess)
+          getTopicList()
+        })
+        .catch(() => {
+          $message.error($l.modifyFailed)
+        })
+    })
+    .catch(() => {
+      $message.info($l.cancelModify)
+    })
+}
 
-      handlePageChange(i) {
-        this.topicObj.query.page = i
-        this.getTopicList()
-      },
+const submitTopic = () => {
+  if (!topicObj.form.title_zh) {
+    return $message.error($l.pleaseEnterNameZh)
+  }
 
-      handleCourseSizeChange(i) {
-        this.courseObj.query.page = 1
-        this.courseObj.query.pageSize = i
-        this.getCourseList()
-      },
+  if (!topicObj.form.college_id) {
+    return $message.error($l.pleaseSelectCollege)
+  }
 
-      handleCoursePageChange(i) {
-        this.courseObj.query.page = i
-        this.getCourseList()
-      },
+  console.log(topicObj.form)
 
-      getAllCollegeList(){
-        this.$request(this.$api.videoServer + '/Video/VideoCollege/getCollegeList', {
-            page:1,
-            pageSize:9999
-          })
-          .then((r) => {
-            this.publicCodeObj.allCollegeList = r.data.list
-          })
-          .catch((e) => {
-            this.$message.error(e.message)
-          })
-      },
+  $request($api.videoServer + "/Video/VideoPageTag/addOrModifyPageTag", topicObj.form, 'post')
+    .then(r => {
+      showObj.topicShow = false
+      getTopicList()
+      $message({
+        type: 'success',
+        message: $l.submitSuccess
+      })
+    })
+}
 
-      getCourseList() {
-        this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList', this.courseObj.query, 'post')
-          .then(r => {
-            this.courseObj.list = r.data.list
-            this.courseObj.total = r.data.total
-          })
-          .catch(e => {
-            console.log(e);
-          })
-      },
+const isCourseIdExists = (array, course_id) => {
+  return array.some(item => item.course_id === course_id);
+}
 
-      getCollegeList() {
-        // 根据页面路由获取管理学院
-        this.$request(this.$api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
-            resource_path: this.$route.path
-          })
-          .then((r) => {
-            this.publicCodeObj.collegeList = r.data
+const addSingleCourseToTopic = (i) => {
+  console.log(topicObj.form)
+  if (isCourseIdExists(topicObj.form.detail, i.course_id)) {
+    return $message({
+      type: 'error',
+      message: $l.courseAlreadyExists
+    })
+  }
+  let course = {
+    id: "",
+    course_id: i.course_id,
+    pid: topicObj.form.id,
+    title_zh: i.title_zh,
+    title_en: i.title_en,
+    title_tw: i.title_tw,
+    title_vi: i.title_vi,
+    icon_app: "",
+    icon_web: "",
+    url: "",
+    is_valid: "Y",
+    rec_status: 1,
+  }
+  topicObj.form.detail.push(course)
+  detailObj.list.push(i)
+  submitTopic()
+}
 
-            this.topicObj.query.college_id = this.publicCodeObj.collegeList[0].id
-            this.courseObj.query.college_id = this.publicCodeObj.collegeList[0].id
+const handleSelectionChange = (selectedRowKeys, selectedRows) => {
+  courseObj.selectedList = selectedRows
+}
 
-            this.getTopicList()
-          })
-          .catch((e) => {
-            this.$message.error(e.message)
-          })
-      },
-
-      getTopicList() {
-        this.$request(this.$api.videoServer + "/Video/VideoPageTag/getlist", this.topicObj.query)
-          .then(r => {
-            this.topicObj.list = r.data.list
-            this.topicObj.total = r.data.total
-            if (r.data.total == 0) {
-              this.detailObj = {
-                currentId: '',
-                list: []
-              }
-            }
-          })
-      },
-
-      addTopic() {
-        this.topicObj.form = {
-          id: "",
-          college_id: "",
-          title_zh: "",
-          title_en: "",
-          title_tw: "",
-          title_vi: "",
-          page: "",
-          sort: "10",
-          type: "topic",
-          is_valid: "Y",
-          rec_status: 1,
-          detail: []
-        }
-        console.log("addTopic", this.topicObj.form)
-        this.showObj.topicShow = true
-      },
-
-      editTopic(i) {
-        
-        console.log("editTopic", i)
-        this.topicObj.form = i
-        this.showObj.topicShow = true
-      },
-
-      modifyTopicStatus(row) {
-        let is_valid
-        let oprateText
-        if (row.is_valid == 'Y') {
-          is_valid = "N"
-          oprateText = this.$l.confirmDisable
-        } else {
-          is_valid = "Y"
-          oprateText = this.$l.confirmEnable
-        }
-        this.$confirm(oprateText, this.$l.recommendationTopic, {
-            confirmButtonText: this.$l.confirm,
-            cancelButtonText: this.$l.cancel,
-            type: 'warning',
-          })
-          .then(() => {
-            this.$request(
-                this.$api.videoServer + '/Video/VideoPageTag/DeleteOrRecoveryById', {
-                  key: row.id,
-                  value: is_valid
-                }, 'post'
-              )
-              .then((r) => {
-                this.$message.success(this.$l.modifySuccess)
-                this.getTopicList()
-              })
-              .catch(() => {
-                this.$message.error(this.$l.modifyFailed)
-              })
-          })
-          .catch(() => {
-            this.$message.info(this.$l.cancelModify)
-          })
-      },
-
-      submitTopic() {
-        if (!this.topicObj.form.title_zh) {
-          return this.$message.error(this.$l.pleaseEnterNameZh)
-        }
-
-        if (!this.topicObj.form.college_id) {
-          return this.$message.error(this.$l.pleaseSelectCollege)
-        }
-
-        console.log(this.topicObj.form)
-
-        this.$request(this.$api.videoServer + "/Video/VideoPageTag/addOrModifyPageTag", this.topicObj.form, 'post')
-          .then(r => {
-            this.showObj.topicShow = false
-            this.getTopicList()
-            this.$message({
-              type: 'success',
-              message: this.$l.submitSuccess
-            })
-          })
-      },
-
-      isCourseIdExists(array, course_id) {
-        return array.some(item => item.course_id === course_id);
-      },
-
-      addSingleCourseToTopic(i) {
-        console.log(this.topicObj.form)
-        if (this.isCourseIdExists(this.topicObj.form.detail, i.course_id)) {
-          return this.$message({
-            type: 'error',
-            message: this.$l.courseAlreadyExists
-          })
-        }
-        let course = {
+const addMultipleCourseToTopic = () => {
+  if (courseObj.selectedList.length > 0) {
+    courseObj.selectedList.forEach(i => {
+      if (!isCourseIdExists(topicObj.form.detail, i.course_id)) {
+        topicObj.form.detail.push({
           id: "",
           course_id: i.course_id,
-          pid: this.topicObj.form.id,
+          pid: topicObj.form.id,
           title_zh: i.title_zh,
           title_en: i.title_en,
           title_tw: i.title_tw,
@@ -492,110 +534,83 @@
           url: "",
           is_valid: "Y",
           rec_status: 1,
-        }
-        this.topicObj.form.detail.push(course)
-        this.detailObj.list.push(i)
-        this.submitTopic()
-      },
-
-      handleSelectionChange(selectedRowKeys, selectedRows) {
-        this.courseObj.selectedList = selectedRows
-      },
-
-      addMultipleCourseToTopic() {
-        if (this.courseObj.selectedList.length > 0) {
-          this.courseObj.selectedList.forEach(i => {
-            if (!this.isCourseIdExists(this.topicObj.form.detail, i.course_id)) {
-              this.topicObj.form.detail.push({
-                id: "",
-                course_id: i.course_id,
-                pid: this.topicObj.form.id,
-                title_zh: i.title_zh,
-                title_en: i.title_en,
-                title_tw: i.title_tw,
-                title_vi: i.title_vi,
-                icon_app: "",
-                icon_web: "",
-                url: "",
-                is_valid: "Y",
-                rec_status: 1,
-              })
-              this.detailObj.list.push(i)
-            }
-          })
-          this.submitTopic()
-        } else {
-          this.$message({
-            type: 'error',
-            message: this.$l.pleaseSelectList
-          })
-        }
-      },
-
-      getDetailList(i) {
-        console.log("getDetailList", i)
-        this.topicObj.form = {...i, sort: Number(i.sort) }
-        this.detailObj.currentId = i.id
-        this.detailObj.list = _.cloneDeep(i.detail)
-        this.courseObj.selectedList = []
-      },
-
-      updateDetailList() {
-        let detail = []
-        this.detailObj.list.forEach(i => {
-          detail.push({
-            id: "",
-            course_id: i.course_id,
-            pid: this.topicObj.form.id,
-            title_zh: i.title_zh,
-            title_en: i.title_en,
-            title_tw: i.title_tw,
-            title_vi: i.title_vi,
-            icon_app: "",
-            icon_web: "",
-            url: "",
-            is_valid: "Y",
-            rec_status: 1,
-          })
         })
-        this.topicObj.form.detail = _.cloneDeep(detail)
-        this.submitTopic()
-      },
-
-      deleteDetail(index) {
-        this.detailObj.list.splice(index, 1)
-      },
-
-      //根据真实值返回显示值
-      returnPublicObjLabel(value, key, label, filed) {
-        let item = this.publicCodeObj[filed].find(i => {
-          return i[key] == value
-        })
-        if (item) {
-          return item[label]
-        } else {
-          return value
-        }
-      },
-
-      toPlay(id) {
-        // 获取目标路由的完整 URL
-        let routeUrl = this.$router.resolve({
-          name: 'videoPlay',
-          query: {
-            course_primary_id: id,
-          },
-        }).href
-        // 使用 window.open 打开新窗口
-        window.open(routeUrl, '_blank')
+        detailObj.list.push(i)
       }
-    },
+    })
+    submitTopic()
+  } else {
+    $message({
+      type: 'error',
+      message: $l.pleaseSelectList
+    })
+  }
+}
 
-    mounted() {
-      this.getAllCollegeList()
-      this.getCollegeList()
-    }
-  };
+const getDetailList = (i) => {
+  console.log("getDetailList", i)
+  topicObj.form = { ...i,
+    sort: Number(i.sort)
+  }
+  detailObj.currentId = i.id
+  detailObj.list = _.cloneDeep(i.detail)
+  courseObj.selectedList = []
+}
+
+const updateDetailList = () => {
+  let detail = []
+  detailObj.list.forEach(i => {
+    detail.push({
+      id: "",
+      course_id: i.course_id,
+      pid: topicObj.form.id,
+      title_zh: i.title_zh,
+      title_en: i.title_en,
+      title_tw: i.title_tw,
+      title_vi: i.title_vi,
+      icon_app: "",
+      icon_web: "",
+      url: "",
+      is_valid: "Y",
+      rec_status: 1,
+    })
+  })
+  topicObj.form.detail = _.cloneDeep(detail)
+  submitTopic()
+}
+
+const deleteDetail = (index) => {
+  detailObj.list.splice(index, 1)
+}
+
+//根据真实值返回显示值
+const returnPublicObjLabel = (value, key, label, filed) => {
+  let item = publicCodeObj[filed].find(i => {
+    return i[key] == value
+  })
+  if (item) {
+    return item[label]
+  } else {
+    return value
+  }
+}
+
+const toPlay = (id) => {
+  // 获取目标路由的完整 URL
+  let routeUrl = $router.resolve({
+    name: 'videoPlay',
+    query: {
+      course_primary_id: id,
+    },
+  }).href
+  // 使用 window.open 打开新窗口
+  window.open(routeUrl, '_blank')
+}
+
+onMounted(() => {
+  getAllCollegeList()
+  getCollegeList()
+})
 </script>
 
 <style>
