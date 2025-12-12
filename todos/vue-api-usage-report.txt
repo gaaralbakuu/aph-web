@@ -1,0 +1,168 @@
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                       BÁO CÁO KIỂM TRA VUE API USAGE                          ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+Ngày tạo báo cáo: 12:38:38 12/12/2025
+Tổng số file Vue: 132
+
+📊 THỐNG KÊ TỔNG QUÁT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Composition API (script setup):  13 file (9.8%)
+  ⚙️  Options API:                    89 file (67.4%)
+  🔄 Hybrid (cả hai loại):           0 file (0.0%)
+  ❌ Invalid/không xác định:          30 file (22.7%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+✅ COMPOSITION API (script setup) - 13 file
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. demo\Demo.vue
+2. layout\SubLayout.vue
+3. login\index.vue
+4. login\register.vue
+5. sysbasics\video\adminViews\component\lesson\catalogue.vue
+6. sysbasics\video\adminViews\component\lesson\content.vue
+7. sysbasics\video\adminViews\component\lesson\course copy.vue
+8. sysbasics\video\adminViews\component\lesson\Tag.vue
+9. sysbasics\video\layout\videoUserLayout.vue
+10. sysbasics\video\userViews\component\BannerCarousel.vue
+11. sysbasics\video\userViews\component\CourseCarousel.vue
+12. sysbasics\video\userViews\home.vue
+13. sysbasics\video\userViews\play2.vue
+
+
+⚙️  OPTIONS API - 89 file
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. _common\chooseUser.vue
+2. _common\CustomDialog.vue
+3. _common\Dentify.vue
+4. _common\DialogStackDemo.vue
+5. _common\filePreviews.vue
+6. admin\userfeedback.vue
+7. errorPage\401.vue
+8. errorPage\404.vue
+9. example\svg-icons\index.vue
+10. home\Welcome.vue
+11. layout\components\Breadcrumb.vue
+12. layout\components\ErrorLog.vue
+13. layout\components\LangSelect.vue
+14. layout\components\Screenfull.vue
+15. layout\components\SidebarItem.vue
+16. layout\components\SizeSelect.vue
+17. layout\components\TagsView.vue
+18. layout\components\ThemePicker.vue
+19. login\index copy 2.vue
+20. login\index copy 3.vue
+21. login\index copy.vue
+22. redirect\index.vue
+23. sysbasics\compliance\accountManagement.vue
+24. sysbasics\compliance\complianceManufacturer.vue
+25. sysbasics\compliance\components\FolderTree.vue
+26. sysbasics\compliance\demo3.vue
+27. sysbasics\compliance\improveAnalysis copy.vue
+28. sysbasics\compliance\improveAnalysis.vue
+29. sysbasics\compliance\improveManagement copy 2.vue
+30. sysbasics\compliance\improveManagement copy.vue
+31. sysbasics\compliance\improveManagement.vue
+32. sysbasics\compliance\ImproveManagementDetailsTable.vue
+33. sysbasics\compliance\improveManagementInfo.vue
+34. sysbasics\compliance\ImproveManagementTable.vue
+35. sysbasics\compliance\ImproveManagementTable2.vue
+36. sysbasics\compliance\investigation copy.vue
+37. sysbasics\compliance\investigation.vue
+38. sysbasics\compliance\InvestigationHistoryTable.vue
+39. sysbasics\compliance\investigationInfo.vue
+40. sysbasics\compliance\InvestigationTable.vue
+41. sysbasics\compliance\issuesType.vue
+42. sysbasics\compliance\manufacturer copy.vue
+43. sysbasics\compliance\manufacturer.vue
+44. sysbasics\compliance\manufacturer2 copy.vue
+45. sysbasics\compliance\manufacturer2.vue
+46. sysbasics\compliance\ManufacturerTable.vue
+47. sysbasics\compliance\shareInformation.vue
+48. sysbasics\compliance\WorkTable.vue
+49. sysbasics\compliance2\complianceManufacturer.vue
+50. sysbasics\compliance2\investigation.vue
+51. sysbasics\compliance2\investigationInfo.vue
+52. sysbasics\compliance2\issuesType.vue
+53. sysbasics\compliance2\shareInformation.vue
+54. sysbasics\video\adminViews\analyze.vue
+55. sysbasics\video\adminViews\component\analyze\CollegeTraining.vue
+56. sysbasics\video\adminViews\component\analyze\index.vue
+57. sysbasics\video\adminViews\component\exam\exam.vue
+58. sysbasics\video\adminViews\component\exam\question.vue
+59. sysbasics\video\adminViews\component\exam\questionnaire.vue
+60. sysbasics\video\adminViews\component\lesson\course.vue
+61. sysbasics\video\adminViews\component\lesson\topic.vue
+62. sysbasics\video\adminViews\component\system\banner.vue
+63. sysbasics\video\adminViews\component\system\college.vue
+64. sysbasics\video\adminViews\component\system\menu.vue
+65. sysbasics\video\adminViews\component\system\role.vue
+66. sysbasics\video\adminViews\component\system\setting.vue
+67. sysbasics\video\adminViews\component\training\class.vue
+68. sysbasics\video\adminViews\component\training\Lecturer.vue
+69. sysbasics\video\adminViews\component\training\place.vue
+70. sysbasics\video\adminViews\component\training\plan.vue
+71. sysbasics\video\adminViews\exam.vue
+72. sysbasics\video\adminViews\lesson.vue
+73. sysbasics\video\adminViews\system.vue
+74. sysbasics\video\adminViews\training.vue
+75. sysbasics\video\layout\videoAdminLayout.vue
+76. sysbasics\video\layout\videoUserLayout copy x.vue
+77. sysbasics\video\layout\VideoUserLayout copy.vue
+78. sysbasics\video\userViews\component\Favorite.vue
+79. sysbasics\video\userViews\component\History.vue
+80. sysbasics\video\userViews\component\Training.vue
+81. sysbasics\video\userViews\Course.vue
+82. sysbasics\video\userViews\examDetail.vue
+83. sysbasics\video\userViews\home copy.vue
+84. sysbasics\video\userViews\Mine.vue
+85. sysbasics\video\userViews\Play.vue
+86. sysbasics\video\userViews\Play4.vue
+87. sysbasics\video\userViews\topic.vue
+88. sysbasics\video\userViews\topicDetail.vue
+89. sysbasics\video\userViews\trainingDetail.vue
+
+
+❌ INVALID/KHÔNG XÁC ĐỊNH - 30 file
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. _common\form.vue
+2. _common\formDialog.vue
+3. _common\Pagination.vue
+4. _common\ShadcnInput.vue
+5. _common\table.vue
+6. admin\appVersion.vue
+7. admin\astrictAuth.vue
+8. admin\banner.vue
+9. admin\dictionary.vue
+10. admin\menu.vue
+11. admin\param.vue
+12. admin\quartz.vue
+13. admin\role.vue
+14. admin\testUser.vue
+15. admin\user.vue
+16. admin\workflowFields.vue
+17. layout\components\Hamburger.vue
+18. layout\components\MenuItem.vue
+19. layout\components\Navbar copy.vue
+20. layout\components\Navbar.vue
+21. layout\components\NavbarCopy.vue
+22. layout\Layout.vue
+23. sysbasics\compliance\banner.vue
+24. sysbasics\compliance\role.vue
+25. sysbasics\compliance\ShareContactTable.vue
+26. sysbasics\compliance\ShareHelpManualTable.vue
+27. sysbasics\epidemic.vue
+28. sysbasics\publiccode.vue
+29. sysbasics\SysMsg.vue
+30. sysbasics\video\adminViews\RecursiveMenu.vue
+
+
+💡 KHUYẾN NGHỊ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Ưu tiên chuyển đổi 89 file Options API sang Composition API
+2. Refactor 0 file Hybrid để sử dụng một API duy nhất
+3. Kiểm tra lại 30 file Invalid
+

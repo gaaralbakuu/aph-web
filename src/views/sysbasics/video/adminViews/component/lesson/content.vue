@@ -1,5 +1,5 @@
 <template>
-  <div class="videoManage-container">
+  <div class="flex flex-col flex-1 overflow-hidden">
     <div class="components">
       <input ref="videoInput" type="file" @change="videoChange" style="display: none" accept="video/*" />
       <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none" accept="image/*" />
@@ -27,10 +27,10 @@
                 <div class="text-lg text-gray-600 font-medium">{{ l.selectVideo }}</div>
                 <div class="text-sm text-gray-400 mt-2">点击选择或拖拽视频文件</div>
               </div>
-              <div v-else class="w-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+              <div v-else class="w-full bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
                 <div class="flex items-start space-x-4">
-                  <i class="el-icon-video-camera-solid text-5xl text-blue-500 flex-shrink-0"></i>
-                  <div class="flex-grow">
+                  <i class="el-icon-video-camera-solid text-5xl text-blue-500 shrink-0"></i>
+                  <div class="grow">
                     <div class="text-lg font-semibold text-gray-800 truncate">{{ uploadVideoObj.file.name }}</div>
                     <div class="text-sm text-gray-500 mt-1">{{ uploadVideoObj.size }}</div>
                     <div class="flex items-center space-x-4 mt-3">
@@ -94,14 +94,20 @@
           <div class="w-full space-y-4">
             <!-- Title -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.title }} <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ l.title }}
+                <span class="text-red-500">*</span>
+              </label>
               <a-input v-model:value="uploadVideoObj.name" :placeholder="l.title" class="w-full"></a-input>
             </div>
 
             <!-- College & Public Switch -->
             <div class="grid grid-cols-3 gap-4">
               <div class="col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.college }} <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  {{ l.college }}
+                  <span class="text-red-500">*</span>
+                </label>
                 <a-select v-model:value="uploadVideoObj.college_id" :placeholder="l.selectCollegePd" class="w-full">
                   <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
                 </a-select>
@@ -114,7 +120,10 @@
 
             <!-- Description -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.introduce }} <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ l.introduce }}
+                <span class="text-red-500">*</span>
+              </label>
               <a-textarea v-model:value="uploadVideoObj.description" :placeholder="l.introducePd" :rows="3" class="w-full"></a-textarea>
             </div>
           </div>
@@ -123,7 +132,8 @@
           <div class="absolute bottom-0 right-0 w-full pr-8 pb-6 pt-4 bg-white border-t border-gray-200 flex justify-end items-center gap-3">
             <a-button @click="showObj.uploadVideo = false" class="px-6">{{ c.cancel }}</a-button>
             <a-button type="primary" @click="handleSubmit('uploadVideo')" :disabled="!flagObj.uploadAble" :loading="flagObj.uploading" class="px-6">
-              <i class="el-icon-upload mr-2"></i>{{ l.uploadVideo }}
+              <i class="el-icon-upload mr-2"></i>
+              {{ l.uploadVideo }}
             </a-button>
             <a-button v-if="flagObj.uploading" danger @click="abortUploadVideo" class="px-6">{{ l.giveup }}</a-button>
           </div>
@@ -131,13 +141,7 @@
       </a-drawer>
 
       <!-- Modify Video Drawer -->
-      <a-drawer 
-        :visible="showObj.modifyVideo" 
-        :title="l.modifyVideo" 
-        :width="800"
-        :body-style="{ paddingBottom: '100px' }"
-        @close="showObj.modifyVideo = false">
-        
+      <a-drawer :visible="showObj.modifyVideo" :title="l.modifyVideo" :width="800" :body-style="{ paddingBottom: '100px' }" @close="showObj.modifyVideo = false">
         <!-- Cover Comparison -->
         <div class="w-full mb-8">
           <h3 class="text-base font-semibold text-gray-800 mb-4">{{ l.cover }}</h3>
@@ -211,19 +215,19 @@
           </div>
         </div>
 
-        
-          <!-- Action Buttons -->
-          <div class="absolute bottom-0 right-0 w-full pr-8 pb-6 pt-4 bg-white border-t border-gray-200 flex justify-end items-center gap-3">
-            <a-button @click="showObj.modifyVideo = false">{{ c.cancel }}</a-button>
-            <a-button type="primary" @click="handleSubmit('modifyVideo')">
-              <i class="el-icon-document-copy mr-1"></i>{{ l.updateVideo }}
-            </a-button>
-          </div>
+        <!-- Action Buttons -->
+        <div class="absolute bottom-0 right-0 w-full pr-8 pb-6 pt-4 bg-white border-t border-gray-200 flex justify-end items-center gap-3">
+          <a-button @click="showObj.modifyVideo = false">{{ c.cancel }}</a-button>
+          <a-button type="primary" @click="handleSubmit('modifyVideo')">
+            <i class="el-icon-document-copy mr-1"></i>
+            {{ l.updateVideo }}
+          </a-button>
+        </div>
       </a-drawer>
     </div>
 
-    <div class="pageBody">
-      <div class="videoFilter">
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <div class="flex justify-between border-b border-gray-200 px-4 py-3 h-16">
         <div>
           <a-space>
             <div>
@@ -261,9 +265,9 @@
         </div>
       </div>
 
-      <div class="w-full h-full">
+      <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Video List Container -->
-        <div class="h-full w-full overflow-y-auto bg-gray-50">
+        <div class="overflow-y-auto bg-gray-50 flex-1">
           <div v-if="videoListObj.list.length === 0" class="flex flex-col items-center justify-center h-96">
             <i class="el-icon-document text-6xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 text-lg">{{ c.noData }}</p>
@@ -273,10 +277,10 @@
             <div v-for="i in videoListObj.list" :key="i.id" class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
               <div class="flex h-40">
                 <!-- Thumbnail -->
-                <div class="relative w-56 h-40 flex-shrink-0 bg-gray-900 overflow-hidden group">
+                <div class="relative w-56 h-40 shrink-0 bg-gray-900 overflow-hidden group">
                   <img class="w-full h-full object-cover cursor-pointer" :src="api.videoServer + '/' + i.thumbnail_path" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)" />
                   <!-- Hover overlay with play button -->
-                  <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
                     <button v-if="i.url" class="opacity-0 group-hover:opacity-100 transition-opacity w-16 h-16 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center shadow-lg" @click="previewVideo(i)">
                       <i class="el-icon-video-play text-3xl text-blue-500"></i>
                     </button>
@@ -284,11 +288,11 @@
                 </div>
 
                 <!-- Content -->
-                <div class="flex-grow flex flex-col justify-between p-4">
+                <div class="grow flex flex-col justify-between p-4">
                   <!-- Title and Tag -->
                   <div>
                     <div class="flex items-center gap-2 mb-2">
-                      <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 flex-grow">{{ i.title }}</h3>
+                      <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 grow">{{ i.title }}</h3>
                       <a-tag :color="i.is_public == 1 ? 'blue' : 'orange'">
                         {{ i.is_public == 1 ? l.public : l.privite }}
                       </a-tag>
@@ -316,16 +320,10 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col items-center justify-center gap-2 px-4 py-4 border-l border-gray-100 bg-gray-50 group">
-                  <button 
-                    class="p-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors" 
-                    @click="beforeModifyVideo(i)"
-                    title="编辑">
+                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors" @click="beforeModifyVideo(i)" title="编辑">
                     <i class="el-icon-edit text-lg"></i>
                   </button>
-                  <button 
-                    class="p-2.5 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors" 
-                    @click="deleteVideo(i)"
-                    title="删除">
+                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors" @click="deleteVideo(i)" title="删除">
                     <i class="el-icon-delete text-lg"></i>
                   </button>
                 </div>
@@ -336,17 +334,8 @@
 
         <!-- Pagination -->
         <div class="bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center">
-          <div class="text-sm text-gray-600">
-            {{ l.total }}：{{ videoListObj.total }}
-          </div>
-          <a-pagination 
-            v-model:current="videoListObj.query.page" 
-            v-model:page-size="videoListObj.query.pageSize" 
-            :total="videoListObj.total" 
-            :page-size-options="['5', '10', '15', '30', '50', '100']"
-            :show-size-changer="true"
-            @change="handlePageChange">
-          </a-pagination>
+          <div class="text-sm text-gray-600">{{ l.total }}：{{ videoListObj.total }}</div>
+          <a-pagination v-model:current="videoListObj.query.page" v-model:page-size="videoListObj.query.pageSize" :total="videoListObj.total" :page-size-options="['5', '10', '15', '30', '50', '100']" :show-size-changer="true" @change="handlePageChange"></a-pagination>
         </div>
       </div>
     </div>
@@ -903,120 +892,25 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style>
-.videoManage-container {
-  width: 100%;
-  height: 100%;
-}
-.videoManage-container .upload-container .title {
-  padding: 20px 0px;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid #ccc;
-}
-.videoManage-container .upload-container .form-container {
-  width: 100%;
-  height: 95%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.videoManage-container .upload-container .form-container .video {
-  width: 90%;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0px auto 30px;
-  border: 2px dashed #bbb;
-  border-radius: 5px;
-}
-.videoManage-container .upload-container .form-container .video .plus-icon {
-  color: #999;
-  text-align: center;
-  cursor: pointer;
-}
-.videoManage-container .upload-container .form-container .video .plus-icon:hover {
-  color: #409fee;
-}
-.videoManage-container .upload-container .form-container .video .video-card {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info {
-  width: calc(100% - 80px);
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .status {
-  color: #999;
-  margin: 5px 0px;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .status span {
-  margin: 0 5px;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate .video-name {
-  font-size: 18px;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate .button {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate .button .video-icon {
-  width: 25px;
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #dddddd;
-  border-radius: 50%;
-  font-weight: bold;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate .button div {
-  margin: 0 5px;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate .button div:nth-child(2):hover {
-  color: darkred;
-}
-.videoManage-container .upload-container .form-container .video .video-card .video-info .video-oprate .button div:nth-child(3):hover {
-  color: green;
-}
-.videoManage-container .upload-container .form-container .video-form {
-  width: 95%;
-  margin: 0 auto;
-}
-.videoManage-container .upload-container .form-container .video-form .modifyCover {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.videoManage-container .upload-container .form-container .video-form .modifyCover .change {
-  text-align: center;
-  color: #409fee;
-  font-size: 50px;
-}
-.videoManage-container .upload-container .form-container .video-form .cover {
-  position: relative;
-  width: 260px;
-  height: 150px;
-  display: flex;
-  align-items: center;
-}
-.videoManage-container .upload-container .form-container .video-form .cover .auto-img {
+<style scoped>
+/* Tùy chỉnh CSS không thể tạo bằng Tailwind class */
+
+/* Vị trí tuyệt đối cho auto-img và cover */
+.auto-img {
   position: relative;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   max-width: 100%;
   max-height: 100%;
-  cursor: pointer;
 }
-.videoManage-container .upload-container .form-container .video-form .cover:hover .cover-oprate {
+
+/* Các class cũ nếu còn sử dụng trong template */
+.cover-oprate {
+  display: none;
+}
+
+.cover:hover .cover-oprate {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -1028,148 +922,43 @@ onBeforeUnmount(() => {
   color: white;
   font-size: 30px;
 }
-.videoManage-container .upload-container .form-container .video-form .cover:hover .cover-oprate .iconZoom {
+
+.iconZoom {
   margin-top: 15%;
 }
-.videoManage-container .upload-container .form-container .video-form .cover:hover .cover-oprate .iconZoom:hover {
+
+.iconZoom:hover {
   color: #409fee;
 }
-.videoManage-container .upload-container .form-container .video-form .cover:hover .cover-oprate .iconRefresh {
+
+.iconRefresh {
   margin-top: 15%;
 }
-.videoManage-container .upload-container .form-container .video-form .cover:hover .cover-oprate .iconRefresh:hover {
+
+.iconRefresh:hover {
   color: #00aa7f;
 }
-.videoManage-container .upload-container .form-container .video-form .cover .plus-icon {
-  width: 140px;
-  height: 140px;
-  border: 2px dotted #ccc;
-  border-radius: 5px;
-  color: #999;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
+
+/* Nếu có old video list structure */
+.video-item .delete,
+.video-item .play {
+  visibility: hidden;
 }
-.videoManage-container .upload-container .form-container .video-form .cover .plus-icon:hover {
-  color: #409fee;
-}
-.videoManage-container .upload-container .form-container .video-form .cover .cover-oprate {
-  display: none;
-}
-.videoManage-container .upload-container .form-container .buttonBar {
-  width: 95%;
-  height: 60px;
-  margin: 0 auto;
-  padding: 0 15px;
-  position: absolute;
-  bottom: 0px;
-  border-top: 1px solid #ccc;
-  float: right;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-.videoManage-container .pageBody {
-  width: 100%;
-  min-width: 1000px;
-  height: 100%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.videoManage-container .pageBody .videoFilter {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ddd;
-  padding: 14px;
-  height: 60px;
-}
-.videoManage-container .pageBody .videoList {
-  width: 100%;
-  height: calc(100% - 100px);
-}
-.videoManage-container .pageBody .videoList .video-content {
-  height: 100%;
-  width: 100%;
-  padding: 20px;
-  overflow: scroll;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item {
-  width: 100%;
-  height: 150px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px dashed #b4b4b4;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item:hover {
-  background-color: aliceblue;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item:hover .delete {
+
+.video-item:hover .delete,
+.video-item:hover .play {
+  visibility: visible;
   width: 50px;
   font-size: 20px;
-  visibility: visible;
 }
-.videoManage-container .pageBody .videoList .video-content .video-item:hover .delete:hover {
+
+.video-item:hover .delete:hover {
   color: red;
   cursor: pointer;
 }
-.videoManage-container .pageBody .videoList .video-content .video-item:hover .play {
-  width: 50px;
-  font-size: 20px;
-  visibility: visible;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item:hover .play:hover {
+
+.video-item:hover .play:hover {
   color: lightgreen;
   cursor: pointer;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .cover {
-  width: 260px !important;
-  height: 100%;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .cover .auto-img {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-  cursor: pointer;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .content {
-  padding-left: 10px;
-  width: calc(100% - 290px);
-  height: 100%;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .content .video-name {
-  height: 50px;
-  line-height: 50px;
-  font-size: 20px;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .content .video-name .tag {
-  position: relative;
-  top: -12px;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .content .video-desc {
-  height: 40px;
-  color: #999999;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .content .video-info {
-  height: 20px;
-  color: #999999;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .content .video-info span {
-  margin-right: 10px;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .btn-right {
-  text-align: center;
-  width: 70px;
-}
-.videoManage-container .pageBody .videoList .video-content .video-item .delete,
-.videoManage-container .pageBody .videoList .video-content .video-item .play {
-  width: 30px;
-  visibility: hidden;
 }
 </style>

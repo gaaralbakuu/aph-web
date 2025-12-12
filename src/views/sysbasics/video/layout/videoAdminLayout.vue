@@ -1,7 +1,7 @@
 <template>
-  <el-container style="height: 100%; width: 100%">
-    <div class="videoAdminLayout-wrapper">
-      <div class="navi h-[64px]">
+  <el-container class="size-full overflow-hidden">
+    <div class="flex flex-col size-full">
+      <div class="navi h-16">
         <div class="logo-wrapper">
           <img src="@/assets/logo.png" />
         </div>
@@ -62,7 +62,7 @@
           </div>
         </div>
       </div>
-      <div class="content">
+      <div class="content flex-1 overflow-hidden">
         <router-view></router-view>
       </div>
     </div>
@@ -220,12 +220,7 @@ export default {
 </script>
 
 <style scoped>
-.videoAdminLayout-wrapper {
-  width: 100%;
-  height: 100%;
-  background-color: aliceblue;
-}
-.videoAdminLayout-wrapper .navi {
+.navi {
   width: 100%;
   min-width: 1200px;
   background-color: white;
@@ -233,11 +228,11 @@ export default {
   display: flex;
   align-items: center;
 }
-.videoAdminLayout-wrapper .navi .customActive {
+.navi .customActive {
   background-color: #409fee;
   color: #fff !important;
 }
-.videoAdminLayout-wrapper .navi .logo-wrapper {
+.navi .logo-wrapper {
   width: 15%;
   min-width: 200px;
   height: 100%;
@@ -245,52 +240,52 @@ export default {
   border-right: 1px solid #e1e1e1;
   background-color: white;
 }
-.videoAdminLayout-wrapper .navi .logo-wrapper img {
+.navi .logo-wrapper img {
   width: 40px;
   height: 40px;
   margin-top: 5px;
 }
-.videoAdminLayout-wrapper .navi .menu-wrapper {
+.navi .menu-wrapper {
   width: 64%;
   height: 100%;
   display: flex;
   align-items: center;
   color: #000;
 }
-.videoAdminLayout-wrapper .navi .menu-wrapper .menu {
+.navi .menu-wrapper .menu {
   display: block;
   min-width: 120px;
   height: 100%;
   text-align: center;
   line-height: 50px;
 }
-.videoAdminLayout-wrapper .navi .menu-wrapper .menu:hover {
+.navi .menu-wrapper .menu:hover {
   background-color: #e1e1e1;
 }
-.videoAdminLayout-wrapper .navi .menu-wrapper .menu .link {
+.navi .menu-wrapper .menu .link {
   display: flex;
   width: 100%;
   height: 100%;
   color: #000;
 }
-.videoAdminLayout-wrapper .navi .menu-wrapper .menu .router-link-active {
+.navi .menu-wrapper .menu .router-link-active {
   width: 100%;
   min-width: 100px;
   height: 100%;
   background-color: #409fee;
   color: #fff;
 }
-.videoAdminLayout-wrapper .content {
+.content {
   width: 100%;
   height: calc(100% - 50px);
   display: flex;
 }
-.videoAdminLayout-wrapper .content .menu-container {
+.content .menu-container {
   width: 15%;
   height: 100%;
   background-color: white;
 }
-.videoAdminLayout-wrapper .content .menu-container .menu-label {
+.content .menu-container .menu-label {
   height: 60px;
   padding: 10px;
   font-size: 28px;

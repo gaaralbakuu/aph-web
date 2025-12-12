@@ -1,9 +1,9 @@
 <template>
-  <div class="lesson-container">
-    <div class="menu-container">
+  <div class="flex-1 flex">
+    <div class="h-full w-64 border-r border-gray-200 flex flex-col">
       <div class="menu-label">{{$c.lessonLayout}}</div>
       <div class="menu-wrapper">
-        <el-menu :default-active="defaultIndex">
+        <el-menu :default-active="defaultIndex" class="border-0!">
           <template v-for="nav in menu">
             <!-- 假设我们不直接遍历第一层导航栏，而是遍历其下的子菜单 -->
             <recursive-menu :menu-items="nav.children"></recursive-menu>
@@ -11,7 +11,7 @@
         </el-menu>
       </div>
     </div>
-    <div class="router-view">
+    <div class="flex-1 overflow-hidden flex flex-col">
       <router-view></router-view>
     </div>
   </div>
@@ -74,18 +74,7 @@
 </script>
 
 <style scoped>
-.lesson-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-}
-.lesson-container .menu-container {
-  width: 15%;
-  min-width: 200px;
-  height: 100%;
-  background-color: white;
-}
-.lesson-container .menu-container .menu-label {
+.menu-container .menu-label {
   height: 60px;
   padding: 15px 20px;
   font-size: 28px;
@@ -94,16 +83,16 @@
   border-bottom: 1px solid #e1e1e1;
   border-right: 1px solid #e1e1e1;
 }
-.lesson-container .menu-container .menu-wrapper {
+.menu-container .menu-wrapper {
   width: 100%;
   height: calc(100% - 60px);
 }
-.lesson-container .menu-container .menu-wrapper .link {
+.menu-container .menu-wrapper .link {
   width: 100%;
   height: 100%;
   color: #000;
 }
-.lesson-container .router-view {
+.router-view {
   width: 85%;
   height: 100%;
 }
