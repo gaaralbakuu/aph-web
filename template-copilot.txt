@@ -22,5 +22,6 @@ const { $request } = instance.proxy
 const { l, c } = useLocalI18n('videoUserPlay')
 
 refactor code:
-el-table -> a-table (của antd 1.7) phù hợp cho vue 2.7.16
+z-table (là el-table trong component z-table đã được import) -> a-table (của antd 1.7) phù hợp cho vue 2.7.16
 Không cần phải import vì đã Vue.use trong main rồi
+Không cài thêm package vì nó đã được cài trước đó

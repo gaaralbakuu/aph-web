@@ -364,7 +364,7 @@
             let replyObj = {
               exam_id: this.params.exam_id,
               train_id:this.params.train_id,
-              course_id:this.params.course_id,
+              course_primary_id:this.params.course_id,
               questionnaire_id: qid,
               class_id:this.params.class_id,
               questions: []

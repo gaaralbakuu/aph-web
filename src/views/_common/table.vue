@@ -1,24 +1,29 @@
 <template>
   <div>
     <slot name="research"></slot>
-    <el-table :data="list" row-key="id" v-bind="tableProps" @current-change="currentChange" @row-click="rowClick">
-      <el-table-column v-for="(item, index) in columns" :key="index" show-overflow-tooltip
-        :label="item.title || item.key" :prop="item.key" v-bind="item">
-        <template slot-scope="scope">
-          <slot name="content" v-bind="{row:scope.row,key:item.key,index:scope.$index}">
-            <span>{{scope.row[item.key]}}</span>
-          </slot>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!tableProps.hideOperations" :label="$c.operation" :width="tableProps.opsColWith||86" fixed="right">
-        <template slot-scope="scope">
-          <slot name="operation" v-bind="{row:scope.row,$index:scope.$index}">
-            <a href="#" class="text-blue" @click.prevent="editItem(scope.row,scope.$index)">{{ $c.edit }}</a>&nbsp;
-            <a href="#" class="text-red" @click.prevent="deleteItem(scope.row,scope.$index)">{{ $c.delete }}</a>
-          </slot>
-        </template>
-      </el-table-column>
-    </el-table>
+    <table class="min-w-full divide-y divide-gray-200 border border-gray-300">
+      <thead class="bg-gray-50">
+        <tr>
+          <th v-for="(item, index) in columns" :key="index" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ item.title || item.key }}</th>
+          <th v-if="!tableProps.hideOperations" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $c.operation }}</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr v-for="(row, rowIndex) in list" :key="row.id || rowIndex" @click="rowClick(row)" class="hover:bg-gray-50 cursor-pointer">
+          <td v-for="(item, colIndex) in columns" :key="colIndex" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <slot name="content" v-bind="{row:row,key:item.key,index:rowIndex}">
+              <span>{{ row[item.key] }}</span>
+            </slot>
+          </td>
+          <td v-if="!tableProps.hideOperations" class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <slot name="operation" v-bind="{row:row,$index:rowIndex}">
+              <a href="#" class="text-blue-600 hover:text-blue-900" @click.prevent="editItem(row, rowIndex)">{{ $c.edit }}</a>&nbsp;
+              <a href="#" class="text-red-600 hover:text-red-900" @click.prevent="deleteItem(row, rowIndex)">{{ $c.delete }}</a>
+            </slot>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
