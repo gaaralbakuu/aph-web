@@ -131,65 +131,94 @@
       </a-drawer>
 
       <!-- Modify Video Drawer -->
-      <a-drawer :visible="showObj.modifyVideo" class="upload-container" :title="l.modifyVideo" :width="800" @close="showObj.modifyVideo = false">
-        <div class="form-container">
-          <div class="video-form">
-            <a-form layout="vertical">
-              <a-form-item :label="l.cover">
-                <div class="modifyCover">
-                  <div class="cover">
-                    <img class="auto-img" :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" height="150px" />
-                    <div class="cover-oprate">
-                      <i class="el-icon-zoom-in iconZoom" @click="coverPreview(api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path)"></i>
-                    </div>
-                  </div>
-                  <div class="change"><i class="el-icon-right"></i></div>
-                  <div>
-                    <div v-if="coverObj.imageUrl == ''" class="cover">
-                      <div class="plus-icon" @click="coverSelect('upload')">
-                        <i class="el-icon-upload" style="font-size: 30px"></i>
-                        <div>
-                          {{ l.selectNewCover }}
-                        </div>
-                      </div>
-                    </div>
-                    <div v-else class="cover">
-                      <img class="auto-img" :src="coverObj.imageUrl" height="150px" />
-                      <div class="cover-oprate">
-                        <i class="el-icon-zoom-in iconZoom" @click="coverPreview(coverObj.imageUrl)"></i>
-                        <i class="el-icon-folder-opened iconRefresh" @click="coverSelect('upload')"></i>
-                      </div>
-                    </div>
-                  </div>
+      <a-drawer 
+        :visible="showObj.modifyVideo" 
+        :title="l.modifyVideo" 
+        :width="800"
+        :body-style="{ paddingBottom: '100px' }"
+        @close="showObj.modifyVideo = false">
+        
+        <!-- Cover Comparison -->
+        <div class="w-full mb-8">
+          <h3 class="text-base font-semibold text-gray-800 mb-4">{{ l.cover }}</h3>
+          <div class="flex items-center gap-6">
+            <!-- Old Cover -->
+            <div class="flex flex-col items-center">
+              <div class="relative w-44 h-32 rounded-lg overflow-hidden group mb-2">
+                <img class="w-full h-full object-cover" :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" />
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center items-center">
+                  <button class="p-2 rounded-full bg-white text-gray-800 hover:bg-blue-500 hover:text-white transition-colors" @click="coverPreview(api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path)">
+                    <i class="el-icon-zoom-in"></i>
+                  </button>
                 </div>
-              </a-form-item>
-              <a-form-item :label="l.title">
-                <a-input v-model:value="modifyVideoObj.form.title"></a-input>
-              </a-form-item>
-              <a-row :gutter="16">
-                <a-col :span="18">
-                  <a-form-item :label="l.college">
-                    <a-select v-model:value="modifyVideoObj.form.college_id" :placeholder="l.selectCollegePd">
-                      <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
-                    </a-select>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="6">
-                  <a-form-item :label="l.republic">
-                    <a-switch v-model:checked="modifyVideoObj.form.is_public" :checked-value="1" :un-checked-value="0"></a-switch>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-form-item :label="l.introduce">
-                <a-textarea v-model:value="modifyVideoObj.form.description" :placeholder="l.introducePd" :rows="4"></a-textarea>
-              </a-form-item>
-            </a-form>
-            <div class="buttonBar">
-              <a-button type="primary" @click="handleSubmit('modifyVideo')">{{ l.updateVideo }}</a-button>
-              <a-button danger @click="showObj.modifyVideo = false">{{ l.giveup }}</a-button>
+              </div>
+              <span class="text-xs text-gray-500">{{ l.oldCover }}</span>
+            </div>
+
+            <!-- Arrow -->
+            <div class="text-3xl text-blue-500 mt-4">
+              <i class="el-icon-right"></i>
+            </div>
+
+            <!-- New Cover -->
+            <div class="flex flex-col items-center">
+              <div v-if="coverObj.imageUrl == ''" class="w-44 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all mb-2" @click="coverSelect('upload')">
+                <i class="el-icon-upload text-3xl text-gray-400 mb-2"></i>
+                <div class="text-sm text-gray-600">{{ l.selectNewCover }}</div>
+              </div>
+              <div v-else class="relative w-44 h-32 rounded-lg overflow-hidden group mb-2">
+                <img class="w-full h-full object-cover" :src="coverObj.imageUrl" />
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex justify-around items-center">
+                  <button class="p-2 rounded-full bg-white text-gray-800 hover:bg-blue-500 hover:text-white transition-colors" @click="coverPreview(coverObj.imageUrl)">
+                    <i class="el-icon-zoom-in"></i>
+                  </button>
+                  <button class="p-2 rounded-full bg-white text-gray-800 hover:bg-green-500 hover:text-white transition-colors" @click="coverSelect('upload')">
+                    <i class="el-icon-folder-opened"></i>
+                  </button>
+                </div>
+              </div>
+              <span class="text-xs text-gray-500">{{ l.newCover }}</span>
             </div>
           </div>
         </div>
+
+        <!-- Form Fields -->
+        <div class="w-full space-y-5">
+          <!-- Title -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.title }}</label>
+            <a-input v-model:value="modifyVideoObj.form.title" :placeholder="l.title" class="w-full"></a-input>
+          </div>
+
+          <!-- College & Public Switch -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.college }}</label>
+              <a-select v-model:value="modifyVideoObj.form.college_id" :placeholder="l.selectCollegePd" class="w-full">
+                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+              </a-select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.republic }}</label>
+              <a-switch v-model:checked="modifyVideoObj.form.is_public" :checked-value="1" :un-checked-value="0"></a-switch>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.introduce }}</label>
+            <a-textarea v-model:value="modifyVideoObj.form.description" :placeholder="l.introducePd" :rows="3" class="w-full"></a-textarea>
+          </div>
+        </div>
+
+        
+          <!-- Action Buttons -->
+          <div class="absolute bottom-0 right-0 w-full pr-8 pb-6 pt-4 bg-white border-t border-gray-200 flex justify-end items-center gap-3">
+            <a-button @click="showObj.modifyVideo = false">{{ c.cancel }}</a-button>
+            <a-button type="primary" @click="handleSubmit('modifyVideo')">
+              <i class="el-icon-document-copy mr-1"></i>{{ l.updateVideo }}
+            </a-button>
+          </div>
       </a-drawer>
     </div>
 
@@ -232,45 +261,94 @@
         </div>
       </div>
 
-      <div class="videoList">
-        <div class="video-content">
-          <div class="video-item" v-for="i in videoListObj.list" :key="i.id">
-            <div class="cover">
-              <img class="auto-img" :src="api.videoServer + '/' + i.thumbnail_path" height="130px" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)" />
-            </div>
-            <div class="content">
-              <div class="video-name text-clamp-1">
-                {{ i.title }}
-                <span class="tag">
-                  <a-tag>{{ i.is_public == 1 ? l.public : l.privite }}</a-tag>
-                </span>
-              </div>
-              <div class="video-desc text-clamp-2">
-                {{ l.introduce + '：' + i.description || l.noIntroduce }}
-              </div>
-              <div class="video-info">
-                <span>{{ l.duration }}：{{ formatDuration(i.duration) }}</span>
-              </div>
-              <div class="video-info">
-                <span>{{ l.create_user }}：{{ i.create_user }}</span>
-                <span>{{ l.create_time }}：{{ i.create_time }}</span>
-              </div>
-            </div>
+      <div class="w-full h-full">
+        <!-- Video List Container -->
+        <div class="h-full w-full overflow-y-auto bg-gray-50">
+          <div v-if="videoListObj.list.length === 0" class="flex flex-col items-center justify-center h-96">
+            <i class="el-icon-document text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500 text-lg">{{ c.noData }}</p>
+          </div>
+          <div v-else class="space-y-4 p-6">
+            <!-- Video Item Card -->
+            <div v-for="i in videoListObj.list" :key="i.id" class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
+              <div class="flex h-40">
+                <!-- Thumbnail -->
+                <div class="relative w-56 h-40 flex-shrink-0 bg-gray-900 overflow-hidden group">
+                  <img class="w-full h-full object-cover cursor-pointer" :src="api.videoServer + '/' + i.thumbnail_path" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)" />
+                  <!-- Hover overlay with play button -->
+                  <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
+                    <button v-if="i.url" class="opacity-0 group-hover:opacity-100 transition-opacity w-16 h-16 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center shadow-lg" @click="previewVideo(i)">
+                      <i class="el-icon-video-play text-3xl text-blue-500"></i>
+                    </button>
+                  </div>
+                </div>
 
-            <div class="play" v-show="i.url">
-              <i class="el-icon-video-play" @click="previewVideo(i)"></i>
-            </div>
-            <div class="delete">
-              <i class="el-icon-delete" @click="deleteVideo(i)"></i>
-            </div>
+                <!-- Content -->
+                <div class="flex-grow flex flex-col justify-between p-4">
+                  <!-- Title and Tag -->
+                  <div>
+                    <div class="flex items-center gap-2 mb-2">
+                      <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 flex-grow">{{ i.title }}</h3>
+                      <a-tag :color="i.is_public == 1 ? 'blue' : 'orange'">
+                        {{ i.is_public == 1 ? l.public : l.privite }}
+                      </a-tag>
+                    </div>
+                    <!-- Description -->
+                    <p class="text-sm text-gray-600 line-clamp-2">{{ i.description || l.noIntroduce }}</p>
+                  </div>
 
-            <div class="btn-right">
-              <a-button type="primary" @click="beforeModifyVideo(i)">{{ l.edit }}</a-button>
+                  <!-- Info Row -->
+                  <div class="grid grid-cols-3 gap-4 text-xs text-gray-500">
+                    <div class="flex items-center space-x-1">
+                      <i class="el-icon-time text-blue-500"></i>
+                      <span>{{ formatDuration(i.duration) }}</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                      <i class="el-icon-user text-green-500"></i>
+                      <span>{{ i.create_user }}</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                      <i class="el-icon-document text-orange-500"></i>
+                      <span>{{ i.create_time }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col items-center justify-center gap-2 px-4 py-4 border-l border-gray-100 bg-gray-50 group">
+                  <button 
+                    class="p-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors" 
+                    @click="beforeModifyVideo(i)"
+                    title="编辑">
+                    <i class="el-icon-edit text-lg"></i>
+                  </button>
+                  <button 
+                    class="p-2.5 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors" 
+                    @click="deleteVideo(i)"
+                    title="删除">
+                    <i class="el-icon-delete text-lg"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Pagination -->
+        <div class="bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center">
+          <div class="text-sm text-gray-600">
+            {{ l.total }}：{{ videoListObj.total }}
+          </div>
+          <a-pagination 
+            v-model:current="videoListObj.query.page" 
+            v-model:page-size="videoListObj.query.pageSize" 
+            :total="videoListObj.total" 
+            :page-size-options="['5', '10', '15', '30', '50', '100']"
+            :show-size-changer="true"
+            @change="handlePageChange">
+          </a-pagination>
+        </div>
       </div>
-      <a-pagination v-model:current="videoListObj.query.page" v-model:page-size="videoListObj.query.pageSize" :total="videoListObj.total" :page-size-options="['5', '10', '15', '30', '50', '100']" @change="handlePageChange" style="float: right; margin-top: 16px"></a-pagination>
     </div>
   </div>
 </template>
