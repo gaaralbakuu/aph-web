@@ -1,19 +1,17 @@
 <template>
-  <div class="analyze-container">
-    <div class="menu-container">
-      <div class="menu-label">{{$c.analyzeLayout}}</div>
-      <div class="menu-wrapper">
-        <el-menu :default-active="defaultIndex">
-          <!-- 假设我们不直接遍历第一层导航栏，而是遍历其下的子菜单 -->
-          <recursive-menu
-            v-for="nav in menu"
-            :key="nav.menu_id"
-            :menu-items="nav.children"
-          ></recursive-menu>
-        </el-menu>
+  <div class="flex-1 flex overflow-hidden">
+    <div class="h-full border-r border-gray-200">
+      <div class="w-64 flex flex-col">
+        <div class="menu-label">{{ $c.analyzeLayout }}</div>
+        <div class="menu-wrapper">
+          <el-menu :default-active="defaultIndex" class="border-0!">
+            <!-- 假设我们不直接遍历第一层导航栏，而是遍历其下的子菜单 -->
+            <recursive-menu v-for="nav in menu" :key="nav.menu_id" :menu-items="nav.children"></recursive-menu>
+          </el-menu>
+        </div>
       </div>
     </div>
-    <div class="router-view">
+    <div class="flex-1 overflow-hidden flex flex-col">
       <router-view></router-view>
     </div>
   </div>
@@ -21,7 +19,7 @@
 
 <script>
 export default {
-  name: 'analyzeLayout'
+  name: 'analyzeLayout',
 }
 </script>
 
@@ -52,7 +50,7 @@ const findFirstMenuItem = (menuItems) => {
 
 const updateMenu = (videoMenuData) => {
   // 过滤出包含 'analyze' 的菜单项
-  menu.value = videoMenuData.filter(item => item.resource_path.includes(type))
+  menu.value = videoMenuData.filter((item) => item.resource_path.includes(type))
   // 查找第一个 resource_type 为 'menu' 的 menu_id
   const firstMenuItem = findFirstMenuItem(menu.value)
   defaultIndex.value = firstMenuItem ? firstMenuItem.menu_id : null
@@ -68,39 +66,3 @@ onMounted(() => {
   }
 })
 </script>
-
-<style scoped>
-.analyze-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-}
-.analyze-container .menu-container {
-  width: 15%;
-  min-width: 200px;
-  height: 100%;
-  background-color: white;
-}
-.analyze-container .menu-container .menu-label {
-  height: 60px;
-  padding: 15px 20px;
-  font-size: 28px;
-  font-weight: bold;
-  line-height: 30px;
-  border-bottom: 1px solid #e1e1e1;
-  border-right: 1px solid #e1e1e1;
-}
-.analyze-container .menu-container .menu-wrapper {
-  width: 100%;
-  height: calc(100% - 60px);
-}
-.analyze-container .menu-container .menu-wrapper .link {
-  width: 100%;
-  height: 100%;
-  color: #000;
-}
-.analyze-container .router-view {
-  width: 85%;
-  height: 100%;
-}
-</style>
