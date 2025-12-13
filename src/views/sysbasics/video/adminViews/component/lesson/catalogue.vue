@@ -237,7 +237,7 @@
 
 <script setup>
 import { reactive, computed, onMounted, watch, getCurrentInstance, ref } from 'vue'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useQuery, useMutation } from '@tanstack/vue-query'
 import api from '@/api'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 import store from '@/store'
@@ -247,7 +247,6 @@ const route = instance.proxy.$route
 const router = instance.proxy.$router
 const { $request, $message, $prompt } = instance.proxy
 const { l, c } = useLocalI18n('videoAdminCatalogue')
-const queryClient = useQueryClient()
 
 const multipleSelectionObj = reactive({
   toBeAdded: [],
@@ -325,9 +324,9 @@ const { data: collegeListData, refetch: refetchCollege } = useQuery({
 })
 
 watch(() => collegeListData.value, (newVal) => {
-  if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-  }
+
+console.log(collegeListData.value.data)
+    publicCodeObj.collegeList = collegeListData.value.data ? collegeListData.value.data : []
 })
 
 const { data: catalogListData, refetch: refetchCatalog } = useQuery({
@@ -651,88 +650,3 @@ onMounted(() => {
   refetchCollege()
 })
 </script>
-
-<style>
-.img {
-  width: 80%;
-  height: 60px;
-}
-.img .auto-img {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-  cursor: pointer;
-}
-
-.catalogBox {
-  width: 65%;
-  height: 100%;
-  max-height: 100%;
-}
-.catalogBox .catalog_filter {
-  display: flex;
-  height: 60px;
-  padding: 14px 0px;
-}
-.catalogBox .catalog-tree {
-  height: calc(100% - 60px);
-  max-height: calc(100% - 60px);
-  overflow: scroll;
-}
-
-.custom-tree-node {
-  width: 95%;
-  height: 40px;
-  font-size: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.lesssonCatalogue-container {
-  width: 100%;
-  height: 100%;
-}
-.lesssonCatalogue-container .drawer-container .title {
-  padding: 0px 20px 10px 20px;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  justify-content: space-between;
-}
-.lesssonCatalogue-container .drawer-container .form-container {
-  width: 100%;
-  height: 95%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.lesssonCatalogue-container .drawer-container .form-container .form {
-  width: 90%;
-  margin: 0 auto;
-}
-.lesssonCatalogue-container .drawer-container .form-container .buttonBar {
-  width: 100%;
-  height: 60px;
-  margin: 0 auto;
-  padding: 0 30px;
-  position: absolute;
-  bottom: 0px;
-  border-top: 1px solid #ccc;
-  float: right;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-.lesssonCatalogue-container .org-tree-node {
-  width: 85%;
-  height: 40px;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-</style>
