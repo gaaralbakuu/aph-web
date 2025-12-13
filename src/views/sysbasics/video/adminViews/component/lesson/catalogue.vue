@@ -10,7 +10,7 @@
               <a-form-item :label="l.college">
                 <a-select v-model:value="courseObj.query.college_id" @change="getCourseList"
                   :placeholder="l.emptyIsPublicCourse" allow-clear>
-                  <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+                  <a-select-option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
                 </a-select>
               </a-form-item>
               <a-form-item :label="l.title">
@@ -168,7 +168,7 @@
             </a-form-item>
             <a-form-item :label="l.belongCollege" required>
               <a-select v-model:value="catalogObj.form.college_id" style="width: 100%;" @change="collegeChange">
-                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
+                <a-select-option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
               </a-select>
             </a-form-item>
             <a-form-item :label="l.parentCatalogue" v-show="catalogObj.form.college_id">
@@ -192,7 +192,7 @@
           <a-button type="default" @click="getCollegeList" style="margin-left: 10px;">{{l.refresh}}</a-button>
         </div>
         <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true"
-          :data="publicCodeObj.collegeList" :filter-node-method="filterOrg">
+          :data="collegeList" :filter-node-method="filterOrg">
           <template #default="{ node, data }">
             <div class="org-tree-node" @click="clickCollege(data.id)">
               <span> {{ data.name_label }}</span>
@@ -323,11 +323,7 @@ const { data: collegeListData, refetch: refetchCollege } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
-
-console.log(collegeListData.value.data)
-    publicCodeObj.collegeList = collegeListData.value.data ? collegeListData.value.data : []
-})
+const collegeList = computed(() => collegeListData.value ? collegeListData.value.data : [])
 
 const { data: catalogListData, refetch: refetchCatalog } = useQuery({
   queryKey: ['catalogList', catalogObj.query],
@@ -650,3 +646,88 @@ onMounted(() => {
   refetchCollege()
 })
 </script>
+
+<style>
+.img {
+  width: 80%;
+  height: 60px;
+}
+.img .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+
+.catalogBox {
+  width: 65%;
+  height: 100%;
+  max-height: 100%;
+}
+.catalogBox .catalog_filter {
+  display: flex;
+  height: 60px;
+  padding: 14px 0px;
+}
+.catalogBox .catalog-tree {
+  height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
+  overflow: scroll;
+}
+
+.custom-tree-node {
+  width: 95%;
+  height: 40px;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesssonCatalogue-container {
+  width: 100%;
+  height: 100%;
+}
+.lesssonCatalogue-container .drawer-container .title {
+  padding: 0px 20px 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+}
+.lesssonCatalogue-container .drawer-container .form-container {
+  width: 100%;
+  height: 95%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.lesssonCatalogue-container .drawer-container .form-container .form {
+  width: 90%;
+  margin: 0 auto;
+}
+.lesssonCatalogue-container .drawer-container .form-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.lesssonCatalogue-container .org-tree-node {
+  width: 85%;
+  height: 40px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+</style>
