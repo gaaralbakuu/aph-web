@@ -2,7 +2,7 @@
   <div class="platform-container">
     <div class="platform-filter">
       <el-form inline>
-        <el-form-item :label="$l.timeLabel">
+        <el-form-item :label="l.timeLabel">
           <el-date-picker value-format="yyyy/MM" format='yyyy年MM月' v-model="queryMonth" type="month" :clearable="false"></el-date-picker>
         </el-form-item>
       </el-form>
@@ -10,19 +10,19 @@
     <div class="platform-content">
       <div class="login">
         <div class="item">
-          <div class="l_label" style="color: #9f8254;background-color: #faebcc;">{{ $l.totalStudyTime }}</div>
+          <div class="l_label" style="color: #9f8254;background-color: #faebcc;">{{ l.totalStudyTime }}</div>
           <div class="l_value" style="color: #8a6d47;">{{ formatSecondsToTime(platformData.totalTime) }}</div>
         </div>
         <div class="item">
-          <div class="l_label" style="color: #d67171;background-color: #f2dede;">{{ $l.averageStudyTime }}</div>
+          <div class="l_label" style="color: #d67171;background-color: #f2dede;">{{ l.averageStudyTime }}</div>
           <div class="l_value" style="color: #ad5988;">{{ formatSecondsToTime(platformData.averageTime) }}</div>
         </div>
         <div class="item">
-          <div class="l_label" style="color: #608598;background-color: #d9edf7;">{{ $l.totalStudents }}</div>
+          <div class="l_label" style="color: #608598;background-color: #d9edf7;">{{ l.totalStudents }}</div>
           <div class="l_value" style="color: #46779a;">{{ platformData.loginPerson }}</div>
         </div>
         <div class="item">
-          <div class="l_label" style="color: #3c763d;background-color: #e6fcdd;">{{ $l.totalSessions }}</div>
+          <div class="l_label" style="color: #3c763d;background-color: #e6fcdd;">{{ l.totalSessions }}</div>
           <div class="l_value" style="color: #517e41;">{{ platformData.loginCount }}</div>
         </div>
       </div>
@@ -32,286 +32,292 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
+import api from '@/api'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 import * as echarts from 'echarts';
 
-export default {
-  name: 'videoAdminAnalyzePlatform',
-  data() {
-    return {
-      queryMonth: '',
-      dateObj: {
-        year: 0,
-        month: 0,
-        maxDate: 0
-      },
-      platformData: {
-        totalTime: 0,
-        averageTime: 0,
-        loginPerson: 0,
-        loginCount: 0
-      },
-      dayChartOption: {
-        title: {
-          text: this.$l.dailyStudy,
-          x: "center",
-          top: 10
-        },
-        grid: {
-          left: '3%',
-          right: '3%',
-          containLabel: true
-        },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow"
-          },
-          formatter: (params) => {
-            const data = params[0];
-            const seconds = data.value[1];
+const instance = getCurrentInstance()
+const { $request } = instance.proxy
+const { l } = useLocalI18n('videoAdminAnalyzePlatform')
 
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
+// State
+const queryMonth = ref('')
+const dateObj = reactive({
+  year: 0,
+  month: 0,
+  maxDate: 0
+})
 
-            let formattedTime = '';
-            if (hours > 0) {
-              formattedTime += hours+this.$l.hours;
-            }
-            if (minutes > 0 || hours > 0) {
-              formattedTime += minutes+this.$l.mins;
-            }
-            formattedTime += secs+this.$l.seconds;
+const platformData = reactive({
+  totalTime: 0,
+  averageTime: 0,
+  loginPerson: 0,
+  loginCount: 0
+})
 
-            return `${data.name}<br/>${this.$l.totalStudyTime}: ${formattedTime}`;
-          }
-        },
-        xAxis: {
-          type: "category"
-        },
-        yAxis: [{
-          type: 'value',
-          name: this.$l.timeLabel,
-          position: 'left',
-        }],
-        dataZoom: [{
-          type: "slider",
-        }],
-        dataset: {
-          source: [
-            ["Date", "PlayTime"]
-          ]
-        },
-        series: [{
-          type: "bar",
-          yAxisIndex: 0
-        }]
-      },
-      monthChartOption: {
-        title: {
-          text: this.$l.monthlyStudy,
-          x: "center",
-          top: 10
-        },
-        grid: {
-          left: '3%',
-          right: '3%',
-          containLabel: true
-        },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow"
-          },
-          formatter: (params) => {
-            const data = params[0];
-            const seconds = data.value[1];
-
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
-
-            let formattedTime = '';
-            if (hours > 0) {
-              formattedTime += hours+this.$l.hours;
-            }
-            if (minutes > 0 || hours > 0) {
-              formattedTime += minutes+this.$l.mins;
-            }
-            formattedTime += secs+this.$l.seconds;
-
-            return `${data.name}<br/>${this.$l.totalStudyTime}: ${formattedTime}`;
-          }
-        },
-        xAxis: {
-          type: "category"
-        },
-        yAxis: [{
-          type: 'value',
-          name: this.$l.timeLabel,
-          position: 'left',
-        }],
-        dataZoom: [{
-          type: "slider",
-        }],
-        dataset: {
-          source: [
-            ["Date", "PlayTime"]
-          ]
-        },
-        series: [{
-          type: "bar",
-          yAxisIndex: 0
-        }]
-      },
-    };
+const dayChartOption = reactive({
+  title: {
+    text: l.dailyStudy,
+    x: "center",
+    top: 10
   },
-
-  watch: {
-    queryMonth(newVal, oldVal) {
-      if (newVal) {
-        this.dateObj.year = Number(newVal.split('/')[0]);
-        this.dateObj.month = Number(newVal.split('/')[1]);
-        this.dateObj.maxDate = new Date(this.dateObj.year, this.dateObj.month, 0).getDate();
-        this.getMonthLearningTime();
-        this.getDayChartData();
-
-        let oldYear = Number(oldVal.split('/')[0]);
-        if (this.dateObj.year !== oldYear) {
-          this.getMonthChartData();
-        }
-      }
-    }
+  grid: {
+    left: '3%',
+    right: '3%',
+    containLabel: true
   },
-
-  methods: {
-    initQueryMonth() {
-      const date = new Date();
-      this.dateObj.year = date.getFullYear();
-      this.dateObj.month = date.getMonth() + 1;
-      this.dateObj.maxDate = new Date(this.dateObj.year, this.dateObj.month, 0).getDate();
-      this.queryMonth = `${this.dateObj.year}/${String(this.dateObj.month).padStart(2, '0')}`;
+  tooltip: {
+    trigger: "axis",
+    axisPointer: {
+      type: "shadow"
     },
-
-    getMonthLearningTime() {
-      this.$request(this.$api.videoServer + '/Video/VideoAnalyze/AnalyzeLearnTime', {
-        analyze_type: 1,
-        start_date: this.queryMonth + '/01',
-        end_date: this.queryMonth + '/' + this.dateObj.maxDate,
-        page: 1,
-        pageSize: 999
-      }).then(r => {
-        if (r.status && r.data.length > 0) {
-          this.platformData.totalTime = r.data[0].TotalPlayTime;
-          this.getLoginNumber(0);
-          this.getLoginNumber(1);
-        } else {
-          this.platformData.totalTime = 0;
-          this.platformData.averageTime = 0;
-          this.platformData.loginPerson = 0;
-          this.platformData.loginCount = 0;
-        }
-      });
-    },
-
-    getDayChartData() {
-      this.$request(this.$api.videoServer + '/Video/VideoAnalyze/AnalyzeLearnTime', {
-        analyze_type: 0,
-        start_date: this.queryMonth + '/01',
-        end_date: this.queryMonth + '/' + this.dateObj.maxDate,
-        page: 1,
-        pageSize: 999
-      }).then(r => {
-        if (r.status) {
-          this.dayChartOption.dataset.source = [["Date", "PlayTime"]];
-          if (r.data.length > 0) {
-            r.data.forEach(i => {
-              this.dayChartOption.dataset.source.push([i.Date, i.TotalPlayTime]);
-            });
-          }
-          this.initDayChart();
-        }
-      });
-    },
-
-    getMonthChartData() {
-      this.$request(this.$api.videoServer + '/Video/VideoAnalyze/AnalyzeLearnTime', {
-        analyze_type: 1,
-        start_date: this.dateObj.year + '/01/01',
-        end_date: this.dateObj.year + '/12/31',
-        page: 1,
-        pageSize: 999
-      }).then(r => {
-        if (r.status) {
-          this.monthChartOption.dataset.source = [["Date", "PlayTime"]];
-          if (r.data.length > 0) {
-            r.data.forEach(i => {
-              this.monthChartOption.dataset.source.push([i.Date, i.TotalPlayTime]);
-            });
-          }
-          this.initMonthChart();
-        }
-      });
-    },
-
-    getLoginNumber(type) {
-      this.$request(this.$api.videoServer + '/Video/VideoAnalyze/AnalyzeNumber', {
-        analyze_type: type,
-        start_date: this.queryMonth + '/01',
-        end_date: this.queryMonth + '/' + this.dateObj.maxDate,
-      }).then(r => {
-        if (r.status) {
-          if (type === 0) {
-            this.platformData.loginPerson = r.data.num;
-          }
-          if (type === 1) {
-            this.platformData.loginCount = r.data.num;
-            this.platformData.averageTime = parseInt(this.platformData.totalTime / r.data.num);
-          }
-        }
-      });
-    },
-
-    initDayChart() {
-      const myChart = echarts.init(document.getElementById("dayChart"));
-      myChart.clear();
-      // 动态更新标题和 y 轴名称
-      this.dayChartOption.title.text = `${this.dateObj.month}${this.$l.month}${this.$l.dailyStudy}`;
-      this.dayChartOption.yAxis[0].name = this.$l.timeLabel;
-      myChart.setOption(this.dayChartOption);
-    },
-
-    initMonthChart() {
-      const myChart = echarts.init(document.getElementById("monthChart"));
-      myChart.clear();
-      // 动态更新标题和 y 轴名称
-      this.monthChartOption.title.text = `${this.dateObj.year}${this.$l.year}${this.$l.monthlyStudy}`;
-      this.monthChartOption.yAxis[0].name = this.$l.timeLabel;
-      myChart.setOption(this.monthChartOption);
-    },
-
-    formatSecondsToTime(seconds) {
-      if (typeof seconds !== 'number' || isNaN(seconds) || seconds < 0) {
-        return '0分0秒';
-      }
+    formatter: (params) => {
+      const data = params[0];
+      const seconds = data.value[1];
 
       const hours = Math.floor(seconds / 3600);
-      const mins = Math.floor((seconds % 3600) / 60);
+      const minutes = Math.floor((seconds % 3600) / 60);
       const secs = seconds % 60;
 
+      let formattedTime = '';
       if (hours > 0) {
-        return `${hours}小时${mins}分${secs}秒`;
-      } else {
-        return `${mins}分${secs}秒`;
+        formattedTime += hours+l.hours;
       }
+      if (minutes > 0 || hours > 0) {
+        formattedTime += minutes+l.mins;
+      }
+      formattedTime += secs+l.seconds;
+
+      return `${data.name}<br/>${l.totalStudyTime}: ${formattedTime}`;
     }
   },
+  xAxis: {
+    type: "category"
+  },
+  yAxis: [{
+    type: 'value',
+    name: l.timeLabel,
+    position: 'left',
+  }],
+  dataZoom: [{
+    type: "slider",
+  }],
+  dataset: {
+    source: [
+      ["Date", "PlayTime"]
+    ]
+  },
+  series: [{
+    type: "bar",
+    yAxisIndex: 0
+  }]
+})
 
-  mounted() {
-    this.initQueryMonth();
+const monthChartOption = reactive({
+  title: {
+    text: l.monthlyStudy,
+    x: "center",
+    top: 10
+  },
+  grid: {
+    left: '3%',
+    right: '3%',
+    containLabel: true
+  },
+  tooltip: {
+    trigger: "axis",
+    axisPointer: {
+      type: "shadow"
+    },
+    formatter: (params) => {
+      const data = params[0];
+      const seconds = data.value[1];
+
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+
+      let formattedTime = '';
+      if (hours > 0) {
+        formattedTime += hours+l.hours;
+      }
+      if (minutes > 0 || hours > 0) {
+        formattedTime += minutes+l.mins;
+      }
+      formattedTime += secs+l.seconds;
+
+      return `${data.name}<br/>${l.totalStudyTime}: ${formattedTime}`;
+    }
+  },
+  xAxis: {
+    type: "category"
+  },
+  yAxis: [{
+    type: 'value',
+    name: l.timeLabel,
+    position: 'left',
+  }],
+  dataZoom: [{
+    type: "slider",
+  }],
+  dataset: {
+    source: [
+      ["Date", "PlayTime"]
+    ]
+  },
+  series: [{
+    type: "bar",
+    yAxisIndex: 0
+  }]
+})
+
+// Watchers
+watch(queryMonth, (newVal, oldVal) => {
+  if (newVal) {
+    dateObj.year = Number(newVal.split('/')[0]);
+    dateObj.month = Number(newVal.split('/')[1]);
+    dateObj.maxDate = new Date(dateObj.year, dateObj.month, 0).getDate();
+    getMonthLearningTime();
+    getDayChartData();
+
+    if (oldVal) {
+        let oldYear = Number(oldVal.split('/')[0]);
+        if (dateObj.year !== oldYear) {
+          getMonthChartData();
+        }
+    } else {
+        getMonthChartData();
+    }
   }
-};
+})
+
+// Functions
+const initQueryMonth = () => {
+  const date = new Date();
+  dateObj.year = date.getFullYear();
+  dateObj.month = date.getMonth() + 1;
+  dateObj.maxDate = new Date(dateObj.year, dateObj.month, 0).getDate();
+  queryMonth.value = `${dateObj.year}/${String(dateObj.month).padStart(2, '0')}`;
+}
+
+const getMonthLearningTime = () => {
+  $request(api.videoServer + '/Video/VideoAnalyze/AnalyzeLearnTime', {
+    analyze_type: 1,
+    start_date: queryMonth.value + '/01',
+    end_date: queryMonth.value + '/' + dateObj.maxDate,
+    page: 1,
+    pageSize: 999
+  }).then(r => {
+    if (r.status && r.data.length > 0) {
+      platformData.totalTime = r.data[0].TotalPlayTime;
+      getLoginNumber(0);
+      getLoginNumber(1);
+    } else {
+      platformData.totalTime = 0;
+      platformData.averageTime = 0;
+      platformData.loginPerson = 0;
+      platformData.loginCount = 0;
+    }
+  });
+}
+
+const getDayChartData = () => {
+  $request(api.videoServer + '/Video/VideoAnalyze/AnalyzeLearnTime', {
+    analyze_type: 0,
+    start_date: queryMonth.value + '/01',
+    end_date: queryMonth.value + '/' + dateObj.maxDate,
+    page: 1,
+    pageSize: 999
+  }).then(r => {
+    if (r.status) {
+      dayChartOption.dataset.source = [["Date", "PlayTime"]];
+      if (r.data.length > 0) {
+        r.data.forEach(i => {
+          dayChartOption.dataset.source.push([i.Date, i.TotalPlayTime]);
+        });
+      }
+      initDayChart();
+    }
+  });
+}
+
+const getMonthChartData = () => {
+  $request(api.videoServer + '/Video/VideoAnalyze/AnalyzeLearnTime', {
+    analyze_type: 1,
+    start_date: dateObj.year + '/01/01',
+    end_date: dateObj.year + '/12/31',
+    page: 1,
+    pageSize: 999
+  }).then(r => {
+    if (r.status) {
+      monthChartOption.dataset.source = [["Date", "PlayTime"]];
+      if (r.data.length > 0) {
+        r.data.forEach(i => {
+          monthChartOption.dataset.source.push([i.Date, i.TotalPlayTime]);
+        });
+      }
+      initMonthChart();
+    }
+  });
+}
+
+const getLoginNumber = (type) => {
+  $request(api.videoServer + '/Video/VideoAnalyze/AnalyzeNumber', {
+    analyze_type: type,
+    start_date: queryMonth.value + '/01',
+    end_date: queryMonth.value + '/' + dateObj.maxDate,
+  }).then(r => {
+    if (r.status) {
+      if (type === 0) {
+        platformData.loginPerson = r.data.num;
+      }
+      if (type === 1) {
+        platformData.loginCount = r.data.num;
+        platformData.averageTime = parseInt(platformData.totalTime / r.data.num);
+      }
+    }
+  });
+}
+
+const initDayChart = () => {
+  const myChart = echarts.init(document.getElementById("dayChart"));
+  myChart.clear();
+  // 动态更新标题和 y 轴名称
+  dayChartOption.title.text = `${dateObj.month}${l.month}${l.dailyStudy}`;
+  dayChartOption.yAxis[0].name = l.timeLabel;
+  myChart.setOption(dayChartOption);
+}
+
+const initMonthChart = () => {
+  const myChart = echarts.init(document.getElementById("monthChart"));
+  myChart.clear();
+  // 动态更新标题和 y 轴名称
+  monthChartOption.title.text = `${dateObj.year}${l.year}${l.monthlyStudy}`;
+  monthChartOption.yAxis[0].name = l.timeLabel;
+  myChart.setOption(monthChartOption);
+}
+
+const formatSecondsToTime = (seconds) => {
+  if (typeof seconds !== 'number' || isNaN(seconds) || seconds < 0) {
+    return '0分0秒';
+  }
+
+  const hours = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}小时${mins}分${secs}秒`;
+  } else {
+    return `${mins}分${secs}秒`;
+  }
+}
+
+onMounted(() => {
+  initQueryMonth();
+})
 </script>
 
 <style scoped>
