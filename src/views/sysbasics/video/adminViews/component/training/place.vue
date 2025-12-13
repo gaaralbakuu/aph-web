@@ -2,31 +2,31 @@
   <div>
     <el-drawer class="drawer-container" :visible.sync="showObj.add_show" :wrapperClosable="false" size="40%"
       :before-close="getTrainPlaceList">
-      <div slot="title" class="title">{{$l.addTrainingPlace}}</div>
+      <div slot="title" class="title">{{l.addTrainingPlace}}</div>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
-            <el-form-item :label="$l.chineseName" required>
+            <el-form-item :label="l.chineseName" required>
               <el-input v-model="addTrainPlaceList.list.name_zh"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.traditionalChineseName">
+            <el-form-item :label="l.traditionalChineseName">
               <el-input v-model="addTrainPlaceList.list.name_tw"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.englishName">
+            <el-form-item :label="l.englishName">
               <el-input v-model="addTrainPlaceList.list.name_en"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.vietnameseName">
+            <el-form-item :label="l.vietnameseName">
               <el-input v-model="addTrainPlaceList.list.name_vi"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.location" required>
+            <el-form-item :label="l.location" required>
               <el-input v-model="addTrainPlaceList.list.place"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.capacity">
+            <el-form-item :label="l.capacity">
               <el-input v-model="addTrainPlaceList.list.people_number"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.equipmentDetails">
+            <el-form-item :label="l.equipmentDetails">
               <el-checkbox :indeterminate="addTrainPlaceList.isIndeterminate" v-model="addTrainPlaceList.checkAll"
-                @change="addHandleCheckAllChange">{{$l.selectAll}}</el-checkbox>
+                @change="addHandleCheckAllChange">{{l.selectAll}}</el-checkbox>
               <div style="margin: 15px 0;"></div>
               <el-checkbox-group v-model="addTrainPlaceList.checkedEquipment" @change="addHandleCheckedCitiesChange">
                 <el-checkbox v-for="(item,index) in equipmentOptions" :label="item" :key="index">{{item}}</el-checkbox>
@@ -35,39 +35,39 @@
           </el-form>
         </div>
         <div class="buttonBar">
-          <el-button type="primary" @click="submmitAddLecturer">{{$l.submit}}</el-button>
-          <el-button type="danger" @click="showObj.add_show = false">{{$l.close}}</el-button>
+          <el-button type="primary" @click="submmitAddLecturer">{{l.submit}}</el-button>
+          <el-button type="danger" @click="showObj.add_show = false">{{l.close}}</el-button>
         </div>
       </div>
     </el-drawer>
 
     <el-drawer class="drawer-container" :visible.sync="showObj.edit_show" :wrapperClosable="false" size="40%"
       :before-close="getTrainPlaceList">
-      <div slot="title" class="title">{{$l.editTrainingPlace}}</div>
+      <div slot="title" class="title">{{l.editTrainingPlace}}</div>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
-            <el-form-item :label="$l.chineseName" required>
+            <el-form-item :label="l.chineseName" required>
               <el-input v-model="editTrainPlaceList.list.name_zh"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.traditionalChineseName">
+            <el-form-item :label="l.traditionalChineseName">
               <el-input v-model="editTrainPlaceList.list.name_tw"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.englishName">
+            <el-form-item :label="l.englishName">
               <el-input v-model="editTrainPlaceList.list.name_en"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.vietnameseName">
+            <el-form-item :label="l.vietnameseName">
               <el-input v-model="editTrainPlaceList.list.name_vi"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.location" required>
+            <el-form-item :label="l.location" required>
               <el-input v-model="editTrainPlaceList.list.place"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.capacity">
+            <el-form-item :label="l.capacity">
               <el-input v-model="editTrainPlaceList.list.people_number"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.equipmentDetails">
+            <el-form-item :label="l.equipmentDetails">
               <el-checkbox :indeterminate="editTrainPlaceList.isIndeterminate" v-model="editTrainPlaceList.checkAll"
-                @change="editHandleCheckAllChange">{{$l.selectAll}}</el-checkbox>
+                @change="editHandleCheckAllChange">{{l.selectAll}}</el-checkbox>
               <div style="margin: 15px 0;"></div>
               <el-checkbox-group v-model="editTrainPlaceList.checkedEquipment" @change="editHandleCheckedCitiesChange">
                 <el-checkbox v-for="(item,index) in equipmentOptions" :label="item" :key="index">{{item}}</el-checkbox>
@@ -75,8 +75,8 @@
             </el-form-item>
           </el-form>
           <div class="buttonBar">
-            <el-button type="primary" @click="submmitEditLecturer">{{$l.submit}}</el-button>
-            <el-button type="danger" @click="showObj.edit_show = false">{{$l.close}}</el-button>
+            <el-button type="primary" @click="submmitEditLecturer">{{l.submit}}</el-button>
+            <el-button type="danger" @click="showObj.edit_show = false">{{l.close}}</el-button>
           </div>
         </div>
       </div>
@@ -84,32 +84,32 @@
 
     <div style="width: 100%;height: 60px;padding: 15px;background-color: white;border-bottom: 1px #eee solid;">
       <el-form :model="from" inline>
-        <el-form-item :label="$l.name">
-          <el-input :placeholder="$l.inputKeywordFilter" v-model="trainPlaceList.form.name" clearable>
+        <el-form-item :label="l.name">
+          <el-input :placeholder="l.inputKeywordFilter" v-model="trainPlaceList.form.name" clearable>
           </el-input>
         </el-form-item>
-        <el-form-item :label="$l.location">
-          <el-input :placeholder="$l.inputKeywordFilter" v-model="trainPlaceList.form.place" clearable>
+        <el-form-item :label="l.location">
+          <el-input :placeholder="l.inputKeywordFilter" v-model="trainPlaceList.form.place" clearable>
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="trainPlaceList.form.is_valid" :placeholder="$l.pleaseSelect" clearable style="width: 120px">
+          <el-select v-model="trainPlaceList.form.is_valid" :placeholder="l.pleaseSelect" clearable style="width: 120px">
             <el-option v-for="item in trainPlaceList.options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="getTrainPlaceList">{{$l.search}}</el-button>
+          <el-button type="success" @click="getTrainPlaceList">{{l.search}}</el-button>
         </el-form-item>
-        <el-button type="primary" class="fr" @click="addLecturer">{{$l.create}}</el-button>
+        <el-button type="primary" class="fr" @click="addLecturer">{{l.create}}</el-button>
       </el-form>
     </div>
     <div style="height: calc(100% - 60px);">
-      <a-table :dataSource="trainPlaceList.data" :columns="tableColumns" :scroll="{ y: 720 }" ref="userTable">
+      <a-table :dataSource="trainPlaceList.data" :columns="tableColumns" :scroll="{ y: 720 }" ref="userTable" :rowKey="record => record.id" :pagination="false">
         <template slot="operation" slot-scope="text, record">
-          <el-button @click="editLecturer(record)" type="text" size="small">{{ $l.edit }}</el-button>
-          <el-button v-if="record.is_valid == 'Y'" @click="deleteLecturer(record)" type="text" size="small" style="color: red">{{ $l.disable }}</el-button>
-          <el-button v-else @click="deleteLecturer(record)" type="text" size="small" style="color: rgb(58, 188, 19)">{{ $l.enable }}</el-button>
+          <el-button @click="editLecturer(record)" type="text" size="small">{{ l.edit }}</el-button>
+          <el-button v-if="record.is_valid == 'Y'" @click="deleteLecturer(record)" type="text" size="small" style="color: red">{{ l.disable }}</el-button>
+          <el-button v-else @click="deleteLecturer(record)" type="text" size="small" style="color: rgb(58, 188, 19)">{{ l.enable }}</el-button>
         </template>
       </a-table>
 
@@ -120,254 +120,255 @@
   </div>
 </template>
 
-<script>
-  import {
-    zPagination,
-    _
-  } from '@/views/_common'
-  export default {
-    name: 'videoAdminPlace',
-    components: {
-      zPagination,
-    },
-    data() {
-      return {
-        equipmentOptions: [this.$l.computer, this.$l.projector, this.$l.microphone, this.$l.soundSystem, this.$l.whiteboard],
-        pagination: {
-          layout: 'prev, pager, next, jumper, ->, total,sizes',
-          pagerCount: 7,
-          pageSizes: [10, 15, 20, 30, 40, 50, 100],
-        },
-        from: {},
-        showObj: {
-          add_show: false,
-          edit_show: false,
-        },
-        trainPlaceList: {
-          total: 0,
-          data: [],
-          form: {
-            is_valid: 'Y',
-            page: 1,
-            pageSize: 15,
-          },
-          options: [{
-              value: 'Y',
-              label: this.$l.enabled,
-            },
-            {
-              value: 'N',
-              label: this.$l.disabled,
-            },
-          ],
-          columns: [
-            {
-              title: this.$l.name,
-              key: 'name_zh',
-            },
-            {
-              title: this.$l.location,
-              key: 'place',
-            },
-            {
-              title: this.$l.equipmentDetails,
-              key: 'equipment',
-            },
-            {
-              title: this.$l.capacity,
-              key: 'people_number',
-              width: 100,
-            },
-            {
-              title: this.$l.status,
-              key: 'is_valid',
-              width: 100,
-            },
-            {
-              title: this.$l.modifiedBy,
-              key: 'modify_user',
-              width: 100,
-            },
-            {
-              title: this.$l.modifiedDepartment,
-              key: 'modify_dept',
-              width: 120,
-            },
-            {
-              title: this.$l.modifiedTime,
-              key: 'modify_time',
-              width: 150,
-            },
-          ],
-        },
-        addTrainPlaceList: {
-          list: {},
-          checkAll: false,
-          isIndeterminate: true,
-          checkedEquipment: [],
-        },
-        editTrainPlaceList: {
-          list: {},
-          checkAll: false,
-          isIndeterminate: true,
-          checkedEquipment: [],
-        },
-      }
-    },
-    computed: {
-      tableColumns() {
-        return [
-          {
-            title: this.$l.serialNumber,
-            dataIndex: 'index',
-            key: 'index',
-            customRender: (text, record, index) => index + 1
-          },
-          ...this.trainPlaceList.columns.map(col => ({
-            title: col.title,
-            dataIndex: col.key,
-            key: col.key,
-            width: col.width
-          })),
-          {
-            title: this.$l.operation,
-            key: 'operation',
-            fixed: 'right',
-            width: 100,
-            scopedSlots: { customRender: 'operation' }
-          }
-        ]
-      }
-    },
-    watch: {},
+<script setup>
+import { reactive, ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import api from '@/api'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import zPagination from '@/views/_common/Pagination.vue'
+import _ from 'lodash'
 
-    methods: {
-      getTrainPlaceList() {
-        this.$request(
-            this.$api.videoServer + '/Video/VideoTrain/getTrainPlace',
-            this.trainPlaceList.form
-          )
-          .then((r) => {
-            this.trainPlaceList.data = r.data.list
-            this.trainPlaceList.total = r.data.total
-            this.showObj.add_show = false
-          })
-          .catch((e) => {
-            this.$message.error(e.message)
-          })
-      },
-      addHandleCheckAllChange(val) {
-        this.addTrainPlaceList.checkedEquipment = val ? this.equipmentOptions : [];
-        this.addTrainPlaceList.isIndeterminate = false;
-      },
-      addHandleCheckedCitiesChange(value) {
-        let checkedCount = value.length;
-        this.addTrainPlaceList.checkAll = checkedCount === this.equipmentOptions.length;
-        this.addTrainPlaceList.isIndeterminate = checkedCount > 0 && checkedCount < this.equipmentOptions.length;
-      },
-      addLecturer() {
-        this.showObj.add_show = true
-      },
-      submmitAddLecturer() {
-        this.$set(this.addTrainPlaceList.list, "equipment", this.addTrainPlaceList.checkedEquipment)
-        if (!this.addTrainPlaceList.list.name_zh)
-          return this.$message.error(this.$l.nameCannotBeEmpty)
-        if (!this.addTrainPlaceList.list.place)
-          return this.$message.error(this.$l.locationCannotBeEmpty)
+const instance = getCurrentInstance()
+const { $request, $message, $confirm } = instance.proxy
+const { l, c } = useLocalI18n('videoAdminPlace')
+const queryClient = useQueryClient()
 
-        this.$request(
-            this.$api.videoServer + '/Video/VideoTrain/addTrainPlace',
-            this.addTrainPlaceList.list,
-            'post'
-          )
-          .then((r) => {
-            this.$message.success(this.$l.operationSuccess)
-            this.addTrainPlaceList.list = {}
-            this.addTrainPlaceList.checkedEquipment = []
-            this.getTrainPlaceList()
-            this.showObj.add_show = false
-          })
-          .catch(() => {})
-      },
-      editHandleCheckAllChange(val) {
-        this.editTrainPlaceList.checkedEquipment = val ? this.equipmentOptions : [];
-        this.editTrainPlaceList.isIndeterminate = false;
-      },
-      editHandleCheckedCitiesChange(value) {
-        let checkedCount = value.length;
-        this.editTrainPlaceList.checkAll = checkedCount === this.equipmentOptions.length;
-        this.editTrainPlaceList.isIndeterminate = checkedCount > 0 && checkedCount < this.equipmentOptions.length;
-      },
-      editLecturer(row) {
-        this.editTrainPlaceList.list = _.cloneDeep(row)
-        this.editTrainPlaceList.checkedEquipment = this.editTrainPlaceList.list.equipment?.split(";") || []
-        this.showObj.edit_show = true
-      },
-      submmitEditLecturer() {
-        this.$set(this.editTrainPlaceList.list, "equipment", this.editTrainPlaceList.checkedEquipment)
-        this.$confirm(this.$l.confirmModify, this.$l.trainingPlaceManagement, {
-            confirmButtonText: this.$l.confirm,
-            cancelButtonText: this.$l.cancel,
-            type: 'warning',
-          })
-          .then(() => {
-            this.$request(
-                this.$api.videoServer + '/Video/VideoTrain/addTrainPlace',
-                this.editTrainPlaceList.list,
-                'post'
-              )
-              .then((r) => {
-                this.$message.success(this.$l.operationSuccess)
-                this.getTrainPlaceList()
-                this.showObj.edit_show = false
-              })
-              .catch(() => {})
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: this.$l.operationCanceled,
-            })
-          })
-      },
-      deleteLecturer(row) {
-        let item = _.cloneDeep(row)
-        item.equipment = item.equipment.split(";")
-        item.is_valid = item.is_valid == "Y" ? "N" : "Y"
-        this.$confirm(this.$l.confirmStatusChange, this.$l.trainingPlaceManagement, {
-            confirmButtonText: this.$l.confirm,
-            cancelButtonText: this.$l.cancel,
-            type: 'warning',
-          })
-          .then(() => {
-            this.$request(
-                this.$api.videoServer + '/Video/VideoTrain/addTrainPlace',
-                item,
-                'post'
-              )
-              .then((r) => {
-                this.$message.success(this.$l.operationSuccess)
-                this.getTrainPlaceList()
-              })
-              .catch(() => {
-                this.$message({
-                  type: 'error',
-                  message: this.$l.operationFailed,
-                })
-              })
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: this.$l.operationCanceled,
-            })
-          })
-      },
+// State
+const equipmentOptions = [l.computer, l.projector, l.microphone, l.soundSystem, l.whiteboard]
+
+const from = reactive({})
+
+const showObj = reactive({
+  add_show: false,
+  edit_show: false,
+})
+
+const pagination = reactive({
+  layout: 'prev, pager, next, jumper, ->, total,sizes',
+  pagerCount: 7,
+  pageSizes: [10, 15, 20, 30, 40, 50, 100],
+})
+
+const trainPlaceList = reactive({
+  total: 0,
+  data: [],
+  form: {
+    is_valid: 'Y',
+    page: 1,
+    pageSize: 15,
+    name: '',
+    place: ''
+  },
+  options: [{
+      value: 'Y',
+      label: l.enabled,
     },
-    mounted() {
-      this.getTrainPlaceList()
+    {
+      value: 'N',
+      label: l.disabled,
     },
+  ],
+  columns: [
+    {
+      title: l.name,
+      key: 'name_zh',
+    },
+    {
+      title: l.location,
+      key: 'place',
+    },
+    {
+      title: l.equipmentDetails,
+      key: 'equipment',
+    },
+    {
+      title: l.capacity,
+      key: 'people_number',
+      width: 100,
+    },
+    {
+      title: l.status,
+      key: 'is_valid',
+      width: 100,
+    },
+    {
+      title: l.modifiedBy,
+      key: 'modify_user',
+      width: 100,
+    },
+    {
+      title: l.modifiedDepartment,
+      key: 'modify_dept',
+      width: 120,
+    },
+    {
+      title: l.modifiedTime,
+      key: 'modify_time',
+      width: 150,
+    },
+  ],
+})
+
+const addTrainPlaceList = reactive({
+  list: {},
+  checkAll: false,
+  isIndeterminate: true,
+  checkedEquipment: [],
+})
+
+const editTrainPlaceList = reactive({
+  list: {},
+  checkAll: false,
+  isIndeterminate: true,
+  checkedEquipment: [],
+})
+
+// Computed
+const tableColumns = computed(() => {
+  return [
+    {
+      title: l.serialNumber,
+      dataIndex: 'index',
+      key: 'index',
+      customRender: (text, record, index) => index + 1
+    },
+    ...trainPlaceList.columns.map(col => ({
+      title: col.title,
+      dataIndex: col.key,
+      key: col.key,
+      width: col.width
+    })),
+    {
+      title: l.operation,
+      key: 'operation',
+      fixed: 'right',
+      width: 100,
+      scopedSlots: { customRender: 'operation' }
+    }
+  ]
+})
+
+// Queries
+const { data: placeData, refetch: refetchPlaceList } = useQuery({
+  queryKey: ['placeList', trainPlaceList.form],
+  queryFn: () => $request(api.videoServer + '/Video/VideoTrain/getTrainPlace', trainPlaceList.form),
+  enabled: false
+})
+
+watch(() => placeData.value, (newVal) => {
+  if (newVal && newVal.httpCode == 200) {
+    trainPlaceList.data = newVal.data.list
+    trainPlaceList.total = newVal.data.total
   }
+})
+
+// Mutations
+const addOrModifyPlaceMutation = useMutation({
+  mutationFn: (data) => $request(api.videoServer + '/Video/VideoTrain/addTrainPlace', data, 'post'),
+  onSuccess: (r) => {
+    $message.success(l.operationSuccess)
+    refetchPlaceList()
+  }
+})
+
+// Functions
+const getTrainPlaceList = () => {
+  refetchPlaceList()
+  showObj.add_show = false
+  showObj.edit_show = false
+}
+
+const addHandleCheckAllChange = (val) => {
+  addTrainPlaceList.checkedEquipment = val ? equipmentOptions : [];
+  addTrainPlaceList.isIndeterminate = false;
+}
+
+const addHandleCheckedCitiesChange = (value) => {
+  let checkedCount = value.length;
+  addTrainPlaceList.checkAll = checkedCount === equipmentOptions.length;
+  addTrainPlaceList.isIndeterminate = checkedCount > 0 && checkedCount < equipmentOptions.length;
+}
+
+const addLecturer = () => {
+  addTrainPlaceList.list = {}
+  addTrainPlaceList.checkedEquipment = []
+  addTrainPlaceList.checkAll = false
+  addTrainPlaceList.isIndeterminate = true
+  showObj.add_show = true
+}
+
+const submmitAddLecturer = () => {
+  addTrainPlaceList.list.equipment = addTrainPlaceList.checkedEquipment
+  if (!addTrainPlaceList.list.name_zh)
+    return $message.error(l.nameCannotBeEmpty)
+  if (!addTrainPlaceList.list.place)
+    return $message.error(l.locationCannotBeEmpty)
+
+  addOrModifyPlaceMutation.mutate(addTrainPlaceList.list, {
+    onSuccess: () => {
+      addTrainPlaceList.list = {}
+      addTrainPlaceList.checkedEquipment = []
+      showObj.add_show = false
+    }
+  })
+}
+
+const editHandleCheckAllChange = (val) => {
+  editTrainPlaceList.checkedEquipment = val ? equipmentOptions : [];
+  editTrainPlaceList.isIndeterminate = false;
+}
+
+const editHandleCheckedCitiesChange = (value) => {
+  let checkedCount = value.length;
+  editTrainPlaceList.checkAll = checkedCount === equipmentOptions.length;
+  editTrainPlaceList.isIndeterminate = checkedCount > 0 && checkedCount < equipmentOptions.length;
+}
+
+const editLecturer = (row) => {
+  editTrainPlaceList.list = _.cloneDeep(row)
+  editTrainPlaceList.checkedEquipment = editTrainPlaceList.list.equipment?.split(";") || []
+  showObj.edit_show = true
+}
+
+const submmitEditLecturer = () => {
+  editTrainPlaceList.list.equipment = editTrainPlaceList.checkedEquipment
+  $confirm(l.confirmModify, l.trainingPlaceManagement, {
+      confirmButtonText: l.confirm,
+      cancelButtonText: l.cancel,
+      type: 'warning',
+    })
+    .then(() => {
+      addOrModifyPlaceMutation.mutate(editTrainPlaceList.list, {
+        onSuccess: () => {
+          showObj.edit_show = false
+        }
+      })
+    })
+    .catch(() => {
+      $message.info(l.operationCanceled)
+    })
+}
+
+const deleteLecturer = (row) => {
+  let item = _.cloneDeep(row)
+  item.equipment = item.equipment.split(";")
+  item.is_valid = item.is_valid == "Y" ? "N" : "Y"
+  $confirm(l.confirmStatusChange, l.trainingPlaceManagement, {
+      confirmButtonText: l.confirm,
+      cancelButtonText: l.cancel,
+      type: 'warning',
+    })
+    .then(() => {
+      addOrModifyPlaceMutation.mutate(item)
+    })
+    .catch(() => {
+      $message.info(l.operationCanceled)
+    })
+}
+
+onMounted(() => {
+  getTrainPlaceList()
+})
 </script>
 
 <style>
