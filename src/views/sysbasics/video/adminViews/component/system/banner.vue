@@ -280,8 +280,10 @@ const targetObj = reactive({
   target_id: '',
 })
 
-const publicCodeObj = reactive({
-  collegeList: [],
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : []
+  }
 })
 
 const topicObj = reactive({
@@ -352,12 +354,11 @@ const { data: collegeListData, refetch: refetchCollege } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
   if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-    if(publicCodeObj.collegeList.length > 0) {
-        topicObj.query.college_id = publicCodeObj.collegeList[0].id
-        courseObj.query.college_id = publicCodeObj.collegeList[0].id
+    if(newVal.length > 0) {
+        topicObj.query.college_id = newVal[0].id
+        courseObj.query.college_id = newVal[0].id
     }
   }
 })

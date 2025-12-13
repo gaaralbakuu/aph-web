@@ -282,35 +282,37 @@ const templateObj = reactive({
   question: []
 })
 
-const publicCodeObj = reactive({
-  collegeList: [],
-  questionCatagory: [],
-  question_type: [{
-      label: l.fillBlank,
-      value: 0
-    },
-    {
-      label: l.singleChoice,
-      value: 1
-    },
-    {
-      label: l.multiChoice,
-      value: 2
-    },
-    {
-      label: l.judgment,
-      value: 3
-    }
-  ],
-  question_status: [{
-      label: l.unpublished,
-      value: 0
-    },
-    {
-      label: l.published,
-      value: 1
-    }
-  ]
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : [],
+    questionCatagory: questionCatagoryData.value ? questionCatagoryData.value.data : [],
+    question_type: [{
+        label: l.fillBlank,
+        value: 0
+      },
+      {
+        label: l.singleChoice,
+        value: 1
+      },
+      {
+        label: l.multiChoice,
+        value: 2
+      },
+      {
+        label: l.judgment,
+        value: 3
+      }
+    ],
+    question_status: [{
+        label: l.unpublished,
+        value: 0
+      },
+      {
+        label: l.published,
+        value: 1
+      }
+    ]
+  }
 })
 
 const cssObj = reactive({
@@ -399,10 +401,9 @@ const { data: collegeListData, refetch: refetchCollegeList } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
-  if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-    college_id.value = newVal.data[0].id
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    college_id.value = newVal[0].id
     questionObj.query.college_id = college_id.value
     refetchQuestionnaireList()
   }
@@ -454,11 +455,7 @@ const { data: questionCatagoryData, refetch: refetchQuestionCatagory } = useQuer
   enabled: false
 })
 
-watch(() => questionCatagoryData.value, (newVal) => {
-  if (newVal && newVal.status) {
-    publicCodeObj.questionCatagory = newVal.data
-  }
-})
+// removed watch for questionCatagoryData as it is now computed in publicCodeObj
 
 // Mutations
 const submitQuestionnaireMutation = useMutation({
@@ -640,7 +637,7 @@ const getQuestionList = () => {
 }
 
 const returnPublicObjLabel = (inputValue, key, outputValue, filed) => {
-  let item = publicCodeObj[filed].find(i => {
+  let item = publicCodeObj.value[filed].find(i => {
     return i[key] == inputValue
   })
   if (item) {

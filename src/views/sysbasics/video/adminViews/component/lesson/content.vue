@@ -441,8 +441,10 @@ const showObj = reactive({
   previewVideo: false,
 })
 
-const publicCodeObj = reactive({
-  collegeList: [],
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : []
+  }
 })
 
 let axiosController = null
@@ -463,9 +465,15 @@ watch(
   }
 )
 
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    videoListObj.query.college_id = newVal[0].id
+  }
+})
+
 // Methods
 const returnCollegeName = (id) => {
-  let college = publicCodeObj.collegeList.find((i) => i.id == id)
+  let college = publicCodeObj.value.collegeList.find((i) => i.id == id)
   if (college) {
     return college.name_label
   } else {
@@ -478,7 +486,7 @@ const uploadNewVideo = () => {
   uploadVideoObj.name = ''
   uploadVideoObj.duration = ''
   uploadVideoObj.type = ''
-  uploadVideoObj.college_id = isAdmin.value ? '' : publicCodeObj.collegeList[0].id
+  uploadVideoObj.college_id = isAdmin.value ? '' : publicCodeObj.value.collegeList[0].id
   uploadVideoObj.is_public = 0
   uploadVideoObj.size = 0
   uploadVideoObj.uploadSize = '0 B'
@@ -556,18 +564,12 @@ const handleSubmit = (type) => {
   }
 }
 
-const getCollegeList = () => {
-  $request(api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
+const { data: collegeListData, refetch: getCollegeList } = useQuery({
+  queryKey: ['collegeList', route.path],
+  queryFn: () => $request(api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
     resource_path: route.path,
   })
-    .then((r) => {
-      publicCodeObj.collegeList = r.data
-      videoListObj.query.college_id = r.data[0].id
-    })
-    .catch((e) => {
-      message.error(e.message)
-    })
-}
+})
 
 // Cover methods
 const coverSelect = () => {
@@ -671,7 +673,7 @@ const rightCheck = (i, toast = false) => {
   if (isAdmin.value) {
     return true
   } else {
-    if (publicCodeObj.collegeList.some((c) => c.id == i.college_id)) {
+    if (publicCodeObj.value.collegeList.some((c) => c.id == i.college_id)) {
       return true
     } else {
       if (toast) {
@@ -791,7 +793,7 @@ const videoRemove = (flag) => {
   uploadVideoObj.name = ''
   uploadVideoObj.duration = ''
   uploadVideoObj.type = ''
-  uploadVideoObj.college_id = isAdmin.value ? '' : publicCodeObj.collegeList[0].id
+  uploadVideoObj.college_id = isAdmin.value ? '' : publicCodeObj.value.collegeList[0].id
   uploadVideoObj.is_public = 0
   uploadVideoObj.size = 0
   uploadVideoObj.uploadSize = '0 B'

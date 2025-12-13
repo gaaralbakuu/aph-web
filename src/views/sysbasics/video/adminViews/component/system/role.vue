@@ -144,10 +144,12 @@ const { l, c } = useLocalI18n('videoAdminRole')
 const queryClient = useQueryClient()
 
 // State
-const publicCodeObj = reactive({
-  org_id: [],
-  collegeList: [],
-  menuList: []
+const publicCodeObj = computed(() => {
+  return {
+    org_id: [],
+    collegeList: collegeListData.value ? collegeListData.value.data : [],
+    menuList: menuListData.value ? menuListData.value.data.list : []
+  }
 })
 
 const showObj = reactive({
@@ -210,11 +212,10 @@ const { data: collegeListData, refetch: refetchCollegeList } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
   if (newVal && newVal.length > 0) {
-    publicCodeObj.collegeList = newVal.data
     if (!isAdmin.value) {
-      roleObj.query.college_id = newVal.data[0].id
+      roleObj.query.college_id = newVal[0].id
     }
     refetchRoleList()
   }
@@ -245,12 +246,11 @@ const { data: menuListData, refetch: refetchMenuList } = useQuery({
   enabled: false
 })
 
-watch(() => menuListData.value, (newVal) => {
-  if (newVal) {
-    publicCodeObj.menuList = newVal.data.list
+watch(() => publicCodeObj.value.menuList, (newVal) => {
+  if (newVal && newVal.length > 0) {
     if (isAdmin.value == false) {
       let targetPath = '/videoAdminLayout/lesson/menuManage'
-      if (removeMenuItemByPath(publicCodeObj.menuList, targetPath)) {
+      if (removeMenuItemByPath(newVal, targetPath)) {
         console.log('菜单项已成功移除');
       } else {
         console.log('未找到指定路径的菜单项');

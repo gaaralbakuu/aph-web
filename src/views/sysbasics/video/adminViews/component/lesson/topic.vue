@@ -292,17 +292,19 @@ const courseObj = reactive({
   selectedList: [] //待添加的课程列表
 })
 
-const publicCodeObj = reactive({
-  allCollegeList: [],
-  collegeList: [],
-  type: [{
-    label: $l.topic,
-    value: "topic"
-  }],
-  page: [{
-    label: $l.homePage,
-    value: "home"
-  }]
+const publicCodeObj = computed(() => {
+  return {
+    allCollegeList: allCollegeListData.value ? allCollegeListData.value.list : [],
+    collegeList: collegeListByPathData.value ? collegeListByPathData.value : [],
+    type: [{
+      label: $l.topic,
+      value: "topic"
+    }],
+    page: [{
+      label: $l.homePage,
+      value: "home"
+    }]
+  }
 })
 
 const showObj = reactive({
@@ -346,18 +348,17 @@ const handleCoursePageChange = (i) => {
   getCourseList()
 }
 
-const getAllCollegeList = () => {
-  $request($api.videoServer + '/Video/VideoCollege/getCollegeList', {
-      page: 1,
-      pageSize: 9999
-    })
-    .then((r) => {
-      publicCodeObj.allCollegeList = r.data.list
-    })
-    .catch((e) => {
-      $message.error(e.message)
-    })
-}
+// TanStack Query - Get All College List
+const { data: allCollegeListData, refetch: getAllCollegeList } = useQuery({
+  queryKey: ['allCollegeList'],
+  queryFn: async () => {
+    const response = await $request(
+      $api.videoServer + '/Video/VideoCollege/getCollegeList',
+      { page: 1, pageSize: 9999 }
+    )
+    return response.data
+  }
+})
 
 const getCourseList = () => {
   $request($api.videoServer + '/Video/VideoCourseCatalog/getCourseList', courseObj.query, 'post')
@@ -370,23 +371,28 @@ const getCourseList = () => {
     })
 }
 
-const getCollegeList = () => {
-  // 根据页面路由获取管理学院
-  $request($api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
-      resource_path: $route.path
-    })
-    .then((r) => {
-      publicCodeObj.collegeList = r.data
+// TanStack Query - Get College List by Path
+const { data: collegeListByPathData, refetch: getCollegeList } = useQuery({
+  queryKey: ['collegeListByPath', $route.path],
+  queryFn: async () => {
+    const response = await $request(
+      $api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath',
+      { resource_path: $route.path }
+    )
+    return response.data
+  },
+  onError: (error) => {
+    $message.error(error.message)
+  }
+})
 
-      topicObj.query.college_id = publicCodeObj.collegeList[0].id
-      courseObj.query.college_id = publicCodeObj.collegeList[0].id
-
-      getTopicList()
-    })
-    .catch((e) => {
-      $message.error(e.message)
-    })
-}
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    topicObj.query.college_id = newVal[0].id
+    courseObj.query.college_id = newVal[0].id
+    getTopicList()
+  }
+})
 
 const getTopicList = () => {
   $request($api.videoServer + "/Video/VideoPageTag/getlist", topicObj.query)
@@ -585,7 +591,7 @@ const deleteDetail = (index) => {
 
 //根据真实值返回显示值
 const returnPublicObjLabel = (value, key, label, filed) => {
-  let item = publicCodeObj[filed].find(i => {
+  let item = publicCodeObj.value[filed].find(i => {
     return i[key] == value
   })
   if (item) {

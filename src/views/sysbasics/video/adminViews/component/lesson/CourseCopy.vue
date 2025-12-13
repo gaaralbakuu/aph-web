@@ -929,26 +929,31 @@ const courseObj = reactive({
   multipleSelection: []
 })
 
-const publicCodeObj = reactive({
-  allCollegeList: [],
-  collegeList: [],
-  org_id: [],
-  language_type: [],
-  courseCatalog: [],
-  question_type: [
-    { label: l.value.fillIn, value: 0 },
-    { label: l.value.singleChoice, value: 1 },
-    { label: l.value.multipleChoice, value: 2 },
-    { label: l.value.judge, value: 3 }
-  ],
-  question_status: [
-    { label: l.value.published, value: 0 },
-    { label: l.value.unpublished, value: 1 }
-  ],
-  lecturer_status: [
-    { label: l.value.externalLecturer, value: 0 },
-    { label: l.value.internalLecturer, value: 1 }
-  ]
+const languageTypeList = ref([])
+const courseCatalogList = ref([])
+
+const publicCodeObj = computed(() => {
+  return {
+    allCollegeList: allCollegeListData.value ? allCollegeListData.value.list : [],
+    collegeList: collegeListByPathData.value ? collegeListByPathData.value : [],
+    org_id: [],
+    language_type: languageTypeList.value,
+    courseCatalog: courseCatalogList.value,
+    question_type: [
+      { label: l.value.fillIn, value: 0 },
+      { label: l.value.singleChoice, value: 1 },
+      { label: l.value.multipleChoice, value: 2 },
+      { label: l.value.judge, value: 3 }
+    ],
+    question_status: [
+      { label: l.value.published, value: 0 },
+      { label: l.value.unpublished, value: 1 }
+    ],
+    lecturer_status: [
+      { label: l.value.externalLecturer, value: 0 },
+      { label: l.value.internalLecturer, value: 1 }
+    ]
+  }
 })
 
 // TanStack Query - Get Course List
@@ -1041,7 +1046,7 @@ const { refetch: refetchTagList } = useQuery({
 })
 
 // TanStack Query - Get All College List
-const { refetch: refetchAllCollegeList } = useQuery({
+const { data: allCollegeListData, refetch: refetchAllCollegeList } = useQuery({
   queryKey: ['allCollegeList'],
   queryFn: async () => {
     const response = await $request(
@@ -1049,14 +1054,11 @@ const { refetch: refetchAllCollegeList } = useQuery({
       { page: 1, pageSize: 9999 }
     )
     return response.data
-  },
-  onSuccess: (data) => {
-    publicCodeObj.allCollegeList = data.list
   }
 })
 
 // TanStack Query - Get College List by Path
-const { refetch: refetchCollegeList } = useQuery({
+const { data: collegeListByPathData, refetch: refetchCollegeList } = useQuery({
   queryKey: ['collegeListByPath', route.path],
   queryFn: async () => {
     const response = await $request(
@@ -1065,14 +1067,16 @@ const { refetch: refetchCollegeList } = useQuery({
     )
     return response.data
   },
-  onSuccess: (data) => {
-    publicCodeObj.collegeList = data
-    courseObj.query.college_id = publicCodeObj.collegeList[0].id
-    videoListObj.query.college_id = publicCodeObj.collegeList[0].id
-    getCourseList()
-  },
   onError: (error) => {
     $message.error(error.message)
+  }
+})
+
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    courseObj.query.college_id = newVal[0].id
+    videoListObj.query.college_id = newVal[0].id
+    getCourseList()
   }
 })
 
@@ -1632,7 +1636,7 @@ const addCourse = () => {
     name_en: "",
     name_vi: "",
     description: "",
-    college_id: isAdmin.value ? '' : publicCodeObj.collegeList[0].id,
+    college_id: isAdmin.value ? '' : publicCodeObj.value.collegeList[0].id,
     is_public: isAdmin.value ? 1 : 0,
     org_id: 200,
     thumbnail_path: "",
@@ -1681,7 +1685,7 @@ const rightCheck = (i, toast = false) => {
   if (isAdmin.value) {
     return true
   } else {
-    if (publicCodeObj.collegeList.some(c => c.id == i.college_id)) {
+    if (publicCodeObj.value.collegeList.some(c => c.id == i.college_id)) {
       return true
     } else {
       if (toast) {
@@ -1871,7 +1875,7 @@ const formatFinishTime = (timeString) => {
 }
 
 const returnPublicObjLabel = (value, key, label, filed) => {
-  const item = publicCodeObj[filed].find(i => i[key] == value)
+  const item = publicCodeObj.value[filed].find(i => i[key] == value)
   if (item) {
     return item[label]
   } else {
@@ -1900,7 +1904,7 @@ const getLanguage_type = () => {
         label: j.code_name
       })
     })
-    publicCodeObj.language_type = list
+    languageTypeList.value = list
   }).catch(e => {
     $message.error(e.message)
   })
@@ -1919,7 +1923,7 @@ const getCourseCatalog = () => {
         label: j.code_name
       })
     })
-    publicCodeObj.courseCatalog = list
+    courseCatalogList.value = list
   }).catch(e => {
     $message.error(e.message)
   })

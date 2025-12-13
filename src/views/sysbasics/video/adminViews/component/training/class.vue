@@ -587,8 +587,10 @@ const classObj = reactive({
   total: 0
 })
 
-const publicCodeObj = reactive({
-  collegeList: [],
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : []
+  }
 })
 
 const learningObj = reactive({
@@ -647,12 +649,11 @@ const { data: collegeListData, refetch: refetchCollege } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
   if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-    if (!isAdmin.value && publicCodeObj.collegeList.length > 0) {
-      classObj.query.college_id = publicCodeObj.collegeList[0].id
-      trainingObj.query.college_id = publicCodeObj.collegeList[0].id
+    if (!isAdmin.value && newVal.length > 0) {
+      classObj.query.college_id = newVal[0].id
+      trainingObj.query.college_id = newVal[0].id
     }
     refetchClassList()
   }
@@ -913,7 +914,7 @@ const toggleStudentStatus = (user) => {
 }
 
 const returnCollegeLabel = (college_id) => {
-  let college = publicCodeObj.collegeList.find(i => i.id == college_id)
+  let college = publicCodeObj.value.collegeList.find(i => i.id == college_id)
   if (college) {
     return college.name_label
   } else {

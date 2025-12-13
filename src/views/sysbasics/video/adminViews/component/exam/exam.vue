@@ -169,36 +169,38 @@ const questionnaireObj = reactive({
   list: []
 })
 
-const publicCodeObj = reactive({
-  collegeList: [],
-  question_type: [
-    {
-      label: l.blankQuestion,
-      value: 0
-    },
-    {
-      label: l.singleChoiceQuestion,
-      value: 1
-    },
-    {
-      label: l.multipleChoiceQuestion,
-      value: 2
-    },
-    {
-      label: l.trueFalseQuestion,
-      value: 3
-    }
-  ],
-  question_status: [
-    {
-      label: l.notPublished,
-      value: 0
-    },
-    {
-      label: l.published,
-      value: 1
-    }
-  ]
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : [],
+    question_type: [
+      {
+        label: l.blankQuestion,
+        value: 0
+      },
+      {
+        label: l.singleChoiceQuestion,
+        value: 1
+      },
+      {
+        label: l.multipleChoiceQuestion,
+        value: 2
+      },
+      {
+        label: l.trueFalseQuestion,
+        value: 3
+      }
+    ],
+    question_status: [
+      {
+        label: l.notPublished,
+        value: 0
+      },
+      {
+        label: l.published,
+        value: 1
+      }
+    ]
+  }
 })
 
 const cssObj = reactive({
@@ -292,10 +294,9 @@ const { data: collegeListData, refetch: refetchCollegeList } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
-  if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-    college_id.value = newVal.data[0].id
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    college_id.value = newVal[0].id
     questionnaireObj.query.college_id = college_id.value
     refetchExamList()
   }

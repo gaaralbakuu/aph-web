@@ -264,8 +264,10 @@ const showObj = reactive({
 const filterOrgText = ref('')
 const filterCatalogText = ref('')
 
-const publicCodeObj = reactive({
-  collegeList: []
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : []
+  }
 })
 
 const catalogObj = reactive({
@@ -324,11 +326,7 @@ const { data: collegeListData, refetch: refetchCollege } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
-  if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-  }
-})
+// Watch removed as publicCodeObj is now computed
 
 const { data: catalogListData, refetch: refetchCatalog } = useQuery({
   queryKey: ['catalogList', catalogObj.query],

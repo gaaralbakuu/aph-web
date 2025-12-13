@@ -304,19 +304,23 @@ const templateObj = reactive({
   judge: [],
 })
 
-const publicCodeObj = reactive({
-  catalogList: [],
-  collegeList: [],
-  question_type: [
-    { label: l.fillInBlank, value: 0 },
-    { label: l.singleChoice, value: 1 },
-    { label: l.multipleChoice, value: 2 },
-    { label: l.judgement, value: 3 },
-  ],
-  question_status: [
-    { label: l.unpublished, value: 0 },
-    { label: l.published, value: 1 },
-  ],
+const catalogListOptions = ref([])
+
+const publicCodeObj = computed(() => {
+  return {
+    catalogList: catalogListOptions.value,
+    collegeList: collegeListData.value ? collegeListData.value.data : [],
+    question_type: [
+      { label: l.fillInBlank, value: 0 },
+      { label: l.singleChoice, value: 1 },
+      { label: l.multipleChoice, value: 2 },
+      { label: l.judgement, value: 3 },
+    ],
+    question_status: [
+      { label: l.unpublished, value: 0 },
+      { label: l.published, value: 1 },
+    ],
+  }
 })
 
 const cssObj = reactive({
@@ -441,10 +445,9 @@ const { data: collegeListData, refetch: refetchCollegeList } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
-  if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-    college_id.value = newVal.data[0].id
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    college_id.value = newVal[0].id
   }
 })
 
@@ -695,7 +698,7 @@ const getCatalogListById = (id) => {
     ...catalogObj.query,
     college_id: id,
   }).then((r) => {
-    publicCodeObj.catalogList = r.data
+    catalogListOptions.value = r.data
   }).catch((e) => {
     console.log(e)
   })
@@ -788,7 +791,7 @@ const getQuestionList = () => {
 }
 
 const returnPublicObjLabel = (inputValue, key, outputValue, filed) => {
-  let item = publicCodeObj[filed].find((i) => {
+  let item = publicCodeObj.value[filed].find((i) => {
     return i[key] == inputValue
   })
   if (item) {

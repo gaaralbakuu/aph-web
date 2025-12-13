@@ -365,8 +365,10 @@ const tableObj = reactive({
   examSelection: [],
 })
 
-const publicCodeObj = reactive({
-  collegeList: []
+const publicCodeObj = computed(() => {
+  return {
+    collegeList: collegeListData.value ? collegeListData.value.data : []
+  }
 })
 
 const trainingObj = reactive({
@@ -438,12 +440,11 @@ const { data: collegeListData, refetch: refetchCollege } = useQuery({
   })
 })
 
-watch(() => collegeListData.value, (newVal) => {
+watch(() => publicCodeObj.value.collegeList, (newVal) => {
   if (newVal) {
-    publicCodeObj.collegeList = newVal.data
-    if (!isAdmin.value && publicCodeObj.collegeList.length > 0) {
-      trainingObj.query.college_id = publicCodeObj.collegeList[0].id
-      examObj.query.college_id = publicCodeObj.collegeList[0].id
+    if (!isAdmin.value && newVal.length > 0) {
+      trainingObj.query.college_id = newVal[0].id
+      examObj.query.college_id = newVal[0].id
     }
     refetchTrainingList()
   }
