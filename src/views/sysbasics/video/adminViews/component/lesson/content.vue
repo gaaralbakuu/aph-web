@@ -747,14 +747,28 @@ const uploadVideo = () => {
   })
   let customConfig = {
     onUploadProgress: function (progressEvent) {
-      let uploadPart = progressEvent.loaded - uploadVideoObj.uploadEvent.uploadSize
-      let uploadTime = (new Date().getTime() - uploadVideoObj.uploadEvent.oTime) / 1000
-      let speed = uploadPart / uploadTime
-      let restTime = (progressEvent.total - progressEvent.loaded) / speed
-      uploadVideoObj.uploadEvent.speed = formatFileSize(speed) + '/s'
-      uploadVideoObj.uploadEvent.restTime = formatSeconds(restTime, true)
+      if (!progressEvent.total) {
+        uploadVideoObj.uploadPercent = 0
+        return
+      }
+      let currentTime = new Date().getTime()
+      let uploadTime = (currentTime - uploadVideoObj.uploadEvent.oTime) / 1000
+
+      if (uploadTime > 0) {
+        let uploadPart = progressEvent.loaded - uploadVideoObj.uploadEvent.uploadSize
+        // Avoid negative uploadPart which might happen due to timing issues or retries
+        if (uploadPart < 0) uploadPart = 0
+
+        let speed = uploadPart / uploadTime
+        if (speed > 0) {
+          let restTime = (progressEvent.total - progressEvent.loaded) / speed
+          uploadVideoObj.uploadEvent.speed = formatFileSize(speed) + '/s'
+          uploadVideoObj.uploadEvent.restTime = formatSeconds(restTime, true)
+        }
+      }
+
       uploadVideoObj.uploadEvent.uploadSize = progressEvent.loaded
-      uploadVideoObj.uploadEvent.oTime = new Date().getTime()
+      uploadVideoObj.uploadEvent.oTime = currentTime
       uploadVideoObj.uploadPercent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
       uploadVideoObj.uploadSize = formatFileSize(progressEvent.loaded)
     },

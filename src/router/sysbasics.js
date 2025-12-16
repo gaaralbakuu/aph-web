@@ -14,7 +14,7 @@ export default {
     },
     {
       path: 'epidemic',
-      component: () => import('@/views/sysbasics/Epidemic'),
+        component: () => import('@/views/sysbasics/epidemic.vue'),
       name: 'sysbasicsepidemic',
       meta: {
         noCache: true,
@@ -22,7 +22,7 @@ export default {
     },
     {
       path: 'publiccode',
-      component: () => import('@/views/sysbasics/PublicCode'),
+        component: () => import('@/views/sysbasics/publiccode.vue'),
       name: 'publiccode',
       meta: {
         noCache: true,

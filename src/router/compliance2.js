@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'complianceManufacturer',
-            component: () => import('@/views/sysbasics/compliance2/ComplianceManufacturer'),
+        component: () => import("@/views/sysbasics/compliance2/complianceManufacturer.vue"),
             name: 'complianceManufacturer',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'investigation',
-            component: () => import('@/views/sysbasics/compliance2/Investigation'),
+        component: () => import("@/views/sysbasics/compliance2/investigation.vue"),
             name: 'investigation',
             meta: {
                 noCache: isDevelopMode

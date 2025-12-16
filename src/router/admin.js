@@ -6,37 +6,37 @@ export default {
   children: [
     {
       path: 'menu',
-      component: () => import('@/views/admin/Menu'),
+        component: () => import('@/views/admin/menu.vue'),
       name: 'adminMenu',
       meta: { noCache: true }
     },
     {
       path: 'dictionary',
-      component: () => import('@/views/admin/Dictionary'),
+        component: () => import('@/views/admin/dictionary.vue'),
       name: 'adminDictionary',
       meta: { noCache: true }
     },
     {
       path: 'user',
-      component: () => import('@/views/admin/User'),
+        component: () => import('@/views/admin/user.vue'),
       name: 'adminUser',
       meta: { noCache: true }
     },
     {
       path: 'role',
-      component: () => import('@/views/admin/Role'),
+        component: () => import('@/views/admin/role.vue'),
       name: 'adminRole',
       meta: { noCache: true }
     },
     {
       path: 'quartz',
-      component: () => import('@/views/admin/Quartz'),
+        component: () => import('@/views/admin/quartz.vue'),
       name: 'adminQuartz',
       meta: { noCache: true }
     },
     {
       path: 'param',
-      component: () => import('@/views/admin/Param'),
+        component: () => import('@/views/admin/param.vue'),
       name: 'adminParam',
       meta: { noCache: true }
     },

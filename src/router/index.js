@@ -33,7 +33,7 @@ const constantRouterMap = [
   {
     name: 'loginRegister',
     path: '/register',
-    component: () => import('@/views/login/Register'),
+    component: () => import('@/views/login/register.vue'),
   },
   {
     path: '/redirect',
@@ -62,7 +62,7 @@ const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-        component: () => import('@/views/home/Welcome'),
+        component: () => import('@/views/home/welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },
@@ -72,25 +72,25 @@ const constantRouterMap = [
   // User Video Layout
   {
     path: '/videoLayout',
-    component: () => import('@/views/sysbasics/video/layout/VideoUserLayout.vue'),
+      component: () => import('@/views/sysbasics/video/layout/videoUserLayout.vue'),
     name: 'videoLayout',
     meta: { noCache: isDevelopMode },
     children: [
       {
         path: 'home',
-        component: () => import('@/views/sysbasics/video/userViews/Home'),
+        component: () => import('@/views/sysbasics/video/userViews/home.vue'),
         name: 'videoHome',
         meta: { noCache: isDevelopMode, title: 'Video Dashboard' },
       },
       {
         path: 'trainingDetail',
-        component: () => import('@/views/sysbasics/video/userViews/TrainingDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/trainingDetail.vue'),
         name: 'trainingDetail',
         meta: { noCache: isDevelopMode, title: 'Training Details' },
       },
       {
         path: 'topicDetail',
-        component: () => import('@/views/sysbasics/video/userViews/TopicDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/topicDetail.vue'),
         name: 'topicDetail',
         meta: { noCache: isDevelopMode, title: 'Topic Details' },
       },

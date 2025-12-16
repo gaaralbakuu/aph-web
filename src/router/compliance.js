@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'Investigation',
-            component: () => import('@/views/sysbasics/compliance/Investigation'),
+        component: () => import("@/views/sysbasics/compliance/investigation.vue"),
             name: 'Investigation',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'ShareInformation',
-            component: () => import('@/views/sysbasics/compliance/ShareInformation'),
+        component: () => import("@/views/sysbasics/compliance/shareInformation.vue"),
             name: 'ShareInformation',
             meta: {
                 noCache: isDevelopMode
