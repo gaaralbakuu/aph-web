@@ -28,15 +28,17 @@
                 <div class="text-sm text-gray-400 mt-2">点击选择或拖拽视频文件</div>
               </div>
               <div v-else class="w-full bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
-                <div class="flex items-start space-x-4">
+                <div class="flex items-start gap-4">
                   <i class="el-icon-video-camera-solid text-5xl text-blue-500 shrink-0"></i>
-                  <div class="grow">
+                  <div class="flex-1 overflow-hidden">
                     <div class="text-lg font-semibold text-gray-800 truncate">{{ uploadVideoObj.file.name }}</div>
                     <div class="text-sm text-gray-500 mt-1">{{ uploadVideoObj.size }}</div>
-                    <div class="flex items-center space-x-4 mt-3">
-                      <span class="text-sm font-medium text-blue-600">{{ uploadVideoObj.uploadPercent }}%</span>
-                      <div class="w-40">
-                        <a-progress :percent="uploadVideoObj.uploadPercent" :show-info="false" :stroke-color="{ '0%': '#108ee9', '100%': '#87d068' }"></a-progress>
+                    <div class="flex items-center gap-4 mt-3">
+                      <div>
+                        <div class="text-sm font-medium text-blue-600 w-12 text-center">{{ uploadVideoObj.uploadPercent }}%</div>
+                      </div>
+                      <div class="flex-1">
+                        <a-progress :percent="uploadVideoObj.uploadPercent" :show-info="false"></a-progress>
                       </div>
                     </div>
                     <div class="mt-3 grid grid-cols-3 gap-3 text-xs text-gray-600">
@@ -747,14 +749,28 @@ const uploadVideo = () => {
   })
   let customConfig = {
     onUploadProgress: function (progressEvent) {
-      let uploadPart = progressEvent.loaded - uploadVideoObj.uploadEvent.uploadSize
-      let uploadTime = (new Date().getTime() - uploadVideoObj.uploadEvent.oTime) / 1000
-      let speed = uploadPart / uploadTime
-      let restTime = (progressEvent.total - progressEvent.loaded) / speed
-      uploadVideoObj.uploadEvent.speed = formatFileSize(speed) + '/s'
-      uploadVideoObj.uploadEvent.restTime = formatSeconds(restTime, true)
+      if (!progressEvent.total) {
+        uploadVideoObj.uploadPercent = 0
+        return
+      }
+      let currentTime = new Date().getTime()
+      let uploadTime = (currentTime - uploadVideoObj.uploadEvent.oTime) / 1000
+
+      if (uploadTime > 0) {
+        let uploadPart = progressEvent.loaded - uploadVideoObj.uploadEvent.uploadSize
+        // Avoid negative uploadPart which might happen due to timing issues or retries
+        if (uploadPart < 0) uploadPart = 0
+
+        let speed = uploadPart / uploadTime
+        if (speed > 0) {
+          let restTime = (progressEvent.total - progressEvent.loaded) / speed
+          uploadVideoObj.uploadEvent.speed = formatFileSize(speed) + '/s'
+          uploadVideoObj.uploadEvent.restTime = formatSeconds(restTime, true)
+        }
+      }
+
       uploadVideoObj.uploadEvent.uploadSize = progressEvent.loaded
-      uploadVideoObj.uploadEvent.oTime = new Date().getTime()
+      uploadVideoObj.uploadEvent.oTime = currentTime
       uploadVideoObj.uploadPercent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
       uploadVideoObj.uploadSize = formatFileSize(progressEvent.loaded)
     },

@@ -69,7 +69,7 @@ service.interceptors.response.use(
   }
 )
 
-export default function request(url, data, method, donotAutoShowError) {
+export default function request(url, data, method, donotAutoShowError, customConfig, axiosController) {
   data = data || {};
   method = method || 'get';
   method = method.toLowerCase();
@@ -82,6 +82,17 @@ export default function request(url, data, method, donotAutoShowError) {
   } else {
     config.data = data;
   }
+
+  // Merge custom config (e.g., onUploadProgress)
+  if (customConfig && typeof customConfig === 'object') {
+    Object.assign(config, customConfig);
+  }
+
+  // Handle AbortController signal
+  if (axiosController && axiosController.signal) {
+    config.signal = axiosController.signal;
+  }
+
   return service(config)
     .then(r => r)
     .catch(e => {
