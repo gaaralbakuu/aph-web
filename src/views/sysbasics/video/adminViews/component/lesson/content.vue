@@ -17,7 +17,7 @@
       </a-modal>
 
       <!-- Upload Video Drawer -->
-      <a-drawer :visible="showObj.uploadVideo" :title="l.uploadVideo" :width="900" @close="showObj.uploadVideo = false">
+      <a-drawer :visible="showObj.uploadVideo" :title="l.uploadVideo" :width="900" @close="closeUploadDrawer">
         <div class="w-full h-full pb-24">
           <!-- Video Upload Area -->
           <div class="w-full mb-8">
@@ -116,7 +116,12 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.republic }}</label>
-                <a-switch v-model:checked="uploadVideoObj.is_public" :checked-value="1" :un-checked-value="0"></a-switch>
+                <a-switch
+                  @change="
+                    (value) => {
+                      uploadVideoObj.is_public = value ? 1 : 0
+                    }
+                  "></a-switch>
               </div>
             </div>
 
@@ -132,7 +137,7 @@
 
           <!-- Action Buttons -->
           <div class="absolute bottom-0 right-0 w-full pr-8 pb-6 pt-4 bg-white border-t border-gray-200 flex justify-end items-center gap-3">
-            <a-button @click="showObj.uploadVideo = false" class="px-6">{{ c.cancel }}</a-button>
+            <a-button @click="closeUploadDrawer" class="px-6">{{ c.cancel }}</a-button>
             <a-button type="primary" @click="handleSubmit('uploadVideo')" :disabled="!flagObj.uploadAble" :loading="flagObj.uploading" class="px-6">
               <i class="el-icon-upload mr-2"></i>
               {{ l.uploadVideo }}
@@ -206,7 +211,12 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ l.republic }}</label>
-              <a-switch v-model:checked="modifyVideoObj.form.is_public" :checked-value="1" :un-checked-value="0"></a-switch>
+              <a-switch
+                @change="
+                  (value) => {
+                    modifyVideoObj.form.is_public = value ? 1 : 0
+                  }
+                "></a-switch>
             </div>
           </div>
 
@@ -276,7 +286,7 @@
           </div>
           <div v-else class="space-y-4 p-6">
             <!-- Video Item Card -->
-            <div v-for="i in videoListObj.list" :key="i.id" class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
+            <div v-for="i in videoListObj.list" :key="i.id" :class="['rounded-lg shadow-sm hover:shadow-md transition-shadow border overflow-hidden', (videoProcess && videoProcess.videoId == i.id && videoProcess.isFinished == false) ? 'border-orange-400! bg-orange-100!' : 'bg-white border-gray-100']">
               <div class="flex h-40">
                 <!-- Thumbnail -->
                 <div class="relative w-56 h-40 shrink-0 bg-gray-900 overflow-hidden group">
@@ -292,15 +302,20 @@
                 <!-- Content -->
                 <div class="grow flex flex-col justify-between p-4">
                   <!-- Title and Tag -->
-                  <div>
-                    <div class="flex items-center gap-2 mb-2">
+                  <div class="flex gap-2 overflow-hidden">
+                    <div class="flex-1 overflow-hidden">
                       <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 grow">{{ i.title }}</h3>
+                      <!-- Description -->
+                      <p class="text-sm text-gray-600 line-clamp-2">{{ i.description || l.noIntroduce }}</p>
+                    </div>
+                    <div class="shrink-0 flex flex-col items-end gap-2">
                       <a-tag :color="i.is_public == 1 ? 'blue' : 'orange'">
                         {{ i.is_public == 1 ? l.public : l.privite }}
                       </a-tag>
+                      <div v-if="videoProcess && videoProcess.videoId == i.id && videoProcess.isFinished == false" class="text-sm text-red-500">
+                        {{ ((videoProcess.currentTime / i.duration) * 100).toFixed(0) }}%
+                      </div>
                     </div>
-                    <!-- Description -->
-                    <p class="text-sm text-gray-600 line-clamp-2">{{ i.description || l.noIntroduce }}</p>
                   </div>
 
                   <!-- Info Row -->
@@ -346,6 +361,7 @@
 
 <script setup>
 import { reactive, computed, watch, onMounted, onBeforeUnmount, ref, getCurrentInstance } from 'vue'
+import * as signalR from '@microsoft/signalr'
 import { message } from 'ant-design-vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 import api from '@/api'
@@ -448,6 +464,14 @@ const publicCodeObj = reactive({
 })
 
 let axiosController = null
+
+// SignalR / progress state (use refs for script-setup)
+const connection = ref(null)
+const videoId = ref('')
+const currentTimeMs = ref(0)
+const isFinished = ref(false)
+const statusMessage = ref('')
+const statusType = ref('')
 
 // Watchers
 watch(
@@ -606,9 +630,6 @@ const uploadCover = (next) => {
           modifyVideoObj.form.thumbnail_path = r.data.url
           modifyVideo()
         }
-        coverObj.imageUrl = ''
-        coverObj.file = ''
-        coverInput.value.value = ''
       }
     })
     .catch((e) => {
@@ -712,6 +733,12 @@ const modifyVideo = () => {
         message.success(l.value.updateSuccess)
         let timer = setTimeout(() => {
           showObj.modifyVideo = false
+          // Clear cover preview/file after successful modify
+          try {
+            if (coverInput && coverInput.value) coverInput.value.value = ''
+          } catch (e) {}
+          coverObj.imageUrl = ''
+          coverObj.file = { name: '' }
           getVideoList()
           clearTimeout(timer)
         }, 1500)
@@ -801,6 +828,14 @@ const videoRemove = (flag) => {
   if (flag) {
     videoInput.value.value = ''
   }
+  // Reset cover input and preview when removing selected video
+  try {
+    if (coverInput && coverInput.value) {
+      coverInput.value.value = ''
+    }
+  } catch (e) {}
+  coverObj.imageUrl = ''
+  coverObj.file = { name: '' }
   flagObj.selectVideo = false
   flagObj.uploadAble = false
   uploadVideoObj.id = ''
@@ -829,6 +864,16 @@ const abortUploadVideo = () => {
   if (axiosController) {
     axiosController.abort()
   }
+}
+
+const closeUploadDrawer = () => {
+  // If an upload is in progress, abort it first
+  if (flagObj.uploading) {
+    abortUploadVideo()
+  }
+  showObj.uploadVideo = false
+  // Clear selected video and cover preview to reset the form
+  videoRemove(true)
 }
 
 // Video list methods
@@ -896,14 +941,72 @@ const formatDuration = (totalSeconds, unit) => {
   }
 }
 
+const initializeSignalR = () => {
+  // Tạo connection đến SignalR Hub
+  connection.value = new signalR.HubConnectionBuilder()
+    .withUrl(api.baseUrl + '/hubs/videoProg') // Thay đổi URL của bạn
+    .withAutomaticReconnect()
+    .build()
+
+  // Nhận sự kiện progress từ server
+  connection.value.on('ReceiveVideoProgress', (data) => {
+    // console.log('Progress update:', data)
+    currentTimeMs.value = data.timeMs
+    videoId.value = data.videoId
+    isFinished.value = false
+  })
+
+  // Nhận sự kiện FFmpeg hoàn tất
+  connection.value.on('FFmpegFinished', (data) => {
+    // console.log('FFmpeg finished:', data)
+    isFinished.value = true
+    statusMessage.value = 'Video converted successfully!'
+    statusType.value = 'success'
+    getVideoList();
+  })
+
+  // Nhận sự kiện lỗi
+  connection.value.on('FFmpegError', (data) => {
+    console.error('FFmpeg error:', data)
+    isFinished.value = false
+    statusMessage.value = `Error: ${data.message}`
+    statusType.value = 'error'
+  })
+
+  // Kết nối đến server
+  connection.value.start().catch((err) => {
+    console.error('SignalR connection error:', err)
+    statusMessage.value = 'Connection error'
+    statusType.value = 'error'
+  })
+}
+
+const videoProcess = computed(() => {
+  if (!videoListObj.list.find((v) => v.id === videoId.value)) {
+    return null
+  }
+
+  return {
+    videoId: videoId.value,
+    currentTime: currentTimeMs.value / (1000 * 1000),
+    isFinished: isFinished.value,
+    statusType: statusType.value,
+  }
+})
+
 // Lifecycle
 onMounted(() => {
   getCollegeList()
+  initializeSignalR()
 })
 
 onBeforeUnmount(() => {
   if (videoPlayerRef.value) {
     videoPlayerRef.value.onDestroy()
+  }
+  // Stop SignalR connection when component unmounts
+  if (connection && connection.value) {
+    connection.value.stop().catch(() => {})
   }
 })
 </script>
