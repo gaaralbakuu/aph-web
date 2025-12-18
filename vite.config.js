@@ -82,6 +82,27 @@ export default defineConfig(({ mode, command }) => {
       },
       // Thêm middlewareMode: false để đảm bảo file watch hoạt động bình thường
       middlewareMode: false,
+      // Proxy APIs during `vite` dev server. Targets come from env (mode-specific .env files).
+      // Use `vite --mode test` or `vite --mode production` to load corresponding env.* files.
+      proxy: {
+        // Proxy all /platform requests to the backend API configured in env.VITE_API
+        '/platform': {
+          target: env.VITE_API || 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
+          ws: false,
+          // keep path as-is; rewrite can be adjusted if backend expects a different base
+          rewrite: (path) => path,
+        },
+        // Optional: proxy video related API to VITE_VIDEO_API if provided
+        '/video': {
+          target: env.VITE_VIDEO_API || env.VITE_API || 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
+          ws: false,
+          rewrite: (path) => path,
+        },
+      },
     },
 
     css: { devSourcemap: true },
