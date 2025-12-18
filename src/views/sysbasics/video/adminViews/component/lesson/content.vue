@@ -51,34 +51,36 @@
           <div class="absolute top-full left-0 right-0 h-1 hidden group-hover:block"></div>
 
           <!-- Dropdown Menu -->
-          <div class="absolute top-full left-0 right-0 mt-0 bg-white border border-[#E5E5E5] rounded shadow-lg hidden group-hover:block z-50">
-            <div class="max-h-56 overflow-y-auto">
-              <!-- All Channels Option -->
-              <button
-                class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5]"
-                :class="videoListObj.query.college_id === '' ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
-                @click="
-                  videoListObj.query.college_id = ''
-                  getVideoList()
-                ">
-                {{ l.allChannels }}
-              </button>
+          <div class="absolute top-full left-0 right-0 pt-1 hidden group-hover:block z-50">
+            <div class="bg-white border border-[#E5E5E5] rounded shadow-lg">
+              <div class="max-h-56 overflow-y-auto">
+                <!-- All Channels Option -->
+                <button
+                  class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5]"
+                  :class="videoListObj.query.college_id === '' ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
+                  @click="
+                    videoListObj.query.college_id = ''
+                    getVideoList()
+                  ">
+                  {{ l.allChannels }}
+                </button>
 
-              <!-- College Options -->
-              <button
-                v-for="college in publicCodeObj.collegeList"
-                :key="college.id"
-                class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5] last:border-b-0"
-                :class="videoListObj.query.college_id === college.id ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
-                @click="
-                  videoListObj.query.college_id = college.id
-                  getVideoList()
-                ">
-                <div class="flex items-center gap-2">
-                  <i class="el-icon-check text-[#065FD4]" :class="videoListObj.query.college_id === college.id ? 'opacity-100' : 'opacity-0'"></i>
-                  <span>{{ college.name_label }}</span>
-                </div>
-              </button>
+                <!-- College Options -->
+                <button
+                  v-for="college in publicCodeObj.collegeList"
+                  :key="college.id"
+                  class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5] last:border-b-0"
+                  :class="videoListObj.query.college_id === college.id ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
+                  @click="
+                    videoListObj.query.college_id = college.id
+                    getVideoList()
+                  ">
+                  <div class="flex items-center gap-2">
+                    <i class="el-icon-check text-[#065FD4]" :class="videoListObj.query.college_id === college.id ? 'opacity-100' : 'opacity-0'"></i>
+                    <span>{{ college.name_label }}</span>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -248,7 +250,7 @@
 
       <!-- Upload Video Drawer -->
       <a-drawer :visible="showObj.uploadVideo" :title="l.uploadVideo" :width="960" @close="closeUploadDrawer" :body-style="{ padding: 0 }">
-        <div class="flex flex-col h-full bg-white font-roboto">
+        <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
           <!-- Step 1: Upload Selection -->
           <div v-if="!flagObj.selectVideo" class="flex-1 flex flex-col justify-center items-center p-10 animate-fade-in">
             <div class="w-32 h-32 rounded-full bg-[#F9F9F9] flex items-center justify-center mb-6 cursor-pointer hover:bg-[#F0F0F0] transition-colors" @click="videoSelect">
@@ -256,7 +258,7 @@
             </div>
             <h2 class="text-[#0D0D0D] text-lg font-medium mb-2">{{ l.dragOrClickToSelect }}</h2>
             <p class="text-[#606060] text-sm mb-8 text-center max-w-md">Your videos will be private until you publish them.</p>
-            <button class="bg-[#065FD4] text-white px-6 py-2.5 rounded-sm font-medium text-sm uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="videoSelect">
+            <button class="bg-[#065FD4] text-white! px-6 py-2.5 rounded-sm font-medium text-sm uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="videoSelect">
               {{ l.selectVideo || 'SELECT FILES' }}
             </button>
           </div>
@@ -303,13 +305,9 @@
                   </div>
 
                   <!-- Auto Generated (Action to regenerate) -->
-                  <div
-                    class="w-32 aspect-video bg-[#F0F0F0] rounded flex items-center justify-center relative cursor-pointer hover:bg-[#E0E0E0] transition-colors"
-                    @click="drawCoverByFile(uploadVideoObj.file, Math.random() * uploadVideoObj.duration)"
-                    title="Generate random frame"
-                  >
+                  <div class="w-32 aspect-video bg-[#F0F0F0] rounded flex items-center justify-center relative cursor-pointer hover:bg-[#E0E0E0] transition-colors" @click="drawCoverByFile(uploadVideoObj.file, Math.random() * uploadVideoObj.duration)" title="Generate random frame">
                     <i class="el-icon-refresh text-[#606060]"></i>
-                    <span class="absolute bottom-1 text-[10px] text-[#909090]">Auto-gen</span>
+                    <span class="absolute bottom-2 text-[10px] text-[#909090]">Auto-gen</span>
                   </div>
                 </div>
               </div>
@@ -385,7 +383,10 @@
           <div class="border-t border-[#E5E5E5] p-4 flex justify-between items-center bg-white z-10">
             <!-- Left: Status text -->
             <div class="text-sm text-[#606060]">
-              <span v-if="flagObj.uploading" class="flex items-center gap-2"> <i class="el-icon-loading"></i> Uploading... Please do not close this window. </span>
+              <span v-if="flagObj.uploading" class="flex items-center gap-2">
+                <i class="el-icon-loading"></i>
+                Uploading... Please do not close this window.
+              </span>
             </div>
 
             <!-- Right: Buttons -->
@@ -393,12 +394,7 @@
               <button v-if="flagObj.selectVideo" class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="closeUploadDrawer">
                 {{ c.cancel || 'CANCEL' }}
               </button>
-              <button
-                v-if="flagObj.selectVideo"
-                class="px-6 py-2 bg-[#065FD4] text-white font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                :disabled="!flagObj.uploadAble || flagObj.uploading"
-                @click="handleSubmit('uploadVideo')"
-              >
+              <button v-if="flagObj.selectVideo" class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors" :disabled="!flagObj.uploadAble || flagObj.uploading" @click="handleSubmit('uploadVideo')">
                 {{ flagObj.uploading ? 'UPLOADING...' : l.uploadVideo || 'UPLOAD' }}
               </button>
             </div>
@@ -408,7 +404,7 @@
 
       <!-- Modify Video Drawer -->
       <a-drawer :visible="showObj.modifyVideo" :title="l.modifyVideo" :width="960" :body-style="{ padding: 0 }" @close="showObj.modifyVideo = false">
-        <div class="flex flex-col h-full bg-white font-roboto">
+        <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
           <div class="flex-1 flex overflow-hidden">
             <!-- Left Column: Form -->
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
@@ -423,7 +419,7 @@
               <!-- Description -->
               <div class="mb-8 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Description</label>
-                <textarea v-model="modifyVideoObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="5" :placeholder="l.introducePd"></textarea>
+                <textarea v-model="modifyVideoObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
               </div>
 
               <!-- Thumbnail -->
@@ -436,8 +432,8 @@
                   <div class="w-32 aspect-video border border-dashed border-[#CCCCCC] rounded cursor-pointer flex flex-col items-center justify-center hover:border-[#606060] hover:bg-[#F9F9F9] transition-all relative overflow-hidden group" @click="coverSelect('upload')">
                     <img v-if="coverObj.imageUrl" :src="coverObj.imageUrl" class="w-full h-full object-cover" />
                     <div v-else class="flex flex-col items-center">
-                       <i class="el-icon-plus text-xl text-[#606060] mb-1"></i>
-                       <span class="text-xs text-[#606060]">Upload new</span>
+                      <i class="el-icon-plus text-xl text-[#606060] mb-1"></i>
+                      <span class="text-xs text-[#606060]">Upload new</span>
                     </div>
 
                     <div v-if="coverObj.imageUrl" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -447,8 +443,8 @@
 
                   <!-- Original Thumbnail Preview (if exists and different from new) -->
                   <div v-if="modifyVideoObj.form.oldthumbnail_path && !coverObj.imageUrl" class="w-32 aspect-video relative rounded overflow-hidden border border-[#E5E5E5]">
-                      <img :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" class="w-full h-full object-cover opacity-80" />
-                      <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1 rounded">Current</span>
+                    <img :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" class="w-full h-full object-cover opacity-80" />
+                    <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1 rounded">Current</span>
                   </div>
                 </div>
               </div>
@@ -484,19 +480,19 @@
 
             <!-- Right Column: Info (Sticky) -->
             <div class="w-[300px] bg-[#F9F9F9] p-4 border-l border-[#E5E5E5] flex flex-col gap-4">
-                <div class="w-full aspect-video bg-black rounded overflow-hidden relative">
-                    <img v-if="coverObj.imageUrl" :src="coverObj.imageUrl" class="w-full h-full object-cover" />
-                    <img v-else-if="modifyVideoObj.form.oldthumbnail_path" :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" class="w-full h-full object-cover" />
-                </div>
+              <div class="w-full aspect-video bg-black rounded overflow-hidden relative">
+                <img v-if="coverObj.imageUrl" :src="coverObj.imageUrl" class="w-full h-full object-cover" />
+                <img v-else-if="modifyVideoObj.form.oldthumbnail_path" :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" class="w-full h-full object-cover" />
+              </div>
 
-                <div class="space-y-3">
-                    <div>
-                        <div class="text-xs text-[#606060] mb-1">Video Link</div>
-                        <div class="text-sm text-[#065FD4] break-all cursor-pointer hover:underline">
-                            {{ api.videoServer }}/watch/{{ modifyVideoObj.form.id }}
-                        </div>
-                    </div>
+              <div class="space-y-3">
+                <div>
+                  <div class="text-xs text-[#606060] mb-1">Video Link</div>
+                  <a :href="getVideoViewLink" target="_blank" rel="noopener noreferrer" class="text-sm text-[#065FD4] break-all cursor-pointer hover:underline">
+                    {{ getVideoViewLink }}
+                  </a>
                 </div>
+              </div>
             </div>
           </div>
 
@@ -505,7 +501,7 @@
             <button class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="showObj.modifyVideo = false">
               {{ c.cancel || 'CANCEL' }}
             </button>
-            <button class="px-6 py-2 bg-[#065FD4] text-white font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="handleSubmit('modifyVideo')">
+            <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="handleSubmit('modifyVideo')">
               {{ l.updateVideo || 'SAVE' }}
             </button>
           </div>
@@ -1167,6 +1163,17 @@ const videoProcess = computed(() => {
     isFinished: isFinished.value,
     statusType: statusType.value,
   }
+})
+
+const getVideoViewLink = computed(() => {
+  if (!modifyVideoObj.form.id) return ''
+  const relativePath = router.resolve({
+    name: 'videoPlay',
+    query: {
+      course_primary_id: modifyVideoObj.form.id,
+    },
+  }).href
+  return `${window.location.origin}${relativePath}`
 })
 
 // Lifecycle
