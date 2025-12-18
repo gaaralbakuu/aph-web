@@ -123,7 +123,10 @@
 
                 <!-- Thumbnail -->
                 <div class="relative w-[120px] h-[68px] bg-[#E5E5E5] shrink-0 group/thumb cursor-pointer" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)">
-                  <img :src="api.videoServer + '/' + i.thumbnail_path" class="w-full h-full object-cover" />
+                  <img v-if="!imageErrors[i.id]" :src="api.videoServer + '/' + i.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(i.id)" />
+                  <div v-else class="w-full h-full bg-[#CCCCCC] flex items-center justify-center text-white text-sm font-bold">
+                    {{ l.noImage || 'No Image' }}
+                  </div>
                   <span class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-medium px-1 rounded-sm">{{ formatDuration(i.duration) }}</span>
 
                   <!-- Hover Play -->
@@ -494,7 +497,7 @@ const videoPlayerRef = ref()
 const isAdmin = computed(() => store.getters.isAdmin)
 
 // Reactive data
-const imageErrors = reactive({})
+const imageErrors = ref({})
 const coverObj = reactive({
   dialogImageUrl: '',
   imageUrl: '',
@@ -555,7 +558,8 @@ const videoListObj = reactive({
 })
 
 const handleImageError = (id) => {
-  imageErrors[id] = true
+  console.log('Image load error for ID:', id)
+  imageErrors.value = { ...imageErrors.value, [id]: true }
 }
 
 const flagObj = reactive({
