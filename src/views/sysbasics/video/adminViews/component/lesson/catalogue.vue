@@ -1,237 +1,241 @@
 <template>
-  <div ref="lesssonCatalogue-container" class="lesssonCatalogue-container">
+  <div ref="lesssonCatalogue-container" class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
 
-    <a-modal v-model:open="showObj.selectCourse" @afterOpen='getCourseList' width="90%" style="top: 7vh"
-      :title="l.addCourseToCatalogue">
-      <div class="CourseSelect-dialog">
-        <a-row :gutter="24">
-          <a-col :span="12">
-            <a-form layout="inline">
-              <a-form-item :label="l.college">
-                <a-select v-model:value="courseObj.query.college_id" @change="getCourseList"
-                  :placeholder="l.emptyIsPublicCourse" allow-clear>
-                  <a-select-option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
-                </a-select>
-              </a-form-item>
-              <a-form-item :label="l.title">
-                <a-input :placeholder="l.keyword" v-model:value="courseObj.query.name" allow-clear @clear='getCourseList'
-                  @pressEnter="getCourseList"></a-input>
-              </a-form-item>
-              <a-form-item>
-                <a-button type="primary" @click="getCourseList">{{l.search}}</a-button>
-                <a-button type="default" @click="multipleAdd">{{l.multipleAdd}}</a-button>
-              </a-form-item>
-            </a-form>
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+      <h1 class="text-xl font-medium mb-0!">{{ l.catalogueManagement || 'Catalogue Management' }}</h1>
+    </div>
 
-            <a-table ref="toBeAddedTable" class='video-table' :dataSource="courseObj.courseList"
-              row-key="id" :pagination="false" :scroll="{ y: 500 }"
-              @selection-change="handleSelectionChangeToBeAdded">
-              <a-table-column type="selection" width="55">
-              </a-table-column>
-              <a-table-column title="No" width="50">
-                <template #default="{ index }">
-                  {{ index + 1 }}
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.cover">
-                <template #default="{ record }">
-                  <div class="img" v-if="record.thumbnail_path">
-                    <img class="auto-img" :src="api.baseUrl+'/'+ record.thumbnail_path" />
-                  </div>
-                  <div v-else style="text-align: center;width: 100%;">
-                    <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                    <div>{{l.noCover}}</div>
-                  </div>
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.title" data-index="name_zh">
-              </a-table-column>
-              <a-table-column :title="l.desc" data-index="description">
-              </a-table-column>
-              <a-table-column :title="c.operation" width="80">
-                <template #default="{ record }">
-                  <a-button type="link" @click="addCourse(record)">{{l.select}}</a-button>
-                </template>
-              </a-table-column>
-            </a-table>
-          </a-col>
-          <a-col :span="12">
-            <a-form layout="inline">
-              <a-form-item :label="l.toBeAddedList">
-                <a-button type="primary" danger @click="multipleRemove">{{l.multipleRemove}}</a-button>
-              </a-form-item>
-            </a-form>
+    <!-- Main Content Split View -->
+    <div class="flex-1 overflow-hidden flex">
 
-            <a-table ref="toBeRemovedTable" :dataSource="courseObj.form"
-              style="width: 95%;margin: 0 auto;" :pagination="false"
-              @selection-change="handleSelectionChangeToBeRemoved">
-              <a-table-column type="selection" width="55">
-              </a-table-column>
-              <a-table-column title="No" width="50">
-                <template #default="{ index }">
-                  {{ index + 1 }}
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.cover">
-                <template #default="{ record }">
-                  <div class="img" v-if="record.thumbnail_path">
-                    <img class="auto-img" :src="api.baseUrl+'/'+ record.thumbnail_path" />
+       <!-- Left: Organization Tree -->
+       <div class="w-[300px] flex flex-col border-r border-[#E5E5E5] bg-white">
+          <div class="p-4 border-b border-[#E5E5E5] bg-[#F9F9F9]">
+             <h2 class="text-sm font-medium text-[#0D0D0D] mb-3">{{ l.college || 'College Organization' }}</h2>
+             <div class="flex gap-2">
+                <input v-model="filterOrgText" class="flex-1 px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" :placeholder="l.keyword" />
+                <button class="px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm hover:bg-[#F2F2F2] transition-colors" @click="getCollegeList">
+                   <i class="el-icon-refresh"></i>
+                </button>
+             </div>
+          </div>
+          <div class="flex-1 overflow-y-auto p-2">
+             <el-tree class="filter-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true"
+                :data="collegeList" :filter-node-method="filterOrg" :expand-on-click-node="false">
+                <template #default="{ node, data }">
+                  <div class="flex-1 flex items-center py-1 cursor-pointer hover:bg-[#F2F8FF] rounded px-2 transition-colors"
+                       :class="catalogObj.query.college_id === data.id ? 'bg-[#E5F6FD] text-[#065FD4] font-medium' : 'text-[#0D0D0D]'"
+                       @click="clickCollege(data.id)">
+                    <span class="truncate">{{ data.name_label }}</span>
                   </div>
-                  <div v-else style="text-align: center;width: 100%;">
-                    <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                    <div>{{l.noCover}}</div>
-                  </div>
                 </template>
-              </a-table-column>
-              <a-table-column :title="l.title" data-index="name_zh"></a-table-column>
-              <a-table-column :title="l.desc" data-index="description" ellipsis></a-table-column>
-              <a-table-column :title="l.score" data-index="score"></a-table-column>
-              <a-table-column :title="c.operation" width="80">
-                <template #default="{ record, index }">
-                  <a-button type='link' @click="removeCourse(index)">{{l.remove}}</a-button>
-                </template>
-              </a-table-column>
-            </a-table>
-          </a-col>
-        </a-row>
-      </div>
-      <template #footer>
-        <a-button type="primary" @click="bindCourseToCatalog">{{l.submit}}</a-button>
-        <a-button @click="cancelBindCourse">{{l.giveup}}</a-button>
-      </template>
+             </el-tree>
+          </div>
+       </div>
+
+       <!-- Right: Catalogue Tree -->
+       <div class="flex-1 flex flex-col bg-white">
+          <div v-if="!catalogObj.query.college_id" class="flex flex-col items-center justify-center h-full text-[#606060]">
+             <i class="el-icon-office-building text-4xl mb-2"></i>
+             <p>{{ l.plsSelectCollegeToManage }}</p>
+          </div>
+          <div v-else class="flex flex-col h-full">
+             <!-- Toolbar -->
+             <div class="p-4 border-b border-[#E5E5E5] bg-white flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                   <div class="relative group w-32">
+                      <select v-model="catalogObj.query.is_valid" @change="getCatalogList" class="w-full px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
+                         <option value="">{{ c.all }}</option>
+                         <option value="Y">{{ c.enable }}</option>
+                         <option value="N">{{ c.disable }}</option>
+                      </select>
+                   </div>
+                   <input v-model="filterCatalogText" class="w-64 px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" :placeholder="l.keyword" />
+                   <button class="px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm hover:bg-[#F2F2F2] transition-colors" @click="getCatalogList">
+                      <i class="el-icon-refresh"></i>
+                   </button>
+                </div>
+                <button class="flex items-center gap-2 px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm" @click="addCatalog">
+                   <i class="el-icon-plus"></i>
+                   <span>{{ l.addCatalog }}</span>
+                </button>
+             </div>
+
+             <!-- Tree Content -->
+             <div class="flex-1 overflow-y-auto p-4 bg-[#F9F9F9]">
+                <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data"
+                   :filter-node-method="filterCatalog" :empty-text="l.emptyCatalogue">
+                   <template #default="{ node, data }">
+                      <div class="flex-1 flex items-center justify-between py-2 px-3 bg-white border border-[#E5E5E5] mb-2 rounded shadow-sm group hover:border-[#065FD4] transition-colors">
+                         <div class="flex items-center gap-2">
+                            <span class="font-medium text-[#0D0D0D]">{{ data.name_label }}</span>
+                            <span v-if="data.is_valid == 'N'" class="bg-[#F0F0F0] text-[#606060] text-[10px] px-1 rounded">{{ c.disable }}</span>
+                         </div>
+                         <div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="text-[#065FD4] text-xs hover:underline uppercase font-medium" @click.stop="addCatalog(data)">{{ l.addChildCatalog }}</button>
+                            <button class="text-[#606060] text-xs hover:underline uppercase font-medium" @click.stop="editCatalog(data)">{{ c.edit }}</button>
+                            <button class="text-[#065FD4] text-xs hover:underline uppercase font-medium" @click.stop="getCourseListById(data.id)">{{ l.manage }}</button>
+                            <button v-if="data.is_valid=='N'" class="text-[#069C56] text-xs hover:underline uppercase font-medium" @click.stop="modifyCatalogStatus(data)">{{ c.enable }}</button>
+                            <button v-else class="text-[#CC0000] text-xs hover:underline uppercase font-medium" @click.stop="modifyCatalogStatus(data)">{{ c.disable }}</button>
+                         </div>
+                      </div>
+                   </template>
+                </el-tree>
+             </div>
+          </div>
+       </div>
+
+    </div>
+
+    <!-- Modals & Drawers -->
+
+    <!-- Add/Edit Catalog Drawer -->
+    <a-drawer :visible="showObj.catalog_show" :width="500" @close="showObj.catalog_show = false" :body-style="{ padding: 0 }">
+       <div class="flex flex-col h-full font-roboto bg-white">
+          <div class="px-6 py-4 border-b border-[#E5E5E5] text-lg font-medium text-[#0D0D0D]">
+             {{ catalogObj.form.id ? l.editCatalogue : l.addCatalogue }}
+          </div>
+          <div class="flex-1 overflow-y-auto p-6 space-y-6">
+             <div class="group">
+                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.belongCollege }} <span class="text-red-500">*</span></label>
+                <select v-model="catalogObj.form.college_id" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" @change="collegeChange">
+                   <option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+                </select>
+             </div>
+
+             <div class="group" v-if="catalogObj.form.college_id">
+                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.parentCatalogue }}</label>
+                <a-cascader v-model:value="catalogObj.form.pid" :options="catalogObj.list" allow-clear
+                   :placeholder="l.emptyIsRootCatalogue" class="w-full" :field-names="catalogObj.cascaderProps">
+                </a-cascader>
+             </div>
+
+             <div class="grid grid-cols-2 gap-4">
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_zh }} <span class="text-red-500">*</span></label>
+                   <input v-model="catalogObj.form.name_zh" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_tw }}</label>
+                   <input v-model="catalogObj.form.name_tw" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_en }}</label>
+                   <input v-model="catalogObj.form.name_en" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_vi }}</label>
+                   <input v-model="catalogObj.form.name_vi" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+             </div>
+          </div>
+          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
+             <button class="px-4 py-2 text-[#606060] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors" @click="showObj.catalog_show = false">{{ l.giveup }}</button>
+             <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitCatalog">{{ l.submit }}</button>
+          </div>
+       </div>
+    </a-drawer>
+
+    <!-- Course Management Drawer -->
+    <a-drawer :visible="showObj.course_show" :width="800" @close="showObj.course_show = false" :body-style="{ padding: 0 }">
+       <div class="flex flex-col h-full font-roboto bg-white">
+          <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+             <h3 class="text-lg font-medium text-[#0D0D0D]">{{ l.courseManage }}</h3>
+             <button class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="beforeOpenCourseDialog">
+                {{ l.addCourse }}
+             </button>
+          </div>
+
+          <div class="flex-1 overflow-y-auto p-0">
+             <a-table :dataSource="courseObj.list" row-key="id" :pagination="false">
+                <a-table-column :title="l.cover">
+                   <template #default="{ record }">
+                      <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-20 h-12 object-cover bg-gray-200" />
+                   </template>
+                </a-table-column>
+                <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
+                <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
+                <a-table-column :title="c.operation">
+                   <template #default="{ record }">
+                      <button class="text-[#CC0000] text-xs hover:underline uppercase" @click="toggleCourseStatus(record)">{{ l.remove }}</button>
+                   </template>
+                </a-table-column>
+             </a-table>
+          </div>
+
+          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end">
+             <button class="px-4 py-2 bg-[#F2F2F2] text-[#0D0D0D] font-medium text-sm rounded-sm hover:bg-[#E5E5E5] transition-colors" @click="showObj.course_show = false">{{ c.close }}</button>
+          </div>
+       </div>
+    </a-drawer>
+
+    <!-- Add Course Modal -->
+    <a-modal v-model:open="showObj.selectCourse" :width="1000" :title="l.addCourseToCatalogue" @ok="bindCourseToCatalog" @cancel="cancelBindCourse">
+       <div class="flex flex-col h-[600px] font-roboto">
+          <div class="flex h-full gap-4">
+             <!-- Left: Source List -->
+             <div class="flex-1 flex flex-col border border-[#E5E5E5] rounded">
+                <div class="p-2 border-b border-[#E5E5E5] bg-[#F9F9F9] flex gap-2">
+                   <input v-model="courseObj.query.name" class="flex-1 px-2 py-1 text-sm border rounded" :placeholder="l.keyword" @keyup.enter="getCourseList" />
+                   <button class="px-3 py-1 bg-[#065FD4] text-white text-xs rounded" @click="getCourseList">{{ l.search }}</button>
+                   <button class="px-3 py-1 bg-[#069C56] text-white text-xs rounded" @click="multipleAdd">{{ l.multipleAdd }}</button>
+                </div>
+                <div class="flex-1 overflow-auto">
+                   <a-table :dataSource="courseObj.courseList" row-key="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChangeToBeAdded }">
+                      <a-table-column :title="l.cover" width="80px">
+                         <template #default="{ record }">
+                            <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-12 h-8 object-cover" />
+                         </template>
+                      </a-table-column>
+                      <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
+                      <a-table-column width="60px">
+                         <template #default="{ record }">
+                            <button class="text-[#065FD4] text-xs" @click="addCourse(record)">Add</button>
+                         </template>
+                      </a-table-column>
+                   </a-table>
+                </div>
+             </div>
+
+             <!-- Right: Selected List -->
+             <div class="flex-1 flex flex-col border border-[#E5E5E5] rounded">
+                <div class="p-2 border-b border-[#E5E5E5] bg-[#F9F9F9] flex justify-between items-center">
+                   <span class="text-sm font-medium">{{ l.toBeAddedList }}</span>
+                   <button class="px-3 py-1 bg-[#CC0000] text-white text-xs rounded" @click="multipleRemove">{{ l.multipleRemove }}</button>
+                </div>
+                <div class="flex-1 overflow-auto">
+                   <a-table :dataSource="courseObj.form" row-key="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChangeToBeRemoved }">
+                      <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
+                      <a-table-column width="60px">
+                         <template #default="{ index }">
+                            <button class="text-[#CC0000] text-xs" @click="removeCourse(index)">Del</button>
+                         </template>
+                      </a-table-column>
+                   </a-table>
+                </div>
+             </div>
+          </div>
+       </div>
     </a-modal>
 
-    <a-drawer class="drawer-container" :visible="showObj.course_show" :closable="false" :width="600"
-      placement="bottom" @close="showObj.course_show = false">
-      <template #title>
-        <div class="title">
-          <div>{{l.courseManage}}</div>
-          <div class="title-btn">
-            <a-button type="primary" size="small" @click="beforeOpenCourseDialog">{{l.addCourse}}</a-button>
-          </div>
-        </div>
-      </template>
-      <div class="form-container">
-        <a-table ref="multipleTable" :dataSource="courseObj.list" row-key="id"
-          style="width: 95%;margin: 0 auto;" :pagination="false">
-          <a-table-column title="No" width="50">
-            <template #default="{ index }">
-              {{ index + 1 }}
-            </template>
-          </a-table-column>
-          <a-table-column :title="l.cover">
-            <template #default="{ record }">
-              <div class="img" v-if="record.thumbnail_path">
-                <img class="auto-img" :src="api.baseUrl+'/'+ record.thumbnail_path" />
-              </div>
-              <div v-else style="text-align: center;width: 100%;">
-                <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                <div>{{l.noCover}}</div>
-              </div>
-            </template>
-          </a-table-column>
-          <a-table-column :title="l.title" data-index="name_zh"></a-table-column>
-          <a-table-column :title="l.desc" data-index="description" ellipsis></a-table-column>
-          <a-table-column :title="l.score" data-index="score"></a-table-column>
-          <a-table-column :title="l.status" data-index="is_valid"></a-table-column>
-          <a-table-column :title="c.operation">
-            <template #default="{ record }">
-              <a-button type='link' @click="toggleCourseStatus(record)">{{l.remove}}</a-button>
-            </template>
-          </a-table-column>
-        </a-table>
-        <div class="buttonBar">
-          <a-button type="primary" @click="showObj.course_show = false">{{c.close}}</a-button>
-        </div>
-      </div>
-    </a-drawer>
-
-    <a-drawer class="drawer-container" :visible="showObj.catalog_show" :closable="true" :width="600"
-      @close="showObj.catalog_show = false">
-      <template #title>
-        <div class="title">{{l.addOrEditCatalogue}}</div>
-      </template>
-      <div class="form-container">
-        <div class="form">
-          <a-form :label-col="{ span: 6 }" size="middle">
-            <a-form-item :label="l.name_zh" required>
-              <a-input v-model:value="catalogObj.form.name_zh"></a-input>
-            </a-form-item>
-            <a-form-item :label="l.name_tw">
-              <a-input v-model:value="catalogObj.form.name_tw"></a-input>
-            </a-form-item>
-            <a-form-item :label="l.name_en">
-              <a-input v-model:value="catalogObj.form.name_en"></a-input>
-            </a-form-item>
-            <a-form-item :label="l.name_vi">
-              <a-input v-model:value="catalogObj.form.name_vi"></a-input>
-            </a-form-item>
-            <a-form-item :label="l.belongCollege" required>
-              <a-select v-model:value="catalogObj.form.college_id" style="width: 100%;" @change="collegeChange">
-                <a-select-option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item :label="l.parentCatalogue" v-show="catalogObj.form.college_id">
-              <a-cascader v-model:value="catalogObj.form.pid" :options="catalogObj.list" allow-clear
-                :placeholder="l.emptyIsRootCatalogue" style="width: 100%;" :field-names="catalogObj.cascaderProps">
-              </a-cascader>
-            </a-form-item>
-          </a-form>
-        </div>
-        <div class="buttonBar">
-          <a-button type="primary" @click="submitCatalog">{{l.submit}}</a-button>
-          <a-button type="primary" danger @click="showObj.catalog_show = false">{{l.giveup}}</a-button>
-        </div>
-      </div>
-    </a-drawer>
-
-    <div style="display: flex;justify-content: space-around;height: 100%;">
-      <div style="width: 30%;height: 100%;">
-        <div class="org_filter" style="display: flex;height: 60px;padding: 14px 0px;">
-          <a-input :placeholder="l.keyword" v-model:value="filterOrgText"></a-input>
-          <a-button type="default" @click="getCollegeList" style="margin-left: 10px;">{{l.refresh}}</a-button>
-        </div>
-        <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true"
-          :data="collegeList" :filter-node-method="filterOrg">
-          <template #default="{ node, data }">
-            <div class="org-tree-node" @click="clickCollege(data.id)">
-              <span> {{ data.name_label }}</span>
-            </div>
-          </template>
-        </el-tree>
-      </div>
-      <div class="catalogBox">
-        <div class="catalog_filter">
-          <a-select v-model:value="catalogObj.query.is_valid" @change="getCatalogList">
-            <a-select-option :value="''">{{c.all}}</a-select-option>
-            <a-select-option :value="'Y'">{{c.enable}}</a-select-option>
-            <a-select-option :value="'N'">{{c.disable}}</a-select-option>
-          </a-select>
-          <a-input :placeholder="l.keyword" v-model:value="filterCatalogText"></a-input>
-
-          <a-button type="default" @click="getCatalogList" style="margin-left: 10px;">{{l.refresh}}</a-button>
-          <a-button type="primary" @click="addCatalog" style="margin-left: 10px;">{{l.addCatalog}}</a-button>
-        </div>
-        <div class="catalog-tree">
-          <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data"
-            :filter-node-method="filterCatalog"
-            :empty-text="catalogObj.query.college_id ? l.emptyCatalogue : l.plsSelectCollegeToManage">
-            <template #default="{ node, data }">
-              <div class="custom-tree-node">
-                <span>{{ data.name_label }}</span>
-                <span class="opera-button">
-                  <a-button type="link" @click.stop="addCatalog(data)">{{l.addChildCatalog}}</a-button>
-                  <a-button type="link" @click.stop="editCatalog(data)">{{c.edit}}</a-button>
-                  <a-button type="link" v-show="data.is_valid=='N'" @click.stop="modifyCatalogStatus(data)">{{c.enable}}</a-button>
-                  <a-button type="link" danger v-show="data.is_valid=='Y'" @click.stop="modifyCatalogStatus(data)">{{c.disable}}</a-button>
-                  <a-button type="link" @click="getCourseListById(data.id)">{{l.manage}}</a-button>
-                </span>
-              </div>
-            </template>
-          </el-tree>
+    <!-- Confirm Dialog Modal -->
+    <div v-if="showObj.confirmShow" class="fixed inset-0 z-50 flex items-center justify-center font-roboto">
+      <div class="fixed inset-0 bg-black/50" @click="handleConfirmCancel"></div>
+      <div class="relative bg-white rounded shadow-xl p-6 max-w-sm w-full mx-4 border border-[#E5E5E5]">
+        <h3 class="text-lg font-medium text-[#0D0D0D] mb-4">{{ showObj.confirmData.title }}</h3>
+        <p class="text-[#606060] mb-6 text-sm">{{ showObj.confirmData.message }}</p>
+        <div class="flex justify-end gap-2">
+          <button @click="handleConfirmCancel" class="px-4 py-2 text-[#0D0D0D] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors">
+            {{ l.giveup || 'Cancel' }}
+          </button>
+          <button @click="handleConfirmOk" class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm">
+            {{ l.submit || 'OK' }}
+          </button>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -257,7 +261,9 @@ const showObj = reactive({
   org_show: false,
   catalog_show: false,
   course_show: false,
-  selectCourse: false
+  selectCourse: false,
+  confirmShow: false,
+  confirmData: { title: '', message: '', callback: null }
 })
 
 const filterOrgText = ref('')
@@ -406,7 +412,7 @@ const submitCatalogMutation = useMutation({
   mutationFn: (formData) => $request(api.baseUrl + '/Video/VideoCourseCatalog/addOrModifyCatalog', formData, 'post'),
   onSuccess: (r) => {
     if (r.httpCode == 200) {
-      $message.success(l.oprateSuccess)
+      $message.success(l.value.oprateSuccess)
       setTimeout(() => {
         showObj.catalog_show = false
         refetchCatalog()
@@ -420,7 +426,7 @@ const changeCatalogStatusMutation = useMutation({
     key, value, remark
   }, 'post'),
   onSuccess: () => {
-    $message.success(l.oprateSuccess)
+    $message.success(l.value.oprateSuccess)
     refetchCatalog()
   }
 })
@@ -429,7 +435,7 @@ const addCourseToCatalogMutation = useMutation({
   mutationFn: (postData) => $request(api.videoServer + '/Video/VideoCourseCatalog/addCourseToCatalog', postData, 'post'),
   onSuccess: (r) => {
     if (r.httpCode == 200) {
-      $message.success(l.oprateSuccess)
+      $message.success(l.value.oprateSuccess)
       setTimeout(() => {
         courseObj.form = []
         showObj.selectCourse = false
@@ -444,7 +450,7 @@ const deleteCourseFromCatalogMutation = useMutation({
     course_id, catalog_id, is_valid
   }, 'post'),
   onSuccess: () => {
-    $message.success(l.oprateSuccess)
+    $message.success(l.value.oprateSuccess)
     refetchCourseListById()
   }
 })
@@ -517,14 +523,13 @@ const multipleAdd = () => {
       courseObj.form.push(i)
     }
   })
-  instance.refs.toBeAddedTable?.clearSelection()
-  $message.success(l.addToListSuccess)
+  // Clear selection if needed
+  $message.success(l.value.addToListSuccess)
 }
 
 const multipleRemove = () => {
   const idsToDelete = multipleSelectionObj.toBeRemoved.map(item => item.id)
   courseObj.form = courseObj.form.filter(item => !idsToDelete.includes(item.id))
-  instance.refs.toBeRemovedTable?.clearSelection()
 }
 
 const filterOrg = (value, data) => {
@@ -544,7 +549,7 @@ const addCatalog = async (data) => {
   Object.assign(catalogObj.form, {
     id: "",
     pid: data ? data.id : "",
-    college_id: data ? data.college_id : "",
+    college_id: data ? data.college_id : catalogObj.query.college_id,
     name_zh: "",
     name_en: "",
     name_tw: "",
@@ -559,28 +564,37 @@ const editCatalog = (data) => {
 }
 
 const modifyCatalogStatus = (i) => {
-  const msg = i.is_valid == 'Y' ? l.disable + '《' + i.name_label + '》？' + l.confirmTips : l.enable + '《' + i.name_label + '》？' + l.confirmTips
+  const msg = i.is_valid == 'Y' ? l.value.disable + '《' + i.name_label + '》？' + l.value.confirmTips : l.value.enable + '《' + i.name_label + '》？' + l.value.confirmTips
   const status = i.is_valid == 'Y' ? 'N' : 'Y'
-  $prompt(msg, {
-    type: 'warning',
-    inputPattern: /^[Y]{1}$/i,
-    inputErrorMessage: l.inputErrorMessage,
-    confirmButtonText: l.confirmText,
-    cancelButtonText: l.cancelText
-  }).then(() => {
-    changeCatalogStatusMutation.mutate({ key: i.id, value: status, remark: '' })
-  }).catch(() => {
-    console.log('取消操作')
-  })
+
+  showObj.confirmData = {
+      title: l.value.confirmTips || 'Confirm',
+      message: msg,
+      callback: () => {
+         changeCatalogStatusMutation.mutate({ key: i.id, value: status, remark: '' })
+      }
+  }
+  showObj.confirmShow = true
+}
+
+const handleConfirmOk = () => {
+  if (showObj.confirmData.callback) {
+      showObj.confirmData.callback()
+  }
+  showObj.confirmShow = false
+}
+
+const handleConfirmCancel = () => {
+  showObj.confirmShow = false
 }
 
 const submitCatalog = () => {
   if (!catalogObj.form.college_id) {
-    $message.error(l.plsSelectBelongCollege)
+    $message.error(l.value.plsSelectBelongCollege)
     return
   }
   if (!catalogObj.form.name_zh) {
-    $message.error(l.plsInputName_zh)
+    $message.error(l.value.plsInputName_zh)
     return
   }
   submitCatalogMutation.mutate(catalogObj.form)
@@ -588,10 +602,10 @@ const submitCatalog = () => {
 
 const addCourse = (data) => {
   if (courseObj.list.some(i => i.id === data.id)) {
-    $message.error(l.alreadyExistedInCatalogue)
+    $message.error(l.value.alreadyExistedInCatalogue)
   } else {
     if (courseObj.form.some(i => i.id === data.id)) {
-      $message.error(l.alreadyExistedInToBeAddedList)
+      $message.error(l.value.alreadyExistedInToBeAddedList)
     } else {
       courseObj.form.push(data)
     }
@@ -623,23 +637,21 @@ const cancelBindCourse = () => {
 const toggleCourseStatus = (data) => {
   const value = data.is_valid == 'Y' ? 'N' : 'Y'
   const msg = data.is_valid == 'Y' 
-    ? `您确定要禁用当前目录下《${data.name_zh}》这张课程吗？请输入Y后再次确认操作`
-    : `您确定要启用当前目录下《${data.name_zh}》这张课程吗？请输入Y后再次确认操作`
-  $prompt(msg, {
-    type: 'warning',
-    inputPattern: /^[Y]{1}$/i,
-    inputErrorMessage: '输入验证信息错误',
-    confirmButtonText: "确认",
-    cancelButtonText: "取消"
-  }).then(() => {
-    deleteCourseFromCatalogMutation.mutate({
-      course_id: data.course_id,
-      catalog_id: courseObj.catalog_id,
-      is_valid: value
-    })
-  }).catch(() => {
-    console.log('取消操作')
-  })
+    ? l.value.confirmDisable + ` 《${data.name_zh}》 ?`
+    : l.value.confirmEnable + ` 《${data.name_zh}》 ?`
+
+  showObj.confirmData = {
+      title: l.value.confirmTips || 'Confirm',
+      message: msg,
+      callback: () => {
+         deleteCourseFromCatalogMutation.mutate({
+            course_id: data.course_id,
+            catalog_id: courseObj.catalog_id,
+            is_valid: value
+         })
+      }
+  }
+  showObj.confirmShow = true
 }
 
 onMounted(() => {
@@ -647,87 +659,6 @@ onMounted(() => {
 })
 </script>
 
-<style>
-.img {
-  width: 80%;
-  height: 60px;
-}
-.img .auto-img {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-  cursor: pointer;
-}
-
-.catalogBox {
-  width: 65%;
-  height: 100%;
-  max-height: 100%;
-}
-.catalogBox .catalog_filter {
-  display: flex;
-  height: 60px;
-  padding: 14px 0px;
-}
-.catalogBox .catalog-tree {
-  height: calc(100% - 60px);
-  max-height: calc(100% - 60px);
-  overflow: scroll;
-}
-
-.custom-tree-node {
-  width: 95%;
-  height: 40px;
-  font-size: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.lesssonCatalogue-container {
-  width: 100%;
-  height: 100%;
-}
-.lesssonCatalogue-container .drawer-container .title {
-  padding: 0px 20px 10px 20px;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  justify-content: space-between;
-}
-.lesssonCatalogue-container .drawer-container .form-container {
-  width: 100%;
-  height: 95%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.lesssonCatalogue-container .drawer-container .form-container .form {
-  width: 90%;
-  margin: 0 auto;
-}
-.lesssonCatalogue-container .drawer-container .form-container .buttonBar {
-  width: 100%;
-  height: 60px;
-  margin: 0 auto;
-  padding: 0 30px;
-  position: absolute;
-  bottom: 0px;
-  border-top: 1px solid #ccc;
-  float: right;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-.lesssonCatalogue-container .org-tree-node {
-  width: 85%;
-  height: 40px;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+<style scoped>
+/* Scoped styles can stay if needed, but we used utility classes */
 </style>

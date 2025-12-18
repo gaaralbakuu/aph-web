@@ -1,202 +1,275 @@
 <template>
-  <div class="recommendation-container">
-    <div class="components">
-      <el-drawer class="drawer-container" :visible.sync="showObj.topicShow" :wrapperClosable='false' size="50%">
-        <div slot='title' class="title">{{ $l.editTopic }}</div>
-        <div class="form-container">
-          <el-form label-width="80px" size="medium">
-            <el-form-item :label="$l.selectCollege">
-              <el-select v-model="topicObj.form.college_id" :placeholder="$l.selectCollege" style="width: 100%;">
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.selectType">
-              <el-select v-model="topicObj.form.type" :placeholder="$l.selectType" style="width: 100%;">
-                <el-option v-for="i in publicCodeObj.type" :key="i.value" :label="i.label" :value="i.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.selectPage">
-              <el-select v-model="topicObj.form.page" :placeholder="$l.selectPage" style="width: 100%;">
-                <el-option :label="$l.notShow" value=""></el-option>
-                <el-option v-for="i in publicCodeObj.page" :key="i.value" :label="i.label" :value="i.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.titleZh">
-              <el-input v-model="topicObj.form.title_zh"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.titleTw">
-              <el-input v-model="topicObj.form.title_tw"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.titleEn">
-              <el-input v-model="topicObj.form.title_en"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.titleVi">
-              <el-input v-model="topicObj.form.title_vi"></el-input>
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="buttonBar">
-          <el-button type="primary" @click="submitTopic">{{ $l.submit }}</el-button>
-          <el-button type="danger" @click="showObj.topicShow = false">{{ $l.cancel }}</el-button>
-        </div>
-      </el-drawer>
+  <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
 
-      <el-dialog :visible.sync="showObj.courseDialog" @open='getCourseList' width="60%"
-        :title="$l.addCourseDialogTitle">
-        <div class="CourseSelect-dialog">
-          <el-form inline>
-            <el-form-item :label="$l.selectCollege">
-              <el-select v-model="courseObj.query.college_id" :placeholder="$l.publicCourseTip" clearable>
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$l.keywordSearch">
-              <el-input :placeholder="$l.keywordSearch" v-model="courseObj.query.name" clearable @clear='getCourseList'
-                @keyup.native.enter="getCourseList"></el-input>
-            </el-form-item>
-            <el-form-item :label="$l.courseType">
-              <el-select v-model="courseObj.query.is_public" :disabled="!isAdmin&&courseObj.query.college_id==''"
-                style="width: 100px;" @change="getCourseList">
-                <el-option :label="$l.all" value=""></el-option>
-                <el-option :label="$l.public" :value="1"></el-option>
-                <el-option :label="$l.private" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="getCourseList">{{ $l.search }}</el-button>
-              <el-button type="success" :disabled="courseObj.selectedList.length==0"
-                @click="addMultipleCourseToTopic">{{ $l.batchAdd }}</el-button>
-            </el-form-item>
-          </el-form>
-          <a-table ref="toBeAddedTable" class='video-table' :dataSource="courseObj.list" rowKey="id" bordered :scroll="{ y: 500 }" :rowSelection="{ onChange: handleSelectionChange }">
-            <a-table-column :title="$c.ordinal" width="50">
-              <template slot-scope="text, record, index">{{ index + 1 }}</template>
-            </a-table-column>
-            <a-table-column :title="$l.cover">
-              <template slot-scope="text, record">
-                <div class="img" v-if="record.thumbnail_path">
-                  <img class="auto-img" :src="$api.videoServer+'/'+ record.thumbnail_path" />
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+      <h1 class="text-xl font-medium mb-0!">{{ l.recommendationTopic || 'Topic Management' }}</h1>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="px-6 pt-4 pb-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+      <div class="flex flex-wrap items-center gap-4">
+
+        <!-- College Filter -->
+        <div class="relative group w-48">
+           <select v-model="topicObj.query.college_id" @change="getTopicList" class="w-full px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
+              <option value="" v-if="isAdmin">{{ l.selectManageCollege || 'All Colleges' }}</option>
+              <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+           </select>
+        </div>
+
+        <!-- Page Filter -->
+        <div class="relative group w-32">
+           <select v-model="topicObj.query.web_page" @change="getTopicList" class="w-full px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
+              <option value="">{{ l.all }}</option>
+              <option v-for="i in publicCodeObj.page" :key="i.value" :value="i.value">{{ i.label }}</option>
+           </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="relative group w-32">
+           <select v-model="topicObj.query.is_valid" class="w-full px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
+              <option value="">{{ l.all }}</option>
+              <option value="Y">{{ l.enable }}</option>
+              <option value="N">{{ l.disable }}</option>
+           </select>
+        </div>
+
+        <button class="px-4 py-2 bg-[#F2F2F2] text-[#0D0D0D] font-medium text-sm uppercase rounded-sm hover:bg-[#E5E5E5] transition-colors" @click="getTopicList">
+           {{ l.search }}
+        </button>
+
+        <div class="flex-1"></div>
+
+        <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="addTopic">
+           <i class="el-icon-plus text-lg"></i>
+           <span>{{ l.newTopic }}</span>
+        </button>
+      </div>
+
+      <!-- Secondary Action Bar (visible when editing a topic details) -->
+      <div v-show="detailObj.currentId" class="mt-4 flex items-center gap-4 pt-4 border-t border-[#E5E5E5]">
+         <span class="text-sm font-medium text-[#0D0D0D]">Current Topic: <span class="text-[#065FD4]">{{ topicObj.form.title_zh || topicObj.form.title_en }}</span></span>
+         <div class="flex-1"></div>
+         <button v-show="detailObj.list.length != topicObj.form.detail.length" class="px-4 py-2 bg-[#069C56] text-white font-medium text-sm uppercase rounded-sm hover:bg-[#058549] transition-colors shadow-sm" @click="updateDetailList">
+            {{ l.updateList }}
+         </button>
+         <button class="px-4 py-2 bg-[#065FD4] text-white font-medium text-sm uppercase rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm" @click="showObj.courseDialog = true">
+            {{ l.bindCourse }}
+         </button>
+      </div>
+    </div>
+
+    <!-- Main Content Area (Split View) -->
+    <div class="flex-1 overflow-hidden flex bg-[#F0F0F0]">
+
+       <!-- Left: Topic List -->
+       <div class="w-[400px] flex flex-col border-r border-[#E5E5E5] bg-white">
+          <!-- List Header -->
+          <div class="grid grid-cols-[50px_1fr_60px] gap-2 px-4 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-[#F9F9F9]">
+             <div>No</div>
+             <div>{{ l.topicName }}</div>
+             <div class="text-right">{{ l.action }}</div>
+          </div>
+
+          <!-- List Body -->
+          <div class="flex-1 overflow-y-auto">
+             <div v-if="topicObj.list.length === 0" class="flex flex-col items-center justify-center py-10">
+                <p class="text-sm text-[#606060]">{{ c.noData }}</p>
+             </div>
+             <div v-else class="divide-y divide-[#E5E5E5]">
+                <div v-for="(record, index) in topicObj.list" :key="record.id"
+                     class="grid grid-cols-[50px_1fr_60px] gap-2 px-4 py-3 cursor-pointer transition-colors hover:bg-[#F2F8FF]"
+                     :class="detailObj.currentId === record.id ? 'bg-[#E5F6FD] border-l-4 border-l-[#065FD4]' : 'border-l-4 border-l-transparent'"
+                     @click="getDetailList(record)">
+                   <div class="text-sm text-[#606060]">{{ (topicObj.query.page - 1) * topicObj.query.pageSize + index + 1 }}</div>
+                   <div class="min-w-0">
+                      <div class="text-sm font-medium text-[#0D0D0D] truncate" :title="record.title_label">{{ record.title_label }}</div>
+                      <div class="text-xs text-[#606060] mt-1">{{ record.page }} • {{ record.modify_user }}</div>
+                      <div class="mt-1">
+                         <span :class="['text-[10px] px-1 rounded border', record.is_valid == 'Y' ? 'bg-[#E5F6FD] text-[#065FD4] border-[#065FD4]' : 'bg-[#F9F9F9] text-[#606060] border-[#CCCCCC]']">
+                            {{ record.is_valid == 'Y' ? l.enable : l.disable }}
+                         </span>
+                      </div>
+                   </div>
+                   <div class="text-right flex flex-col gap-2 items-end">
+                      <i class="el-icon-edit text-[#606060] hover:text-[#065FD4] p-1" @click.stop="editTopic(record)"></i>
+                      <i :class="record.is_valid == 'Y' ? 'el-icon-close text-[#CC0000]' : 'el-icon-check text-[#069C56]'" class="p-1 hover:bg-gray-100 rounded" @click.stop="modifyTopicStatus(record)"></i>
+                   </div>
                 </div>
-                <div v-else style="text-align: center;width: 100%;">
-                  <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                  <div>{{ $l.noCover }}</div>
+             </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="p-2 border-t border-[#E5E5E5] bg-white flex justify-center">
+             <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handlePageChange"
+                :current-page="topicObj.query.page"
+                :page-size="topicObj.query.pageSize"
+                layout="prev, pager, next"
+                small
+                :total="topicObj.total">
+             </el-pagination>
+          </div>
+       </div>
+
+       <!-- Right: Detail List (Courses in Topic) -->
+       <div class="flex-1 flex flex-col bg-white overflow-hidden">
+          <div v-if="!detailObj.currentId" class="flex flex-col items-center justify-center h-full text-[#606060]">
+             <i class="el-icon-back text-4xl mb-2"></i>
+             <p>Select a topic to view details</p>
+          </div>
+          <div v-else class="flex flex-col h-full">
+             <div class="px-6 py-4 border-b border-[#E5E5E5] bg-[#F9F9F9]">
+                <h2 class="font-medium text-[#0D0D0D]">Courses in this Topic</h2>
+             </div>
+
+             <!-- Detail Header -->
+             <div class="grid grid-cols-[50px_100px_2fr_2fr_100px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white">
+                <div>No</div>
+                <div>{{ l.cover }}</div>
+                <div>{{ l.courseName }}</div>
+                <div>{{ l.courseDescription }}</div>
+                <div class="text-right">{{ l.action }}</div>
+             </div>
+
+             <!-- Detail Body -->
+             <div class="flex-1 overflow-y-auto">
+                <div v-if="detailObj.list.length === 0" class="flex items-center justify-center py-10">
+                   <p class="text-sm text-[#606060]">{{ c.noData }}</p>
                 </div>
-              </template>
-            </a-table-column>
-            <a-table-column :title="$l.name" dataIndex="name_zh"></a-table-column>
-            <a-table-column :title="$l.description" dataIndex="description"></a-table-column>
-            <a-table-column :title="$l.belongCollege">
-              <template slot-scope="text, record">
-                {{returnPublicObjLabel(record.college_id,'id','name_label','allCollegeList')}}
-              </template>
-            </a-table-column>
-            <a-table-column :title="$l.action" width="120" fixed="right">
-              <template slot-scope="text, record">
-                <a-button type="link" style="color: green;" @click="toPlay(record.id)">{{ $l.preview }}</a-button>
-                <a-button type="link" @click="addSingleCourseToTopic(record)">{{ $l.select }}</a-button>
-              </template>
-            </a-table-column>
-          </a-table>
-          <el-pagination @size-change="handleCourseSizeChange" @current-change="handleCoursePageChange"
-            :current-page="courseObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]"
-            :page-size="courseObj.query.pageSize" layout="total, sizes, prev, pager, next, jumper"
-            :total="courseObj.total" style="float: right;">
-          </el-pagination>
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button style="width: 8em;" type="primary" plain
-            @click="showObj.courseDialog = false">{{ $l.close }}</el-button>
-        </div>
-      </el-dialog>
-    </div>
-    <div class="recommendation-filter">
-      <el-form inline>
-        <el-form-item :label="$l.selectManageCollege">
-          <el-select v-model="topicObj.query.college_id" :placeholder="$l.selectManageCollege" @change="getTopicList"
-            :clearable="isAdmin">
-            <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-              :value="i.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$l.displayPage">
-          <el-select v-model="topicObj.query.web_page" :placeholder="$l.selectPage" @change="getTopicList"
-            style="width: 100px;">
-            <el-option :label="$l.all" value=""></el-option>
-            <el-option v-for="i in publicCodeObj.page" :key="i.value" :label="i.label" :value="i.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$l.status">
-          <el-select v-model="topicObj.query.is_valid" style="width: 100px;">
-            <el-option :label="$l.all" value=""></el-option>
-            <el-option :label="$l.enable" value="Y"></el-option>
-            <el-option :label="$l.disable" value="N"></el-option>
-          </el-select>
-          <el-button type="success" @click="getTopicList" style="margin-left:20px ;">{{ $l.search }}</el-button>
-          <el-button type="primary" @click="addTopic" style="margin-left:20px ;">{{ $l.newTopic }}</el-button>
-        </el-form-item>
-      </el-form>
+                <div v-else class="divide-y divide-[#E5E5E5]">
+                   <div v-for="(record, index) in detailObj.list" :key="record.course_id" class="grid grid-cols-[50px_100px_2fr_2fr_100px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center">
+                      <div class="text-sm text-[#606060]">{{ index + 1 }}</div>
 
-      <div v-show="detailObj.currentId" style="height: 51px;">
-        <el-button v-show="detailObj.list.length!=topicObj.form.detail.length" type="success" style="margin-left:20px ;"
-          @click="updateDetailList">{{ $l.updateList }}</el-button>
-        <el-button type="primary" @click="showObj.courseDialog = true"
-          style="margin-left:20px ;">{{ $l.bindCourse }}</el-button>
-      </div>
+                      <!-- Cover -->
+                      <div class="w-[100px] h-[56px] bg-[#E5E5E5] rounded-sm overflow-hidden">
+                         <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" />
+                         <div v-else class="w-full h-full flex items-center justify-center text-[#999999]">
+                            <i class="el-icon-picture-outline"></i>
+                         </div>
+                      </div>
+
+                      <div class="text-sm text-[#0D0D0D] font-medium truncate" :title="record.course_name_label">{{ record.course_name_label }}</div>
+                      <div class="text-sm text-[#606060] truncate" :title="record.description">{{ record.description }}</div>
+
+                      <div class="text-right flex flex-col gap-1 items-end">
+                         <button class="text-[#069C56] text-xs hover:underline" @click="toPlay(record.course_primary_id)">{{ l.preview }}</button>
+                         <button class="text-[#CC0000] text-xs hover:underline" @click="deleteDetail(index)">{{ l.remove }}</button>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+
     </div>
 
-    <div class="recommendation-pageBody">
-      <div style="width: 38%;">
-        <a-table ref="topicTable" :dataSource="topicObj.list" rowKey="id" bordered @rowClick="getDetailList">
-          <a-table-column :title="$c.ordinal" width="50">
-            <template slot-scope="text, record, index">{{ index + 1 }}</template>
-          </a-table-column>
-          <a-table-column :title="$l.topicName" dataIndex="title_label"></a-table-column>
-          <a-table-column :title="$l.lastModifier" dataIndex="modify_user"></a-table-column>
-          <a-table-column :title="$l.displayPage" dataIndex="page"></a-table-column>
-          <a-table-column :title="$l.isEnabled" dataIndex="is_valid" width="80"></a-table-column>
-          <a-table-column :title="$l.action" width="120" fixed="right">
-            <template slot-scope="text, record">
-              <a-button type="link" @click="editTopic(record)">{{ $l.edit }}</a-button>
-              <a-button v-if="record.is_valid=='Y'" type="link" style="color: red;" @click="modifyTopicStatus(record)">{{ $l.disableAction }}</a-button>
-              <a-button v-if="record.is_valid=='N'" type="link" style="color: green;" @click="modifyTopicStatus(record)">{{ $l.enableAction }}</a-button>
-            </template>
-          </a-table-column>
-        </a-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handlePageChange"
-          :current-page="topicObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="topicObj.query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper" :total="topicObj.total" style="float: right;">
-        </el-pagination>
-      </div>
-      <div style="width: 60%;">
-        <a-table ref="topicTable" :dataSource="detailObj.list" rowKey="course_id" bordered>
-          <a-table-column :title="$c.ordinal" width="50">
-            <template slot-scope="text, record, index">{{ index + 1 }}</template>
-          </a-table-column>
-          <a-table-column :title="$l.cover">
-            <template slot-scope="text, record">
-              <div class="img" v-if="record.thumbnail_path">
-                <img class="auto-img" :src="$api.videoServer+'/'+ record.thumbnail_path" />
-              </div>
-              <div v-else style="text-align: center;width: 100%;">
-                <i class="el-icon-picture-outline" style="font-size: 60px;"></i>
-                <div>{{ $l.noCover }}</div>
-              </div>
-            </template>
-          </a-table-column>
-          <a-table-column :title="$l.courseName" dataIndex="course_name_label"></a-table-column>
-          <a-table-column :title="$l.courseDescription" dataIndex="description"></a-table-column>
-          <a-table-column :title="$l.isEnabled" dataIndex="is_valid" width="80"></a-table-column>
-          <a-table-column :title="$l.action" width="120" fixed="right">
-            <template slot-scope="text, record, index">
-              <a-button type="link" style="color: green;" @click="toPlay(record.course_primary_id)">{{ $l.preview }}</a-button>
-              <a-button type="link" style="color: red;" @click="deleteDetail(index)">{{ $l.remove }}</a-button>
-            </template>
-          </a-table-column>
-        </a-table>
-      </div>
-    </div>
+    <!-- Drawers & Modals -->
+
+    <!-- Edit Topic Drawer -->
+    <el-drawer :visible.sync="showObj.topicShow" :wrapperClosable='false' size="500px" custom-class="drawer-no-padding">
+       <div slot="title" class="px-6 py-4 border-b border-[#E5E5E5] text-lg font-medium text-[#0D0D0D]">
+          {{ topicObj.form.id ? l.editTopic : l.newTopic }}
+       </div>
+       <div class="flex flex-col h-full font-roboto">
+          <div class="flex-1 overflow-y-auto p-6 space-y-6">
+             <div class="group">
+                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.selectCollege }}</label>
+                <select v-model="topicObj.form.college_id" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+                </select>
+             </div>
+
+             <div class="group">
+                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.selectType }}</label>
+                <select v-model="topicObj.form.type" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <option v-for="i in publicCodeObj.type" :key="i.value" :value="i.value">{{ i.label }}</option>
+                </select>
+             </div>
+
+             <div class="group">
+                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.selectPage }}</label>
+                <select v-model="topicObj.form.page" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <option value="">{{ l.notShow }}</option>
+                   <option v-for="i in publicCodeObj.page" :key="i.value" :value="i.value">{{ i.label }}</option>
+                </select>
+             </div>
+
+             <div class="grid grid-cols-2 gap-4">
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleZh }} <span class="text-red-500">*</span></label>
+                   <input v-model="topicObj.form.title_zh" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleTw }}</label>
+                   <input v-model="topicObj.form.title_tw" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleEn }}</label>
+                   <input v-model="topicObj.form.title_en" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+                <div class="group">
+                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleVi }}</label>
+                   <input v-model="topicObj.form.title_vi" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                </div>
+             </div>
+          </div>
+          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
+             <button class="px-4 py-2 text-[#606060] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors" @click="showObj.topicShow = false">{{ l.cancel }}</button>
+             <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitTopic">{{ l.submit }}</button>
+          </div>
+       </div>
+    </el-drawer>
+
+    <!-- Add Course Dialog -->
+    <el-dialog :visible.sync="showObj.courseDialog" @open='getCourseList' width="900px" :title="l.addCourseDialogTitle">
+       <div class="flex flex-col h-[500px] font-roboto">
+          <!-- Filter -->
+          <div class="flex flex-wrap gap-4 mb-4">
+             <select v-model="courseObj.query.college_id" class="w-40 px-2 py-1 border rounded text-sm outline-none">
+                <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+             </select>
+             <input v-model="courseObj.query.name" class="flex-1 px-2 py-1 border rounded text-sm outline-none" :placeholder="l.keywordSearch" @keyup.enter="getCourseList" />
+             <select v-model="courseObj.query.is_public" class="w-32 px-2 py-1 border rounded text-sm outline-none" :disabled="!isAdmin && courseObj.query.college_id == ''">
+                <option value="">{{ l.all }}</option>
+                <option :value="1">{{ l.public }}</option>
+                <option :value="0">{{ l.private }}</option>
+             </select>
+             <button class="px-4 py-1 bg-[#065FD4] text-white rounded text-sm" @click="getCourseList">{{ l.search }}</button>
+             <button class="px-4 py-1 bg-[#069C56] text-white rounded text-sm disabled:opacity-50" :disabled="courseObj.selectedList.length == 0" @click="addMultipleCourseToTopic">{{ l.batchAdd }}</button>
+          </div>
+
+          <!-- Table -->
+          <div class="flex-1 overflow-auto border border-[#E5E5E5] rounded">
+             <a-table :dataSource="courseObj.list" rowKey="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChange }">
+                <a-table-column :title="l.cover">
+                   <template slot-scope="text, record">
+                      <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-16 h-10 object-cover bg-gray-200" />
+                   </template>
+                </a-table-column>
+                <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
+                <a-table-column :title="l.description" dataIndex="description" width="200" :ellipsis="true"></a-table-column>
+                <a-table-column :title="l.action" width="120">
+                   <template slot-scope="text, record">
+                      <button class="text-[#065FD4] hover:underline mr-2" @click="toPlay(record.id)">{{ l.preview }}</button>
+                      <button class="text-[#069C56] hover:underline" @click="addSingleCourseToTopic(record)">{{ l.select }}</button>
+                   </template>
+                </a-table-column>
+             </a-table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex justify-end">
+             <el-pagination @size-change="handleCourseSizeChange" @current-change="handleCoursePageChange"
+                :current-page="courseObj.query.page" :page-sizes="[5,10, 15, 30, 50,100]" :page-size="courseObj.query.pageSize"
+                layout="total, sizes, prev, pager, next, jumper" :total="courseObj.total">
+             </el-pagination>
+          </div>
+       </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -254,20 +327,7 @@ const topicObj = reactive({
     type: "",
     is_valid: "",
     rec_status: "",
-    detail: [{
-      id: "",
-      course_id: "",
-      pid: "",
-      title_zh: "",
-      title_en: "",
-      title_tw: "",
-      title_vi: "",
-      icon_app: "",
-      icon_web: "",
-      url: "",
-      is_valid: "",
-      rec_status: "",
-    }]
+    detail: [] // Initialize as empty array
   },
   list: [],
   total: 0,
@@ -289,7 +349,7 @@ const courseObj = reactive({
   },
   total: 0,
   list: [],
-  selectedList: [] //待添加的课程列表
+  selectedList: []
 })
 
 const publicCodeObj = reactive({
@@ -371,7 +431,6 @@ const getCourseList = () => {
 }
 
 const getCollegeList = () => {
-  // 根据页面路由获取管理学院
   $request($api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
       resource_path: $route.path
     })
@@ -403,7 +462,7 @@ const getTopicList = () => {
 const addTopic = () => {
   topicObj.form = {
     id: "",
-    college_id: "",
+    college_id: publicCodeObj.collegeList[0]?.id || "",
     title_zh: "",
     title_en: "",
     title_tw: "",
@@ -415,13 +474,13 @@ const addTopic = () => {
     rec_status: 1,
     detail: []
   }
-  console.log("addTopic", topicObj.form)
   showObj.topicShow = true
 }
 
 const editTopic = (i) => {
-  console.log("editTopic", i)
-  topicObj.form = i
+  topicObj.form = _.cloneDeep(i) // Use cloneDeep to avoid direct mutation issues
+  // Ensure detail is array if null
+  if(!topicObj.form.detail) topicObj.form.detail = []
   showObj.topicShow = true
 }
 
@@ -469,8 +528,6 @@ const submitTopic = () => {
     return $message.error($l.pleaseSelectCollege)
   }
 
-  console.log(topicObj.form)
-
   $request($api.videoServer + "/Video/VideoPageTag/addOrModifyPageTag", topicObj.form, 'post')
     .then(r => {
       showObj.topicShow = false
@@ -487,29 +544,57 @@ const isCourseIdExists = (array, course_id) => {
 }
 
 const addSingleCourseToTopic = (i) => {
-  console.log(topicObj.form)
-  if (isCourseIdExists(topicObj.form.detail, i.course_id)) {
+  // We need to work with current form (if editing) or current detailed topic
+  // If user hasn't selected "Edit" on a topic, they might be in view mode (detailObj).
+  // But to add courses, they usually need to be in 'edit' context OR we support adding directly to current active topic.
+  // The UI suggests adding to the *current displayed* topic.
+
+  if (!topicObj.form.id && detailObj.currentId) {
+     // If form is empty but we are viewing a topic, load it into form
+     let currentTopic = topicObj.list.find(t => t.id === detailObj.currentId)
+     if(currentTopic) topicObj.form = _.cloneDeep(currentTopic)
+  }
+
+  if (!topicObj.form.id) {
+     return $message.error("Please select a topic first or create a new one.")
+  }
+
+  if (isCourseIdExists(topicObj.form.detail, i.id)) { // Note: course list item id is the course_id
     return $message({
       type: 'error',
       message: $l.courseAlreadyExists
     })
   }
+
   let course = {
     id: "",
-    course_id: i.course_id,
+    course_id: i.id, // course list item id
     pid: topicObj.form.id,
-    title_zh: i.title_zh,
-    title_en: i.title_en,
-    title_tw: i.title_tw,
-    title_vi: i.title_vi,
+    title_zh: i.name_zh,
+    title_en: i.name_en,
+    title_tw: i.name_tw,
+    title_vi: i.name_vi,
     icon_app: "",
     icon_web: "",
     url: "",
     is_valid: "Y",
     rec_status: 1,
   }
+
   topicObj.form.detail.push(course)
-  detailObj.list.push(i)
+
+  // Update detail view for immediate feedback
+  // We need to match the structure expected by detail list (which seems to be flat course objects with extra fields)
+  // Re-mapping for display:
+  detailObj.list.push({
+     ...i,
+     course_id: i.id,
+     course_primary_id: i.id,
+     course_name_label: i.name_zh,
+     description: i.description,
+     thumbnail_path: i.thumbnail_path
+  })
+
   submitTopic()
 }
 
@@ -518,24 +603,36 @@ const handleSelectionChange = (selectedRowKeys, selectedRows) => {
 }
 
 const addMultipleCourseToTopic = () => {
+   if (!topicObj.form.id && detailObj.currentId) {
+     let currentTopic = topicObj.list.find(t => t.id === detailObj.currentId)
+     if(currentTopic) topicObj.form = _.cloneDeep(currentTopic)
+  }
+
   if (courseObj.selectedList.length > 0) {
     courseObj.selectedList.forEach(i => {
-      if (!isCourseIdExists(topicObj.form.detail, i.course_id)) {
+      if (!isCourseIdExists(topicObj.form.detail, i.id)) {
         topicObj.form.detail.push({
           id: "",
-          course_id: i.course_id,
+          course_id: i.id,
           pid: topicObj.form.id,
-          title_zh: i.title_zh,
-          title_en: i.title_en,
-          title_tw: i.title_tw,
-          title_vi: i.title_vi,
+          title_zh: i.name_zh,
+          title_en: i.name_en,
+          title_tw: i.name_tw,
+          title_vi: i.name_vi,
           icon_app: "",
           icon_web: "",
           url: "",
           is_valid: "Y",
           rec_status: 1,
         })
-        detailObj.list.push(i)
+        detailObj.list.push({
+           ...i,
+           course_id: i.id,
+           course_primary_id: i.id,
+           course_name_label: i.name_zh,
+           description: i.description,
+           thumbnail_path: i.thumbnail_path
+        })
       }
     })
     submitTopic()
@@ -548,23 +645,25 @@ const addMultipleCourseToTopic = () => {
 }
 
 const getDetailList = (i) => {
-  console.log("getDetailList", i)
-  topicObj.form = { ...i,
-    sort: Number(i.sort)
-  }
+  topicObj.form = _.cloneDeep(i)
+  topicObj.form.sort = Number(i.sort)
   detailObj.currentId = i.id
-  detailObj.list = _.cloneDeep(i.detail)
+  detailObj.list = _.cloneDeep(i.detail || [])
   courseObj.selectedList = []
 }
 
 const updateDetailList = () => {
+   // This function seemed to sync detailObj.list changes back to topicObj.form.detail
+   // But we update topicObj.form.detail directly in add/remove.
+   // It might be for re-ordering or external changes?
+   // Re-building topicObj.form.detail from detailObj.list
   let detail = []
   detailObj.list.forEach(i => {
     detail.push({
-      id: "",
+      id: i.id || "", // Keep existing ID if any
       course_id: i.course_id,
       pid: topicObj.form.id,
-      title_zh: i.title_zh,
+      title_zh: i.title_zh || i.course_name_label, // Fallback
       title_en: i.title_en,
       title_tw: i.title_tw,
       title_vi: i.title_vi,
@@ -581,29 +680,20 @@ const updateDetailList = () => {
 
 const deleteDetail = (index) => {
   detailObj.list.splice(index, 1)
-}
-
-//根据真实值返回显示值
-const returnPublicObjLabel = (value, key, label, filed) => {
-  let item = publicCodeObj[filed].find(i => {
-    return i[key] == value
-  })
-  if (item) {
-    return item[label]
-  } else {
-    return value
+  // Also remove from form to keep in sync if we save
+  if(topicObj.form.detail && topicObj.form.detail[index]) {
+     topicObj.form.detail.splice(index, 1)
   }
+  submitTopic()
 }
 
 const toPlay = (id) => {
-  // 获取目标路由的完整 URL
   let routeUrl = $router.resolve({
     name: 'videoPlay',
     query: {
       course_primary_id: id,
     },
   }).href
-  // 使用 window.open 打开新窗口
   window.open(routeUrl, '_blank')
 }
 
@@ -613,69 +703,12 @@ onMounted(() => {
 })
 </script>
 
-<style>
-.img {
-  width: 80%;
-  height: 60px;
-}
-.img .auto-img {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-  cursor: pointer;
-}
-
-.recommendation-container {
-  width: 100%;
-  height: 100%;
-}
-.recommendation-container .components .drawer-container {
-  width: 100%;
-  height: 100%;
-}
-.recommendation-container .components .drawer-container .title {
-  padding: 20px 0px;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid #ccc;
-}
-.recommendation-container .components .drawer-container .form-container {
-  width: 95%;
-  height: 95%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.recommendation-container .components .drawer-container .buttonBar {
-  width: 100%;
-  height: 60px;
-  margin: 0 auto;
-  padding: 0 15px;
-  position: absolute;
-  bottom: 0px;
-  border-top: 1px solid #ccc;
-  float: right;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-.recommendation-container .recommendation-filter {
-  width: 100%;
-  height: 60px;
-  background-color: white;
-  padding: 15px 10px 0px 10px;
-  border-bottom: 1px #eee solid;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.recommendation-container .recommendation-pageBody {
-  width: 100%;
-  height: calc(100% - 60px);
-  background-color: white;
-  display: flex;
-  justify-content: space-between;
+<style scoped>
+/* Tailwind handles most, just minor overrides */
+:deep(.drawer-no-padding .el-drawer__body) {
+   padding: 0;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
 }
 </style>

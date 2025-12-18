@@ -1,140 +1,156 @@
 <template>
-  <div class="flex flex-col flex-1 overflow-hidden">
-    <!-- Modal thêm/chỉnh sửa tag -->
-    <a-modal v-model="showObj.tagShow" :title="l.addTag" :ok-text="l.submit" :cancel-text="l.giveup" @ok="handleSubmit" width="600px" :maskClosable="false">
-      <div class="p-3">
-        <a-form layout="vertical">
-          <a-form-item :label="l.name_zh">
-            <a-input v-model="tagForm.name_zh" placeholder="" />
-          </a-form-item>
-          <a-form-item :label="l.name_tw">
-            <a-input v-model="tagForm.name_tw" placeholder="" />
-          </a-form-item>
-          <a-form-item :label="l.name_en">
-            <a-input v-model="tagForm.name_en" placeholder="" />
-          </a-form-item>
-          <a-form-item :label="l.name_vi">
-            <a-input v-model="tagForm.name_vi" placeholder="" />
-          </a-form-item>
+  <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+      <h1 class="text-xl font-medium mb-0!">{{ l.title || 'Tags' }}</h1>
+      <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="addTag">
+        <i class="el-icon-plus text-lg"></i>
+        <span>{{ l.addTag }}</span>
+      </button>
+    </div>
 
-          <div class="text-red-500 italic text-xs">* {{ l.validationError }}</div>
-        </a-form>
+    <!-- Filter Bar -->
+    <div class="px-6 pt-4 pb-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+      <div class="flex items-center gap-4">
+        <!-- Search Filter -->
+        <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4] max-w-md">
+          <i class="el-icon-search text-[#606060] text-lg"></i>
+          <input v-model="queryParams.name" type="text" :placeholder="l.search || 'Search tags...'" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @keyup.enter="refetchTagList" />
+        </div>
+
+        <!-- Status Filter -->
+        <div class="relative group w-40">
+           <select v-model="queryParams.is_valid" @change="refetchTagList" class="w-full px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
+              <option value="">{{ c.all }}</option>
+              <option value="Y">{{ l.enable }}</option>
+              <option value="N">{{ l.disable }}</option>
+           </select>
+        </div>
+
+        <button class="px-4 py-2 bg-[#F2F2F2] text-[#0D0D0D] font-medium text-sm uppercase rounded-sm hover:bg-[#E5E5E5] transition-colors" @click="refetchTagList">
+           {{ l.search }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Content List -->
+    <div class="flex-1 overflow-y-scroll flex flex-col">
+       <!-- List Header -->
+       <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
+          <div>No</div>
+          <div>{{ l.name_zh || 'Name (ZH)' }}</div>
+          <div>{{ l.name_tw || 'Name (TW)' }}</div>
+          <div>{{ l.name_en || 'Name (EN)' }}</div>
+          <div>{{ l.name_vi || 'Name (VI)' }}</div>
+          <div>{{ l.create_time || 'Created' }}</div>
+          <div>{{ l.status || 'Status' }}</div>
+          <div class="text-right">{{ l.oprate || 'Action' }}</div>
+       </div>
+
+       <!-- List Body -->
+       <div class="flex-1 bg-white flex flex-col min-h-0">
+          <div v-if="tableLoading" class="flex flex-col items-center justify-center py-20 flex-1">
+             <i class="el-icon-loading text-2xl text-[#065FD4]"></i>
+             <p class="text-sm text-[#606060] mt-2">{{ l.loading || 'Loading...' }}</p>
+          </div>
+          <div v-else-if="tagList.length === 0" class="flex flex-col items-center justify-center py-20 flex-1">
+             <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
+                <i class="el-icon-price-tag text-4xl text-[#CCCCCC]"></i>
+             </div>
+             <p class="text-[#0D0D0D]">{{ c.noData }}</p>
+          </div>
+          <div v-else class="flex-1 flex flex-col">
+             <div class="divide-y divide-[#E5E5E5]">
+                <div v-for="(record, index) in tagList" :key="record.id || index" class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] group items-center transition-colors">
+                   <div class="text-sm text-[#606060]">{{ (tablePagination.current - 1) * tablePagination.pageSize + index + 1 }}</div>
+                   <div class="text-sm text-[#0D0D0D] font-medium">{{ record.name_zh }}</div>
+                   <div class="text-sm text-[#0D0D0D]">{{ record.name_tw }}</div>
+                   <div class="text-sm text-[#0D0D0D]">{{ record.name_en }}</div>
+                   <div class="text-sm text-[#0D0D0D]">{{ record.name_vi }}</div>
+                   <div class="text-xs text-[#606060]">{{ record.create_time }}</div>
+                   <div>
+                      <span :class="[
+                        'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase',
+                        record.is_valid === 'Y'
+                          ? 'bg-[#E5F6FD] text-[#065FD4]'
+                          : 'bg-[#F9F9F9] text-[#606060] border border-[#CCCCCC]'
+                      ]">
+                        {{ record.is_valid === 'Y' ? l.enable : l.disable }}
+                      </span>
+                   </div>
+                   <div class="text-right flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <i class="el-icon-edit text-lg cursor-pointer text-[#606060] hover:text-[#0D0D0D]" :title="c.edit" @click="modifyTag(record)"></i>
+                      <i v-if="record.is_valid == 'N'" class="el-icon-check text-lg cursor-pointer text-[#069C56] hover:text-[#058549]" :title="c.enable" @click="modifyStatus(record)"></i>
+                      <i v-else class="el-icon-close text-lg cursor-pointer text-[#CC0000] hover:text-[#990000]" :title="c.disable" @click="modifyStatus(record)"></i>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
+      <div class="flex items-center gap-2">
+        <span>{{ l.rowsPerPage || 'Rows per page' }}:</span>
+        <select
+          class="border-none bg-transparent outline-none font-medium text-[#0D0D0D]"
+          v-model.number="tablePagination.pageSize"
+        >
+          <option :value="10">10</option>
+          <option :value="30">30</option>
+          <option :value="50">50</option>
+          <option :value="100">100</option>
+        </select>
+        <span class="mx-2">{{ (tablePagination.current - 1) * tablePagination.pageSize + 1 }}-{{ Math.min(tablePagination.current * tablePagination.pageSize, tablePagination.total) }} {{ l.of }} {{ tablePagination.total }}</span>
+        <i class="el-icon-arrow-left cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full text-base" :class="tablePagination.current <= 1 ? 'opacity-50 cursor-not-allowed' : ''" @click="tablePagination.current > 1 && handlePageChange(tablePagination.current - 1)"></i>
+        <i class="el-icon-arrow-right cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full text-base" :class="tablePagination.current >= Math.ceil(tablePagination.total / tablePagination.pageSize) ? 'opacity-50 cursor-not-allowed' : ''" @click="tablePagination.current < Math.ceil(tablePagination.total / tablePagination.pageSize) && handlePageChange(tablePagination.current + 1)"></i>
+      </div>
+    </div>
+
+    <!-- Modal thêm/chỉnh sửa tag -->
+    <a-modal v-model:open="showObj.tagShow" :title="l.addTag" :ok-text="l.submit" :cancel-text="l.giveup" @ok="handleSubmit" width="600px" :maskClosable="false">
+      <div class="p-4 font-roboto">
+        <div class="space-y-4">
+           <!-- ZH -->
+           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_zh }}</label>
+              <input v-model="tagForm.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+           </div>
+           <!-- TW -->
+           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_tw }}</label>
+              <input v-model="tagForm.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+           </div>
+           <!-- EN -->
+           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_en }}</label>
+              <input v-model="tagForm.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+           </div>
+           <!-- VI -->
+           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_vi }}</label>
+              <input v-model="tagForm.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+           </div>
+
+           <div class="text-[#CC0000] italic text-xs mt-2">* {{ l.validationError }}</div>
+        </div>
       </div>
     </a-modal>
 
     <!-- Confirm Dialog Modal -->
-    <div v-if="showObj.confirmShow" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div v-if="showObj.confirmShow" class="fixed inset-0 z-50 flex items-center justify-center font-roboto">
       <div class="fixed inset-0 bg-black/50" @click="handleConfirmCancel"></div>
-      <div class="relative bg-white rounded-lg shadow-lg p-6 max-w-sm mx-4">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ showObj.confirmData.title }}</h3>
-        <p class="text-gray-700 mb-6">{{ showObj.confirmData.message }}</p>
-        <div class="flex justify-end gap-3">
-          <button @click="handleConfirmCancel" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-medium transition-colors">
+      <div class="relative bg-white rounded shadow-xl p-6 max-w-sm w-full mx-4 border border-[#E5E5E5]">
+        <h3 class="text-lg font-medium text-[#0D0D0D] mb-4">{{ showObj.confirmData.title }}</h3>
+        <p class="text-[#606060] mb-6 text-sm">{{ showObj.confirmData.message }}</p>
+        <div class="flex justify-end gap-2">
+          <button @click="handleConfirmCancel" class="px-4 py-2 text-[#0D0D0D] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors">
             {{ l.giveup || 'Cancel' }}
           </button>
-          <button @click="handleConfirmOk" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-medium transition-colors">
+          <button @click="handleConfirmOk" class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm">
             {{ l.submit || 'OK' }}
           </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main content -->
-    <div class="flex-1 bg-white flex flex-col overflow-hidden">
-      <!-- Filter header -->
-      <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 px-6 py-4 flex justify-between items-center gap-4 flex-wrap shadow-sm">
-        <div class="flex gap-4 items-center flex-wrap">
-          <div class="flex items-center gap-3">
-            <span class="whitespace-nowrap font-semibold text-gray-700">{{ l.title }}:</span>
-            <a-input v-model="queryParams.name" clearable @keyup.enter="refetchTagList" class="w-56" placeholder="Search tags..." />
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="whitespace-nowrap font-semibold text-gray-700">{{ l.status }}:</span>
-            <a-select v-model="queryParams.is_valid" @change="refetchTagList" class="w-44" placeholder="All">
-              <a-select-option value="">{{ c.all }}</a-select-option>
-              <a-select-option value="Y">{{ l.enable }}</a-select-option>
-              <a-select-option value="N">{{ l.disable }}</a-select-option>
-            </a-select>
-          </div>
-          <a-button type="primary" @click="refetchTagList" class="transition-all hover:shadow-md">{{ l.search }}</a-button>
-        </div>
-        <div>
-          <a-button type="primary" @click="addTag" class="bg-blue-600 hover:bg-blue-700 transition-all hover:shadow-md">{{ l.addTag }}</a-button>
-        </div>
-      </div>
-
-      <!-- Table container -->
-      <div class="flex-1 flex flex-col overflow-hidden relative" ref="tableContainer">
-        <div v-if="tableLoading" class="flex items-center justify-center h-80">
-          <div class="text-center">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-600"></div>
-            <p class="mt-3 text-gray-500 font-medium">{{ l.loading || 'Loading...' }}</p>
-          </div>
-        </div>
-        <div v-else-if="tagList && tagList.length > 0" class="flex flex-col flex-1 overflow-hidden">
-          <div class="flex-1 overflow-auto">
-            <table class="w-full border-collapse text-sm">
-              <!-- Table Header -->
-              <thead class="bg-gradient-to-br from-gray-100 to-gray-50">
-                <tr class="border-b-2 border-gray-300 sticky left-0 top-0">
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 w-12 text-xs uppercase tracking-wider">No</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 min-w-40 text-xs uppercase tracking-wider">{{ l.name_zh || 'Name (ZH)' }}</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 min-w-40 text-xs uppercase tracking-wider">{{ l.name_tw || 'Name (TW)' }}</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 min-w-40 text-xs uppercase tracking-wider">{{ l.name_en || 'Name (EN)' }}</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 min-w-40 text-xs uppercase tracking-wider">{{ l.name_vi || 'Name (VI)' }}</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 min-w-48 text-xs uppercase tracking-wider">{{ l.create_time || 'Created' }}</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 w-24 text-xs uppercase tracking-wider">{{ l.status || 'Status' }}</th>
-                  <th class="px-5 py-4 text-left font-bold text-gray-800 min-w-72 text-xs uppercase tracking-wider">{{ l.oprate || 'Action' }}</th>
-                </tr>
-              </thead>
-              <!-- Table Body -->
-              <tbody class="divide-y divide-gray-200">
-                <tr v-for="(record, index) in paginatedList" :key="record.id || index" class="bg-white hover:bg-blue-50 transition-all duration-200 hover:shadow-sm">
-                  <td class="px-5 py-4 text-gray-900 font-medium text-sm">{{ (tablePagination.current - 1) * tablePagination.pageSize + index + 1 }}</td>
-                  <td class="px-5 py-4 text-gray-800 text-sm">{{ record.name_zh }}</td>
-                  <td class="px-5 py-4 text-gray-800 text-sm">{{ record.name_tw }}</td>
-                  <td class="px-5 py-4 text-gray-800 text-sm">{{ record.name_en }}</td>
-                  <td class="px-5 py-4 text-gray-800 text-sm">{{ record.name_vi }}</td>
-                  <td class="px-5 py-4 text-gray-600 text-sm">{{ record.create_time }}</td>
-                  <td class="px-5 py-4">
-                    <span :class="[
-                      'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold',
-                      record.is_valid === 'Y' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    ]">
-                      {{ record.is_valid === 'Y' ? l.enable : l.disable }}
-                    </span>
-                  </td>
-                  <td class="px-5 py-4">
-                    <div class="flex gap-2">
-                      <button @click="modifyTag(record)" class="px-4 py-2 bg-blue-600 text-white! text-xs font-semibold rounded-lg hover:bg-blue-700 active:scale-95 transition-all duration-150 shadow-sm hover:shadow-md">
-                        {{ c.edit }}
-                      </button>
-                      <button v-if="record.is_valid == 'N'" @click="modifyStatus(record)" class="px-4 py-2 bg-green-600 text-white! text-xs font-semibold rounded-lg hover:bg-green-700 active:scale-95 transition-all duration-150 shadow-sm hover:shadow-md">
-                        {{ c.enable }}
-                      </button>
-                      <button v-else @click="modifyStatus(record)" class="px-4 py-2 bg-red-600 text-white! text-xs font-semibold rounded-lg hover:bg-red-700 active:scale-95 transition-all duration-150 shadow-sm hover:shadow-md">
-                        {{ c.disable }}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Pagination -->
-          <div class="bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center gap-6 shadow-sm">
-            <div class="text-sm font-medium text-gray-600">
-              <span class="text-gray-800 font-semibold">{{ tablePagination.total }}</span>
-              <span class="ml-1">{{ l.total }}</span>
-            </div>
-            <a-pagination v-model:current="tablePagination.current" v-model:page-size="tablePagination.pageSize" :total="tablePagination.total" :page-size-options="['5', '10', '15', '30', '50', '100']" :show-size-changer="true" @change="handlePageChange" class="[&_.ant-pagination-item-active]:bg-blue-600 [&_.ant-pagination-item-active]:border-blue-600"></a-pagination>
-          </div>
-        </div>
-        <div v-else class="flex items-center justify-center h-80 text-gray-400 text-sm">
-          {{ c.no_data || 'No data available' }}
         </div>
       </div>
     </div>
@@ -148,7 +164,7 @@ import api from '@/api'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 const instance = getCurrentInstance()
-const { $request, $message, $createElement, $confirm } = instance.proxy
+const { $request, $message } = instance.proxy
 const { l, c } = useLocalI18n('videoAdminTag')
 const queryClient = useQueryClient()
 
@@ -185,7 +201,6 @@ const tablePagination = reactive({
   current: 1,
   pageSize: 15,
   total: 0,
-  pageSizeOptions: ['5', '10', '15', '30', '50', '100'],
 })
 
 // TanStack Query - Fetch tag list
@@ -270,26 +285,10 @@ const { mutate: updateTagStatus, isLoading: isUpdatingStatus } = useMutation({
   },
 })
 
-// Computed properties
-const paginatedList = computed(() => {
-  return tagList.value
-})
-
-const totalPages = computed(() => {
-  return Math.ceil(tablePagination.total / tablePagination.pageSize)
-})
-
 // Methods
 const handlePageChange = (page) => {
   tablePagination.current = page
   queryParams.page = page
-  refetchTagList()
-}
-
-const handlePageSizeChange = () => {
-  tablePagination.current = 1
-  queryParams.page = 1
-  queryParams.pageSize = tablePagination.pageSize
   refetchTagList()
 }
 
