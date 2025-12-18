@@ -144,10 +144,11 @@
                       <div class="text-sm text-[#606060]">{{ index + 1 }}</div>
 
                       <!-- Cover -->
-                      <div class="w-[100px] h-[56px] bg-[#E5E5E5] rounded-sm overflow-hidden">
-                         <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" />
-                         <div v-else class="w-full h-full flex items-center justify-center text-[#999999]">
+                      <div class="w-[100px] h-[56px] bg-[#E5E5E5] rounded-sm overflow-hidden relative group/thumb">
+                         <img v-if="!imageErrors[record.course_id] && record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(record.course_id)" />
+                         <div v-else class="w-full h-full flex flex-col items-center justify-center bg-[#CCCCCC] text-white">
                             <i class="el-icon-picture-outline"></i>
+                            <span class="text-[8px] font-bold mt-0.5">{{ l.noImage || 'No Image' }}</span>
                          </div>
                       </div>
 
@@ -246,7 +247,12 @@
              <a-table :dataSource="courseObj.list" rowKey="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChange }">
                 <a-table-column :title="l.cover">
                    <template slot-scope="text, record">
-                      <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-16 h-10 object-cover bg-gray-200" />
+                      <div class="w-16 h-10 bg-[#E5E5E5] rounded-sm overflow-hidden relative">
+                          <img v-if="!imageErrors[record.id] && record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(record.id)" />
+                          <div v-else class="w-full h-full flex items-center justify-center bg-[#CCCCCC] text-white text-[10px] font-bold">
+                              {{ l.noImage || 'No Image' }}
+                          </div>
+                      </div>
                    </template>
                 </a-table-column>
                 <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
@@ -307,6 +313,11 @@ const $confirm = proxy.$confirm
 const $router = proxy.$router
 const $route = proxy.$route
 const $store = proxy.$store
+
+const imageErrors = ref({})
+const handleImageError = (id) => {
+  imageErrors.value = { ...imageErrors.value, [id]: true }
+}
 
 const topicObj = reactive({
   query: {
