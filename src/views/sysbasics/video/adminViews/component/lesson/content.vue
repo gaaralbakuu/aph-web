@@ -1,5 +1,232 @@
 <template>
-  <div class="flex flex-col flex-1 overflow-hidden">
+  <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+    <!-- Channel Dashboard Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+      <h1 class="text-xl font-medium mb-0">{{ l.channel }}</h1>
+
+      <div class="flex gap-2">
+        <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="uploadNewVideo">
+          <i class="el-icon-video-camera-solid text-lg"></i>
+          <span>{{ l.create }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="px-6 pt-6 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+      <div class="flex items-center gap-6 text-sm font-medium text-[#606060]">
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="videoListObj.query.status === '' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            videoListObj.query.status = ''
+            getVideoList()
+          ">
+          {{ l.videos }}
+        </button>
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="videoListObj.query.status === 'pengding' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            videoListObj.query.status = 'pengding'
+            getVideoList()
+          ">
+          {{ l.liveOrPending }}
+        </button>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="mt-4 flex items-center gap-4 mb-2">
+        <!-- Channel Select Dropdown -->
+        <div class="relative group w-48">
+          <button class="w-full flex items-center justify-between px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#999999] transition-colors group-hover:border-[#606060]">
+            <span class="flex items-center gap-2">
+              <i class="el-icon-office-building text-[#606060]"></i>
+              <span class="truncate">{{ videoListObj.query.college_id ? returnCollegeName(videoListObj.query.college_id) : l.allChannels }}</span>
+            </span>
+            <i class="el-icon-arrow-down text-[#606060] text-xs group-hover:rotate-180 transition-transform"></i>
+          </button>
+
+          <!-- Invisible hover bridge -->
+          <div class="absolute top-full left-0 right-0 h-1 hidden group-hover:block"></div>
+
+          <!-- Dropdown Menu -->
+          <div class="absolute top-full left-0 right-0 mt-0 bg-white border border-[#E5E5E5] rounded shadow-lg hidden group-hover:block z-50">
+            <div class="max-h-56 overflow-y-auto">
+              <!-- All Channels Option -->
+              <button
+                class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5]"
+                :class="videoListObj.query.college_id === '' ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
+                @click="
+                  videoListObj.query.college_id = ''
+                  getVideoList()
+                ">
+                {{ l.allChannels }}
+              </button>
+
+              <!-- College Options -->
+              <button
+                v-for="college in publicCodeObj.collegeList"
+                :key="college.id"
+                class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5] last:border-b-0"
+                :class="videoListObj.query.college_id === college.id ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
+                @click="
+                  videoListObj.query.college_id = college.id
+                  getVideoList()
+                ">
+                <div class="flex items-center gap-2">
+                  <i class="el-icon-check text-[#065FD4]" :class="videoListObj.query.college_id === college.id ? 'opacity-100' : 'opacity-0'"></i>
+                  <span>{{ college.name_label }}</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Filter -->
+        <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4]">
+          <i class="el-icon-s-operation text-[#606060] text-lg"></i>
+          <input v-model="videoListObj.query.title" type="text" :placeholder="l.filter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getVideoList" />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-scroll">
+      <!-- Content Table Header -->
+      <div class="grid grid-cols-[3fr_1fr_1fr_1.2fr_1fr] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
+        <div>{{ l.video }}</div>
+        <div>{{ l.visibility }}</div>
+        <div>{{ l.date }}</div>
+        <div>{{ l.uploadedBy }}</div>
+        <div class="text-right">{{ l.views }}</div>
+      </div>
+
+      <!-- Video List -->
+      <div class="flex-1 overflow-hidden bg-white flex flex-col">
+        <div v-if="videoListObj.list.length === 0" class="flex flex-col items-center justify-center py-20 flex-1">
+          <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
+            <i class="el-icon-video-camera text-4xl text-[#CCCCCC]"></i>
+          </div>
+          <p class="text-[#0D0D0D]">{{ c.noData }}</p>
+          <p class="text-sm text-[#606060] mt-1">{{ l.noVideoAvailable }}</p>
+          <button class="mt-4 text-[#065FD4] font-medium text-sm uppercase" @click="uploadNewVideo">{{ l.uploadVideo }}</button>
+        </div>
+        <div v-else class="flex flex-1 flex-col">
+          <div class="divide-y divide-[#E5E5E5]">
+            <div v-for="i in videoListObj.list" :key="i.id" class="grid grid-cols-[3fr_1fr_1fr_1.2fr_1fr] gap-4 px-6 py-2 hover:bg-[#F9F9F9] group items-start transition-[background-color] relative">
+              <!-- Column 1: Video -->
+              <div class="flex gap-4">
+                <!-- Checkbox placeholder -->
+                <div class="w-4 flex items-center justify-center pt-8">
+                  <div class="w-4 h-4 border border-[#CCCCCC] rounded-sm"></div>
+                </div>
+
+                <!-- Thumbnail -->
+                <div class="relative w-[120px] h-[68px] bg-[#E5E5E5] shrink-0 group/thumb cursor-pointer" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)">
+                  <img :src="api.videoServer + '/' + i.thumbnail_path" class="w-full h-full object-cover" />
+                  <span class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-medium px-1 rounded-sm">{{ formatDuration(i.duration) }}</span>
+
+                  <!-- Hover Play -->
+                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 flex items-center justify-center transition-opacity" @click.stop="previewVideo(i)">
+                    <i class="el-icon-video-play text-white text-2xl"></i>
+                  </div>
+
+                  <!-- Status Overlays on Thumbnail -->
+                  <div v-if="i.status === 'Pending' || i.status === 'pengding'" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center text-[#606060]">
+                    <i class="el-icon-time animate-spin text-lg mb-1"></i>
+                    <span class="text-[10px] uppercase font-bold">{{ l.pending }}</span>
+                  </div>
+
+                  <div v-if="videoProcess && videoProcess.videoId == i.id && !videoProcess.isFinished" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center">
+                    <div class="text-[10px] font-bold text-[#065FD4]">{{ ((videoProcess.currentTime / i.duration) * 100).toFixed(0) }}%</div>
+                    <div class="w-8 h-1 bg-[#E5E5E5] mt-1 overflow-hidden">
+                      <div class="h-full bg-[#065FD4]" :style="{ width: (videoProcess.currentTime / i.duration) * 100 + '%' }"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Title & Desc -->
+                <div class="min-w-0 pt-1 flex flex-col justify-between h-[68px]">
+                  <div>
+                    <h3 class="text-sm font-medium text-[#0D0D0D] line-clamp-1 mb-1 cursor-pointer hover:text-[#065FD4]" :title="i.title" @click="beforeModifyVideo(i)">{{ i.title }}</h3>
+                    <p class="text-xs text-[#606060] line-clamp-1 group-hover:hidden">{{ i.description || l.addDescription }}</p>
+
+                    <!-- Hover Actions (Replace desc on hover) -->
+                    <div class="hidden group-hover:flex items-center gap-4 text-[#606060]">
+                      <i class="el-icon-edit text-lg cursor-pointer hover:text-[#0D0D0D]" title="Details" @click="beforeModifyVideo(i)"></i>
+                      <i class="el-icon-data-analysis text-lg cursor-pointer hover:text-[#0D0D0D]" title="Analytics"></i>
+                      <i class="el-icon-chat-dot-square text-lg cursor-pointer hover:text-[#0D0D0D]" title="Comments"></i>
+                      <i class="el-icon-view text-lg cursor-pointer hover:text-[#0D0D0D]" title="View on YouTube"></i>
+                      <div class="relative group/more">
+                        <i class="el-icon-more text-lg cursor-pointer hover:text-[#0D0D0D] rotate-90" title="Options"></i>
+                        <!-- Dropdown simulation -->
+                        <div class="absolute left-0 top-full bg-white shadow-lg border border-[#E5E5E5] py-2 rounded w-32 hidden group-hover/more:block z-50">
+                          <button class="w-full text-left px-4 py-2 hover:bg-[#F2F2F2] text-sm" @click="deleteVideo(i)">{{ l.deleteForever }}</button>
+                          <button class="w-full text-left px-4 py-2 hover:bg-[#F2F2F2] text-sm">{{ l.download }}</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 2: Visibility -->
+              <div class="pt-3">
+                <div class="flex items-center gap-1">
+                  <i v-if="i.is_public == 1" class="el-icon-view text-[#069C56] text-lg"></i>
+                  <i v-else class="el-icon-lock text-[#606060] text-lg"></i>
+                  <span class="text-sm text-[#0D0D0D]">{{ i.is_public == 1 ? l.public : l.private }}</span>
+                </div>
+              </div>
+
+              <!-- Column 3: Date -->
+              <div class="pt-3">
+                <div class="text-sm text-[#0D0D0D]">{{ i.create_time ? i.create_time.split(' ')[0] : 'Draft' }}</div>
+                <div class="text-xs text-[#606060]">{{ l.uploaded }}</div>
+
+                <!-- Processing Status Text -->
+                <div v-if="videoProcess && videoProcess.videoId == i.id && !videoProcess.isFinished" class="text-xs text-[#065FD4] mt-1 animate-pulse">
+                  {{ l.processingHdVersion }}
+                </div>
+                <div v-else-if="i.status === 'Pending' || i.status === 'pengding'" class="text-xs text-[#606060] mt-1 italic">
+                  {{ l.waitingInQueue }}
+                </div>
+              </div>
+
+              <!-- Column 5: Uploaded By -->
+              <div class="pt-3">
+                <div class="text-sm text-[#0D0D0D] truncate" :title="getUploadedBy(i)">{{ getUploadedBy(i) }}</div>
+                <div class="text-xs text-[#606060]">{{ getUploadedByLabel(i) }}</div>
+              </div>
+
+              <!-- Column 6: Views (Dummy data) -->
+              <div class="pt-3 text-right text-sm text-[#0D0D0D]">{{ i.views }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination Footer -->
+    <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
+      <div class="flex items-center gap-2">
+        <span>{{ l.rowsPerPage }}:</span>
+        <select
+          class="border-none bg-transparent outline-none font-medium"
+          v-model.number="videoListObj.query.pageSize"
+          @change="
+            videoListObj.query.page = 1
+            getVideoList()
+          ">
+          <option :value="10">10</option>
+          <option :value="30">30</option>
+          <option :value="50">50</option>
+        </select>
+        <span class="mx-2">1-{{ videoListObj.list.length }} {{ l.of }} {{ videoListObj.total }}</span>
+        <i class="el-icon-arrow-left cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full" :class="videoListObj.query.page <= 1 ? 'opacity-50 cursor-not-allowed' : ''" @click="videoListObj.query.page > 1 && handlePageChange(videoListObj.query.page - 1)"></i>
+        <i class="el-icon-arrow-right cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full" :class="videoListObj.query.page >= Math.ceil(videoListObj.total / videoListObj.query.pageSize) ? 'opacity-50 cursor-not-allowed' : ''" @click="videoListObj.query.page < Math.ceil(videoListObj.total / videoListObj.query.pageSize) && handlePageChange(videoListObj.query.page + 1)"></i>
+      </div>
+    </div>
+
     <div class="components">
       <input ref="videoInput" type="file" @change="videoChange" style="display: none" accept="video/*" />
       <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none" accept="image/*" />
@@ -25,7 +252,7 @@
               <div v-if="!flagObj.selectVideo" class="w-full h-56 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" @click="videoSelect">
                 <i class="el-icon-upload text-5xl text-gray-400 mb-4"></i>
                 <div class="text-lg text-gray-600 font-medium">{{ l.selectVideo }}</div>
-                <div class="text-sm text-gray-400 mt-2">点击选择或拖拽视频文件</div>
+                <div class="text-sm text-gray-400 mt-2">{{ l.dragOrClickToSelect }}</div>
               </div>
               <div v-else class="w-full bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
                 <div class="flex items-start gap-4">
@@ -237,125 +464,6 @@
         </div>
       </a-drawer>
     </div>
-
-    <div class="flex-1 flex flex-col overflow-hidden">
-      <div class="flex justify-between border-b border-gray-200 px-4 py-3 h-16">
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-2">
-            <div>
-              <span class="mr-2">{{ l.college }}</span>
-              <a-select v-model:value="videoListObj.query.college_id" :placeholder="l.notAdmin" style="width: 150px" clearable allow-clear>
-                <a-select-option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</a-select-option>
-              </a-select>
-            </div>
-            <div>
-              <span class="mr-2">{{ l.title }}</span>
-              <a-input v-model:value="videoListObj.query.title" style="width: 150px" clearable allow-clear @change="getVideoList" @pressEnter="getVideoList"></a-input>
-            </div>
-            <div>
-              <span class="mr-2">{{ l.republic }}</span>
-              <a-select v-model:value="videoListObj.query.is_public" :disabled="!isAdmin && videoListObj.query.college_id == ''" style="width: 100px" @change="getVideoList">
-                <a-select-option value="">{{ c.all }}</a-select-option>
-                <a-select-option :value="1">{{ l.public }}</a-select-option>
-                <a-select-option :value="0">{{ l.privite }}</a-select-option>
-              </a-select>
-            </div>
-            <div>
-              <span class="mr-2">{{ l.TransformFormat }}</span>
-              <a-select v-model:value="videoListObj.query.status" style="width: 100px" @change="getVideoList">
-                <a-select-option value="">{{ c.all }}</a-select-option>
-                <a-select-option value="pengding">{{ l.pengding }}</a-select-option>
-                <a-select-option value="Completed">{{ l.Completed }}</a-select-option>
-                <a-select-option value="Faild">{{ l.Faild }}</a-select-option>
-              </a-select>
-            </div>
-            <a-button type="primary" @click="getVideoList">{{ l.search }}</a-button>
-          </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <a-button type="primary" @click="uploadNewVideo">{{ l.uploadVideo }}</a-button>
-        </div>
-      </div>
-
-      <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Video List Container -->
-        <div class="overflow-y-auto bg-gray-50 flex-1">
-          <div v-if="videoListObj.list.length === 0" class="flex flex-col items-center justify-center h-96">
-            <i class="el-icon-document text-6xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500 text-lg">{{ c.noData }}</p>
-          </div>
-          <div v-else class="space-y-4 p-6">
-            <!-- Video Item Card -->
-            <div v-for="i in videoListObj.list" :key="i.id" :class="['rounded-lg shadow-sm hover:shadow-md transition-shadow border overflow-hidden', (videoProcess && videoProcess.videoId == i.id && videoProcess.isFinished == false) ? 'border-orange-400! bg-orange-100!' : 'bg-white border-gray-100']">
-              <div class="flex h-40">
-                <!-- Thumbnail -->
-                <div class="relative w-56 h-40 shrink-0 bg-gray-900 overflow-hidden group">
-                  <img class="w-full h-full object-cover cursor-pointer" :src="api.videoServer + '/' + i.thumbnail_path" @click="coverPreview(api.videoServer + '/' + i.thumbnail_path)" />
-                  <!-- Hover overlay with play button -->
-                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
-                    <button v-if="i.url" class="opacity-0 group-hover:opacity-100 transition-opacity w-16 h-16 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center shadow-lg" @click="previewVideo(i)">
-                      <i class="el-icon-video-play text-3xl text-blue-500"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Content -->
-                <div class="grow flex flex-col justify-between p-4">
-                  <!-- Title and Tag -->
-                  <div class="flex gap-2 overflow-hidden">
-                    <div class="flex-1 overflow-hidden">
-                      <h3 class="text-lg font-semibold text-gray-800 line-clamp-1 grow">{{ i.title }}</h3>
-                      <!-- Description -->
-                      <p class="text-sm text-gray-600 line-clamp-2">{{ i.description || l.noIntroduce }}</p>
-                    </div>
-                    <div class="shrink-0 flex flex-col items-end gap-2">
-                      <a-tag :color="i.is_public == 1 ? 'blue' : 'orange'">
-                        {{ i.is_public == 1 ? l.public : l.privite }}
-                      </a-tag>
-                      <div v-if="videoProcess && videoProcess.videoId == i.id && videoProcess.isFinished == false" class="text-sm text-red-500">
-                        {{ ((videoProcess.currentTime / i.duration) * 100).toFixed(0) }}%
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Info Row -->
-                  <div class="grid grid-cols-3 gap-4 text-xs text-gray-500">
-                    <div class="flex items-center space-x-1">
-                      <i class="el-icon-time text-blue-500"></i>
-                      <span>{{ formatDuration(i.duration) }}</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                      <i class="el-icon-user text-green-500"></i>
-                      <span>{{ i.create_user }}</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                      <i class="el-icon-document text-orange-500"></i>
-                      <span>{{ i.create_time }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-col items-center justify-center gap-2 px-4 py-4 border-l border-gray-100 bg-gray-50 group">
-                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-200 transition-colors" @click="beforeModifyVideo(i)" title="编辑">
-                    <i class="el-icon-edit text-lg"></i>
-                  </button>
-                  <button class="p-2.5 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-200 transition-colors" @click="deleteVideo(i)" title="删除">
-                    <i class="el-icon-delete text-lg"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center">
-          <div class="text-sm text-gray-600">{{ l.total }}：{{ videoListObj.total }}</div>
-          <a-pagination v-model:current="videoListObj.query.page" v-model:page-size="videoListObj.query.pageSize" :total="videoListObj.total" :page-size-options="['5', '10', '15', '30', '50', '100']" :show-size-changer="true" @change="handlePageChange"></a-pagination>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -439,7 +547,7 @@ const videoListObj = reactive({
     status: '',
     is_public: '',
     page: 1,
-    pageSize: 15,
+    pageSize: 10,
   },
   total: 0,
   list: [],
@@ -941,6 +1049,19 @@ const formatDuration = (totalSeconds, unit) => {
   }
 }
 
+const getUploadedBy = (video) => {
+  // Ưu tiên hiển thị người sửa cuối cùng, nếu không có thì hiển thị người tải lên
+  return video.modify_user || video.create_user || l.value.unknownUser
+}
+
+const getUploadedByLabel = (video) => {
+  // Nhãn cho người tải lên hoặc người sửa
+  if (video.modify_user && video.modify_user !== video.create_user) {
+    return l.value.lastModified
+  }
+  return l.value.uploadedBy
+}
+
 const initializeSignalR = () => {
   // Tạo connection đến SignalR Hub
   connection.value = new signalR.HubConnectionBuilder()
@@ -962,7 +1083,7 @@ const initializeSignalR = () => {
     isFinished.value = true
     statusMessage.value = 'Video converted successfully!'
     statusType.value = 'success'
-    getVideoList();
+    getVideoList()
   })
 
   // Nhận sự kiện lỗi
@@ -1010,74 +1131,3 @@ onBeforeUnmount(() => {
   }
 })
 </script>
-
-<style scoped>
-/* Tùy chỉnh CSS không thể tạo bằng Tailwind class */
-
-/* Vị trí tuyệt đối cho auto-img và cover */
-.auto-img {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-}
-
-/* Các class cũ nếu còn sử dụng trong template */
-.cover-oprate {
-  display: none;
-}
-
-.cover:hover .cover-oprate {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  background-color: rgba(167, 167, 167, 0.7);
-  color: white;
-  font-size: 30px;
-}
-
-.iconZoom {
-  margin-top: 15%;
-}
-
-.iconZoom:hover {
-  color: #409fee;
-}
-
-.iconRefresh {
-  margin-top: 15%;
-}
-
-.iconRefresh:hover {
-  color: #00aa7f;
-}
-
-/* Nếu có old video list structure */
-.video-item .delete,
-.video-item .play {
-  visibility: hidden;
-}
-
-.video-item:hover .delete,
-.video-item:hover .play {
-  visibility: visible;
-  width: 50px;
-  font-size: 20px;
-}
-
-.video-item:hover .delete:hover {
-  color: red;
-  cursor: pointer;
-}
-
-.video-item:hover .play:hover {
-  color: lightgreen;
-  cursor: pointer;
-}
-</style>
