@@ -2,7 +2,7 @@
   <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
     <!-- Channel Dashboard Header -->
     <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
-      <h1 class="text-xl font-medium mb-0">{{ l.channel }}</h1>
+      <h1 class="text-xl font-medium mb-0!">{{ l.channel }}</h1>
 
       <div class="flex gap-2">
         <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="uploadNewVideo">
