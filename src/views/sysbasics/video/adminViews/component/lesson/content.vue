@@ -1080,7 +1080,7 @@ const initializeSignalR = () => {
 
   // Nhận sự kiện progress từ server
   connection.value.on('ReceiveVideoProgress', (data) => {
-    // console.log('Progress update:', data)
+    console.log('Progress update:', data)
     currentTimeMs.value = data.timeMs
     videoId.value = data.videoId
     isFinished.value = false
