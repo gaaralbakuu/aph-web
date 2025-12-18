@@ -213,7 +213,7 @@
                    <div class="group">
                       <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.courseType }}</label>
                       <div class="flex items-center gap-4 h-[38px]">
-                         <a-switch v-model:checked="courseObj.newForm.is_public" :checked-value="1" :un-checked-value="0">
+                         <a-switch :checked="courseObj.newForm.is_public === 1" @change="(val) => courseObj.newForm.is_public = val ? 1 : 0">
                             <template #checkedChildren>{{ l.public }}</template>
                             <template #unCheckedChildren>{{ l.private }}</template>
                          </a-switch>
@@ -314,7 +314,7 @@
                       <a-table-column :title="l.playQuestion">
                          <template #default="{ record }">
                             <div class="flex items-center gap-2">
-                               <a-switch v-model:checked="record.is_process_question" :checked-value="true" :un-checked-value="false" size="small" />
+                               <a-switch :checked="record.is_process_question" @change="(val) => record.is_process_question = val" size="small" />
                                <button v-if="record.is_process_question" class="text-[#065FD4] text-xs hover:underline" @click="openProcessQuestion(record)">{{ l.playQuestionManage }}</button>
                             </div>
                          </template>
@@ -391,7 +391,7 @@
 
     <!-- Other Modals (Select Video, Select Exam, etc.) -->
     <!-- Select Video Modal -->
-    <a-modal v-model:open="showObj.selectVideo" :title="l.addVideo" width="800px" @ok="selectMultipleVideo" @cancel="showObj.selectVideo = false" :ok-text="l.multipleAdd" :cancel-text="c.cancel">
+    <a-modal v-model="showObj.selectVideo" :title="l.addVideo" width="800px" @ok="selectMultipleVideo" @cancel="showObj.selectVideo = false" :ok-text="l.multipleAdd" :cancel-text="c.cancel">
        <div class="flex flex-col h-[500px]">
           <div class="flex gap-4 mb-4">
              <select v-model="videoListObj.query.college_id" class="w-40 px-2 py-1 border rounded text-sm">
@@ -419,6 +419,31 @@
        </div>
     </a-modal>
 
+    <!-- Select Exam Modal -->
+    <a-modal v-model="showObj.selectExam" :title="l.addExam" width="800px" @ok="selectMultipleExam" @cancel="showObj.selectExam = false" :ok-text="l.multipleAdd" :cancel-text="c.cancel" @after-open="getCourseList">
+       <div class="flex flex-col h-[500px]">
+          <div class="flex gap-4 mb-4">
+             <input v-model="examObj.query.name" class="flex-1 px-2 py-1 border rounded text-sm" :placeholder="l.title" @keyup.enter="getExamList" />
+             <select v-model="examObj.query.is_valid" class="w-40 px-2 py-1 border rounded text-sm">
+                <option value="">{{ c.all }}</option>
+                <option value="Y">{{ c.enable }}</option>
+                <option value="N">{{ c.disable }}</option>
+             </select>
+             <button class="px-4 py-1 bg-[#065FD4] text-white rounded text-sm" @click="getExamList">{{ l.search }}</button>
+          </div>
+          <div class="flex-1 overflow-auto">
+             <a-table :dataSource="examObj.list" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: examSelectedRowKeys, onChange: examSelectionChange }">
+                <a-table-column :title="l.title" dataIndex="name_label"></a-table-column>
+                <a-table-column :title="l.passScore" dataIndex="pass_score"></a-table-column>
+                <a-table-column :title="l.examDuration" dataIndex="test_duration"></a-table-column>
+             </a-table>
+          </div>
+          <div class="mt-4 flex justify-end">
+             <a-pagination v-model:current="examObj.query.page" :total="examObj.total" :page-size="examObj.query.pageSize" show-less-items @change="getExamList" />
+          </div>
+       </div>
+    </a-modal>
+
     <!-- Confirm Dialog Modal -->
     <div v-if="showObj.confirmShow" class="fixed inset-0 z-50 flex items-center justify-center font-roboto">
       <div class="fixed inset-0 bg-black/50" @click="handleConfirmCancel"></div>
@@ -440,7 +465,7 @@
     <FilePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews" @update:visible="showObj.filePreviews = $event" />
     <input ref="attachmentInput" type="file" @change="uploadattAchmentChange" style="display: none;" />
     <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none;" accept="image/*" />
-    <a-modal v-model:open="showObj.coverDialog" :title="l.preview" :footer="null" :width="600">
+    <a-modal v-model="showObj.coverDialog" :title="l.preview" :footer="null" :width="600">
         <img width="100%" :src="coverObj.dialogImageUrl" alt="" />
     </a-modal>
 
@@ -691,6 +716,11 @@
           }
         }
         this.getVideoList()
+      },
+      "showObj.selectExam"(newVal) {
+         if (newVal) {
+            this.getExamList()
+         }
       }
     },
 
@@ -874,6 +904,30 @@
       removeMultipleExam() {
          this.manageObj.selectedExamList = this.manageObj.selectedExamList.filter(item => !this.examSelectedRowKeys.includes(item.id))
          this.examSelectedRowKeys = []
+      },
+
+      getExamList() {
+        this.$request(this.$api.videoServer + '/Video/VideoExam/getExamList', this.examObj.query)
+          .then(r => {
+            this.examObj.list = r.data.list
+            this.examObj.total = r.data.total
+          })
+          .catch(e => {
+            console.log(e);
+          })
+      },
+
+      selectMultipleExam() {
+        // Logic to add selected exams to manageObj.selectedExamList
+        // Assuming examSelectedRowKeys contains IDs from the selection change event
+        let selectedExams = this.examObj.list.filter(item => this.examSelectedRowKeys.includes(item.id))
+        selectedExams.forEach(e => {
+           if (!this.manageObj.selectedExamList.some(existing => existing.id === e.id)) {
+              this.manageObj.selectedExamList.push({ ...e, primary_id: '' })
+           }
+        })
+        this.showObj.selectExam = false
+        this.examSelectedRowKeys = []
       },
 
       modifyCourseBinding(data) {
