@@ -661,6 +661,12 @@
 
     computed: {
       ...mapGetters(['isAdmin']),
+      l() {
+        return this.$l
+      },
+      c() {
+        return this.$c
+      }
     },
 
     watch: {

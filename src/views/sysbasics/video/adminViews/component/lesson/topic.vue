@@ -298,6 +298,8 @@ const {
 } = getCurrentInstance()
 const $l = proxy.$l
 const $c = proxy.$c
+const l = $l
+const c = $c
 const $api = proxy.$api
 const $request = proxy.$request
 const $message = proxy.$message
