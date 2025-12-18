@@ -494,6 +494,7 @@ const videoPlayerRef = ref()
 const isAdmin = computed(() => store.getters.isAdmin)
 
 // Reactive data
+const imageErrors = reactive({})
 const coverObj = reactive({
   dialogImageUrl: '',
   imageUrl: '',
@@ -552,6 +553,10 @@ const videoListObj = reactive({
   total: 0,
   list: [],
 })
+
+const handleImageError = (id) => {
+  imageErrors[id] = true
+}
 
 const flagObj = reactive({
   selectVideo: false,

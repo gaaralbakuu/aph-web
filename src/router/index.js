@@ -72,7 +72,7 @@ const constantRouterMap = [
   // User Video Layout
   {
     path: '/videoLayout',
-    component: () => import('@/views/sysbasics/video/layout/VideoUserLayout.vue'),
+    component: () => import('@/views/sysbasics/video/layout/videoUserLayout.vue'),
     name: 'videoLayout',
     meta: { noCache: isDevelopMode },
     children: [
