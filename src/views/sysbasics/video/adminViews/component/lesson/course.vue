@@ -175,10 +175,10 @@
           </div>
 
           <!-- Content Area -->
-          <div class="flex-1 overflow-y-auto p-8 custom-scrollbar bg-[#F9F9F9]">
+          <div class="flex-1 overflow-y-auto custom-scrollbar bg-[#F9F9F9]">
 
              <!-- Basic Info Tab -->
-             <div v-if="showObj.activeTabName === 'data'" class="max-w-4xl mx-auto bg-white p-6 rounded shadow-sm border border-[#E5E5E5]">
+             <div v-if="showObj.activeTabName === 'data'" class="bg-white p-6 rounded">
                 <h3 class="text-lg font-medium text-[#0D0D0D] mb-6">Course Details</h3>
 
                 <!-- Cover Image -->
@@ -358,7 +358,7 @@
              <!-- Attachment Tab -->
              <div v-if="showObj.activeTabName === 'attachment'" class="bg-white rounded border border-[#E5E5E5] flex flex-col h-full">
                 <div class="p-4 border-b border-[#E5E5E5] flex justify-end gap-2">
-                   <button class="px-3 py-1.5 bg-white border border-[#065FD4] text-[#065FD4] text-xs font-medium rounded uppercase shadow-sm hover:bg-[#E5F6FD] transition-colors" @click="attachmentWarning">{{ l.importantNotice }}</button>
+                   <button class="px-3 py-1.5 bg-orange-500 text-xs font-medium rounded uppercase shadow-sm hover:bg-orange-600 text-white! transition-colors" @click="attachmentWarning">{{ l.importantNotice }}</button>
                    <button class="px-3 py-1.5 bg-[#065FD4] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors disabled:opacity-50" :disabled="courseObj.newForm.id==''" @click="attachmentSelect">{{ l.addAttachment }}</button>
                    <button class="px-3 py-1.5 bg-[#CC0000] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors disabled:opacity-50" :disabled="courseObj.newForm.id==''" @click="removeMultipleAttachment">{{ l.batchRemove }}</button>
                 </div>

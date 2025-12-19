@@ -252,9 +252,17 @@
       <a-drawer :visible="showObj.uploadVideo" :title="l.uploadVideo" :width="960" @close="closeUploadDrawer" :body-style="{ padding: 0 }">
         <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
           <!-- Step 1: Upload Selection -->
-          <div v-if="!flagObj.selectVideo" class="flex-1 flex flex-col justify-center items-center p-10 animate-fade-in">
-            <div class="w-32 h-32 rounded-full bg-[#F9F9F9] flex items-center justify-center mb-6 cursor-pointer hover:bg-[#F0F0F0] transition-colors" @click="videoSelect">
-              <i class="el-icon-upload text-5xl text-[#909090]"></i>
+          <div 
+            v-if="!flagObj.selectVideo" 
+            class="flex-1 flex flex-col justify-center items-center p-10 animate-fade-in border-2 border-dashed rounded-lg transition-all"
+            :class="flagObj.dragActive ? 'border-[#065FD4] bg-[#F0F8FF]' : 'border-[#E5E5E5] bg-white'"
+            @dragover.prevent="flagObj.dragActive = true"
+            @dragenter.prevent="flagObj.dragActive = true"
+            @dragleave.prevent="handleDragLeave"
+            @drop.prevent="handleVideoDrop"
+          >
+            <div class="w-32 h-32 rounded-full bg-[#F9F9F9] flex items-center justify-center mb-6 cursor-pointer hover:bg-[#F0F0F0] transition-colors" :class="flagObj.dragActive ? 'bg-[#E8F4FF]' : ''" @click="videoSelect">
+              <i class="el-icon-upload text-5xl" :class="flagObj.dragActive ? 'text-[#065FD4]' : 'text-[#909090]'"></i>
             </div>
             <h2 class="text-[#0D0D0D] text-lg font-medium mb-2">{{ l.dragOrClickToSelect }}</h2>
             <p class="text-[#606060] text-sm mb-8 text-center max-w-md">Your videos will be private until you publish them.</p>
@@ -607,6 +615,7 @@ const flagObj = reactive({
   selectVideo: false,
   uploadAble: false,
   uploading: false,
+  dragActive: false,
 })
 
 const showObj = reactive({
@@ -798,6 +807,40 @@ const uploadCover = (next) => {
 // Video upload methods
 const videoSelect = () => {
   videoInput.value.click()
+}
+
+const handleDragLeave = (e) => {
+  // Chỉ set dragActive = false nếu rời khỏi toàn bộ drop area
+  if (e.target.classList && e.target.classList.contains('el-icon-upload')) {
+    flagObj.dragActive = false
+  }
+}
+
+const handleVideoDrop = (e) => {
+  flagObj.dragActive = false
+  const files = e.dataTransfer?.files
+  
+  if (!files || files.length === 0) {
+    return
+  }
+
+  const file = files[0]
+  
+  // Validate file type
+  if (!file.type.startsWith('video/')) {
+    message.error(l.value.plsSelectVideo || 'Please select a video file')
+    return
+  }
+
+  // Process the dropped file
+  uploadVideoObj.file = file
+  flagObj.selectVideo = true
+  flagObj.uploadAble = true
+  flagObj.uploading = false
+
+  uploadVideoObj.name = file.name.split('.')[0]
+  uploadVideoObj.size = formatFileSize(file.size)
+  drawCoverByFile(file)
 }
 
 const videoChange = (e) => {
