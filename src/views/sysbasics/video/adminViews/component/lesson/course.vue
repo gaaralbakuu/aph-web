@@ -1219,7 +1219,9 @@
          this.$request(this.$api.publiccode + 'getListdetailed', { queryString: {}, ruleno: '122', pageSize: 9999 })
           .then(r => {
              let list = [];
-             r.data.list.forEach(j => { list.push({ label: j.name_label, value: j.code_no }); })
+             r.data.list.forEach(j => { 
+              list.push({ label: j.name_label, value: j.code_no }); 
+            })
              this.publicCodeObj.courseCatalog = list
           })
       },

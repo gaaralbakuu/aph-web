@@ -49,7 +49,7 @@
 
       <!-- Secondary Action Bar (visible when editing a topic details) -->
       <div v-show="detailObj.currentId" class="mt-4 flex items-center gap-4 pt-4 border-t border-[#E5E5E5]">
-         <span class="text-sm font-medium text-[#0D0D0D]">Current Topic: <span class="text-[#065FD4]">{{ topicObj.form.title_zh || topicObj.form.title_en }}</span></span>
+         <span class="text-sm font-medium text-[#0D0D0D]">Current Topic: <span class="text-[#065FD4]">{{ topicObj.form.title_label || topicObj.form.title_en }}</span></span>
          <div class="flex-1"></div>
          <button v-show="detailObj.list.length != topicObj.form.detail.length" class="px-4 py-2 bg-[#069C56] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#058549] transition-colors shadow-sm" @click="updateDetailList">
             {{ l.updateList }}
@@ -122,7 +122,7 @@
           </div>
           <div v-else class="flex flex-col h-full">
              <div class="px-6 py-4 border-b border-[#E5E5E5] bg-[#F9F9F9]">
-                <h2 class="font-medium text-[#0D0D0D]">Courses in this Topic</h2>
+                <h2 class="font-medium text-[#0D0D0D] mb-0!">Courses in this Topic</h2>
              </div>
 
              <!-- Detail Header -->
@@ -581,7 +581,7 @@ const addSingleCourseToTopic = (i) => {
 
   let course = {
     id: "",
-    course_id: i.id, // course list item id
+    course_id: i.course_id, // course list item id
     pid: topicObj.form.id,
     title_zh: i.name_zh,
     title_en: i.name_en,
@@ -601,7 +601,7 @@ const addSingleCourseToTopic = (i) => {
   // Re-mapping for display:
   detailObj.list.push({
      ...i,
-     course_id: i.id,
+     course_id: i.course_id,
      course_primary_id: i.id,
      course_name_label: i.name_zh,
      description: i.description,
@@ -640,7 +640,7 @@ const addMultipleCourseToTopic = () => {
         })
         detailObj.list.push({
            ...i,
-           course_id: i.id,
+           course_id: i.course_id,
            course_primary_id: i.id,
            course_name_label: i.name_zh,
            description: i.description,
