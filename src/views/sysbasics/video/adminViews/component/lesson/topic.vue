@@ -2,7 +2,7 @@
   <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
 
     <!-- Header -->
-    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white h-[70px]">
       <h1 class="text-xl font-medium mb-0!">{{ l.recommendationTopic || 'Topic Management' }}</h1>
     </div>
 
