@@ -58,7 +58,7 @@
     </div>
 
     <!-- Content List -->
-    <div class="flex-1 overflow-y-scroll flex flex-col">
+    <div class="flex-1 overflow-y-scroll overflow-x-hidden flex flex-col">
        <!-- List Header -->
        <div class="grid grid-cols-[50px_120px_2fr_2fr_1fr_1fr_100px_100px_120px_150px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
           <div>No</div>
@@ -97,7 +97,7 @@
                    </div>
 
                    <!-- Title -->
-                   <div class="text-sm text-[#0D0D0D] font-medium pt-2 line-clamp-2" :title="record.name_zh">{{ record.name_zh }}</div>
+                   <div class="text-sm text-[#0D0D0D] font-medium pt-2 line-clamp-2" :title="record.name_label">{{ record.name_label }}</div>
 
                    <!-- Desc -->
                    <div class="text-sm text-[#606060] pt-2 line-clamp-2" :title="record.description">{{ record.description }}</div>
@@ -127,7 +127,7 @@
 
                    <!-- Action -->
                    <div class="text-right pt-2 flex flex-col gap-1 items-end">
-                      <button class="text-[#065FD4] font-medium hover:underline text-sm uppercase" @click="modifyCourseBinding(record)">
+                      <button class="text-[#065FD4] font-medium hover:underline text-sm uppercase" @click="handleManageCourse(record)">
                          {{ rightCheck(record) ? l.manage : l.check }}
                       </button>
                       <button v-if="rightCheck(record)" class="text-sm font-medium hover:underline uppercase" :class="record.is_valid == 'N' ? 'text-[#069C56]' : 'text-[#CC0000]'" @click="modifyCourseStatus(record)">
@@ -733,6 +733,12 @@
 
 
     methods: {
+      handleManageCourse(record){
+        console.log('Manage course:', record);
+        this.getAttachments(record.course_primary_id)
+        this.modifyCourseBinding(record)
+      },
+
       handleImageError(id) {
         this.$set(this.imageErrors, id, true)
       },
@@ -1258,6 +1264,7 @@
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
