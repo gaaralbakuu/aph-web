@@ -288,7 +288,7 @@
                    <!-- Description -->
                    <div class="col-span-2">
                       <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.desc }}</label>
-                      <textarea v-model="courseObj.newForm.description" rows="4" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4] resize-none"></textarea>
+                      <textarea v-model="courseObj.newForm.description" rows="4" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4] resize-none!"></textarea>
                    </div>
                 </div>
              </div>

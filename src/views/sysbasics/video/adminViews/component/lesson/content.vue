@@ -282,7 +282,7 @@
               <!-- Description -->
               <div class="mb-8 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Description</label>
-                <textarea v-model="uploadVideoObj.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="5" :placeholder="l.introducePd"></textarea>
+                <textarea v-model="uploadVideoObj.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none!" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
                 <div class="absolute right-2 bottom-2 text-xs text-[#606060]">{{ uploadVideoObj.description.length }}/5000</div>
               </div>
 
@@ -419,7 +419,7 @@
               <!-- Description -->
               <div class="mb-8 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Description</label>
-                <textarea v-model="modifyVideoObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
+                <textarea v-model="modifyVideoObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none!" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
               </div>
 
               <!-- Thumbnail -->

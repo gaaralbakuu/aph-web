@@ -109,11 +109,11 @@
     </div>
 
     <!-- Drawer thêm/chỉnh sửa tag -->
-    <a-drawer v-model:open="showObj.tagShow" width="500" :body-style="{ padding: 0 }">
+    <a-drawer :visible="showObj.tagShow" width="500" :body-style="{ padding: 0 }" @close="showObj.tagShow = false">
        <div class="flex flex-col h-full font-roboto bg-white">
           <!-- Drawer Header -->
           <div class="px-6 py-4 border-b border-[#E5E5E5] text-lg font-medium text-[#0D0D0D]">
-             {{ l.addTag }}
+             {{ l.addTag || 'Add Tag' }}
           </div>
 
           <!-- Drawer Body -->
