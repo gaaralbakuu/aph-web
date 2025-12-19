@@ -1,0 +1,189 @@
+
+> apache-uniapp-web@0.1.0 dev
+> vite
+
+Main API: http://localhost:65301
+Video API: http://localhost:65301
+Build mode: development
+Build command: serve
+12:53:13 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/login/Register" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:36:28
+  34 |      name: 'loginRegister',
+  35 |      path: '/register',
+  36 |      component: () => import('@/views/login/Register'),
+     |                              ^
+  37 |    },
+  38 |    {
+12:53:13 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/login/Register" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:36:28
+  34 |      name: 'loginRegister',
+  35 |      path: '/register',
+  36 |      component: () => import('@/views/login/Register'),
+     |                              ^
+  37 |    },
+  38 |    {
+12:53:14 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/Menu" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:9:30
+  7  |      {
+  8  |        path: 'menu',
+  9  |        component: () => import('@/views/admin/Menu'),
+     |                                ^
+  10 |        name: 'adminMenu',
+  11 |        meta: { noCache: true }
+12:53:14 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/Epidemic" from "src/router/sysbasics.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/sysbasics.js:17:30
+  15 |      {
+  16 |        path: 'epidemic',
+  17 |        component: () => import('@/views/sysbasics/Epidemic'),
+     |                                ^
+  18 |        name: 'sysbasicsepidemic',
+  19 |        meta: {
+12:53:14 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/video/userViews/ExamDetail" from "src/router/video.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/video.js:7:28
+  5  |    {
+  6  |      path: '/examDetail',
+  7  |      component: () => import('@/views/sysbasics/video/userViews/ExamDetail'),
+     |                              ^
+  8  |      name: 'examDetail',
+  9  |      meta: { noCache: isDevelopMode }
+12:53:15 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/Investigation" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:9:36
+  7  |      {
+  8  |        path: "Investigation",
+  9  |        component: () => import("@/views/sysbasics/compliance/Investigation"),
+     |                                ^
+  10 |        name: "Investigation",
+  11 |        meta: {
+12:53:15 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance2/ComplianceManufacturer" from "src/router/compliance2.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance2.js:9:36
+  7  |      {
+  8  |        path: "complianceManufacturer",
+  9  |        component: () => import("@/views/sysbasics/compliance2/ComplianceManufacturer"),
+     |                                ^
+  10 |        name: "complianceManufacturer",
+  11 |        meta: {
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/login/Register" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:36:28
+  34 |      name: 'loginRegister',
+  35 |      path: '/register',
+  36 |      component: () => import('@/views/login/Register'),
+     |                              ^
+  37 |    },
+  38 |    {
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/Menu" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:9:30
+  7  |      {
+  8  |        path: 'menu',
+  9  |        component: () => import('@/views/admin/Menu'),
+     |                                ^
+  10 |        name: 'adminMenu',
+  11 |        meta: { noCache: true }
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/Epidemic" from "src/router/sysbasics.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/sysbasics.js:17:30
+  15 |      {
+  16 |        path: 'epidemic',
+  17 |        component: () => import('@/views/sysbasics/Epidemic'),
+     |                                ^
+  18 |        name: 'sysbasicsepidemic',
+  19 |        meta: {
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/video/userViews/ExamDetail" from "src/router/video.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/video.js:7:28
+  5  |    {
+  6  |      path: '/examDetail',
+  7  |      component: () => import('@/views/sysbasics/video/userViews/ExamDetail'),
+     |                              ^
+  8  |      name: 'examDetail',
+  9  |      meta: { noCache: isDevelopMode }
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance2/ComplianceManufacturer" from "src/router/compliance2.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance2.js:9:36
+  7  |      {
+  8  |        path: "complianceManufacturer",
+  9  |        component: () => import("@/views/sysbasics/compliance2/ComplianceManufacturer"),
+     |                                ^
+  10 |        name: "complianceManufacturer",
+  11 |        meta: {
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/Investigation" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:9:36
+  7  |      {
+  8  |        path: "Investigation",
+  9  |        component: () => import("@/views/sysbasics/compliance/Investigation"),
+     |                                ^
+  10 |        name: "Investigation",
+  11 |        meta: {
+12:53:16 AM [vite] Internal server error: Failed to resolve import "@/views/login/Register" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:36:28
+  34 |      name: 'loginRegister',
+  35 |      path: '/register',
+  36 |      component: () => import('@/views/login/Register'),
+     |                              ^
+  37 |    },
+  38 |    {
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28992:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28989:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27112:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27170:32
+      at async Promise.all (index 10)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27138:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28790:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22660:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24532:20)
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/Menu" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:9:30
+  7  |      {
+  8  |        path: 'menu',
+  9  |        component: () => import('@/views/admin/Menu'),
+     |                                ^
+  10 |        name: 'adminMenu',
+  11 |        meta: { noCache: true }
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/Epidemic" from "src/router/sysbasics.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/sysbasics.js:17:30
+  15 |      {
+  16 |        path: 'epidemic',
+  17 |        component: () => import('@/views/sysbasics/Epidemic'),
+     |                                ^
+  18 |        name: 'sysbasicsepidemic',
+  19 |        meta: {
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/video/userViews/ExamDetail" from "src/router/video.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/video.js:7:28
+  5  |    {
+  6  |      path: '/examDetail',
+  7  |      component: () => import('@/views/sysbasics/video/userViews/ExamDetail'),
+     |                              ^
+  8  |      name: 'examDetail',
+  9  |      meta: { noCache: isDevelopMode }
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance2/ComplianceManufacturer" from "src/router/compliance2.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance2.js:9:36
+  7  |      {
+  8  |        path: "complianceManufacturer",
+  9  |        component: () => import("@/views/sysbasics/compliance2/ComplianceManufacturer"),
+     |                                ^
+  10 |        name: "complianceManufacturer",
+  11 |        meta: {
+12:53:16 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/Investigation" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:9:36
+  7  |      {
+  8  |        path: "Investigation",
+  9  |        component: () => import("@/views/sysbasics/compliance/Investigation"),
+     |                                ^
+  10 |        name: "Investigation",
+  11 |        meta: {

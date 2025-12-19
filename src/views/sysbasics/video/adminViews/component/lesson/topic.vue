@@ -51,10 +51,10 @@
       <div v-show="detailObj.currentId" class="mt-4 flex items-center gap-4 pt-4 border-t border-[#E5E5E5]">
          <span class="text-sm font-medium text-[#0D0D0D]">Current Topic: <span class="text-[#065FD4]">{{ topicObj.form.title_zh || topicObj.form.title_en }}</span></span>
          <div class="flex-1"></div>
-         <button v-show="detailObj.list.length != topicObj.form.detail.length" class="px-4 py-2 bg-[#069C56] text-white font-medium text-sm uppercase rounded-sm hover:bg-[#058549] transition-colors shadow-sm" @click="updateDetailList">
+         <button v-show="detailObj.list.length != topicObj.form.detail.length" class="px-4 py-2 bg-[#069C56] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#058549] transition-colors shadow-sm" @click="updateDetailList">
             {{ l.updateList }}
          </button>
-         <button class="px-4 py-2 bg-[#065FD4] text-white font-medium text-sm uppercase rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm" @click="showObj.courseDialog = true">
+         <button class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm" @click="showObj.courseDialog = true">
             {{ l.bindCourse }}
          </button>
       </div>
@@ -146,7 +146,7 @@
                       <!-- Cover -->
                       <div class="w-[100px] h-[56px] bg-[#E5E5E5] rounded-sm overflow-hidden relative group/thumb">
                          <img v-if="!imageErrors[record.course_id] && record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(record.course_id)" />
-                         <div v-else class="w-full h-full flex flex-col items-center justify-center bg-[#CCCCCC] text-white">
+                         <div v-else class="w-full h-full flex flex-col items-center justify-center bg-[#CCCCCC] text-white!">
                             <i class="el-icon-picture-outline"></i>
                             <span class="text-[8px] font-bold mt-0.5">{{ l.noImage || 'No Image' }}</span>
                          </div>
@@ -238,8 +238,8 @@
                 <option :value="1">{{ l.public }}</option>
                 <option :value="0">{{ l.private }}</option>
              </select>
-             <button class="px-4 py-1 bg-[#065FD4] text-white rounded text-sm" @click="getCourseList">{{ l.search }}</button>
-             <button class="px-4 py-1 bg-[#069C56] text-white rounded text-sm disabled:opacity-50" :disabled="courseObj.selectedList.length == 0" @click="addMultipleCourseToTopic">{{ l.batchAdd }}</button>
+             <button class="px-4 py-1 bg-[#065FD4] text-white! rounded text-sm" @click="getCourseList">{{ l.search }}</button>
+             <button class="px-4 py-1 bg-[#069C56] text-white! rounded text-sm disabled:opacity-50" :disabled="courseObj.selectedList.length == 0" @click="addMultipleCourseToTopic">{{ l.batchAdd }}</button>
           </div>
 
           <!-- Table -->
@@ -249,7 +249,7 @@
                    <template slot-scope="text, record">
                       <div class="w-16 h-10 bg-[#E5E5E5] rounded-sm overflow-hidden relative">
                           <img v-if="!imageErrors[record.id] && record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(record.id)" />
-                          <div v-else class="w-full h-full flex items-center justify-center bg-[#CCCCCC] text-white text-[10px] font-bold">
+                          <div v-else class="w-full h-full flex items-center justify-center bg-[#CCCCCC] text-white! text-[10px] font-bold">
                               {{ l.noImage || 'No Image' }}
                           </div>
                       </div>

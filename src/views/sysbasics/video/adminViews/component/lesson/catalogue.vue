@@ -178,8 +178,8 @@
              <div class="flex-1 flex flex-col border border-[#E5E5E5] rounded">
                 <div class="p-2 border-b border-[#E5E5E5] bg-[#F9F9F9] flex gap-2">
                    <input v-model="courseObj.query.name" class="flex-1 px-2 py-1 text-sm border rounded" :placeholder="l.keyword" @keyup.enter="getCourseList" />
-                   <button class="px-3 py-1 bg-[#065FD4] text-white text-xs rounded" @click="getCourseList">{{ l.search }}</button>
-                   <button class="px-3 py-1 bg-[#069C56] text-white text-xs rounded" @click="multipleAdd">{{ l.multipleAdd }}</button>
+                   <button class="px-3 py-1 bg-[#065FD4] text-white! text-xs rounded" @click="getCourseList">{{ l.search }}</button>
+                   <button class="px-3 py-1 bg-[#069C56] text-white! text-xs rounded" @click="multipleAdd">{{ l.multipleAdd }}</button>
                 </div>
                 <div class="flex-1 overflow-auto">
                    <a-table :dataSource="courseObj.courseList" row-key="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChangeToBeAdded }">
@@ -202,7 +202,7 @@
              <div class="flex-1 flex flex-col border border-[#E5E5E5] rounded">
                 <div class="p-2 border-b border-[#E5E5E5] bg-[#F9F9F9] flex justify-between items-center">
                    <span class="text-sm font-medium">{{ l.toBeAddedList }}</span>
-                   <button class="px-3 py-1 bg-[#CC0000] text-white text-xs rounded" @click="multipleRemove">{{ l.multipleRemove }}</button>
+                   <button class="px-3 py-1 bg-[#CC0000] text-white! text-xs rounded" @click="multipleRemove">{{ l.multipleRemove }}</button>
                 </div>
                 <div class="flex-1 overflow-auto">
                    <a-table :dataSource="courseObj.form" row-key="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChangeToBeRemoved }">

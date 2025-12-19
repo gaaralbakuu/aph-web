@@ -89,11 +89,11 @@
 
                    <!-- Cover -->
                    <div class="w-[120px] h-[68px] bg-[#E5E5E5] shrink-0 cursor-pointer overflow-hidden rounded-sm relative group/thumb" @click="coverPreview($api.videoServer + '/' + record.thumbnail_path)">
-                      <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" />
+                      <img v-if="record.thumbnail_path && !imageErrors[record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(record.id)" />
                       <div v-else class="w-full h-full flex items-center justify-center text-[#999999]">
                          <i class="el-icon-picture-outline text-2xl"></i>
                       </div>
-                      <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-medium px-1 rounded-sm">{{ formatDuration(record.duration) }}</div>
+                      <div class="absolute bottom-1 right-1 bg-black/80 text-white! text-[10px] font-medium px-1 rounded-sm">{{ formatDuration(record.duration) }}</div>
                    </div>
 
                    <!-- Title -->
@@ -187,12 +187,12 @@
                    <div class="flex gap-4">
                       <div class="w-40 aspect-video border border-dashed border-[#CCCCCC] rounded cursor-pointer flex flex-col items-center justify-center hover:border-[#606060] hover:bg-[#F9F9F9] transition-all relative overflow-hidden group" @click="coverSelect">
                          <img v-if="coverObj.imageUrl" :src="coverObj.imageUrl" class="w-full h-full object-cover" />
-                         <img v-else-if="courseObj.newForm.thumbnail_path" :src="$api.videoServer + '/' + courseObj.newForm.thumbnail_path" class="w-full h-full object-cover" />
+                         <img v-else-if="courseObj.newForm.thumbnail_path && !imageErrors['cover_' + courseObj.newForm.id]" :src="$api.videoServer + '/' + courseObj.newForm.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError('cover_' + courseObj.newForm.id)" />
                          <div v-else class="flex flex-col items-center">
                             <i class="el-icon-upload text-2xl text-[#606060] mb-1"></i>
                             <span class="text-xs text-[#606060]">{{ l.chooseCover }}</span>
                          </div>
-                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs">
+                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white! text-xs">
                             Change
                          </div>
                       </div>
@@ -296,15 +296,18 @@
              <!-- Video Tab -->
              <div v-if="showObj.activeTabName === 'video'" class="bg-white rounded border border-[#E5E5E5] flex flex-col h-full">
                 <div class="p-4 border-b border-[#E5E5E5] flex justify-end gap-2">
-                   <button class="px-3 py-1.5 bg-[#065FD4] text-white text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="showObj.selectVideo = true">{{ l.addVideo }}</button>
-                   <button class="px-3 py-1.5 bg-[#CC0000] text-white text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors" @click="removeMultipleVideo">{{ l.multipleRemove }}</button>
+                   <button class="px-3 py-1.5 bg-[#065FD4] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="showObj.selectVideo = true">{{ l.addVideo }}</button>
+                   <button class="px-3 py-1.5 bg-[#CC0000] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors" @click="removeMultipleVideo">{{ l.multipleRemove }}</button>
                 </div>
                 <div class="flex-1 overflow-auto">
                    <a-table class="draggable-table-video" :dataSource="manageObj.selectedVideoList" row-key="id" :pagination="false"
                       :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }">
                       <a-table-column :title="l.cover">
-                         <template #default="{ record }">
-                            <img :src="$api.videoServer + '/' + record.thumbnail_path" class="w-20 h-12 object-cover bg-[#E5E5E5] rounded-sm" />
+                         <template slot-scope="text, record">
+                            <div v-if="record">
+                               <img v-if="record.thumbnail_path && !imageErrors['vid_' + record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-20 h-12 object-cover bg-[#E5E5E5] rounded-sm" @error="handleImageError('vid_' + record.id)" />
+                               <div v-else class="w-20 h-12 bg-[#E5E5E5] rounded-sm flex items-center justify-center text-[#999999]"><i class="el-icon-picture-outline"></i></div>
+                            </div>
                          </template>
                       </a-table-column>
                       <a-table-column :title="l.title" dataIndex="title"></a-table-column>
@@ -331,8 +334,8 @@
              <!-- Exam Tab -->
              <div v-if="showObj.activeTabName === 'exam'" class="bg-white rounded border border-[#E5E5E5] flex flex-col h-full">
                 <div class="p-4 border-b border-[#E5E5E5] flex justify-end gap-2">
-                   <button class="px-3 py-1.5 bg-[#065FD4] text-white text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="showObj.selectExam = true">{{ l.addExam }}</button>
-                   <button class="px-3 py-1.5 bg-[#CC0000] text-white text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors" @click="removeMultipleExam">{{ l.multipleRemove }}</button>
+                   <button class="px-3 py-1.5 bg-[#065FD4] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="showObj.selectExam = true">{{ l.addExam }}</button>
+                   <button class="px-3 py-1.5 bg-[#CC0000] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors" @click="removeMultipleExam">{{ l.multipleRemove }}</button>
                 </div>
                 <div class="flex-1 overflow-auto">
                    <a-table class="draggable-table-exam" :dataSource="manageObj.selectedExamList" row-key="id" :pagination="false"
@@ -356,8 +359,8 @@
              <div v-if="showObj.activeTabName === 'attachment'" class="bg-white rounded border border-[#E5E5E5] flex flex-col h-full">
                 <div class="p-4 border-b border-[#E5E5E5] flex justify-end gap-2">
                    <button class="px-3 py-1.5 bg-white border border-[#065FD4] text-[#065FD4] text-xs font-medium rounded uppercase shadow-sm hover:bg-[#E5F6FD] transition-colors" @click="attachmentWarning">{{ l.importantNotice }}</button>
-                   <button class="px-3 py-1.5 bg-[#065FD4] text-white text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors disabled:opacity-50" :disabled="courseObj.newForm.id==''" @click="attachmentSelect">{{ l.addAttachment }}</button>
-                   <button class="px-3 py-1.5 bg-[#CC0000] text-white text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors disabled:opacity-50" :disabled="courseObj.newForm.id==''" @click="removeMultipleAttachment">{{ l.batchRemove }}</button>
+                   <button class="px-3 py-1.5 bg-[#065FD4] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#0551B4] transition-colors disabled:opacity-50" :disabled="courseObj.newForm.id==''" @click="attachmentSelect">{{ l.addAttachment }}</button>
+                   <button class="px-3 py-1.5 bg-[#CC0000] text-white! text-xs font-medium rounded uppercase shadow-sm hover:bg-[#990000] transition-colors disabled:opacity-50" :disabled="courseObj.newForm.id==''" @click="removeMultipleAttachment">{{ l.batchRemove }}</button>
                 </div>
                 <div class="flex-1 overflow-auto">
                    <a-table :dataSource="manageObj.attachmentsList" row-key="id" :pagination="false"
@@ -398,13 +401,16 @@
                 <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{i.name_label}}</option>
              </select>
              <input v-model="videoListObj.query.title" class="flex-1 px-2 py-1 border rounded text-sm" :placeholder="l.title" @keyup.enter="getVideoList" />
-             <button class="px-4 py-1 bg-[#065FD4] text-white rounded text-sm" @click="getVideoList">{{ l.search }}</button>
+             <button class="px-4 py-1 bg-[#065FD4] text-white! rounded text-sm" @click="getVideoList">{{ l.search }}</button>
           </div>
           <div class="flex-1 overflow-auto">
              <a-table :dataSource="videoListObj.list" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }">
                 <a-table-column :title="l.cover">
-                   <template #default="{ record }">
-                      <img :src="$api.videoServer + '/' + record.thumbnail_path" class="w-16 h-10 object-cover" />
+                   <template slot-scope="text, record">
+                      <div v-if="record">
+                         <img v-if="record.thumbnail_path && !imageErrors['sel_vid_' + record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-16 h-10 object-cover" @error="handleImageError('sel_vid_' + record.id)" />
+                         <div v-else class="w-16 h-10 bg-[#E5E5E5] flex items-center justify-center text-[#999999]"><i class="el-icon-picture-outline"></i></div>
+                      </div>
                    </template>
                 </a-table-column>
                 <a-table-column :title="l.title" dataIndex="title"></a-table-column>
@@ -429,7 +435,7 @@
                 <option value="Y">{{ c.enable }}</option>
                 <option value="N">{{ c.disable }}</option>
              </select>
-             <button class="px-4 py-1 bg-[#065FD4] text-white rounded text-sm" @click="getExamList">{{ l.search }}</button>
+             <button class="px-4 py-1 bg-[#065FD4] text-white! rounded text-sm" @click="getExamList">{{ l.search }}</button>
           </div>
           <div class="flex-1 overflow-auto">
              <a-table :dataSource="examObj.list" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: examSelectedRowKeys, onChange: examSelectionChange }">
@@ -493,6 +499,7 @@
         videoSelectedRowKeys: [],
         examSelectedRowKeys: [],
         attachmentSelectedRowKeys: [],
+        imageErrors: {},
         
         initSortableObj: {
           video: false,
@@ -726,6 +733,9 @@
 
 
     methods: {
+      handleImageError(id) {
+        this.$set(this.imageErrors, id, true)
+      },
       previewFile(url) {
         this.showObj.fileUrl = this.$api.videoServer + '/' + url
         this.showObj.filePreviews = true
