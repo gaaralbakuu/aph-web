@@ -33,7 +33,7 @@ const constantRouterMap = [
   {
     name: 'loginRegister',
     path: '/register',
-    component: () => import('@/views/login/Register'),
+      component: () => import('@/views/login/register.vue'),
   },
   {
     path: '/redirect',
@@ -62,7 +62,7 @@ const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-        component: () => import('@/views/home/Welcome'),
+      component: () => import('@/views/home/welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },

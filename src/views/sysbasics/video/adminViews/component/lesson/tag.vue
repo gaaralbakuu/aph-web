@@ -78,7 +78,7 @@
                         {{ record.is_valid === 'Y' ? l.enable : l.disable }}
                       </span>
                    </div>
-                   <div class="text-right flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                   <div class="text-right flex items-center justify-end gap-3 transition-opacity">
                       <i class="el-icon-edit text-lg cursor-pointer text-[#606060] hover:text-[#0D0D0D]" :title="c.edit" @click="modifyTag(record)"></i>
                       <i v-if="record.is_valid == 'N'" class="el-icon-check text-lg cursor-pointer text-[#069C56] hover:text-[#058549]" :title="c.enable" @click="modifyStatus(record)"></i>
                       <i v-else class="el-icon-close text-lg cursor-pointer text-[#CC0000] hover:text-[#990000]" :title="c.disable" @click="modifyStatus(record)"></i>
@@ -108,35 +108,47 @@
       </div>
     </div>
 
-    <!-- Modal thêm/chỉnh sửa tag -->
-    <a-modal v-model:open="showObj.tagShow" :title="l.addTag" :ok-text="l.submit" :cancel-text="l.giveup" @ok="handleSubmit" width="600px" :maskClosable="false">
-      <div class="p-4 font-roboto">
-        <div class="space-y-4">
-           <!-- ZH -->
-           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_zh }}</label>
-              <input v-model="tagForm.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-           </div>
-           <!-- TW -->
-           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_tw }}</label>
-              <input v-model="tagForm.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-           </div>
-           <!-- EN -->
-           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_en }}</label>
-              <input v-model="tagForm.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-           </div>
-           <!-- VI -->
-           <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_vi }}</label>
-              <input v-model="tagForm.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-           </div>
+    <!-- Drawer thêm/chỉnh sửa tag -->
+    <a-drawer v-model:open="showObj.tagShow" width="500" :body-style="{ padding: 0 }">
+       <div class="flex flex-col h-full font-roboto bg-white">
+          <!-- Drawer Header -->
+          <div class="px-6 py-4 border-b border-[#E5E5E5] text-lg font-medium text-[#0D0D0D]">
+             {{ l.addTag }}
+          </div>
 
-           <div class="text-[#CC0000] italic text-xs mt-2">* {{ l.validationError }}</div>
-        </div>
-      </div>
-    </a-modal>
+          <!-- Drawer Body -->
+          <div class="flex-1 overflow-y-auto p-6 space-y-4">
+             <!-- ZH -->
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_zh }}</label>
+                <input v-model="tagForm.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+             </div>
+             <!-- TW -->
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_tw }}</label>
+                <input v-model="tagForm.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+             </div>
+             <!-- EN -->
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_en }}</label>
+                <input v-model="tagForm.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+             </div>
+             <!-- VI -->
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_vi }}</label>
+                <input v-model="tagForm.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+             </div>
+
+             <div class="text-[#CC0000] italic text-xs mt-2">* {{ l.validationError }}</div>
+          </div>
+
+          <!-- Drawer Footer -->
+          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
+             <button class="px-4 py-2 text-[#606060] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors" @click="showObj.tagShow = false">{{ l.giveup }}</button>
+             <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="handleSubmit">{{ l.submit }}</button>
+          </div>
+       </div>
+    </a-drawer>
 
     <!-- Confirm Dialog Modal -->
     <div v-if="showObj.confirmShow" class="fixed inset-0 z-50 flex items-center justify-center font-roboto">

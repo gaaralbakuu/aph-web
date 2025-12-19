@@ -279,7 +279,8 @@ const catalogObj = reactive({
     checkStrictly: true,
     emitPath: false,
     value: 'id',
-    label: 'name_label'
+    label: 'name_label',
+    children: 'children'
   },
   data: [],
   list: [],
