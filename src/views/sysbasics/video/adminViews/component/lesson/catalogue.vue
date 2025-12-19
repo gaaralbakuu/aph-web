@@ -97,36 +97,36 @@
              {{ catalogObj.form.id ? l.editCatalogue : l.addCatalogue }}
           </div>
           <div class="flex-1 overflow-y-auto p-6 space-y-6">
-             <div class="group">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.belongCollege }} <span class="text-red-500">*</span></label>
-                <select v-model="catalogObj.form.college_id" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" @change="collegeChange">
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.belongCollege }} <span class="text-red-500">*</span></label>
+                <select v-model="catalogObj.form.college_id" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm" @change="collegeChange">
                    <option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
                 </select>
              </div>
 
-             <div class="group" v-if="catalogObj.form.college_id">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.parentCatalogue }}</label>
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]" v-if="catalogObj.form.college_id">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.parentCatalogue }}</label>
                 <a-cascader v-model:value="catalogObj.form.pid" :options="catalogObj.list" allow-clear
-                   :placeholder="l.emptyIsRootCatalogue" class="w-full" :field-names="catalogObj.cascaderProps">
+                   :placeholder="l.emptyIsRootCatalogue" class="w-full !border-none !bg-transparent !p-0 !h-auto !shadow-none" :field-names="catalogObj.cascaderProps" :bordered="false">
                 </a-cascader>
              </div>
 
              <div class="grid grid-cols-2 gap-4">
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_zh }} <span class="text-red-500">*</span></label>
-                   <input v-model="catalogObj.form.name_zh" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_zh }} <span class="text-red-500">*</span></label>
+                   <input v-model="catalogObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_tw }}</label>
-                   <input v-model="catalogObj.form.name_tw" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_tw }}</label>
+                   <input v-model="catalogObj.form.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_en }}</label>
-                   <input v-model="catalogObj.form.name_en" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_en }}</label>
+                   <input v-model="catalogObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_vi }}</label>
-                   <input v-model="catalogObj.form.name_vi" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_vi }}</label>
+                   <input v-model="catalogObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
              </div>
           </div>

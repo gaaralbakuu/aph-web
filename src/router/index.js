@@ -33,7 +33,7 @@ const constantRouterMap = [
   {
     name: 'loginRegister',
     path: '/register',
-    component: () => import('@/views/login/Register'),
+    component: () => import('@/views/login/register.vue'),
   },
   {
     path: '/redirect',
@@ -62,7 +62,7 @@ const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-        component: () => import('@/views/home/Welcome'),
+        component: () => import('@/views/home/welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },
@@ -78,61 +78,61 @@ const constantRouterMap = [
     children: [
       {
         path: 'home',
-        component: () => import('@/views/sysbasics/video/userViews/Home'),
+        component: () => import('@/views/sysbasics/video/userViews/home.vue'),
         name: 'videoHome',
         meta: { noCache: isDevelopMode, title: 'Video Dashboard' },
       },
       {
         path: 'trainingDetail',
-        component: () => import('@/views/sysbasics/video/userViews/TrainingDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/trainingDetail.vue'),
         name: 'trainingDetail',
         meta: { noCache: isDevelopMode, title: 'Training Details' },
       },
       {
         path: 'topicDetail',
-        component: () => import('@/views/sysbasics/video/userViews/TopicDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/topicDetail.vue'),
         name: 'topicDetail',
         meta: { noCache: isDevelopMode, title: 'Topic Details' },
       },
       {
         path: 'play',
-        component: () => import('@/views/sysbasics/video/userViews/Play'),
+        component: () => import('@/views/sysbasics/video/userViews/play.vue'),
         name: 'videoPlay',
         meta: { noCache: isDevelopMode, title: 'Video Player' },
       },
       {
         path: 'topic',
-        component: () => import('@/views/sysbasics/video/userViews/Topic'),
+        component: () => import('@/views/sysbasics/video/userViews/topic.vue'),
         name: 'videoTopic',
         meta: { noCache: isDevelopMode, title: 'Topics' },
       },
       {
         path: 'course',
-        component: () => import('@/views/sysbasics/video/userViews/Course'),
+        component: () => import('@/views/sysbasics/video/userViews/course.vue'),
         name: 'videoCourse',
         meta: { noCache: isDevelopMode, title: 'Courses' },
       },
       {
         path: 'mine',
-        component: () => import('@/views/sysbasics/video/userViews/Mine'),
+        component: () => import('@/views/sysbasics/video/userViews/mine.vue'),
         name: 'videoMine',
         meta: { noCache: isDevelopMode, title: 'My Videos' },
         children: [
           {
             path: 'training',
-            component: () => import('@/views/sysbasics/video/userViews/component/Training'),
+            component: () => import('@/views/sysbasics/video/userViews/component/training.vue'),
             name: 'myTraining',
             meta: { noCache: isDevelopMode, title: 'My Training' },
           },
           {
             path: 'favorite',
-            component: () => import('@/views/sysbasics/video/userViews/component/Favorite'),
+            component: () => import('@/views/sysbasics/video/userViews/component/favorite.vue'),
             name: 'myFavorite',
             meta: { noCache: isDevelopMode, title: 'Favorites' },
           },
           {
             path: 'history',
-            component: () => import('@/views/sysbasics/video/userViews/component/History'),
+            component: () => import('@/views/sysbasics/video/userViews/component/history.vue'),
             name: 'myHistory',
             meta: { noCache: isDevelopMode, title: 'Watch History' },
           },

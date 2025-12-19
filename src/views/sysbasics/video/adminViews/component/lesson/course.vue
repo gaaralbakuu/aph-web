@@ -202,65 +202,62 @@
                 <!-- Form Grid -->
                 <div class="grid grid-cols-2 gap-6">
                    <!-- College -->
-                   <div class="group">
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.belongCollege }} <span class="text-red-500">*</span></label>
-                      <select v-model="courseObj.newForm.college_id" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.belongCollege }} <span class="text-red-500">*</span></label>
+                      <select v-model="courseObj.newForm.college_id" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                          <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
                       </select>
                    </div>
 
                    <!-- Course Type -->
-                   <div class="group">
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.courseType }}</label>
-                      <div class="flex items-center gap-4 h-[38px]">
-                         <a-switch :checked="courseObj.newForm.is_public === 1" @change="(val) => courseObj.newForm.is_public = val ? 1 : 0">
-                            <template #checkedChildren>{{ l.public }}</template>
-                            <template #unCheckedChildren>{{ l.private }}</template>
-                         </a-switch>
-                      </div>
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-2 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4] flex items-center justify-between">
+                      <label class="block text-xs text-[#606060] group-focus-within:text-[#065FD4]">{{ l.courseType }}</label>
+                      <a-switch :checked="courseObj.newForm.is_public === 1" @change="(val) => courseObj.newForm.is_public = val ? 1 : 0">
+                         <template #checkedChildren>{{ l.public }}</template>
+                         <template #unCheckedChildren>{{ l.private }}</template>
+                      </a-switch>
                    </div>
 
                    <!-- Names -->
                    <div class="col-span-2 grid grid-cols-4 gap-4">
-                      <div v-for="lang in ['zh', 'tw', 'en', 'vi']" :key="lang">
-                         <label class="block text-xs font-medium text-[#606060] mb-1">Name ({{ lang.toUpperCase() }}) <span v-if="lang=='zh'" class="text-red-500">*</span></label>
-                         <input v-model="courseObj.newForm['name_' + lang]" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                      <div v-for="lang in ['zh', 'tw', 'en', 'vi']" :key="lang" class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Name ({{ lang.toUpperCase() }}) <span v-if="lang=='zh'" class="text-red-500">*</span></label>
+                         <input v-model="courseObj.newForm['name_' + lang]" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                       </div>
                    </div>
 
                    <!-- Catalog, Lecturer, Language -->
-                   <div>
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.courseCatalog }} <span class="text-red-500">*</span></label>
-                      <select v-model="courseObj.newForm.type" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.courseCatalog }} <span class="text-red-500">*</span></label>
+                      <select v-model="courseObj.newForm.type" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                          <option v-for="i in publicCodeObj.courseCatalog" :key="i.value" :value="i.value">{{ i.label }}</option>
                       </select>
                    </div>
-                   <div>
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.lecturer }} <span class="text-red-500">*</span></label>
-                      <select v-model="courseObj.newForm.lecturer" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.lecturer }} <span class="text-red-500">*</span></label>
+                      <select v-model="courseObj.newForm.lecturer" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                          <option v-for="i in publicCodeObj.lecturer_status" :key="i.value" :value="i.value">{{ i.label }}</option>
                       </select>
                    </div>
-                   <div>
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.trainLanguage }} <span class="text-red-500">*</span></label>
-                      <select v-model="courseObj.newForm.language" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.trainLanguage }} <span class="text-red-500">*</span></label>
+                      <select v-model="courseObj.newForm.language" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                          <option v-for="i in publicCodeObj.language_type" :key="i.value" :value="i.value">{{ i.label }}</option>
                       </select>
                    </div>
 
                    <!-- Group & Profit -->
-                   <div>
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.applicableGroup }} <span class="text-red-500">*</span></label>
-                      <input v-model="courseObj.newForm.applicable_group" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.applicableGroup }} <span class="text-red-500">*</span></label>
+                      <input v-model="courseObj.newForm.applicable_group" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                    </div>
-                   <div>
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.profit }} <span class="text-red-500">*</span></label>
-                      <input v-model="courseObj.newForm.profit" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                   <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.profit }} <span class="text-red-500">*</span></label>
+                      <input v-model="courseObj.newForm.profit" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                    </div>
 
                    <!-- Tags -->
                    <div class="col-span-2">
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.tag }}</label>
                       <a-popover placement="bottom" trigger="click" :width="500">
                          <template #content>
                             <div class="w-[400px]">
@@ -275,20 +272,23 @@
                                </div>
                             </div>
                          </template>
-                         <div class="w-full min-h-[38px] p-2 bg-white border border-[#CCCCCC] rounded text-sm cursor-pointer flex flex-wrap gap-2 items-center">
-                            <span v-for="(i, index) in selectedTags" :key="index" class="bg-[#E5F6FD] text-[#065FD4] px-2 py-0.5 rounded text-xs flex items-center gap-1">
-                               {{ i.name_label }}
-                               <i class="el-icon-close cursor-pointer hover:text-[#0551B4]" @click.stop="selectTag(i)"></i>
-                            </span>
-                            <span v-if="selectedTags.length===0" class="text-[#999999]">{{ l.chooseTagPd }}</span>
+                         <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4] cursor-pointer min-h-[50px]">
+                             <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.tag }}</label>
+                             <div class="w-full flex flex-wrap gap-2 items-center">
+                                <span v-for="(i, index) in selectedTags" :key="index" class="bg-[#E5F6FD] text-[#065FD4] px-2 py-0.5 rounded text-xs flex items-center gap-1">
+                                   {{ i.name_label }}
+                                   <i class="el-icon-close cursor-pointer hover:text-[#0551B4]" @click.stop="selectTag(i)"></i>
+                                </span>
+                                <span v-if="selectedTags.length===0" class="text-[#999999] text-sm">{{ l.chooseTagPd }}</span>
+                             </div>
                          </div>
                       </a-popover>
                    </div>
 
                    <!-- Description -->
-                   <div class="col-span-2">
-                      <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.desc }}</label>
-                      <textarea v-model="courseObj.newForm.description" rows="4" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4] resize-none"></textarea>
+                   <div class="col-span-2 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.desc }}</label>
+                      <textarea v-model="courseObj.newForm.description" rows="4" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm resize-none" placeholder=""></textarea>
                    </div>
                 </div>
              </div>

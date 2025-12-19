@@ -176,44 +176,44 @@
        </div>
        <div class="flex flex-col h-full font-roboto">
           <div class="flex-1 overflow-y-auto p-6 space-y-6">
-             <div class="group">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.selectCollege }}</label>
-                <select v-model="topicObj.form.college_id" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.selectCollege }}</label>
+                <select v-model="topicObj.form.college_id" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                    <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
                 </select>
              </div>
 
-             <div class="group">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.selectType }}</label>
-                <select v-model="topicObj.form.type" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.selectType }}</label>
+                <select v-model="topicObj.form.type" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                    <option v-for="i in publicCodeObj.type" :key="i.value" :value="i.value">{{ i.label }}</option>
                 </select>
              </div>
 
-             <div class="group">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.selectPage }}</label>
-                <select v-model="topicObj.form.page" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.selectPage }}</label>
+                <select v-model="topicObj.form.page" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm">
                    <option value="">{{ l.notShow }}</option>
                    <option v-for="i in publicCodeObj.page" :key="i.value" :value="i.value">{{ i.label }}</option>
                 </select>
              </div>
 
              <div class="grid grid-cols-2 gap-4">
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleZh }} <span class="text-red-500">*</span></label>
-                   <input v-model="topicObj.form.title_zh" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.titleZh }} <span class="text-red-500">*</span></label>
+                   <input v-model="topicObj.form.title_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleTw }}</label>
-                   <input v-model="topicObj.form.title_tw" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.titleTw }}</label>
+                   <input v-model="topicObj.form.title_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleEn }}</label>
-                   <input v-model="topicObj.form.title_en" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.titleEn }}</label>
+                   <input v-model="topicObj.form.title_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.titleVi }}</label>
-                   <input v-model="topicObj.form.title_vi" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
+                <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                   <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.titleVi }}</label>
+                   <input v-model="topicObj.form.title_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
                 </div>
              </div>
           </div>
