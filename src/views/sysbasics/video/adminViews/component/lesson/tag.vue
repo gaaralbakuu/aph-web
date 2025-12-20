@@ -37,7 +37,7 @@
     <div class="flex-1 overflow-y-scroll flex flex-col">
        <!-- List Header -->
        <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
-          <div>No</div>
+          <div>{{ c.ordinal || 'No' }}</div>
           <div>{{ l.name_zh || 'Name (ZH)' }}</div>
           <div>{{ l.name_tw || 'Name (TW)' }}</div>
           <div>{{ l.name_en || 'Name (EN)' }}</div>

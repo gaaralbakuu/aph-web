@@ -61,7 +61,7 @@
     <div class="flex-1 overflow-y-scroll flex flex-col">
        <!-- List Header -->
        <div class="grid grid-cols-[50px_120px_2fr_2fr_1fr_1fr_100px_100px_120px_150px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
-          <div>No</div>
+          <div>{{ c.ordinal || 'No' }}</div>
           <div>{{ l.cover }}</div>
           <div>{{ l.title }}</div>
           <div>{{ l.desc }}</div>
@@ -193,7 +193,7 @@
                             <span class="text-xs text-[#606060]">{{ l.chooseCover }}</span>
                          </div>
                          <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white! text-xs">
-                            Change
+                            {{ l.change || 'Change' }}
                          </div>
                       </div>
                    </div>

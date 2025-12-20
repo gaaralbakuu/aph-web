@@ -49,7 +49,7 @@
 
       <!-- Secondary Action Bar (visible when editing a topic details) -->
       <div v-show="detailObj.currentId" class="mt-4 flex items-center gap-4 pt-4 border-t border-[#E5E5E5]">
-         <span class="text-sm font-medium text-[#0D0D0D]">Current Topic: <span class="text-[#065FD4]">{{ topicObj.form.title_label || topicObj.form.title_en }}</span></span>
+         <span class="text-sm font-medium text-[#0D0D0D]">{{ l.currentTopic }}: <span class="text-[#065FD4]">{{ topicObj.form.title_label || topicObj.form.title_en }}</span></span>
          <div class="flex-1"></div>
          <button v-show="detailObj.list.length != topicObj.form.detail.length" class="px-4 py-2 bg-[#069C56] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#058549] transition-colors shadow-sm" @click="updateDetailList">
             {{ l.updateList }}
@@ -67,7 +67,7 @@
        <div class="w-[400px] flex flex-col border-r border-[#E5E5E5] bg-white">
           <!-- List Header -->
           <div class="grid grid-cols-[50px_1fr_60px] gap-2 px-4 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-[#F9F9F9]">
-             <div>No</div>
+             <div>{{ c.ordinal || 'No' }}</div>
              <div>{{ l.topicName }}</div>
              <div class="text-right">{{ l.action }}</div>
           </div>
@@ -118,16 +118,16 @@
        <div class="flex-1 flex flex-col bg-white overflow-hidden">
           <div v-if="!detailObj.currentId" class="flex flex-col items-center justify-center h-full text-[#606060]">
              <i class="el-icon-back text-4xl mb-2"></i>
-             <p>Select a topic to view details</p>
+             <p>{{ l.selectTopicToView }}</p>
           </div>
           <div v-else class="flex flex-col h-full">
              <div class="px-6 py-4 border-b border-[#E5E5E5] bg-[#F9F9F9]">
-                <h2 class="font-medium text-[#0D0D0D] mb-0!">Courses in this Topic</h2>
+                <h2 class="font-medium text-[#0D0D0D] mb-0!">{{ l.coursesInTopic }}</h2>
              </div>
 
              <!-- Detail Header -->
              <div class="grid grid-cols-[50px_100px_2fr_2fr_100px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white">
-                <div>No</div>
+                <div>{{ c.ordinal || 'No' }}</div>
                 <div>{{ l.cover }}</div>
                 <div>{{ l.courseName }}</div>
                 <div>{{ l.courseDescription }}</div>
