@@ -127,12 +127,14 @@
             </span>
           </div>
           <div class="flex items-center justify-end gap-3">
-            <button class="text-[#065FD4] hover:underline uppercase text-xs font-medium" @click="previewExam(item.questionnaire_id)">{{ l.previewButton }}</button>
+            <button class="text-[#065FD4] hover:underline uppercase text-xs font-medium" @click="previewExam(item.questionnaire_id)">
+              <i class="el-icon-view text-lg"></i>
+            </button>
             <button class="text-[#606060] hover:text-[#0D0D0D]" @click="editExam(item)">
-               <i class="el-icon-edit text-lg"></i>
+              <i class="el-icon-edit text-lg"></i>
             </button>
             <button class="" :class="item.is_valid === 'Y' ? 'text-[#CC0000]' : 'text-[#069C56]'" @click="toggleExamStatus(item)">
-               <i :class="item.is_valid === 'Y' ? 'el-icon-video-pause' : 'el-icon-video-play'" class="text-lg"></i>
+              <i :class="item.is_valid === 'Y' ? 'el-icon-video-pause' : 'el-icon-video-play'" class="text-lg"></i>
             </button>
           </div>
         </div>
@@ -162,7 +164,7 @@
 
     <!-- Edit Exam Drawer -->
     <a-drawer :visible="showObj.examDrawer" :title="l.editExam" :width="600" @close="showObj.examDrawer = false" :body-style="{ padding: 0 }">
-      <div class="flex flex-col h-full bg-white">
+      <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
         <div class="flex-1 overflow-y-auto p-6">
           <!-- College -->
           <div class="mb-6">
@@ -188,7 +190,7 @@
               <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.englishName }}</label>
               <input v-model="examObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" />
             </div>
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
               <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.vietnameseName }}</label>
               <input v-model="examObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" />
             </div>
@@ -210,17 +212,17 @@
           <!-- Time & Settings -->
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4]">
-               <label class="block text-xs text-[#606060] mb-0.5">{{ l.startTime }}</label>
-               <el-date-picker v-model="examObj.form.start_time" type="datetime" :placeholder="l.chooseStartTime" style="width: 100%; border:none;" class="no-border-input"></el-date-picker>
+              <label class="block text-xs text-[#606060] mb-0.5">{{ l.startTime }}</label>
+              <el-date-picker v-model="examObj.form.start_time" type="datetime" :placeholder="l.chooseStartTime" style="width: 100%; border: none" class="no-border-input"></el-date-picker>
             </div>
             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4]">
-               <label class="block text-xs text-[#606060] mb-0.5">{{ l.endTime }}</label>
-               <el-date-picker v-model="examObj.form.end_time" type="datetime" :placeholder="l.chooseEndTime" style="width: 100%; border:none;" class="no-border-input"></el-date-picker>
+              <label class="block text-xs text-[#606060] mb-0.5">{{ l.endTime }}</label>
+              <el-date-picker v-model="examObj.form.end_time" type="datetime" :placeholder="l.chooseEndTime" style="width: 100%; border: none" class="no-border-input"></el-date-picker>
             </div>
           </div>
 
           <div class="space-y-4">
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
               <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.maxAnswerTimes }}</label>
               <input v-model.number="examObj.form.max_reply_num" type="number" class="w-full outline-none text-[#0D0D0D] text-sm" />
             </div>
@@ -233,7 +235,6 @@
               <input v-model="examObj.form.test_duration" type="number" class="w-full outline-none text-[#0D0D0D] text-sm" />
             </div>
           </div>
-
         </div>
         <!-- Footer -->
         <div class="p-4 border-t border-[#E5E5E5] flex justify-end gap-2 bg-white">
@@ -252,43 +253,42 @@
       <div class="flex flex-col h-[500px]">
         <!-- Filter -->
         <div class="flex gap-4 mb-4">
-           <div class="w-48 relative border border-[#CCCCCC] rounded px-2 py-1">
-             <select v-model="questionnaireObj.query.college_id" @change="getQuestionnaireList" class="w-full outline-none text-sm bg-transparent">
-                <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
-             </select>
-           </div>
-           <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center">
-             <input v-model="questionnaireObj.query.name" :placeholder="l.titleFilter" class="w-full outline-none text-sm" />
-           </div>
-           <button class="bg-[#065FD4] text-white! px-4 py-1 rounded text-sm uppercase" @click="getQuestionnaireList">{{ l.search }}</button>
+          <div class="w-48 relative border border-[#CCCCCC] rounded px-2 py-1">
+            <select v-model="questionnaireObj.query.college_id" @change="getQuestionnaireList" class="w-full outline-none text-sm bg-transparent">
+              <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+            </select>
+          </div>
+          <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center">
+            <input v-model="questionnaireObj.query.name" :placeholder="l.titleFilter" class="w-full outline-none text-sm" />
+          </div>
+          <button class="bg-[#065FD4] text-white! px-4 py-1 rounded text-sm uppercase" @click="getQuestionnaireList">{{ l.search }}</button>
         </div>
 
         <!-- List -->
         <div class="flex-1 overflow-y-auto border border-[#E5E5E5] rounded">
           <div class="grid grid-cols-[40px_1fr_1fr_1fr_1fr_80px] bg-[#F9F9F9] border-b border-[#E5E5E5] px-4 py-2 text-xs font-medium text-[#606060] sticky top-0">
-             <div>No</div>
-             <div>{{ l.nameZhColumn }}</div>
-             <div>{{ l.nameTwColumn }}</div>
-             <div>{{ l.nameEnColumn }}</div>
-             <div>{{ l.nameViColumn }}</div>
-             <div class="text-right">{{ l.operationColumn }}</div>
+            <div>No</div>
+            <div>{{ l.nameZhColumn }}</div>
+            <div>{{ l.nameTwColumn }}</div>
+            <div>{{ l.nameEnColumn }}</div>
+            <div>{{ l.nameViColumn }}</div>
+            <div class="text-right">{{ l.operationColumn }}</div>
           </div>
           <div class="divide-y divide-[#E5E5E5]">
-             <div v-for="(item, index) in questionnaireObj.list" :key="item.id" class="grid grid-cols-[40px_1fr_1fr_1fr_1fr_80px] px-4 py-2 hover:bg-[#F2F8FF] text-sm text-[#0D0D0D] items-center">
-               <div class="text-[#606060]">{{ index + 1 }}</div>
-               <div class="truncate">{{ item.name_zh }}</div>
-               <div class="truncate">{{ item.name_tw }}</div>
-               <div class="truncate">{{ item.name_en }}</div>
-               <div class="truncate">{{ item.name_vi }}</div>
-               <div class="text-right">
-                 <button class="text-[#069C56] font-medium hover:underline uppercase text-xs" @click="selectQueertionnarire(item)">{{ l.chooseButton }}</button>
-               </div>
-             </div>
+            <div v-for="(item, index) in questionnaireObj.list" :key="item.id" class="grid grid-cols-[40px_1fr_1fr_1fr_1fr_80px] px-4 py-2 hover:bg-[#F2F8FF] text-sm text-[#0D0D0D] items-center">
+              <div class="text-[#606060]">{{ index + 1 }}</div>
+              <div class="truncate">{{ item.name_zh }}</div>
+              <div class="truncate">{{ item.name_tw }}</div>
+              <div class="truncate">{{ item.name_en }}</div>
+              <div class="truncate">{{ item.name_vi }}</div>
+              <div class="text-right">
+                <button class="text-[#069C56] font-medium hover:underline uppercase text-xs" @click="selectQueertionnarire(item)">{{ l.chooseButton }}</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </a-modal>
-
   </div>
 </template>
 
@@ -314,7 +314,7 @@ const college_id = ref(null)
 const showObj = reactive({
   questionnaireDialog: false,
   examDrawer: false,
-  recordDialog: false
+  recordDialog: false,
 })
 
 const publicCodeObj = reactive({
@@ -323,12 +323,12 @@ const publicCodeObj = reactive({
     { label: l.value.blankQuestion, value: 0 },
     { label: l.value.singleChoiceQuestion, value: 1 },
     { label: l.value.multipleChoiceQuestion, value: 2 },
-    { label: l.value.trueFalseQuestion, value: 3 }
+    { label: l.value.trueFalseQuestion, value: 3 },
   ],
   question_status: [
     { label: l.value.notPublished, value: 0 },
-    { label: l.value.published, value: 1 }
-  ]
+    { label: l.value.published, value: 1 },
+  ],
 })
 
 const questionnaireObj = reactive({
@@ -336,35 +336,35 @@ const questionnaireObj = reactive({
     page: 1,
     pageSize: 50, // Increase page size for modal
     college_id: '',
-    name: ''
+    name: '',
   },
-  list: []
+  list: [],
 })
 
 const examObj = reactive({
   query: {
     page: 1,
     pageSize: 10,
-    is_valid: "",
-    name: ""
+    is_valid: '',
+    name: '',
   },
   form: {
-    id: "",
-    college_id:'',
-    questionnaire_id: "",
-    exam_name_zh: "",
-    name_zh: "",
-    name_tw: "",
-    name_en: "",
-    name_vi: "",
-    start_time: "",
-    end_time: "",
-    max_reply_num: "",
-    pass_score: "",
-    test_duration: ""
+    id: '',
+    college_id: '',
+    questionnaire_id: '',
+    exam_name_zh: '',
+    name_zh: '',
+    name_tw: '',
+    name_en: '',
+    name_vi: '',
+    start_time: '',
+    end_time: '',
+    max_reply_num: '',
+    pass_score: '',
+    test_duration: '',
   },
   list: [],
-  total: 0
+  total: 0,
 })
 
 // Methods
@@ -380,8 +380,8 @@ const returnCollegeName = (id) => {
 
 const getCollegeList = () => {
   $request(api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
-      resource_path: route.path
-    })
+    resource_path: route.path,
+  })
     .then((r) => {
       publicCodeObj.collegeList = r.data
       college_id.value = r.data[0].id
@@ -400,22 +400,22 @@ const handlePageChange = (page) => {
 
 const getExamList = () => {
   $request(api.baseUrl + '/Video/VideoExam/getExamList', {
-      ...examObj.query,
-      college_id: college_id.value
-    })
-    .then(r => {
+    ...examObj.query,
+    college_id: college_id.value,
+  })
+    .then((r) => {
       examObj.list = r.data.list
       examObj.total = r.data.total
     })
-    .catch(e => {
-      console.log(e);
+    .catch((e) => {
+      console.log(e)
     })
 }
 
 const addExam = () => {
   for (let key in examObj.form) {
     if (examObj.form.hasOwnProperty(key)) {
-      examObj.form[key] = '';
+      examObj.form[key] = ''
     }
   }
   showObj.examDrawer = true
@@ -434,62 +434,66 @@ const submitExam = () => {
     return message.error(l.value.pleaseBindQuestionnaire)
   }
 
-  $request(api.baseUrl + '/Video/VideoExam/addExam', examObj.form, 'post')
-    .then(r => {
-      if (r.httpCode == 200) {
-        message.success(l.value.submitSuccess)
-        let timer = setTimeout(() => {
-          showObj.examDrawer = false
-          getExamList()
-          clearTimeout(timer)
-        }, 1500)
-      }
-    })
+  $request(api.baseUrl + '/Video/VideoExam/addExam', examObj.form, 'post').then((r) => {
+    if (r.httpCode == 200) {
+      message.success(l.value.submitSuccess)
+      let timer = setTimeout(() => {
+        showObj.examDrawer = false
+        getExamList()
+        clearTimeout(timer)
+      }, 1500)
+    }
+  })
 }
 
 const toggleExamStatus = (data) => {
-    let msg
-    let value
-    if (data.is_valid == 'Y') {
-      msg = l.value.disableConfirmMessage.replace('{name}', data.name_zh)
-      value = 'N'
-    } else {
-      msg = l.value.enableConfirmMessage.replace('{name}', data.name_zh)
-      value = 'Y'
-    }
+  let msg
+  let value
+  if (data.is_valid == 'Y') {
+    msg = l.value.disableConfirmMessage.replace('{name}', data.name_zh)
+    value = 'N'
+  } else {
+    msg = l.value.enableConfirmMessage.replace('{name}', data.name_zh)
+    value = 'Y'
+  }
 
-    $prompt(msg, {
-        type: 'warning',
-        inputPattern: /^[Y]{1}$/i,
-        inputErrorMessage: l.value.inputValidationFailed,
-        confirmButtonText: l.value.confirmButtonText,
-        cancelButtonText: l.value.cancelButtonText
-      }).then(() => {
-        $request(api.baseUrl + '/Video/VideoExam/DeleteOrRecoveryExamById', {
+  $prompt(msg, {
+    type: 'warning',
+    inputPattern: /^[Y]{1}$/i,
+    inputErrorMessage: l.value.inputValidationFailed,
+    confirmButtonText: l.value.confirmButtonText,
+    cancelButtonText: l.value.cancelButtonText,
+  })
+    .then(() => {
+      $request(
+        api.baseUrl + '/Video/VideoExam/DeleteOrRecoveryExamById',
+        {
           key: data.id,
-          value: value
-        }, 'post').then(r => {
-          message.success(l.value.operationSuccess)
-          getExamList()
-        })
+          value: value,
+        },
+        'post'
+      ).then((r) => {
+        message.success(l.value.operationSuccess)
+        getExamList()
       })
-      .catch(() => {
-        console.log('cancel');
-      })
+    })
+    .catch(() => {
+      console.log('cancel')
+    })
 }
 
 const previewExam = (id) => {
   let url = router.resolve({
     name: 'examDetail',
     query: {
-      train_id: "",
+      train_id: '',
       course_id: '',
       exam_id: '',
       questionnaire_id: id,
-      mode: 'preview'
-    }
-  }).href;
-  window.open(url, '_blank');
+      mode: 'preview',
+    },
+  }).href
+  window.open(url, '_blank')
 }
 
 // Questionnaire Dialog Methods
@@ -497,11 +501,11 @@ const getQuestionnaireList = () => {
   $request(api.baseUrl + '/Video/VideoExam/getQuestionnaireList', {
     ...questionnaireObj.query,
   })
-    .then(r => {
+    .then((r) => {
       questionnaireObj.list = r.data.list
     })
-    .catch(e => {
-      console.log(e);
+    .catch((e) => {
+      console.log(e)
     })
 }
 
@@ -516,18 +520,20 @@ onMounted(() => {
   getCollegeList()
 })
 
-watch(() => showObj.questionnaireDialog, (val) => {
-  if (val) {
-    getQuestionnaireList()
+watch(
+  () => showObj.questionnaireDialog,
+  (val) => {
+    if (val) {
+      getQuestionnaireList()
+    }
   }
-})
+)
 
 watch(college_id, (val) => {
-    if(val) {
-        questionnaireObj.query.college_id = val
-    }
+  if (val) {
+    questionnaireObj.query.college_id = val
+  }
 })
-
 </script>
 
 <style scoped>

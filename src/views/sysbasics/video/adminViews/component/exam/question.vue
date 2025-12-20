@@ -13,7 +13,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="px-6 pt-6 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+    <div class="px-6 pt-2 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
       <div class="flex items-center gap-4 text-sm font-medium text-[#606060]">
         <!-- College Select -->
         <div class="relative group w-48">
@@ -75,7 +75,7 @@
       <!-- Left: Catalog Tree -->
       <div class="w-[300px] bg-white border-r border-[#E5E5E5] flex flex-col">
         <div class="p-4 border-b border-[#E5E5E5] bg-[#F9F9F9] flex justify-between items-center">
-           <h2 class="font-medium text-sm text-[#0D0D0D]">{{ l.catalogDrawerTitle }}</h2>
+           <h2 class="font-medium text-sm text-[#0D0D0D] mb-0!">{{ l.catalogDrawerTitle }}</h2>
            <button class="text-[#065FD4] text-sm hover:underline" @click="addCatalog">{{ l.add }}</button>
         </div>
         <div class="p-2 border-b border-[#E5E5E5]">
@@ -117,7 +117,7 @@
       <div class="flex-1 overflow-y-auto bg-white flex flex-col">
           <div class="grid grid-cols-[50px_3fr_100px_120px_100px_100px_120px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
             <div>{{ l.serialNumber }}</div>
-            <div>{{ l.question }}</div>
+            <div>{{ l.question || "--" }}</div>
             <div>{{ l.difficulty }}</div>
             <div>{{ l.questionTypeColumn }}</div>
             <div>{{ l.publishStatusColumn }}</div>
@@ -134,7 +134,7 @@
             </div>
             <div v-else v-for="(item, index) in questionObj.list" :key="item.id" class="grid grid-cols-[50px_3fr_100px_120px_100px_100px_120px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D]">
                <div class="text-[#606060]">{{ (questionObj.query.page - 1) * questionObj.query.pageSize + index + 1 }}</div>
-               <div class="font-medium truncate" :title="item.name_label">{{ item.name_label }}</div>
+               <div class="font-medium truncate" :title="item.name_label">{{ item.name_label || "--" }}</div>
                <div>{{ item.difficulty_level }}</div>
                <div>{{ returnPublicObjLabel(item.question_type, 'value', 'label', 'question_type') }}</div>
                <div>{{ returnPublicObjLabel(item.question_status, 'value', 'label', 'question_status') }}</div>
@@ -179,7 +179,7 @@
 
     <!-- Catalog Drawer -->
     <a-drawer :visible="showObj.catalogDrawer" :title="l.catalogDrawerTitle" :width="600" @close="showObj.catalogDrawer = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col h-full bg-white font-roboto">
+       <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
           <div class="flex-1 overflow-y-auto p-6 space-y-4">
              <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-1">{{ l.college }}</label>
@@ -228,7 +228,7 @@
 
     <!-- Question Drawer -->
     <a-drawer :visible="showObj.questionDrawer" :title="l.questionDrawerTitle" :width="900" @close="showObj.questionDrawer = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col h-full bg-white font-roboto">
+       <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
           <div class="flex-1 overflow-y-auto p-6 space-y-4">
              <!-- Top Form -->
              <div class="grid grid-cols-2 gap-4">
@@ -304,19 +304,19 @@
                       </div>
                       <div class="grid grid-cols-2 gap-2 mb-2">
                          <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] w-10 text-center">{{ l.zh }}</span>
+                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.zh }}</span>
                             <input v-model="i.name_zh" class="flex-1 px-2 py-1 outline-none text-sm" />
                          </div>
                           <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] w-10 text-center">{{ l.en }}</span>
+                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.en }}</span>
                             <input v-model="i.name_en" class="flex-1 px-2 py-1 outline-none text-sm" />
                          </div>
                          <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] w-10 text-center">{{ l.vi }}</span>
+                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.vi }}</span>
                             <input v-model="i.name_vi" class="flex-1 px-2 py-1 outline-none text-sm" />
                          </div>
                          <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] w-10 text-center">{{ l.tw }}</span>
+                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.tw }}</span>
                             <input v-model="i.name_tw" class="flex-1 px-2 py-1 outline-none text-sm" />
                          </div>
                       </div>

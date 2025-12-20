@@ -61,7 +61,7 @@
     <!-- Content List -->
     <div class="flex-1 overflow-y-auto bg-white">
       <!-- Header -->
-      <div class="grid grid-cols-[50px_2fr_1fr_1fr_1fr_1fr_1fr_1fr_120px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
+      <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_1fr_1fr_1fr_120px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
         <div>{{ l.serialNumber }}</div>
         <div>{{ l.nameZh }}</div>
         <div>{{ l.nameTw }}</div>
@@ -81,12 +81,12 @@
           </div>
           <p class="text-[#0D0D0D]">{{ c.noData }}</p>
         </div>
-        <div v-else v-for="(item, index) in questionnaireObj.list" :key="item.id" class="grid grid-cols-[50px_2fr_1fr_1fr_1fr_1fr_1fr_1fr_120px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D]">
+        <div v-else v-for="(item, index) in questionnaireObj.list" :key="item.id" class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_1fr_1fr_1fr_120px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D]">
             <div class="text-[#606060]">{{ (questionnaireObj.query.page - 1) * questionnaireObj.query.pageSize + index + 1 }}</div>
-            <div class="font-medium truncate" :title="item.name_zh">{{ item.name_zh }}</div>
-            <div class="truncate" :title="item.name_tw">{{ item.name_tw }}</div>
-            <div class="truncate" :title="item.name_en">{{ item.name_en }}</div>
-            <div class="truncate" :title="item.name_vi">{{ item.name_vi }}</div>
+            <div class="font-medium truncate" :title="item.name_zh">{{ item.name_zh || "--" }}</div>
+            <div class="truncate" :title="item.name_tw">{{ item.name_tw || "--" }}</div>
+            <div class="truncate" :title="item.name_en">{{ item.name_en || "--" }}</div>
+            <div class="truncate" :title="item.name_vi">{{ item.name_vi || "--" }}</div>
             <div class="text-xs text-[#606060]">{{ item.create_time }}</div>
             <div class="text-xs text-[#606060]">{{ item.modify_time || item.create_time }}</div>
             <div>
@@ -187,8 +187,8 @@
                       </div>
 
                       <div class="flex gap-2 items-center">
-                         <div class="flex items-center border border-[#CCCCCC] rounded px-2 py-1 w-32 focus-within:border-[#065FD4]">
-                            <span class="text-xs text-[#606060] mr-2">{{ l.correctScore }}</span>
+                         <div class="flex items-center border border-[#CCCCCC] rounded px-2 py-1 focus-within:border-[#065FD4]">
+                            <span class="text-xs text-[#606060] mr-2 whitespace-pre">{{ l.correctScore }}</span>
                             <input v-model.number="i.score" type="number" class="w-full outline-none text-sm text-right" />
                          </div>
                       </div>
