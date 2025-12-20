@@ -85,7 +85,7 @@
         <!-- Search Filter -->
         <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4]">
           <i class="el-icon-search text-[#606060] text-lg"></i>
-          <input v-model="examObj.query.name" type="text" :placeholder="$l.titleFilter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getExamList" />
+          <input v-model="examObj.query.name" type="text" :placeholder="l.titleFilter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getExamList" />
         </div>
       </div>
     </div>
@@ -211,11 +211,11 @@
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4]">
                <label class="block text-xs text-[#606060] mb-0.5">{{ l.startTime }}</label>
-               <el-date-picker v-model="examObj.form.start_time" type="datetime" :placeholder="$l.chooseStartTime" style="width: 100%; border:none;" class="no-border-input"></el-date-picker>
+               <el-date-picker v-model="examObj.form.start_time" type="datetime" :placeholder="l.chooseStartTime" style="width: 100%; border:none;" class="no-border-input"></el-date-picker>
             </div>
             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4]">
                <label class="block text-xs text-[#606060] mb-0.5">{{ l.endTime }}</label>
-               <el-date-picker v-model="examObj.form.end_time" type="datetime" :placeholder="$l.chooseEndTime" style="width: 100%; border:none;" class="no-border-input"></el-date-picker>
+               <el-date-picker v-model="examObj.form.end_time" type="datetime" :placeholder="l.chooseEndTime" style="width: 100%; border:none;" class="no-border-input"></el-date-picker>
             </div>
           </div>
 
@@ -248,7 +248,7 @@
     </a-drawer>
 
     <!-- Questionnaire Selection Modal -->
-    <a-modal v-model:open="showObj.questionnaireDialog" :title="l.select + ' ' + l.bindQuestionnaire" :footer="null" :width="800">
+    <a-modal v-model="showObj.questionnaireDialog" :title="l.select + ' ' + l.bindQuestionnaire" :footer="null" :width="800">
       <div class="flex flex-col h-[500px]">
         <!-- Filter -->
         <div class="flex gap-4 mb-4">
@@ -258,9 +258,9 @@
              </select>
            </div>
            <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center">
-             <input v-model="questionnaireObj.query.name" :placeholder="$l.titleFilter" class="w-full outline-none text-sm" />
+             <input v-model="questionnaireObj.query.name" :placeholder="l.titleFilter" class="w-full outline-none text-sm" />
            </div>
-           <button class="bg-[#065FD4] text-white! px-4 py-1 rounded text-sm uppercase" @click="getQuestionnaireList">{{ $l.search }}</button>
+           <button class="bg-[#065FD4] text-white! px-4 py-1 rounded text-sm uppercase" @click="getQuestionnaireList">{{ l.search }}</button>
         </div>
 
         <!-- List -->

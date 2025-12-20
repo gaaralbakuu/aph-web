@@ -48,7 +48,7 @@
 
         <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4]">
           <i class="el-icon-search text-[#606060] text-lg"></i>
-          <input v-model="questionObj.query.name" type="text" :placeholder="$l.titleFilter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getQuestionList" />
+          <input v-model="questionObj.query.name" type="text" :placeholder="l.titleFilter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getQuestionList" />
         </div>
 
         <div class="relative w-40">
@@ -81,7 +81,7 @@
         <div class="p-2 border-b border-[#E5E5E5]">
           <div class="flex gap-2">
              <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center bg-white">
-                <input v-model="filterCatalogText" :placeholder="$l.filterCatalog" class="w-full text-xs outline-none" />
+                <input v-model="filterCatalogText" :placeholder="l.filterCatalog" class="w-full text-xs outline-none" />
              </div>
              <select v-model="catalogObj.query.is_valid" @change="getCatalogList" class="border border-[#CCCCCC] rounded px-1 py-1 text-xs outline-none bg-white w-20">
                 <option value="">{{ l.all }}</option>
@@ -190,7 +190,7 @@
 
              <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-1">{{ l.parentCatalog }}</label>
-                 <el-cascader v-model="catalogObj.form.pid" :options="publicCodeObj.catalogList" clearable :placeholder="$l.defaultRootCatalog" style="width: 100%" :props="catalogObj.cascaderProps" class="w-full no-border-input"></el-cascader>
+                 <el-cascader v-model="catalogObj.form.pid" :options="publicCodeObj.catalogList" clearable :placeholder="l.defaultRootCatalog" style="width: 100%" :props="catalogObj.cascaderProps" class="w-full no-border-input"></el-cascader>
              </div>
 
              <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
@@ -240,7 +240,7 @@
                </div>
                <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
                   <label class="block text-xs text-[#606060] mb-1">{{ l.questionCategory }}</label>
-                   <el-cascader v-model="questionObj.form.question_category_id" :options="publicCodeObj.catalogList" clearable :placeholder="$l.defaultRootCatalog" :props="catalogObj.cascaderProps" style="width: 100%" class="no-border-input"></el-cascader>
+                   <el-cascader v-model="questionObj.form.question_category_id" :options="publicCodeObj.catalogList" clearable :placeholder="l.defaultRootCatalog" :props="catalogObj.cascaderProps" style="width: 100%" class="no-border-input"></el-cascader>
                </div>
              </div>
 

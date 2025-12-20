@@ -51,7 +51,7 @@
 
         <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4]">
           <i class="el-icon-search text-[#606060] text-lg"></i>
-          <input v-model="questionnaireObj.query.name" type="text" :placeholder="$l.titleFilter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getQuestionnaireList" />
+          <input v-model="questionnaireObj.query.name" type="text" :placeholder="l.titleFilter" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @change="getQuestionnaireList" />
         </div>
 
         <button class="bg-[#065FD4] text-white! px-4 py-2 rounded text-sm uppercase font-medium shadow-sm hover:bg-[#0551B4]" @click="getQuestionnaireList">{{ l.search }}</button>
@@ -218,7 +218,7 @@
     </a-drawer>
 
     <!-- Add Question Modal -->
-    <a-modal v-model:open="showObj.questionDialog" :title="l.addQuestion" :footer="null" :width="900">
+    <a-modal v-model="showObj.questionDialog" :title="l.addQuestion" :footer="null" :width="900">
        <div class="flex flex-col h-[500px]">
           <!-- Filter -->
           <div class="flex gap-2 mb-4 flex-wrap">
@@ -228,10 +228,10 @@
                 </select>
              </div>
              <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center min-w-[150px]">
-               <input v-model="questionObj.query.name" :placeholder="$l.title" class="w-full outline-none text-sm" @keydown.enter="getQuestionList" />
+               <input v-model="questionObj.query.name" :placeholder="l.title" class="w-full outline-none text-sm" @keydown.enter="getQuestionList" />
              </div>
              <div class="w-40">
-                <el-cascader clearable class="w-full no-border-input border border-[#CCCCCC] rounded px-2 py-1" v-model="questionObj.query.question_category_id" :options="publicCodeObj.questionCatagory" :props="{ label:'name_label',value:'id',checkStrictly:true }" :placeholder="$l.catalogRoot" @change="changCatalog"></el-cascader>
+                <el-cascader clearable class="w-full no-border-input border border-[#CCCCCC] rounded px-2 py-1" v-model="questionObj.query.question_category_id" :options="publicCodeObj.questionCatagory" :props="{ label:'name_label',value:'id',checkStrictly:true }" :placeholder="l.catalogRoot" @change="changCatalog"></el-cascader>
              </div>
              <div class="w-32 border border-[#CCCCCC] rounded px-2 py-1">
                 <select v-model="questionObj.query.question_type" @change="getQuestionList" class="w-full outline-none text-sm bg-transparent">
