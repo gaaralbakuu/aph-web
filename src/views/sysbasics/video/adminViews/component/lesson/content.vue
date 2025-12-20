@@ -307,7 +307,8 @@
                   <!-- Auto Generated (Action to regenerate) -->
                   <div class="w-32 aspect-video bg-[#F0F0F0] rounded flex items-center justify-center relative cursor-pointer hover:bg-[#E0E0E0] transition-colors" @click="drawCoverByFile(uploadVideoObj.file, Math.random() * uploadVideoObj.duration)" title="Generate random frame">
                     <i class="el-icon-refresh text-[#606060]"></i>
-                    <span class="absolute bottom-2 text-[10px] text-[#909090]">{{ l.autoGen }}</span>
+
+                    <span class="text-[10px] text-[#909090]">{{ l.autoGen }}</span>
                   </div>
                 </div>
               </div>
