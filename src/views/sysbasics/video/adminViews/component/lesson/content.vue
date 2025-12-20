@@ -158,7 +158,7 @@
 
                     <!-- Hover Actions (Replace desc on hover) -->
                     <div class="hidden group-hover:flex items-center gap-4 text-[#606060]">
-                      <i class="el-icon-edit text-lg cursor-pointer hover:text-[#0D0D0D]" title="Details" @click="beforeModifyVideo(i)"></i>
+                      <i class="el-icon-edit text-lg cursor-pointer hover:text-[#0D0D0D]" :title="l.details" @click="beforeModifyVideo(i)"></i>
                       <i class="el-icon-data-analysis text-lg cursor-pointer hover:text-[#0D0D0D]" title="Analytics"></i>
                       <i class="el-icon-chat-dot-square text-lg cursor-pointer hover:text-[#0D0D0D]" title="Comments"></i>
                       <i class="el-icon-view text-lg cursor-pointer hover:text-[#0D0D0D]" title="View on YouTube"></i>
@@ -276,13 +276,13 @@
             <!-- Left Column: Form (Scrollable) -->
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
               <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-medium text-[#0D0D0D]">Details</h3>
-                <button class="text-[#065FD4] font-medium text-sm uppercase" @click="videoRemove(true)">{{ l.reselect || 'REUSE DETAILS' }}</button>
+                <h3 class="text-xl font-medium text-[#0D0D0D]">{{ l.details }}</h3>
+                <button class="text-[#065FD4] font-medium text-sm uppercase" @click="videoRemove(true)">{{ l.reuseDetails || 'REUSE DETAILS' }}</button>
               </div>
 
               <!-- Title -->
               <div class="mb-6 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Title (required)</label>
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.title }} ({{ c.required }})</label>
                 <input v-model="uploadVideoObj.name" class="w-full outline-none text-[#0D0D0D] text-sm" :placeholder="l.title" />
                 <div class="absolute right-2 bottom-2 text-xs text-[#606060]">{{ uploadVideoObj.name.length }}/100</div>
               </div>
@@ -290,21 +290,21 @@
               <!-- Description -->
               <div class="mb-8 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Description</label>
-                <textarea v-model="uploadVideoObj.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none!" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
+                <textarea v-model="uploadVideoObj.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="5" :placeholder="l.introducePd"></textarea>
                 <div class="absolute right-2 bottom-2 text-xs text-[#606060]">{{ uploadVideoObj.description.length }}/5000</div>
               </div>
 
               <!-- Thumbnail -->
               <div class="mb-8">
-                <h4 class="text-sm font-medium text-[#0D0D0D] mb-1">Thumbnail</h4>
-                <p class="text-xs text-[#606060] mb-4">Select or upload a picture that shows what's in your video. A good thumbnail stands out and draws viewers' attention.</p>
+                <h4 class="text-sm font-medium text-[#0D0D0D] mb-1">{{ l.thumbnail }}</h4>
+                <p class="text-xs text-[#606060] mb-4">{{ l.thumbnailDesc }}</p>
 
                 <div class="flex gap-4">
                   <!-- Upload Box -->
                   <div class="w-32 aspect-video border border-dashed border-[#CCCCCC] rounded cursor-pointer flex flex-col items-center justify-center hover:border-[#606060] hover:bg-[#F9F9F9] transition-all relative overflow-hidden group" @click="coverSelect('upload')">
                     <template v-if="!coverObj.imageUrl">
                       <i class="el-icon-picture-outline text-xl text-[#606060] mb-1"></i>
-                      <span class="text-xs text-[#606060]">Upload file</span>
+                      <span class="text-xs text-[#606060]">{{ l.uploadFile }}</span>
                     </template>
                     <img v-else :src="coverObj.imageUrl" class="w-full h-full object-cover" />
                     <div v-if="coverObj.imageUrl" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -315,14 +315,15 @@
                   <!-- Auto Generated (Action to regenerate) -->
                   <div class="w-32 aspect-video bg-[#F0F0F0] rounded flex items-center justify-center relative cursor-pointer hover:bg-[#E0E0E0] transition-colors" @click="drawCoverByFile(uploadVideoObj.file, Math.random() * uploadVideoObj.duration)" title="Generate random frame">
                     <i class="el-icon-refresh text-[#606060]"></i>
-                    <span class="absolute bottom-2 text-[10px] text-[#909090]">Auto-gen</span>
+
+                    <span class="text-[10px] text-[#909090]">{{ l.autoGen }}</span>
                   </div>
                 </div>
               </div>
 
               <!-- Audience / Settings -->
               <div class="mb-8">
-                <h4 class="text-sm font-medium text-[#0D0D0D] mb-2">Audience</h4>
+                <h4 class="text-sm font-medium text-[#0D0D0D] mb-2">{{ l.audience }}</h4>
 
                 <div class="bg-[#F9F9F9] p-4 rounded border border-[#E5E5E5] mb-4">
                   <label class="block text-sm font-medium text-[#0D0D0D] mb-2">{{ l.college }}</label>
@@ -334,7 +335,7 @@
                 </div>
 
                 <div class="bg-[#F9F9F9] p-4 rounded border border-[#E5E5E5]">
-                  <label class="block text-sm font-medium text-[#0D0D0D] mb-2">Visibility</label>
+                  <label class="block text-sm font-medium text-[#0D0D0D] mb-2">{{ l.visibility }}</label>
                   <div class="flex items-center gap-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                       <input type="radio" name="visibility" :value="0" :checked="uploadVideoObj.is_public == 0" @change="uploadVideoObj.is_public = 0" class="accent-[#065FD4]" />
@@ -354,8 +355,8 @@
               <!-- Video Player Placeholder -->
               <div class="w-full aspect-video bg-black rounded overflow-hidden relative group">
                 <div v-if="!coverObj.imageUrl" class="absolute inset-0 flex items-center justify-center text-white text-xs">
-                  <span v-if="!uploadVideoObj.uploadEvent.oTime">Preview unavailable</span>
-                  <span v-else>Processing...</span>
+                  <span v-if="!uploadVideoObj.uploadEvent.oTime">{{ l.previewUnavailable }}</span>
+                  <span v-else>{{ l.processing }}</span>
                 </div>
                 <img v-else :src="coverObj.imageUrl" class="absolute inset-0 w-full h-full object-cover" />
                 <div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-1 rounded">{{ formatDuration(uploadVideoObj.duration) }}</div>
@@ -371,8 +372,8 @@
                 <!-- Upload Progress -->
                 <div v-if="flagObj.uploading || uploadVideoObj.uploadPercent > 0" class="bg-white p-3 rounded border border-[#E5E5E5]">
                   <div class="flex justify-between text-xs mb-1">
-                    <span class="text-[#065FD4] font-medium" v-if="flagObj.uploading">Uploading...</span>
-                    <span class="text-[#069C56] font-medium" v-else>Upload Complete</span>
+                    <span class="text-[#065FD4] font-medium" v-if="flagObj.uploading">{{ l.uploading }}</span>
+                    <span class="text-[#069C56] font-medium" v-else>{{ l.uploadComplete }}</span>
                     <span>{{ uploadVideoObj.uploadPercent }}%</span>
                   </div>
                   <div class="h-1 bg-[#E5E5E5] w-full rounded-full overflow-hidden mb-2">
@@ -380,7 +381,7 @@
                   </div>
                   <div class="flex justify-between text-[10px] text-[#606060]">
                     <span>{{ uploadVideoObj.uploadEvent.speed }}</span>
-                    <span>{{ uploadVideoObj.uploadEvent.restTime }} left</span>
+                    <span>{{ uploadVideoObj.uploadEvent.restTime }} {{ l.timeLeft }}</span>
                   </div>
                 </div>
               </div>
@@ -393,7 +394,7 @@
             <div class="text-sm text-[#606060]">
               <span v-if="flagObj.uploading" class="flex items-center gap-2">
                 <i class="el-icon-loading"></i>
-                Uploading... Please do not close this window.
+                {{ l.uploadingWarning }}
               </span>
             </div>
 
@@ -403,7 +404,7 @@
                 {{ c.cancel || 'CANCEL' }}
               </button>
               <button v-if="flagObj.selectVideo" class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors" :disabled="!flagObj.uploadAble || flagObj.uploading" @click="handleSubmit('uploadVideo')">
-                {{ flagObj.uploading ? 'UPLOADING...' : l.uploadVideo || 'UPLOAD' }}
+                {{ flagObj.uploading ? l.uploading.toUpperCase() : l.uploadVideo || 'UPLOAD' }}
               </button>
             </div>
           </div>
@@ -416,24 +417,24 @@
           <div class="flex-1 flex overflow-hidden">
             <!-- Left Column: Form -->
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-              <h3 class="text-xl font-medium text-[#0D0D0D] mb-6">Video Details</h3>
+              <h3 class="text-xl font-medium text-[#0D0D0D] mb-6">{{ l.videoDetails }}</h3>
 
               <!-- Title -->
               <div class="mb-6 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Title (required)</label>
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.title }} ({{ c.required }})</label>
                 <input v-model="modifyVideoObj.form.title" class="w-full outline-none text-[#0D0D0D] text-sm" :placeholder="l.title" />
               </div>
 
               <!-- Description -->
               <div class="mb-8 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">Description</label>
-                <textarea v-model="modifyVideoObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none!" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
+                <textarea v-model="modifyVideoObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="5" :placeholder="l.introducePd" style="resize: none"></textarea>
               </div>
 
               <!-- Thumbnail -->
               <div class="mb-8">
-                <h4 class="text-sm font-medium text-[#0D0D0D] mb-1">Thumbnail</h4>
-                <p class="text-xs text-[#606060] mb-4">Select or upload a picture that shows what's in your video.</p>
+                <h4 class="text-sm font-medium text-[#0D0D0D] mb-1">{{ l.thumbnail }}</h4>
+                <p class="text-xs text-[#606060] mb-4">{{ l.thumbnailDesc }}</p>
 
                 <div class="flex gap-4">
                   <!-- Current/New Upload Box -->
@@ -441,25 +442,25 @@
                     <img v-if="coverObj.imageUrl" :src="coverObj.imageUrl" class="w-full h-full object-cover" />
                     <div v-else class="flex flex-col items-center">
                       <i class="el-icon-plus text-xl text-[#606060] mb-1"></i>
-                      <span class="text-xs text-[#606060]">Upload new</span>
+                      <span class="text-xs text-[#606060]">{{ l.uploadNew }}</span>
                     </div>
 
                     <div v-if="coverObj.imageUrl" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <span class="text-white text-xs">Change</span>
+                      <span class="text-white text-xs">{{ l.change }}</span>
                     </div>
                   </div>
 
                   <!-- Original Thumbnail Preview (if exists and different from new) -->
                   <div v-if="modifyVideoObj.form.oldthumbnail_path && !coverObj.imageUrl" class="w-32 aspect-video relative rounded overflow-hidden border border-[#E5E5E5]">
                     <img :src="api.videoServer + '/' + modifyVideoObj.form.oldthumbnail_path" class="w-full h-full object-cover opacity-80" />
-                    <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1 rounded">Current</span>
+                    <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1 rounded">{{ l.current }}</span>
                   </div>
                 </div>
               </div>
 
               <!-- Audience / Settings -->
               <div class="mb-8">
-                <h4 class="text-sm font-medium text-[#0D0D0D] mb-2">Audience</h4>
+                <h4 class="text-sm font-medium text-[#0D0D0D] mb-2">{{ l.audience }}</h4>
 
                 <div class="bg-[#F9F9F9] p-4 rounded border border-[#E5E5E5] mb-4">
                   <label class="block text-sm font-medium text-[#0D0D0D] mb-2">{{ l.college }}</label>
@@ -471,7 +472,7 @@
                 </div>
 
                 <div class="bg-[#F9F9F9] p-4 rounded border border-[#E5E5E5]">
-                  <label class="block text-sm font-medium text-[#0D0D0D] mb-2">Visibility</label>
+                  <label class="block text-sm font-medium text-[#0D0D0D] mb-2">{{ l.visibility }}</label>
                   <div class="flex items-center gap-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                       <input type="radio" name="modify_visibility" :value="0" :checked="modifyVideoObj.form.is_public == 0" @change="modifyVideoObj.form.is_public = 0" class="accent-[#065FD4]" />
@@ -495,7 +496,7 @@
 
               <div class="space-y-3">
                 <div>
-                  <div class="text-xs text-[#606060] mb-1">Video Link</div>
+                  <div class="text-xs text-[#606060] mb-1">{{ l.videoLink }}</div>
                   <a :href="getVideoViewLink" target="_blank" rel="noopener noreferrer" class="text-sm text-[#065FD4] break-all cursor-pointer hover:underline">
                     {{ getVideoViewLink }}
                   </a>

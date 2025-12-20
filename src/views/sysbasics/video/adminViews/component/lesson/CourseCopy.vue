@@ -8,24 +8,24 @@
 
       <input ref="attachmentInput" type="file" @change="uploadattAchmentChange" style="display: none;" />
 
-      <a-modal :visible="showObj.attachment" title="上传附件" width="50%" @cancel="showObj.attachment = false">
+      <a-modal :visible="showObj.attachment" :title="l.uploadAttachment" width="50%" @cancel="showObj.attachment = false">
         <a-form>
-          <a-form-item label="简中名字" required>
+          <a-form-item :label="l.name_zh" required>
             <a-input v-model:value="attachmentObj.file_name_zh"></a-input>
           </a-form-item>
-          <a-form-item label="繁中名字">
+          <a-form-item :label="l.name_tw">
             <a-input v-model:value="attachmentObj.file_name_tw"></a-input>
           </a-form-item>
-          <a-form-item label="英文名字">
+          <a-form-item :label="l.name_en">
             <a-input v-model:value="attachmentObj.file_name_en"></a-input>
           </a-form-item>
-          <a-form-item label="越南名字">
+          <a-form-item :label="l.name_vi">
             <a-input v-model:value="attachmentObj.file_name_vi"></a-input>
           </a-form-item>
         </a-form>
         <template #footer>
-          <a-button @click="showObj.attachment = false">取 消</a-button>
-          <a-button type="primary" @click="uploadAttachment">提 交</a-button>
+          <a-button @click="showObj.attachment = false">{{ c.cancel }}</a-button>
+          <a-button type="primary" @click="uploadAttachment">{{ l.submit }}</a-button>
         </template>
       </a-modal>
 

@@ -191,7 +191,7 @@
                       <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
                       <a-table-column width="60px">
                          <template #default="{ record }">
-                            <button class="text-[#065FD4] text-xs" @click="addCourse(record)">Add</button>
+                            <button class="text-[#065FD4] text-xs" @click="addCourse(record)">{{ l.add }}</button>
                          </template>
                       </a-table-column>
                    </a-table>
@@ -209,7 +209,7 @@
                       <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
                       <a-table-column width="60px">
                          <template #default="{ index }">
-                            <button class="text-[#CC0000] text-xs" @click="removeCourse(index)">Del</button>
+                            <button class="text-[#CC0000] text-xs" @click="removeCourse(index)">{{ l.remove }}</button>
                          </template>
                       </a-table-column>
                    </a-table>
