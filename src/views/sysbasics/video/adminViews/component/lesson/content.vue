@@ -214,10 +214,12 @@
     <!-- Pagination Footer -->
     <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
       <Pagination
-        v-model:page="videoListObj.query.page"
-        v-model:pageSize="videoListObj.query.pageSize"
+        :page="videoListObj.query.page"
+        :pageSize="videoListObj.query.pageSize"
         :total="videoListObj.total"
         :l="l"
+        @update:page="videoListObj.query.page = $event"
+        @update:pageSize="videoListObj.query.pageSize = $event"
         @change="getVideoList"
       />
     </div>

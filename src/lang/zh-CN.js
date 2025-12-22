@@ -552,6 +552,8 @@ export default {
     view_address: '查看地址',
     view_capabilities: '查看整体能力',
     workName: '职位',
+    rowsPerPage: '每页行数',
+    of: '的',
   },
   commuter: {
     Enddate: '结束日期',

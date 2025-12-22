@@ -89,6 +89,8 @@ export default {
     apacheHome: 'E + 萬邦',
     logOut: '退出登錄',
     exchangeSystemLanguage: '切換系統語言',
+    rowsPerPage: '每頁行數',
+    of: '的',
   },
   improveManagement_table: {
     index: '#',

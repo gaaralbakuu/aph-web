@@ -90,6 +90,8 @@ export default {
     apacheHome: 'E + Wanbang',
     logOut: 'Log Out',
     exchangeSystemLanguage: 'Switch System Language',
+    rowsPerPage: 'Rows per page',
+    of: 'of',
   },
   improveManagement_table: {
     index: '#',

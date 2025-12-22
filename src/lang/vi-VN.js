@@ -550,6 +550,8 @@ export default {
     view_address: 'Xem địa chỉ',
     view_capabilities: 'Xem năng lực tổng thể',
     workName: 'Chức vụ',
+    rowsPerPage: 'Dòng mỗi trang',
+    of: 'của',
   },
   commuter: {
     Enddate: 'Ngày kết thúc',
