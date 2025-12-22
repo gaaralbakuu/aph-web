@@ -68,7 +68,7 @@ export default {
     },
     {
       path: 'astrictAuth',
-      component: () => import('@/views/admin/AstrictAuth'),
+      component: () => import('@/views/admin/AstrictAuth.vue'),
       name: 'adminAstrictAuth',
       meta: { noCache: true }
     },

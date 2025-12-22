@@ -127,7 +127,7 @@ export default [
         children: [
           {
             path: 'index',
-            component: () => import('@/views/sysbasics/video/adminViews/component/analyze/index'),
+            component: () => import('@/views/sysbasics/video/adminViews/component/analyze/Index'),
             name: 'analyzeIndex',
             meta: { noCache: isDevelopMode, title: 'System Overview' }
           },

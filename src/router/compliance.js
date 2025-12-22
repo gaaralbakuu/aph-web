@@ -95,7 +95,7 @@ export default {
         },
         {
           path: 'cisRole',
-          component: () => import('@/views/sysbasics/compliance/Role'),
+          component: () => import('@/views/sysbasics/compliance/Role.vue'),
           name: 'sysbasicscompliancerole',
           meta: {
             noCache: true

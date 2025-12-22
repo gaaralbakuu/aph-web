@@ -1,0 +1,357 @@
+
+> apache-uniapp-web@0.1.0 dev
+> vite
+
+Main API: http://localhost:65301
+Video API: http://localhost:65301
+Build mode: development
+Build command: serve
+(!) Failed to run dependency scan. Skipping dependency pre-bundling. Error:   Failed to scan for dependencies from entries:
+  /app/index.html
+/app/public/index.html
+/app/public/download/index.html
+/app/public/privacy/index.html
+
+  [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open '/app/src/views/_common/ChooseUser.vue'[0m [1m[35m[plugin vite:dep-scan][0m
+
+    node_modules/esbuild/lib/main.js:1267:21:
+[37m      1267 │         let result = [32m[37mawait callback({
+           ╵                      [32m^[0m
+
+    at async open (node:internal/fs/promises:641:25)
+    at async Object.readFile (node:internal/fs/promises:1245:14)
+    at async htmlTypeOnLoadCallback (file:///app/node_modules/vite/dist/node/chunks/config.js:31561:15)
+    at async requestCallbacks.on-load (/app/node_modules/esbuild/lib/main.js:1267:22)
+    at async handleRequest (/app/node_modules/esbuild/lib/main.js:628:11)
+
+  This error came from the "onLoad" callback registered here:
+
+    node_modules/esbuild/lib/main.js:1141:20:
+[37m      1141 │       let promise = [32m[37msetup({
+           ╵                     [32m^[0m
+
+    at setup (file:///app/node_modules/vite/dist/node/chunks/config.js:31618:12)
+    at handlePlugins (/app/node_modules/esbuild/lib/main.js:1141:21)
+    at buildOrContextImpl (/app/node_modules/esbuild/lib/main.js:854:5)
+    at Object.buildOrContext (/app/node_modules/esbuild/lib/main.js:680:5)
+    at /app/node_modules/esbuild/lib/main.js:2035:68
+    at new Promise (<anonymous>)
+    at Object.context (/app/node_modules/esbuild/lib/main.js:2035:27)
+    at Object.context (/app/node_modules/esbuild/lib/main.js:1877:58)
+    at prepareEsbuildScanner (file:///app/node_modules/vite/dist/node/chunks/config.js:31453:23)
+    at async scan (file:///app/node_modules/vite/dist/node/chunks/config.js:31379:14)
+    at async file:///app/node_modules/vite/dist/node/chunks/config.js:34110:15
+
+  The plugin "vite:dep-scan" was triggered by this import
+
+    script:/app/src/views/sysbasics/video/adminViews/component/system/Role.vue?id=0:6:25:
+[37m      6 │   import chooseUser from [32m'@/views/_common/ChooseUser.vue'[37m
+        ╵                          [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open '/app/src/views/_common/FilePreviews.vue'[0m [1m[35m[plugin vite:dep-scan][0m
+
+    node_modules/esbuild/lib/main.js:1267:21:
+[37m      1267 │         let result = [32m[37mawait callback({
+           ╵                      [32m^[0m
+
+    at async open (node:internal/fs/promises:641:25)
+    at async Object.readFile (node:internal/fs/promises:1245:14)
+    at async htmlTypeOnLoadCallback (file:///app/node_modules/vite/dist/node/chunks/config.js:31561:15)
+    at async requestCallbacks.on-load (/app/node_modules/esbuild/lib/main.js:1267:22)
+    at async handleRequest (/app/node_modules/esbuild/lib/main.js:628:11)
+
+  This error came from the "onLoad" callback registered here:
+
+    node_modules/esbuild/lib/main.js:1141:20:
+[37m      1141 │       let promise = [32m[37msetup({
+           ╵                     [32m^[0m
+
+    at setup (file:///app/node_modules/vite/dist/node/chunks/config.js:31618:12)
+    at handlePlugins (/app/node_modules/esbuild/lib/main.js:1141:21)
+    at buildOrContextImpl (/app/node_modules/esbuild/lib/main.js:854:5)
+    at Object.buildOrContext (/app/node_modules/esbuild/lib/main.js:680:5)
+    at /app/node_modules/esbuild/lib/main.js:2035:68
+    at new Promise (<anonymous>)
+    at Object.context (/app/node_modules/esbuild/lib/main.js:2035:27)
+    at Object.context (/app/node_modules/esbuild/lib/main.js:1877:58)
+    at prepareEsbuildScanner (file:///app/node_modules/vite/dist/node/chunks/config.js:31453:23)
+    at async scan (file:///app/node_modules/vite/dist/node/chunks/config.js:31379:14)
+    at async file:///app/node_modules/vite/dist/node/chunks/config.js:34110:15
+
+  The plugin "vite:dep-scan" was triggered by this import
+
+    script:/app/src/views/sysbasics/video/userViews/Play.vue?id=0:8:27:
+[37m      8 │   import FilePreviews from [32m'@/views/_common/FilePreviews.vue'[37m
+        ╵                            [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+    at failureErrorWithLog (/app/node_modules/esbuild/lib/main.js:1467:15)
+    at /app/node_modules/esbuild/lib/main.js:926:25
+    at runOnEndCallbacks (/app/node_modules/esbuild/lib/main.js:1307:45)
+    at buildResponseToResult (/app/node_modules/esbuild/lib/main.js:924:7)
+    at /app/node_modules/esbuild/lib/main.js:936:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (/app/node_modules/esbuild/lib/main.js:935:54)
+    at handleRequest (/app/node_modules/esbuild/lib/main.js:628:17)
+    at handleIncomingPacket (/app/node_modules/esbuild/lib/main.js:653:7)
+    at Socket.readFromStdout (/app/node_modules/esbuild/lib/main.js:581:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+10:07:18 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/UserFeedback" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:65:30
+  63 |      {
+  64 |        path: 'userfeedback',
+  65 |        component: () => import('@/views/admin/UserFeedback'),
+     |                                ^
+  66 |        name: 'userfeedback',
+  67 |        meta: { noCache: true }
+10:07:18 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/video/adminViews/component/analyze/index" from "src/router/video.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/video.js:130:36
+  128 |            {
+  129 |              path: 'index',
+  130 |              component: () => import('@/views/sysbasics/video/adminViews/component/analyze/index'),
+      |                                      ^
+  131 |              name: 'analyzeIndex',
+  132 |              meta: { noCache: isDevelopMode, title: 'System Overview' }
+10:07:18 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/Banner" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:90:34
+  87 |      {
+  88 |        path: "cisbanner",
+  89 |        component: () => import("@/views/sysbasics/compliance/Banner"),
+     |                                ^
+  90 |        name: "sysbasicscompliancebanner",
+  91 |        meta: {
+10:07:23 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/UserFeedback" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:65:30
+  63 |      {
+  64 |        path: 'userfeedback',
+  65 |        component: () => import('@/views/admin/UserFeedback'),
+     |                                ^
+  66 |        name: 'userfeedback',
+  67 |        meta: { noCache: true }
+10:07:23 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/video/adminViews/component/analyze/index" from "src/router/video.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/video.js:130:36
+  128 |            {
+  129 |              path: 'index',
+  130 |              component: () => import('@/views/sysbasics/video/adminViews/component/analyze/index'),
+      |                                      ^
+  131 |              name: 'analyzeIndex',
+  132 |              meta: { noCache: isDevelopMode, title: 'System Overview' }
+10:07:23 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/Banner" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:90:34
+  87 |      {
+  88 |        path: "cisbanner",
+  89 |        component: () => import("@/views/sysbasics/compliance/Banner"),
+     |                                ^
+  90 |        name: "sysbasicscompliancebanner",
+  91 |        meta: {
+10:07:24 AM [vite] Internal server error: Failed to resolve import "@/views/admin/UserFeedback" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:65:30
+  63 |      {
+  64 |        path: 'userfeedback',
+  65 |        component: () => import('@/views/admin/UserFeedback'),
+     |                                ^
+  66 |        name: 'userfeedback',
+  67 |        meta: { noCache: true }
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 10)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:07:24 AM [vite] Internal server error: Failed to resolve import "@/views/sysbasics/video/adminViews/component/analyze/index" from "src/router/video.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/video.js:130:36
+  128 |            {
+  129 |              path: 'index',
+  130 |              component: () => import('@/views/sysbasics/video/adminViews/component/analyze/index'),
+      |                                      ^
+  131 |              name: 'analyzeIndex',
+  132 |              meta: { noCache: isDevelopMode, title: 'System Overview' }
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 19)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:07:24 AM [vite] Internal server error: Failed to resolve import "@/views/sysbasics/compliance/Banner" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:90:34
+  87 |      {
+  88 |        path: "cisbanner",
+  89 |        component: () => import("@/views/sysbasics/compliance/Banner"),
+     |                                ^
+  90 |        name: "sysbasicscompliancebanner",
+  91 |        meta: {
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 10)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:10:01 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/AstrictAuth" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:71:30
+  69 |      {
+  70 |        path: 'astrictAuth',
+  71 |        component: () => import('@/views/admin/AstrictAuth'),
+     |                                ^
+  72 |        name: 'adminAstrictAuth',
+  73 |        meta: { noCache: true }
+10:10:01 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/Role" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:98:34
+  95 |      {
+  96 |        path: "cisRole",
+  97 |        component: () => import("@/views/sysbasics/compliance/Role"),
+     |                                ^
+  98 |        name: "sysbasicscompliancerole",
+  99 |        meta: {
+10:10:01 AM [vite] Internal server error: Failed to resolve import "@/views/admin/AstrictAuth" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:71:30
+  69 |      {
+  70 |        path: 'astrictAuth',
+  71 |        component: () => import('@/views/admin/AstrictAuth'),
+     |                                ^
+  72 |        name: 'adminAstrictAuth',
+  73 |        meta: { noCache: true }
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 11)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:10:01 AM [vite] Internal server error: Failed to resolve import "@/views/sysbasics/compliance/Role" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:98:34
+  95 |      {
+  96 |        path: "cisRole",
+  97 |        component: () => import("@/views/sysbasics/compliance/Role"),
+     |                                ^
+  98 |        name: "sysbasicscompliancerole",
+  99 |        meta: {
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 11)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:12:10 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/astrictAuth.vue" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:71:30
+  69 |      {
+  70 |        path: 'astrictAuth',
+  71 |        component: () => import('@/views/admin/astrictAuth.vue'),
+     |                                ^
+  72 |        name: 'adminAstrictAuth',
+  73 |        meta: { noCache: true }
+10:12:10 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/sysbasics/compliance/role.vue" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:98:34
+  95 |      {
+  96 |        path: "cisRole",
+  97 |        component: () => import("@/views/sysbasics/compliance/role.vue"),
+     |                                ^
+  98 |        name: "sysbasicscompliancerole",
+  99 |        meta: {
+10:12:11 AM [vite] Internal server error: Failed to resolve import "@/views/admin/astrictAuth.vue" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:71:30
+  69 |      {
+  70 |        path: 'astrictAuth',
+  71 |        component: () => import('@/views/admin/astrictAuth.vue'),
+     |                                ^
+  72 |        name: 'adminAstrictAuth',
+  73 |        meta: { noCache: true }
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 11)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:12:11 AM [vite] Internal server error: Failed to resolve import "@/views/sysbasics/compliance/role.vue" from "src/router/compliance.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/compliance.js:98:34
+  95 |      {
+  96 |        path: "cisRole",
+  97 |        component: () => import("@/views/sysbasics/compliance/role.vue"),
+     |                                ^
+  98 |        name: "sysbasicscompliancerole",
+  99 |        meta: {
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 11)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+10:13:36 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/admin/WorkflowFields" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:77:30
+  75 |      {
+  76 |        path: 'workflowFields',
+  77 |        component: () => import('@/views/admin/WorkflowFields'),
+     |                                ^
+  78 |        name: 'workflowFields',
+  79 |        meta: { noCache: true }
+10:13:36 AM [vite] Internal server error: Failed to resolve import "@/views/admin/WorkflowFields" from "src/router/admin.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/admin.js:77:30
+  75 |      {
+  76 |        path: 'workflowFields',
+  77 |        component: () => import('@/views/admin/WorkflowFields'),
+     |                                ^
+  78 |        name: 'workflowFields',
+  79 |        meta: { noCache: true }
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 12)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
