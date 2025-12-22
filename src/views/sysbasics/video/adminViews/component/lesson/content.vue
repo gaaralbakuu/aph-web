@@ -38,52 +38,14 @@
       <!-- Filters Row -->
       <div class="mt-4 flex items-center gap-4 mb-2">
         <!-- Channel Select Dropdown -->
-        <div class="relative group w-48">
-          <button class="w-full flex items-center justify-between px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#999999] transition-colors group-hover:border-[#606060]">
-            <span class="flex items-center gap-2">
-              <i class="el-icon-office-building text-[#606060]"></i>
-              <span class="truncate">{{ videoListObj.query.college_id ? returnCollegeName(videoListObj.query.college_id) : l.allChannels }}</span>
-            </span>
-            <i class="el-icon-arrow-down text-[#606060] text-xs group-hover:rotate-180 transition-transform"></i>
-          </button>
-
-          <!-- Invisible hover bridge -->
-          <div class="absolute top-full left-0 right-0 h-1 hidden group-hover:block"></div>
-
-          <!-- Dropdown Menu -->
-          <div class="absolute top-full left-0 right-0 pt-1 hidden group-hover:block z-50">
-            <div class="bg-white border border-[#E5E5E5] rounded shadow-lg">
-              <div class="max-h-56 overflow-y-auto">
-                <!-- All Channels Option -->
-                <button
-                  class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5]"
-                  :class="videoListObj.query.college_id === '' ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
-                  @click="
-                    videoListObj.query.college_id = ''
-                    getVideoList()
-                  ">
-                  {{ l.allChannels }}
-                </button>
-
-                <!-- College Options -->
-                <button
-                  v-for="college in publicCodeObj.collegeList"
-                  :key="college.id"
-                  class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5] last:border-b-0"
-                  :class="videoListObj.query.college_id === college.id ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
-                  @click="
-                    videoListObj.query.college_id = college.id
-                    getVideoList()
-                  ">
-                  <div class="flex items-center gap-2">
-                    <i class="el-icon-check text-[#065FD4]" :class="videoListObj.query.college_id === college.id ? 'opacity-100' : 'opacity-0'"></i>
-                    <span>{{ college.name_label }}</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Dropdown
+          :modelValue="videoListObj.query.college_id"
+          :options="publicCodeObj.collegeList"
+          :placeholder="l.allChannels"
+          label-key="name_label"
+          icon-class="el-icon-office-building"
+          @update:modelValue="videoListObj.query.college_id = $event; getVideoList()"
+        />
 
         <!-- Search Filter -->
         <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4]">
@@ -93,7 +55,7 @@
       </div>
     </div>
 
-    <div class="flex-1 overflow-y-scroll">
+    <div class="flex-1 overflow-y-scroll relative">
       <!-- Content Table Header -->
       <div class="grid grid-cols-[3fr_1fr_1fr_1.2fr_1fr] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
         <div>{{ l.video }}</div>
@@ -105,7 +67,7 @@
 
       <!-- Video List -->
       <div class="flex-1 overflow-hidden bg-white flex flex-col">
-        <div v-if="videoListObj.list.length === 0" class="flex flex-col items-center justify-center py-20 flex-1">
+        <div v-if="videoListObj.list.length === 0" class="flex flex-col items-center justify-center py-20 flex-1 absolute inset-0 bg-white">
           <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
             <i class="el-icon-video-camera text-4xl text-[#CCCCCC]"></i>
           </div>
@@ -522,6 +484,7 @@ import store from '@/store'
 import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
 import Button from '../common/Button.vue'
 import Pagination from '../common/Pagination.vue'
+import Dropdown from '../common/Dropdown.vue'
 
 // Global instance access
 const instance = getCurrentInstance()
@@ -652,15 +615,6 @@ watch(
 )
 
 // Methods
-const returnCollegeName = (id) => {
-  let college = publicCodeObj.collegeList.find((i) => i.id == id)
-  if (college) {
-    return college.name_label
-  } else {
-    return id
-  }
-}
-
 const uploadNewVideo = () => {
   uploadVideoObj.id = ''
   uploadVideoObj.name = ''
@@ -749,7 +703,7 @@ const getCollegeList = () => {
     resource_path: route.path,
   })
     .then((r) => {
-      publicCodeObj.collegeList = r.data
+      publicCodeObj.collegeList = [{ id: '', name_label: l.value.allChannels || 'All Colleges' }, ...r.data]
       videoListObj.query.college_id = r.data[0].id
     })
     .catch((e) => {

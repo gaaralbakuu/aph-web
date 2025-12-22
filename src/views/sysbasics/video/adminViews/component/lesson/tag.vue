@@ -10,139 +10,169 @@
     </div>
 
     <!-- Filter Bar -->
-    <div class="px-6 pt-4 pb-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
-      <div class="flex items-center gap-4">
+    <div class="px-6 pt-6 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+      <div class="flex items-center gap-6 text-sm font-medium text-[#606060]">
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="queryParams.is_valid === '' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            queryParams.is_valid = ''
+            getVideoList()
+          ">
+          {{ c.all || 'All' }}
+        </button>
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="queryParams.is_valid === 'Y' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            queryParams.is_valid = 'Y'
+            getVideoList()
+          ">
+          {{ l.enable || 'Enable' }}
+        </button>
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="queryParams.is_valid === 'N' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            queryParams.is_valid = 'N'
+            getVideoList()
+          ">
+          {{ l.disable || 'Disable' }}
+        </button>
+      </div>
+      
+      <div class="mt-4 mb-2 flex items-center gap-4">
         <!-- Search Filter -->
-        <SearchInput 
-          v-model="queryParams.name"
+        <SearchInput
+          :modelValue="searchText"
           :placeholder="l.search || 'Search tags...'"
-          class="flex-1 max-w-md"
-          @search="refetchTagList"
-        />
+          class="flex-1"
+          @update:modelValue="searchText = $event"
+          @search="
+            queryParams.name = searchText
+            tablePagination.current = 1
+            queryParams.page = 1
+            refetchTagList()
+          " />
 
-        <!-- Status Filter -->
-        <div class="relative group w-40">
-           <select v-model="queryParams.is_valid" @change="refetchTagList" class="w-full px-3 py-2 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
-              <option value="">{{ c.all }}</option>
-              <option value="Y">{{ l.enable }}</option>
-              <option value="N">{{ l.disable }}</option>
-           </select>
-        </div>
-
-        <Button variant="secondary" @click="refetchTagList">
-           {{ l.search }}
+        <Button
+          variant="secondary"
+          @click="
+            queryParams.name = searchText
+            refetchTagList()
+          ">
+          {{ l.search }}
         </Button>
       </div>
     </div>
 
     <!-- Content List -->
     <div class="flex-1 overflow-y-scroll flex flex-col">
-       <!-- List Header -->
-       <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
-          <div>{{ c.ordinal || 'No' }}</div>
-          <div>{{ l.name_zh || 'Name (ZH)' }}</div>
-          <div>{{ l.name_tw || 'Name (TW)' }}</div>
-          <div>{{ l.name_en || 'Name (EN)' }}</div>
-          <div>{{ l.name_vi || 'Name (VI)' }}</div>
-          <div>{{ l.create_time || 'Created' }}</div>
-          <div>{{ l.status || 'Status' }}</div>
-          <div class="text-right">{{ l.oprate || 'Action' }}</div>
-       </div>
+      <!-- List Header -->
+      <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
+        <div>{{ c.ordinal || 'No' }}</div>
+        <div>{{ l.name_zh || 'Name (ZH)' }}</div>
+        <div>{{ l.name_tw || 'Name (TW)' }}</div>
+        <div>{{ l.name_en || 'Name (EN)' }}</div>
+        <div>{{ l.name_vi || 'Name (VI)' }}</div>
+        <div>{{ l.create_time || 'Created' }}</div>
+        <div>{{ l.status || 'Status' }}</div>
+        <div class="text-right">{{ l.oprate || 'Action' }}</div>
+      </div>
 
-       <!-- List Body -->
-       <div class="flex-1 bg-white flex flex-col min-h-0">
-          <div v-if="tableLoading" class="flex flex-col items-center justify-center py-20 flex-1">
-             <i class="el-icon-loading text-2xl text-[#065FD4]"></i>
-             <p class="text-sm text-[#606060] mt-2">{{ l.loading || 'Loading...' }}</p>
+      <!-- List Body -->
+      <div class="flex-1 bg-white flex flex-col min-h-0">
+        <div v-if="tableLoading" class="flex flex-col items-center justify-center py-20 flex-1">
+          <i class="el-icon-loading text-2xl text-[#065FD4]"></i>
+          <p class="text-sm text-[#606060] mt-2">{{ l.loading || 'Loading...' }}</p>
+        </div>
+        <div v-else-if="tagList.length === 0" class="flex flex-col items-center justify-center py-20 flex-1">
+          <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
+            <i class="el-icon-price-tag text-4xl text-[#CCCCCC]"></i>
           </div>
-          <div v-else-if="tagList.length === 0" class="flex flex-col items-center justify-center py-20 flex-1">
-             <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
-                <i class="el-icon-price-tag text-4xl text-[#CCCCCC]"></i>
-             </div>
-             <p class="text-[#0D0D0D]">{{ c.noData }}</p>
+          <p class="text-[#0D0D0D]">{{ c.noData }}</p>
+        </div>
+        <div v-else class="flex-1 flex flex-col">
+          <div class="divide-y divide-[#E5E5E5]">
+            <div v-for="(record, index) in tagList" :key="record.id || index" class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] group items-center transition-colors">
+              <div class="text-sm text-[#606060]">{{ (tablePagination.current - 1) * tablePagination.pageSize + index + 1 }}</div>
+              <div class="text-sm text-[#0D0D0D] font-medium">{{ record.name_zh }}</div>
+              <div class="text-sm text-[#0D0D0D]">{{ record.name_tw }}</div>
+              <div class="text-sm text-[#0D0D0D]">{{ record.name_en }}</div>
+              <div class="text-sm text-[#0D0D0D]">{{ record.name_vi }}</div>
+              <div class="text-xs text-[#606060]">{{ record.create_time }}</div>
+              <div>
+                <span :class="['inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase', record.is_valid === 'Y' ? 'bg-[#E5F6FD] text-[#065FD4]' : 'bg-[#F9F9F9] text-[#606060] border border-[#CCCCCC]']">
+                  {{ record.is_valid === 'Y' ? l.enable : l.disable }}
+                </span>
+              </div>
+              <div class="text-right flex items-center justify-end gap-3 transition-opacity">
+                <i class="el-icon-edit text-lg cursor-pointer text-[#606060] hover:text-[#0D0D0D]" :title="c.edit" @click="modifyTag(record)"></i>
+                <i v-if="record.is_valid == 'N'" class="el-icon-check text-lg cursor-pointer text-[#069C56] hover:text-[#058549]" :title="c.enable" @click="modifyStatus(record)"></i>
+                <i v-else class="el-icon-close text-lg cursor-pointer text-[#CC0000] hover:text-[#990000]" :title="c.disable" @click="modifyStatus(record)"></i>
+              </div>
+            </div>
           </div>
-          <div v-else class="flex-1 flex flex-col">
-             <div class="divide-y divide-[#E5E5E5]">
-                <div v-for="(record, index) in tagList" :key="record.id || index" class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_150px_100px_140px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] group items-center transition-colors">
-                   <div class="text-sm text-[#606060]">{{ (tablePagination.current - 1) * tablePagination.pageSize + index + 1 }}</div>
-                   <div class="text-sm text-[#0D0D0D] font-medium">{{ record.name_zh }}</div>
-                   <div class="text-sm text-[#0D0D0D]">{{ record.name_tw }}</div>
-                   <div class="text-sm text-[#0D0D0D]">{{ record.name_en }}</div>
-                   <div class="text-sm text-[#0D0D0D]">{{ record.name_vi }}</div>
-                   <div class="text-xs text-[#606060]">{{ record.create_time }}</div>
-                   <div>
-                      <span :class="[
-                        'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase',
-                        record.is_valid === 'Y'
-                          ? 'bg-[#E5F6FD] text-[#065FD4]'
-                          : 'bg-[#F9F9F9] text-[#606060] border border-[#CCCCCC]'
-                      ]">
-                        {{ record.is_valid === 'Y' ? l.enable : l.disable }}
-                      </span>
-                   </div>
-                   <div class="text-right flex items-center justify-end gap-3 transition-opacity">
-                      <i class="el-icon-edit text-lg cursor-pointer text-[#606060] hover:text-[#0D0D0D]" :title="c.edit" @click="modifyTag(record)"></i>
-                      <i v-if="record.is_valid == 'N'" class="el-icon-check text-lg cursor-pointer text-[#069C56] hover:text-[#058549]" :title="c.enable" @click="modifyStatus(record)"></i>
-                      <i v-else class="el-icon-close text-lg cursor-pointer text-[#CC0000] hover:text-[#990000]" :title="c.disable" @click="modifyStatus(record)"></i>
-                   </div>
-                </div>
-             </div>
-          </div>
-       </div>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination Footer -->
     <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
       <Pagination
-        v-model:page="tablePagination.current"
-        v-model:pageSize="tablePagination.pageSize"
+        :page="tablePagination.current"
+        :pageSize="tablePagination.pageSize"
         :total="tablePagination.total"
-        :page-size-options="[10, 30, 50, 100]"
-        :l="l"
-        @change="refetchTagList"
-      />
+        :l="c"
+        @update:page="
+          tablePagination.current = $event
+          queryParams.page = $event
+          refetchTagList()
+        "
+        @update:pageSize="
+          tablePagination.pageSize = $event
+          queryParams.pageSize = $event
+          tablePagination.current = 1
+          queryParams.page = 1
+          refetchTagList()
+        " />
     </div>
 
     <!-- Drawer thêm/chỉnh sửa tag -->
-    <a-drawer :visible="showObj.tagShow" width="500" :body-style="{ padding: 0 }" @close="showObj.tagShow = false">
-       <div class="flex flex-col h-full font-roboto bg-white">
-          <!-- Drawer Header -->
-          <div class="px-6 py-4 border-b border-[#E5E5E5] text-lg font-medium text-[#0D0D0D]">
-             {{ l.addTag || 'Add Tag' }}
+    <a-drawer :visible="showObj.tagShow" :title="l.addTag || 'Add Tag'" width="500" :body-style="{ padding: 0 }" @close="showObj.tagShow = false">
+      <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
+        <!-- Drawer Body -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4">
+          <!-- ZH -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_zh }}</label>
+            <input v-model="tagForm.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+          </div>
+          <!-- TW -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_tw }}</label>
+            <input v-model="tagForm.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+          </div>
+          <!-- EN -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_en }}</label>
+            <input v-model="tagForm.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
+          </div>
+          <!-- VI -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_vi }}</label>
+            <input v-model="tagForm.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
           </div>
 
-          <!-- Drawer Body -->
-          <div class="flex-1 overflow-y-auto p-6 space-y-4">
-             <!-- ZH -->
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_zh }}</label>
-                <input v-model="tagForm.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-             </div>
-             <!-- TW -->
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_tw }}</label>
-                <input v-model="tagForm.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-             </div>
-             <!-- EN -->
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_en }}</label>
-                <input v-model="tagForm.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-             </div>
-             <!-- VI -->
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name_vi }}</label>
-                <input v-model="tagForm.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" placeholder="" />
-             </div>
+          <div class="text-[#CC0000] italic text-xs mt-2">* {{ l.validationError }}</div>
+        </div>
 
-             <div class="text-[#CC0000] italic text-xs mt-2">* {{ l.validationError }}</div>
-          </div>
-
-          <!-- Drawer Footer -->
-          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
-             <Button variant="secondary" @click="showObj.tagShow = false">{{ l.giveup }}</Button>
-             <Button variant="primary" @click="handleSubmit">{{ l.submit }}</Button>
-          </div>
-       </div>
+        <!-- Drawer Footer -->
+        <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
+          <Button variant="secondary" @click="showObj.tagShow = false">{{ l.giveup }}</Button>
+          <Button variant="primary" @click="handleSubmit">{{ l.submit }}</Button>
+        </div>
+      </div>
     </a-drawer>
 
     <!-- Confirm Dialog Modal -->
@@ -172,6 +202,7 @@ import { useLocalI18n } from '@/composables/useLocalI18n'
 import SearchInput from '../common/SearchInput.vue'
 import Button from '../common/Button.vue'
 import Pagination from '../common/Pagination.vue'
+import Dropdown from '../common/Dropdown.vue'
 
 const instance = getCurrentInstance()
 const { $request, $message } = instance.proxy
@@ -192,10 +223,12 @@ const showObj = reactive({
 
 const queryParams = reactive({
   page: 1,
-  pageSize: 15,
+  pageSize: 10,
   name: '',
   is_valid: '',
 })
+
+const searchText = ref('')
 
 const tagForm = reactive({
   id: '',
@@ -209,7 +242,7 @@ const tagForm = reactive({
 
 const tablePagination = reactive({
   current: 1,
-  pageSize: 15,
+  pageSize: 10,
   total: 0,
 })
 
@@ -241,7 +274,8 @@ watch(
   () => tagTotal.value,
   (newTotal) => {
     tablePagination.total = newTotal
-  }
+  },
+  { immediate: true }
 )
 
 // Watch page size changes
