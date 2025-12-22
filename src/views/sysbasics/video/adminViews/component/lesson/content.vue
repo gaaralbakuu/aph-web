@@ -5,10 +5,10 @@
       <h1 class="text-xl font-medium mb-0!">{{ l.channel }}</h1>
 
       <div class="flex gap-2">
-        <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="uploadNewVideo">
+        <Button variant="danger" @click="uploadNewVideo" class="flex items-center gap-2">
           <i class="el-icon-video-camera-solid text-lg"></i>
           <span>{{ l.create }}</span>
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -226,7 +226,7 @@
           <option :value="30">30</option>
           <option :value="50">50</option>
         </select>
-        <span class="mx-2">1-{{ videoListObj.list.length }} {{ l.of }} {{ videoListObj.total }}</span>
+        <span class="mx-2">{{ (videoListObj.query.page - 1) * videoListObj.query.pageSize + 1 }}-{{ Math.min(videoListObj.query.page * videoListObj.query.pageSize, videoListObj.total) }} {{ l.of }} {{ videoListObj.total }}</span>
         <i class="el-icon-arrow-left cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full" :class="videoListObj.query.page <= 1 ? 'opacity-50 cursor-not-allowed' : ''" @click="videoListObj.query.page > 1 && handlePageChange(videoListObj.query.page - 1)"></i>
         <i class="el-icon-arrow-right cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full" :class="videoListObj.query.page >= Math.ceil(videoListObj.total / videoListObj.query.pageSize) ? 'opacity-50 cursor-not-allowed' : ''" @click="videoListObj.query.page < Math.ceil(videoListObj.total / videoListObj.query.pageSize) && handlePageChange(videoListObj.query.page + 1)"></i>
       </div>
@@ -254,7 +254,7 @@
           <!-- Step 1: Upload Selection -->
           <div 
             v-if="!flagObj.selectVideo" 
-            class="flex-1 flex flex-col justify-center items-center p-10 animate-fade-in border-2 border-dashed rounded-lg transition-all"
+            class="flex-1 flex flex-col justify-center items-center p-10 animate-fade-in border-2 border-dashed transition-all"
             :class="flagObj.dragActive ? 'border-[#065FD4] bg-[#F0F8FF]' : 'border-[#E5E5E5] bg-white'"
             @dragover.prevent="flagObj.dragActive = true"
             @dragenter.prevent="flagObj.dragActive = true"
@@ -266,9 +266,9 @@
             </div>
             <h2 class="text-[#0D0D0D] text-lg font-medium mb-2">{{ l.dragOrClickToSelect }}</h2>
             <p class="text-[#606060] text-sm mb-8 text-center max-w-md">Your videos will be private until you publish them.</p>
-            <button class="bg-[#065FD4] text-white! px-6 py-2.5 rounded-sm font-medium text-sm uppercase shadow-sm hover:bg-[#0551B4] transition-colors" @click="videoSelect">
+            <Button variant="primary" @click="videoSelect">
               {{ l.selectVideo || 'SELECT FILES' }}
-            </button>
+            </Button>
           </div>
 
           <!-- Step 2: Details & Elements -->
@@ -277,7 +277,7 @@
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
               <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-medium text-[#0D0D0D]">{{ l.details }}</h3>
-                <button class="text-[#065FD4] font-medium text-sm uppercase" @click="videoRemove(true)">{{ l.reuseDetails || 'REUSE DETAILS' }}</button>
+                <Button variant="link" @click="videoRemove(true)">{{ l.reselectVideo }}</Button>
               </div>
 
               <!-- Title -->
@@ -389,7 +389,7 @@
           </div>
 
           <!-- Footer -->
-          <div class="border-t border-[#E5E5E5] p-4 flex justify-between items-center bg-white z-10">
+          <div v-if="flagObj.selectVideo" class="border-t border-[#E5E5E5] p-4 flex justify-between items-center bg-white z-10">
             <!-- Left: Status text -->
             <div class="text-sm text-[#606060]">
               <span v-if="flagObj.uploading" class="flex items-center gap-2">
@@ -400,12 +400,12 @@
 
             <!-- Right: Buttons -->
             <div class="flex gap-2">
-              <button v-if="flagObj.selectVideo" class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="closeUploadDrawer">
+              <Button v-if="flagObj.selectVideo" variant="ghost" @click="closeUploadDrawer">
                 {{ c.cancel || 'CANCEL' }}
-              </button>
-              <button v-if="flagObj.selectVideo" class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors" :disabled="!flagObj.uploadAble || flagObj.uploading" @click="handleSubmit('uploadVideo')">
+              </Button>
+              <Button v-if="flagObj.selectVideo" variant="primary" :disabled="!flagObj.uploadAble || flagObj.uploading" @click="handleSubmit('uploadVideo')">
                 {{ flagObj.uploading ? l.uploading.toUpperCase() : l.uploadVideo || 'UPLOAD' }}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -507,12 +507,12 @@
 
           <!-- Footer -->
           <div class="border-t border-[#E5E5E5] p-4 flex justify-end items-center gap-2 bg-white z-10">
-            <button class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="showObj.modifyVideo = false">
+            <Button variant="ghost" @click="showObj.modifyVideo = false">
               {{ c.cancel || 'CANCEL' }}
-            </button>
-            <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="handleSubmit('modifyVideo')">
+            </Button>
+            <Button variant="primary" @click="handleSubmit('modifyVideo')">
               {{ l.updateVideo || 'SAVE' }}
-            </button>
+            </Button>
           </div>
         </div>
       </a-drawer>
@@ -528,6 +528,7 @@ import { useLocalI18n } from '@/composables/useLocalI18n'
 import api from '@/api'
 import store from '@/store'
 import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
+import Button from '../common/Button.vue'
 
 // Global instance access
 const instance = getCurrentInstance()

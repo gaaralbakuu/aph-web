@@ -13,7 +13,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="px-6 pt-2 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+    <div class="px-6 py-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
       <div class="flex items-center gap-4 text-sm font-medium text-[#606060]">
         <!-- College Select -->
         <div class="relative group w-48">
@@ -90,7 +90,7 @@
              </select>
           </div>
         </div>
-        <div class="flex-1 overflow-y-auto p-2">
+        <div class="flex-1 overflow-y-auto p-2 overflow-x-hidden">
            <el-tree
               ref="catalogTree"
               node-key="id"
@@ -100,8 +100,8 @@
               :data="catalogObj.list"
               :filter-node-method="filterCatalog">
             <template #default="{ node, data }">
-              <div class="flex-1 flex justify-between items-center pr-2 py-1 group cursor-pointer" @click="clickQuestionCatalog(data.id)">
-                <span class="text-sm truncate" :class="questionObj.query.question_category_id === data.id ? 'text-[#065FD4] font-medium' : 'text-[#0D0D0D]'">{{ data.name_label }}</span>
+              <div class="flex-1 flex justify-between items-center pr-2 py-1 group cursor-pointer overflow-hidden" @click="clickQuestionCatalog(data.id)">
+                <span class="text-sm truncate flex-1" :class="questionObj.query.question_category_id === data.id ? 'text-[#065FD4] font-medium' : 'text-[#0D0D0D]'">{{ data.name_label }}</span>
                 <div class="hidden group-hover:flex gap-2">
                   <span class="text-[#065FD4] text-xs hover:underline" @click.stop="editCatalog(data)">{{ l.edit }}</span>
                   <span v-if="data.is_valid == 'Y'" class="text-[#CC0000] text-xs hover:underline" @click.stop="modifyCatalogStatus(data)">{{ l.disable }}</span>

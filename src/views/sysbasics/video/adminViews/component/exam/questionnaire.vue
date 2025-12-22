@@ -13,7 +13,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="px-6 pt-6 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+    <div class="px-6 py-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
       <div class="flex items-center gap-4 text-sm font-medium text-[#606060]">
          <!-- College Select -->
         <div class="relative group w-48">
@@ -132,7 +132,7 @@
 
     <!-- Edit Questionnaire Drawer -->
     <a-drawer :visible="showObj.questionnaireDrawer" :title="l.editQuestionnaire" :width="800" @close="showObj.questionnaireDrawer = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col h-full bg-white font-roboto">
+       <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
           <div class="flex-1 overflow-y-auto p-6 space-y-4">
              <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
                 <label class="block text-xs text-[#606060] mb-1">{{ l.attachedCollege }}</label>
@@ -170,7 +170,7 @@
                 </div>
 
                 <div class="border border-[#E5E5E5] rounded bg-[#F9F9F9] p-2 space-y-2">
-                   <div v-if="templateObj.question.length === 0" class="text-center py-4 text-[#606060] text-sm">{{ c.noData }}</div>
+                   <div v-if="templateObj.question.length === 0" class="text-center py-4 text-[#606060] text-sm">{{ c.noData || "Chưa có câu hỏi nào" }}</div>
                    <div v-for="(i, index) in templateObj.question" :key="index" class="bg-white border border-[#E5E5E5] rounded p-2 shadow-sm">
                       <div class="flex justify-between items-start mb-2">
                          <div class="font-medium text-sm">#{{ index + 1 }}</div>

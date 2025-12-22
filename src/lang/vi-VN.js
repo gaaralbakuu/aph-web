@@ -2862,7 +2862,7 @@ export default {
     views: 'Lượt xem',
     waitingInQueue: 'Chờ trong hàng',
     details: 'Chi tiết',
-    reuseDetails: 'Sử dụng lại chi tiết',
+    reselectVideo: 'Chọn video khác',
     uploadFile: 'Tải lên tệp',
     autoGen: 'Tự động tạo',
     audience: 'Khán giả',

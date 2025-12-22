@@ -3,20 +3,22 @@
     <!-- Header -->
     <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white h-[70px]">
       <h1 class="text-xl font-medium mb-0!">{{ l.title || 'Tags' }}</h1>
-      <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="addTag">
-        <i class="el-icon-plus text-lg"></i>
+      <Button variant="danger" @click="addTag">
+        <i class="el-icon-plus text-lg mr-2"></i>
         <span>{{ l.addTag }}</span>
-      </button>
+      </Button>
     </div>
 
     <!-- Filter Bar -->
     <div class="px-6 pt-4 pb-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
       <div class="flex items-center gap-4">
         <!-- Search Filter -->
-        <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4] max-w-md">
-          <i class="el-icon-search text-[#606060] text-lg"></i>
-          <input v-model="queryParams.name" type="text" :placeholder="l.search || 'Search tags...'" class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]" @keyup.enter="refetchTagList" />
-        </div>
+        <SearchInput 
+          v-model="queryParams.name"
+          :placeholder="l.search || 'Search tags...'"
+          class="flex-1 max-w-md"
+          @search="refetchTagList"
+        />
 
         <!-- Status Filter -->
         <div class="relative group w-40">
@@ -27,9 +29,9 @@
            </select>
         </div>
 
-        <button class="px-4 py-2 bg-[#F2F2F2] text-[#0D0D0D] font-medium text-sm uppercase rounded-sm hover:bg-[#E5E5E5] transition-colors" @click="refetchTagList">
+        <Button variant="secondary" @click="refetchTagList">
            {{ l.search }}
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -144,8 +146,8 @@
 
           <!-- Drawer Footer -->
           <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
-             <button class="px-4 py-2 text-[#606060] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors" @click="showObj.tagShow = false">{{ l.giveup }}</button>
-             <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="handleSubmit">{{ l.submit }}</button>
+             <Button variant="secondary" @click="showObj.tagShow = false">{{ l.giveup }}</Button>
+             <Button variant="primary" @click="handleSubmit">{{ l.submit }}</Button>
           </div>
        </div>
     </a-drawer>
@@ -157,12 +159,12 @@
         <h3 class="text-lg font-medium text-[#0D0D0D] mb-4">{{ showObj.confirmData.title }}</h3>
         <p class="text-[#606060] mb-6 text-sm">{{ showObj.confirmData.message }}</p>
         <div class="flex justify-end gap-2">
-          <button @click="handleConfirmCancel" class="px-4 py-2 text-[#0D0D0D] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors">
+          <Button variant="secondary" @click="handleConfirmCancel">
             {{ l.giveup || 'Cancel' }}
-          </button>
-          <button @click="handleConfirmOk" class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm">
+          </Button>
+          <Button variant="primary" @click="handleConfirmOk">
             {{ l.submit || 'OK' }}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -174,6 +176,8 @@ import { reactive, ref, computed, watch, onMounted, getCurrentInstance } from 'v
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import api from '@/api'
 import { useLocalI18n } from '@/composables/useLocalI18n'
+import SearchInput from '../common/SearchInput.vue'
+import Button from '../common/Button.vue'
 
 const instance = getCurrentInstance()
 const { $request, $message } = instance.proxy
