@@ -67,7 +67,7 @@
                 <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data"
                    :filter-node-method="filterCatalog" :empty-text="l.emptyCatalogue">
                    <template #default="{ node, data }">
-                      <div class="flex-1 flex items-center justify-between py-2 px-3 bg-white border border-[#E5E5E5] mb-2 rounded shadow-sm group hover:border-[#065FD4] transition-colors">
+                      <div class="flex-1 flex items-center justify-between py-2 px-3 bg-white border border-[#E5E5E5] mb-1 rounded shadow-sm group hover:border-[#065FD4] transition-colors">
                          <div class="flex items-center gap-2">
                             <span class="font-medium text-[#0D0D0D]">{{ data.name_label }}</span>
                             <span v-if="data.is_valid == 'N'" class="bg-[#F0F0F0] text-[#606060] text-[10px] px-1 rounded">{{ c.disable }}</span>
@@ -660,6 +660,11 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-/* Scoped styles can stay if needed, but we used utility classes */
+<style>
+  .el-tree{
+    background-color: unset;
+  }
+  .el-tree-node__content{
+    height: unset!important;
+  }
 </style>
