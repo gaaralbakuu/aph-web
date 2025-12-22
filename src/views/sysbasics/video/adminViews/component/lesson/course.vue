@@ -142,18 +142,14 @@
 
     <!-- Pagination Footer -->
     <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
-      <div class="flex items-center gap-2">
-        <span>{{ l.rowsPerPage }}:</span>
-        <select class="border-none bg-transparent outline-none font-medium text-[#0D0D0D]" v-model.number="courseObj.query.pageSize" @change="handleSizeChange(courseObj.query.pageSize)">
-          <option :value="10">10</option>
-          <option :value="30">30</option>
-          <option :value="50">50</option>
-          <option :value="100">100</option>
-        </select>
-        <span class="mx-2">{{ (courseObj.query.page - 1) * courseObj.query.pageSize + 1 }}-{{ Math.min(courseObj.query.page * courseObj.query.pageSize, courseObj.total) }} {{ l.of }} {{ courseObj.total }}</span>
-        <i class="el-icon-arrow-left cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full text-base" :class="courseObj.query.page <= 1 ? 'opacity-50 cursor-not-allowed' : ''" @click="courseObj.query.page > 1 && handlePageChange(courseObj.query.page - 1)"></i>
-        <i class="el-icon-arrow-right cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full text-base" :class="courseObj.query.page >= Math.ceil(courseObj.total / courseObj.query.pageSize) ? 'opacity-50 cursor-not-allowed' : ''" @click="courseObj.query.page < Math.ceil(courseObj.total / courseObj.query.pageSize) && handlePageChange(courseObj.query.page + 1)"></i>
-      </div>
+      <Pagination
+        v-model:page="courseObj.query.page"
+        v-model:pageSize="courseObj.query.pageSize"
+        :total="courseObj.total"
+        :page-size-options="[10, 30, 50, 100]"
+        :l="l"
+        @change="getCourseList"
+      />
     </div>
 
 
@@ -484,12 +480,14 @@
   import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
   import { _ } from '@/views/_common'
   import FilePreviews from '@/views/_common/FilePreviews.vue'
+  import Pagination from '../common/Pagination.vue'
 
   export default {
     name: 'videoAdminCourse',
     components: {
       videoPlayer,
-      FilePreviews
+      FilePreviews,
+      Pagination
     },
     data() {
       return {

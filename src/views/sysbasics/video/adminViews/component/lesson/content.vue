@@ -213,23 +213,13 @@
     </div>
     <!-- Pagination Footer -->
     <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
-      <div class="flex items-center gap-2">
-        <span>{{ l.rowsPerPage }}:</span>
-        <select
-          class="border-none bg-transparent outline-none font-medium"
-          v-model.number="videoListObj.query.pageSize"
-          @change="
-            videoListObj.query.page = 1
-            getVideoList()
-          ">
-          <option :value="10">10</option>
-          <option :value="30">30</option>
-          <option :value="50">50</option>
-        </select>
-        <span class="mx-2">{{ (videoListObj.query.page - 1) * videoListObj.query.pageSize + 1 }}-{{ Math.min(videoListObj.query.page * videoListObj.query.pageSize, videoListObj.total) }} {{ l.of }} {{ videoListObj.total }}</span>
-        <i class="el-icon-arrow-left cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full" :class="videoListObj.query.page <= 1 ? 'opacity-50 cursor-not-allowed' : ''" @click="videoListObj.query.page > 1 && handlePageChange(videoListObj.query.page - 1)"></i>
-        <i class="el-icon-arrow-right cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full" :class="videoListObj.query.page >= Math.ceil(videoListObj.total / videoListObj.query.pageSize) ? 'opacity-50 cursor-not-allowed' : ''" @click="videoListObj.query.page < Math.ceil(videoListObj.total / videoListObj.query.pageSize) && handlePageChange(videoListObj.query.page + 1)"></i>
-      </div>
+      <Pagination
+        v-model:page="videoListObj.query.page"
+        v-model:pageSize="videoListObj.query.pageSize"
+        :total="videoListObj.total"
+        :l="l"
+        @change="getVideoList"
+      />
     </div>
 
     <div class="components">
@@ -529,6 +519,7 @@ import api from '@/api'
 import store from '@/store'
 import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
 import Button from '../common/Button.vue'
+import Pagination from '../common/Pagination.vue'
 
 // Global instance access
 const instance = getCurrentInstance()

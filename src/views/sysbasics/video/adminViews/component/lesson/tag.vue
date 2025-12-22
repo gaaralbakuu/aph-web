@@ -93,21 +93,14 @@
 
     <!-- Pagination Footer -->
     <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
-      <div class="flex items-center gap-2">
-        <span>{{ l.rowsPerPage || 'Rows per page' }}:</span>
-        <select
-          class="border-none bg-transparent outline-none font-medium text-[#0D0D0D]"
-          v-model.number="tablePagination.pageSize"
-        >
-          <option :value="10">10</option>
-          <option :value="30">30</option>
-          <option :value="50">50</option>
-          <option :value="100">100</option>
-        </select>
-        <span class="mx-2">{{ (tablePagination.current - 1) * tablePagination.pageSize + 1 }}-{{ Math.min(tablePagination.current * tablePagination.pageSize, tablePagination.total) }} {{ l.of }} {{ tablePagination.total }}</span>
-        <i class="el-icon-arrow-left cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full text-base" :class="tablePagination.current <= 1 ? 'opacity-50 cursor-not-allowed' : ''" @click="tablePagination.current > 1 && handlePageChange(tablePagination.current - 1)"></i>
-        <i class="el-icon-arrow-right cursor-pointer hover:bg-[#F2F2F2] p-1 rounded-full text-base" :class="tablePagination.current >= Math.ceil(tablePagination.total / tablePagination.pageSize) ? 'opacity-50 cursor-not-allowed' : ''" @click="tablePagination.current < Math.ceil(tablePagination.total / tablePagination.pageSize) && handlePageChange(tablePagination.current + 1)"></i>
-      </div>
+      <Pagination
+        v-model:page="tablePagination.current"
+        v-model:pageSize="tablePagination.pageSize"
+        :total="tablePagination.total"
+        :page-size-options="[10, 30, 50, 100]"
+        :l="l"
+        @change="refetchTagList"
+      />
     </div>
 
     <!-- Drawer thêm/chỉnh sửa tag -->
@@ -178,6 +171,7 @@ import api from '@/api'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 import SearchInput from '../common/SearchInput.vue'
 import Button from '../common/Button.vue'
+import Pagination from '../common/Pagination.vue'
 
 const instance = getCurrentInstance()
 const { $request, $message } = instance.proxy
