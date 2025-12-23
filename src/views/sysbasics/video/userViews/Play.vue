@@ -1,1265 +1,1076 @@
 <template>
-  <div class="play-container">
-    附件预览
-    <FilePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews"
-      @update:visible="showObj.filePreviews = $event" />
+  <div class="min-h-screen bg-[#F9F9F9] font-sans text-[#0f0f0f]">
+    <!-- File Preview Component -->
+    <FilePreviews
+      :file-url="showObj.fileUrl"
+      :visible="showObj.filePreviews"
+      @update:visible="showObj.filePreviews = $event"
+    />
 
-    <el-dialog class="examRecord-dialog" :title="$l.examRecord" :visible.sync="showObj.examDialog" width="50%">
-      <el-table :data="examRecord" stripe style="width: 100%" max-height="350px" empty-text=" ">
-        <el-table-column type="index" :label="$c.sn"></el-table-column>
-        <el-table-column prop="create_time" :label="$l.examedTime"></el-table-column>
-        <el-table-column prop="create_user" :label="$l.examUser"></el-table-column>
-        <el-table-column prop="score" :label="$l.examScore"></el-table-column>
-        <el-table-column :label="$c.operate" width="150" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="reviewExam(scope.row)">{{$l.check}}</el-button>
-          </template>
-        </el-table-column>
-        <div slot="append">
-          <div class="goToExam">
-            <div class="detail">
-              {{$l.mostExam}}
-              <el-button class="num"
-                type="text">{{currentExam.max_reply_num}}</el-button>{{$l.examUnit}}，{{$l.youCanExam}}
-              <el-button class="num" type="text" :style="{
-                    color:currentExam.max_reply_num-examRecord.length<=0?'red':''
-                  }">{{currentExam.max_reply_num-examRecord.length}}</el-button>{{$l.examUnit}}
-            </div>
-            <div class="goToExam-btn">
-              <el-button class="go" type="text" plain @click="goToExam"
-                :disabled="currentExam.max_reply_num-examRecord.length<=0">{{$l.goExam}}</el-button>
-            </div>
-          </div>
+    <!-- Exam Record Dialog -->
+    <el-dialog
+      class="examRecord-dialog"
+      :title="l.examRecord"
+      :visible.sync="showObj.examDialog"
+      width="50%"
+      append-to-body
+    >
+      <div class="p-4">
+        <el-table :data="examRecord" stripe style="width: 100%" max-height="350px" empty-text=" ">
+          <el-table-column type="index" :label="c.sn"></el-table-column>
+          <el-table-column prop="create_time" :label="l.examedTime"></el-table-column>
+          <el-table-column prop="create_user" :label="l.examUser"></el-table-column>
+          <el-table-column prop="score" :label="l.examScore"></el-table-column>
+          <el-table-column :label="c.operate" width="150" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" size="mini" @click="reviewExam(scope.row)">{{l.check}}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="mt-4 flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-100">
+           <div class="text-sm text-gray-700">
+              {{l.mostExam}}
+              <span class="font-bold mx-1">{{currentExam.max_reply_num}}</span>{{l.examUnit}}，{{l.youCanExam}}
+              <span class="font-bold mx-1" :class="{'text-red-500': currentExam.max_reply_num - examRecord.length <= 0}">
+                {{currentExam.max_reply_num - examRecord.length}}
+              </span>{{l.examUnit}}
+           </div>
+           <el-button
+             type="primary"
+             size="small"
+             plain
+             @click="goToExam"
+             :disabled="currentExam.max_reply_num - examRecord.length <= 0"
+           >
+             {{l.goExam}}
+           </el-button>
         </div>
-      </el-table>
-      <div slot="footer">
-        <el-button type="success" plain @click="getReplyRecord(currentExam)">{{$l.refresh}}</el-button>
-        <el-button type="primary" plain @click="showObj.examDialog = false">{{$l.close}}</el-button>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="success" plain @click="getReplyRecord(currentExam)">{{l.refresh}}</el-button>
+        <el-button type="primary" plain @click="showObj.examDialog = false">{{l.close}}</el-button>
       </div>
     </el-dialog>
 
-    <div class="page-body">
-      <div class="player-wrapper">
-        <!-- 上方播放区域 -->
-        <div class="title-wrapper">
-          <!-- 课程标题 -->
-          <div class="title-wrapper-left">
-            <div class="title">{{ courseInfo.name_label }}</div>
-            <div class="views">
-              <!-- <i class="el-icon-view"></i>
-              <span class="view">播放量</span> -->
-            </div>
-          </div>
+    <!-- Main Layout -->
+    <div class="max-w-[1800px] mx-auto p-4 lg:p-6 flex flex-col lg:flex-row gap-6">
+
+      <!-- Left Column: Video & Info -->
+      <div class="flex-1 min-w-0">
+        <!-- Video Player Wrapper -->
+        <div class="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-lg relative group">
+          <videoPlayer
+            ref="videoPlayerRef"
+            :src="currentVideo.url"
+            :other_src="currentVideo.other_url"
+            :progressControl="true"
+            :markers="questionList"
+            :playInBackground="false"
+            :resumePlaying="true"
+            :lastPlayTime="progressObj.progress"
+            :maxPlayTime="progressObj.max_progress"
+            :finishPoint="currentVideo.finish_time"
+            :playbackRateArray="[1]"
+            :questionControl="currentVideo.is_process_question"
+            :watermark="user.userId + ' ' + user.userName"
+            :playStatus.sync="isPlaying"
+            @loadedMetadata="getPlayProgress"
+            @pause="reportPlayProgress"
+            @ended="reportPlayDuration"
+            @seeked="reportPlayProgress"
+            @play="playVideoAction"
+            @progressUpdate="onVideoProgressUpdate"
+            class="h-full w-full"
+          />
         </div>
 
-        <div class="video-wrapper">
-          <!-- 播放器和左侧列表 -->
-          <div class="video-player">
-            <!-- 视频播放器 -->
-            <videoPlayer ref="videoPlayer" :src="currentVideo.url" :other_src="currentVideo.other_url"
-              :progressControl="true" :markers="questionList" :playInBackground="false" :resumePlaying="true"
-              :lastPlayTime="progressObj.progress" :maxPlayTime="progressObj.max_progress"
-              :finishPoint="currentVideo.finish_time" :playbackRateArray="[1]"
-              :questionControl="currentVideo.is_process_question" :watermark="user.userId + ' ' + user.userName"
-              :playStatus.sync="isPlaying" @loadedMetadata="getPlayProgress" @pause="reportPlayProgress"
-              @ended="reportPlayDuration" @seeked="reportPlayProgress" @play="playVideoAction" @progressUpdate="onVideoProgressUpdate">
-            </videoPlayer>
+        <!-- Video Info Section -->
+        <div class="mt-4">
+          <h1 class="text-xl lg:text-2xl font-bold text-[#0f0f0f] leading-snug break-words">
+             {{ currentVideoTitle || courseInfo.name_label || l.courseTitle }}
+          </h1>
+
+          <!-- Action Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-2 pb-2 border-b border-[#e5e5e5] gap-4">
+             <div class="text-sm text-[#606060] flex items-center gap-2">
+                <span>{{ courseInfo.create_dept }}</span>
+                <span class="w-1 h-1 bg-[#606060] rounded-full"></span>
+                <span>{{ courseInfo.create_time }}</span>
+                <!-- Views if available -->
+             </div>
+
+             <div class="flex items-center gap-2">
+                <!-- Like/Dislike -->
+                <div class="flex items-center bg-[#f2f2f2] rounded-full overflow-hidden h-9">
+                   <button
+                     @click="handleGoodBad(1)"
+                     class="flex items-center gap-2 px-4 h-full hover:bg-[#e5e5e5] transition border-r border-[#d9d9d9]"
+                     :class="{'text-[#065FD4] bg-[#e5f2ff] hover:bg-[#d9ecff]': my_goodBad_info.type === 1}"
+                   >
+                      <i :class="my_goodBad_info.type === 1 ? 'iconfont icon-appreciate_fill_light' : 'iconfont icon-appreciate_light'"></i>
+                      <span class="text-sm font-medium">{{ courseInfo.goodBad_Info.good_count || 0 }}</span>
+                   </button>
+                   <button
+                     @click="handleGoodBad(0)"
+                     class="flex items-center px-4 h-full hover:bg-[#e5e5e5] transition"
+                     :class="{'text-[#CC0000] bg-[#ffe5e5] hover:bg-[#ffdede]': my_goodBad_info.type === 0}"
+                   >
+                      <i :class="my_goodBad_info.type === 0 ? 'iconfont icon-oppose_fill_light' : 'iconfont icon-oppose_light'"></i>
+                      <span class="text-sm font-medium ml-2">{{ courseInfo.goodBad_Info.bad_count || 0 }}</span>
+                   </button>
+                </div>
+
+                <!-- Favorite -->
+                 <button
+                   @click="handleFavorClick"
+                   class="flex items-center gap-2 px-4 h-9 bg-[#f2f2f2] rounded-full hover:bg-[#e5e5e5] transition"
+                 >
+                    <i :class="favoriteList.total == 0 ? 'iconfont icon-favor_light' : 'iconfont icon-favor_fill_light text-[#065FD4]'"></i>
+                    <span class="text-sm font-medium">{{ favoriteList.total > 0 ? l.favorited : l.favorite }}</span>
+                 </button>
+             </div>
           </div>
-          <div class="playlist">
-            <!-- 列表 -->
-            <div class="navi">
-              <div @click="showObj.playlist='course'" :style="{
-                color:showObj.playlist=='course'?'#409fee':'#fff'
-              }">{{$l.courseTitle}}</div>
-              <div v-show="topicObj.list[0].detail.length>1" @click="showObj.playlist='topic'" :style="{
-                color:showObj.playlist=='topic'?'#409fee':'#fff'
-              }">{{$l.topicTitle}}</div>
-            </div>
-            <div class="list" v-show="showObj.playlist=='course'">
-              <div v-for="(i, index) in videoList" :key="i.id" class="item" @click="toggleVideo(index)" :style="{
-                border:playingIndex == index?'2px solid #409fee':'2px solid rgba(99, 99, 99, 0.4) '
-              }">
-                <div class="title">
-                  <el-tooltip effect="light" placement="right">
-                    <div slot="content" style="max-width: 300px" class="text-clamp-4">
-                      {{ i.description }}
+
+          <!-- Description Box -->
+          <div class="mt-4 bg-[#f2f2f2] rounded-xl p-4 hover:bg-[#e5e5e5] transition cursor-pointer group" @click="toggleDesc">
+             <div class="flex items-start gap-3">
+                 <div class="flex-1">
+                    <div class="font-bold text-[#0f0f0f] text-sm mb-1">
+                      {{ formatDuration(courseInfo.totalDuration, true) }} • {{ l.score }}: {{ courseInfo.score }}
                     </div>
-                    <span class="text-clamp-2" style="max-width: calc(100% - 20px)">{{ i.title }}</span>
-                  </el-tooltip>
-                  <i v-show="playingIndex == index" :class="
-                      isPlaying
-                        ? 'el-icon-video-pause playing'
-                        : 'el-icon-video-play'
-                    " style="width: 20px"></i>
-                </div>
-                <div class="duration">
-                  <div>{{$l.duration}}:{{ formatDuration(i.duration) }}</div>
-                  <div>{{$l.needToLearn}}:{{ formatDuration(i.finish_time) }}</div>
-                </div>
-              </div>
+                    <div class="text-sm text-[#0f0f0f] whitespace-pre-wrap leading-relaxed" :class="{'line-clamp-2': !isDescExpanded}">
+                       {{ courseInfo.description || l.noDescription }}
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="mt-2 flex flex-wrap gap-2" v-if="courseInfo.tags && courseInfo.tags.length > 0">
+                       <span v-for="(tag, idx) in courseInfo.tags" :key="idx" class="text-xs text-[#065FD4] hover:underline">
+                          #{{ tag.name_label }}
+                       </span>
+                    </div>
+
+                    <button class="mt-2 text-sm font-semibold text-[#606060] group-hover:text-[#0f0f0f]" v-if="!isDescExpanded">
+                       {{ l.showMore }}
+                    </button>
+                    <button class="mt-2 text-sm font-semibold text-[#606060] group-hover:text-[#0f0f0f]" v-else>
+                       {{ l.showLess }}
+                    </button>
+                 </div>
+             </div>
+          </div>
+
+          <!-- Course Details & Resources Tabs -->
+          <div class="mt-6">
+            <div class="border-b border-[#e5e5e5] flex gap-6">
+               <button
+                 v-for="tab in ['details', 'resources', 'exams']"
+                 :key="tab"
+                 class="pb-2 text-base font-semibold border-b-2 transition capitalize"
+                 :class="activeTab === tab ? 'border-[#0f0f0f] text-[#0f0f0f]' : 'border-transparent text-[#606060] hover:text-[#0f0f0f]'"
+                 @click="activeTab = tab"
+               >
+                 {{ getTabLabel(tab) }}
+               </button>
             </div>
 
-            <div class="list" v-show="showObj.playlist=='topic'">
-              <div v-for="(i, index) in topicObj.list[0].detail" :key="i.id" @click="switchCourse(i,index)" class="item"
-                :style="{
-                border:topicObj.index==index?'2px solid #409fee':'2px solid rgba(99, 99, 99, 0.4) '
-              }">
-                <div class="title">
-                  <el-tooltip effect="light" placement="right">
-                    <div slot="content" style="max-width: 300px" class="text-clamp-4">
-                      {{ i.description }}
-                    </div>
-                    <span class="text-clamp-2"
-                      :style="{'max-width': 'calc(100% - 20px)'}">{{ i.course_name_label }}</span>
-                  </el-tooltip>
-                  <div v-show="topicObj.index==index">
-                    <i class="el-icon-location"></i>
+            <div class="py-4">
+               <!-- Details Tab -->
+               <div v-if="activeTab === 'details'" class="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8 text-sm">
+                  <div class="flex border-b border-dashed border-gray-200 pb-2">
+                     <span class="text-[#606060] w-32 shrink-0">{{ l.lecturer }}</span>
+                     <span class="text-[#0f0f0f]">{{ courseInfo.lecturer == 1 ? l.internalLecturer : l.externalLecturer }}</span>
                   </div>
-                </div>
-                <div class="duration">
-                  <div>{{$l.createTime}}:{{i.create_time}}</div>
-                  <div>
-                    <span style="margin-right: 1em;"><i
-                        class="iconfont icon-appreciate_light"></i>{{i.goodBad_Info.good_count}}</span>
-                    <span> <i class="iconfont icon-oppose_light"></i>{{i.goodBad_Info.bad_count}}</span>
+                  <div class="flex border-b border-dashed border-gray-200 pb-2">
+                     <span class="text-[#606060] w-32 shrink-0">{{ l.courseCatalog }}</span>
+                     <span class="text-[#0f0f0f]">{{ returnPublicObjLabel(courseInfo.type, 'value', 'label', 'courseCatalog') }}</span>
                   </div>
-                </div>
-              </div>
+                  <div class="flex border-b border-dashed border-gray-200 pb-2">
+                     <span class="text-[#606060] w-32 shrink-0">{{ l.trainLanguage }}</span>
+                     <span class="text-[#0f0f0f]">{{ returnPublicObjLabel(courseInfo.language, 'value', 'label', 'language_type') }}</span>
+                  </div>
+                  <div class="flex border-b border-dashed border-gray-200 pb-2">
+                     <span class="text-[#606060] w-32 shrink-0">{{ l.applicableGroup }}</span>
+                     <span class="text-[#0f0f0f]">{{ courseInfo.applicable_group }}</span>
+                  </div>
+                  <div class="flex border-b border-dashed border-gray-200 pb-2 md:col-span-2">
+                     <span class="text-[#606060] w-32 shrink-0">{{ l.profit }}</span>
+                     <span class="text-[#0f0f0f]">{{ courseInfo.profit }}</span>
+                  </div>
+               </div>
+
+               <!-- Resources Tab -->
+               <div v-if="activeTab === 'resources'" class="space-y-2">
+                  <div v-if="attachmentList.length === 0" class="text-center py-8 text-[#606060] bg-gray-50 rounded-lg">
+                     {{ c.noData }}
+                  </div>
+                  <div v-else v-for="item in attachmentList" :key="item.id" class="flex items-center justify-between p-3 bg-white border border-[#e5e5e5] rounded-lg hover:bg-gray-50 transition group">
+                      <div class="flex items-center gap-3 overflow-hidden">
+                         <div class="w-10 h-10 bg-red-100 text-red-600 rounded flex items-center justify-center shrink-0">
+                            <i class="el-icon-document text-xl"></i>
+                         </div>
+                         <span class="text-sm font-medium truncate text-[#0f0f0f]">{{ item.name_label }}</span>
+                      </div>
+                      <button @click="previewFile(item.file_url)" class="px-3 py-1.5 text-xs font-semibold text-[#065FD4] bg-blue-50 rounded hover:bg-blue-100 transition">
+                         {{ c.check }}
+                      </button>
+                  </div>
+               </div>
+
+               <!-- Exams Tab -->
+               <div v-if="activeTab === 'exams'" class="space-y-2">
+                  <div v-if="examList.length === 0" class="text-center py-8 text-[#606060] bg-gray-50 rounded-lg">
+                     {{ c.noData }}
+                  </div>
+                  <div v-else v-for="item in examList" :key="item.id" class="flex items-center justify-between p-3 bg-white border border-[#e5e5e5] rounded-lg hover:bg-gray-50 transition group">
+                      <div class="flex items-center gap-3 overflow-hidden">
+                         <div class="w-10 h-10 bg-green-100 text-green-600 rounded flex items-center justify-center shrink-0">
+                            <i class="el-icon-s-claim text-xl"></i>
+                         </div>
+                         <span class="text-sm font-medium truncate text-[#0f0f0f]">{{ item.name_label }}</span>
+                      </div>
+                      <button @click="getReplyRecord(item)" class="px-3 py-1.5 text-xs font-semibold text-[#065FD4] bg-blue-50 rounded hover:bg-blue-100 transition">
+                         {{ l.examDetail }}
+                      </button>
+                  </div>
+               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="info-wrapper">
-        <!-- 下方信息区域 -->
-        <div class="info-wrapper-left">
-          <!-- 左侧课程信息区域 -->
-          <div class="goodBad">
-            <div class="gb_item">
-              <i v-if="my_goodBad_info.type === 1" class="iconfont icon-appreciate_fill_light text-blue"
-                @click="cancelGoodBad"></i>
-              <i v-else-if="my_goodBad_info.type !== 1" class="iconfont icon-appreciate_light"
-                @click="handleGoodBad(1)"></i>
-              {{ courseInfo.goodBad_Info.good_count }}
-            </div>
-            <div class="gb_item">
-              <i v-if="my_goodBad_info.type === 0" class="iconfont icon-oppose_fill_light text-blue"
-                @click="cancelGoodBad"></i>
-              <i v-else-if="my_goodBad_info.type !== 0" class="iconfont icon-oppose_light"
-                @click="handleGoodBad(0)"></i>
-              {{ courseInfo.goodBad_Info.bad_count }}
-            </div>
-            <div class="gb_item">
-              <i class="iconfont" :class="
-                     favoriteList.total == 0
-                       ? 'icon-favor_light'
-                       : 'icon-favor_fill_light text-blue'
-                   " @click="handleFavorClick"></i>
-            </div>
-          </div>
-          <div class="info"></div>
-          <div class="sub-info">
-            <div class="info-item">
-              <div class="info-label">{{$l.courseCatalog}}:</div>
-              <div> {{returnPublicObjLabel(courseInfo.type,'value','label','courseCatalog')}}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">{{$l.createDept}}:</div>
-              <div>{{ courseInfo.create_dept +' '+courseInfo.create_time }}</div>
-            </div>
+      <!-- Right Column: Playlist / Sidebar -->
+      <div class="w-full lg:w-[400px] shrink-0">
+         <div class="bg-white border border-[#e5e5e5] rounded-xl overflow-hidden shadow-sm flex flex-col max-h-[calc(100vh-40px)] sticky top-4">
+             <!-- Playlist Header -->
+             <div class="flex items-center justify-between p-4 border-b border-[#e5e5e5] bg-gray-50">
+                <div class="font-bold text-lg text-[#0f0f0f]">
+                   {{ showObj.playlist === 'course' ? l.courseTitle : l.topicTitle }}
+                </div>
+                <!-- Toggle Playlist Type -->
+                <div class="flex bg-[#e5e5e5] rounded p-1" v-if="topicObj.list[0].detail.length > 1">
+                    <button
+                       @click="showObj.playlist='course'"
+                       class="px-3 py-1 text-xs font-semibold rounded transition"
+                       :class="showObj.playlist === 'course' ? 'bg-white shadow text-black' : 'text-[#606060]'"
+                    >{{ l.course }}</button>
+                    <button
+                       @click="showObj.playlist='topic'"
+                       class="px-3 py-1 text-xs font-semibold rounded transition"
+                       :class="showObj.playlist === 'topic' ? 'bg-white shadow text-black' : 'text-[#606060]'"
+                    >{{ l.topic }}</button>
+                </div>
+             </div>
 
-            <!-- <div class="info-item">
-                 <div class="info-label">课程来源:</div>
-                 <div>{{$c.noData}}</div>
-               </div> -->
-            <div class="info-item">
-              <div class="info-label">{{$l.totalDuration}}:</div>
-              <div>{{formatDuration(courseInfo.totalDuration)}}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">{{$l.score}}:</div>
-              <div>{{ courseInfo.score }}</div>
-            </div>
-          </div>
-          <div class="sub-info">
-            <div class="info-item">
-              <div class="info-label">{{$l.lecturer}}:</div>
-              <div>{{ courseInfo.lecturer==1?$l.internalLecturer:$l.externalLecturer }}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">{{$l.trainLanguage}}:</div>
-              <div>{{returnPublicObjLabel(courseInfo.language,'value','label','language_type')}}</div>
-            </div>
+             <!-- List Content -->
+             <div class="overflow-y-auto flex-1 p-2 space-y-1 custom-scrollbar">
 
-            <div class="info-item">
-              <div class="info-label">{{$l.applicableGroup}}:</div>
-              <div>{{courseInfo.applicable_group}}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">{{$l.profit}}:</div>
-              <div>{{ courseInfo.profit }}</div>
-            </div>
-          </div>
-          <div class="desc-label">{{$l.courseDesc}}:</div>
+                <!-- Course Playlist -->
+                <template v-if="showObj.playlist === 'course'">
+                   <div
+                      v-for="(video, index) in videoList"
+                      :key="video.id"
+                      @click="toggleVideo(index)"
+                      class="flex gap-3 p-2 rounded-lg cursor-pointer transition group"
+                      :class="playingIndex === index ? 'bg-[#e5f2ff]' : 'hover:bg-[#f2f2f2]'"
+                   >
+                      <div class="relative w-[100px] h-[56px] bg-gray-200 rounded overflow-hidden shrink-0 flex items-center justify-center">
+                          <!-- Use course thumbnail or default pattern -->
+                          <img v-if="courseInfo.thumbnail_path" :src="courseInfo.thumbnail_path" class="w-full h-full object-cover opacity-80" />
+                          <span v-else class="text-xs text-gray-500 font-bold">{{ index + 1 }}</span>
 
-          <div class="desc">
-            {{ courseInfo.description }}
-            <el-tag style="margin: 0px 10px 10px 0px" size="mini" :key="index" v-for="(i, index) in courseInfo.tags">
-              {{ i.name_label }}
-            </el-tag>
-          </div>
-        </div>
-        <div class="info-wrapper-right">
-          <!-- 右侧资料和练习区域 -->
-          <div class="material">
-            <div class="title">{{$l.courseMaterial}}</div>
-            <div class="list-wrapper frcc" v-if="attachmentList.length == 0">
-              <div>{{$c.noData}}</div>
-            </div>
-            <div class="list-wrapper" v-else>
-              <div class="item" v-for="i in attachmentList" :key="i.id">
-                <span class="label">{{ i.name_label }}</span>
-                <el-button class="button" type="text" @click="previewFile(i.file_url)">{{$c.check}}</el-button>
-              </div>
-            </div>
-          </div>
-          <!-- <div style="height: 30px;width: 1px;"></div> -->
-          <div class="material">
-            <div class="title">{{$l.courseExam}}</div>
-            <div class="list-wrapper frcc" v-if="examList.length == 0">
-              <div>{{$c.noData}}</div>
-            </div>
-            <div class="list-wrapper" v-else>
-              <div class="item" v-for="i in examList" :key="i.id">
-                <span class="label">{{ i.name_label }}</span>
-                <el-button class="button" type="text" @click="getReplyRecord(i)">{{$l.examDetail}}</el-button>
-              </div>
-            </div>
-          </div>
-        </div>
+                          <!-- Playing Overlay -->
+                          <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                              <i class="el-icon-data-analysis" v-if="isPlaying"></i>
+                              <i class="el-icon-video-pause" v-else></i>
+                          </div>
+
+                          <!-- Duration Badge -->
+                          <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
+                             {{ formatDuration(video.duration) }}
+                          </div>
+                      </div>
+                      <div class="flex-1 min-w-0 flex flex-col justify-center">
+                          <h3
+                            class="text-sm font-semibold line-clamp-2 leading-tight mb-1"
+                            :class="playingIndex === index ? 'text-[#065FD4]' : 'text-[#0f0f0f] group-hover:text-black'"
+                          >
+                             {{ video.title }}
+                          </h3>
+                          <div class="flex items-center text-xs text-[#606060]">
+                             <i class="el-icon-time mr-1"></i> {{ l.needToLearn }}: {{ formatDuration(video.finish_time) }}
+                          </div>
+                      </div>
+                   </div>
+                </template>
+
+                <!-- Topic Playlist -->
+                <template v-if="showObj.playlist === 'topic'">
+                   <div
+                      v-for="(item, index) in topicObj.list[0].detail"
+                      :key="item.id"
+                      @click="switchCourse(item, index)"
+                      class="flex gap-3 p-2 rounded-lg cursor-pointer transition group"
+                      :class="topicObj.index === index ? 'bg-[#e5f2ff]' : 'hover:bg-[#f2f2f2]'"
+                   >
+                      <div class="relative w-[100px] h-[56px] bg-gray-200 rounded overflow-hidden shrink-0 flex items-center justify-center">
+                          <img v-if="item.thumbnail_path" :src="item.thumbnail_path" class="w-full h-full object-cover opacity-80" />
+                          <span v-else class="text-xs text-gray-500 font-bold">{{ index + 1 }}</span>
+                          <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                              <i class="el-icon-location"></i>
+                          </div>
+                      </div>
+                      <div class="flex-1 min-w-0 flex flex-col justify-center">
+                          <h3
+                            class="text-sm font-semibold line-clamp-2 leading-tight mb-1"
+                            :class="topicObj.index === index ? 'text-[#065FD4]' : 'text-[#0f0f0f] group-hover:text-black'"
+                          >
+                             {{ item.course_name_label }}
+                          </h3>
+                          <div class="flex justify-between items-center text-xs text-[#606060]">
+                             <span>{{ item.create_time }}</span>
+                          </div>
+                          <div class="flex items-center gap-2 mt-1 text-xs text-[#606060]">
+                             <span class="flex items-center"><i class="iconfont icon-appreciate_light text-xs mr-0.5"></i>{{item.goodBad_Info.good_count}}</span>
+                             <span class="flex items-center"><i class="iconfont icon-oppose_light text-xs mr-0.5"></i>{{item.goodBad_Info.bad_count}}</span>
+                          </div>
+                      </div>
+                   </div>
+                </template>
+
+             </div>
+         </div>
       </div>
+
     </div>
   </div>
 </template>
 
-<script>
-  import debounce from 'lodash.debounce'
-  import {
-    mapGetters
-  } from 'vuex'
+<script setup>
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance, nextTick } from 'vue'
+import debounce from 'lodash.debounce'
+import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
+import FilePreviews from '@/views/_common/FilePreviews.vue'
 
-  import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
-  import FilePreviews from '@/views/_common/FilePreviews.vue'
+// Global Instance
+const { proxy } = getCurrentInstance()
+// Robust fallback for i18n
+const l = computed(() => proxy.$l || new Proxy({}, { get: (_, prop) => prop }))
+const c = computed(() => proxy.$c || new Proxy({}, { get: (_, prop) => prop }))
+const user = computed(() => proxy.$store.getters.user || {})
 
-  export default {
-    name: 'videoUserPlay',
-    components: {
-      videoPlayer,
-      FilePreviews
-    },
+// State
+const videoPlayerRef = ref(null)
+const activeTab = ref('details')
+const isDescExpanded = ref(false)
 
-    computed: {
-      ...mapGetters(['user']),
-    },
+const currentVideo = ref({ url: '' })
+const showObj = reactive({
+  examDialog: false,
+  playlist: 'course',
+  filePreviews: false,
+  fileUrl: ""
+})
+const currentExam = ref({
+  id: '',
+  questionnaire_id: '',
+  max_reply_num: 0
+})
+const examRecord = ref([])
+const playingTimmerId = ref(null)
+const playDuration = ref(0)
 
-    watch: {
-      playingIndex(newValue) {
-        if (newValue != null && newValue >= 0) {
-          this.currentVideo = this.videoList[newValue]
-          if (this.currentVideo.is_process_question) {
-            this.getBindingQuestionById(this.currentVideo.id)
-          } else {
-            this.$set(this, 'questionList', [])
-          }
+const params = reactive({
+  playId: "",
+  userid: '',
+  train_primary_id: '',
+  no_primary_train_id: '',
+  course_primary_id: '',
+  no_primary_course_id: '',
+  video_id: '',
+  progress: 0,
+  max_progress: 0,
+  is_play: true,
+  topic_id: "",
+  class_id: ''
+})
+
+const my_goodBad_info = ref({
+  good_bad_id: '',
+  type: '',
+})
+
+const courseInfo = ref({
+  org_id: '',
+  name_zh: '',
+  name_tw: '',
+  name_en: '',
+  description: '',
+  thumbnail_path: '',
+  score: '',
+  totalDuration: 0,
+  create_time: '',
+  create_dept: '',
+  language: '',
+  type: '',
+  tags: [{ name_label: '' }],
+  goodBad_Info: {
+    good_count: 0,
+    bad_count: 0,
+  },
+})
+
+const videoList = ref([{
+  id: '',
+  course_id: '',
+  url: '',
+  is_process_question: false,
+  finish_time: 0,
+}])
+
+const examList = ref([])
+const questionList = ref([])
+const attachmentList = ref([])
+const isPlaying = ref(false)
+const playingIndex = ref(null)
+
+const progressObj = reactive({
+  progress: 0,
+  max_progress: 0,
+  id: ''
+})
+
+const favoriteList = reactive({
+  total: 0,
+})
+
+const topicObj = reactive({
+  query: {
+    college_id: "",
+    name: "",
+    page: 1,
+    pageSize: 15,
+    is_valid: 'Y'
+  },
+  list: [{ detail: [] }],
+  total: 0,
+  index: 0
+})
+
+const publicCodeObj = reactive({
+  language_type: [],
+  courseCatalog: []
+})
+
+// Computed
+const currentVideoTitle = computed(() => {
+  if (videoList.value && playingIndex.value != null && videoList.value[playingIndex.value]) {
+    return videoList.value[playingIndex.value].title
+  }
+  return ''
+})
+
+// Watchers
+watch(playingIndex, (newValue) => {
+  if (newValue != null && newValue >= 0) {
+    currentVideo.value = videoList.value[newValue]
+    if (currentVideo.value.is_process_question) {
+      getBindingQuestionById(currentVideo.value.id)
+    } else {
+      questionList.value = []
+    }
+  }
+})
+
+// Methods
+const toggleDesc = () => {
+  isDescExpanded.value = !isDescExpanded.value
+}
+
+const getTabLabel = (tab) => {
+  const map = {
+    details: l.value.details || 'Details',
+    resources: l.value.courseMaterial || 'Resources',
+    exams: l.value.courseExam || 'Exams'
+  }
+  return map[tab] || tab
+}
+
+const toggleVideo = (index) => {
+  reportPlayProgress()
+  playingIndex.value = index
+}
+
+const previewFile = (url) => {
+  showObj.fileUrl = proxy.$api.videoServer + '/' + url
+  showObj.filePreviews = true
+}
+
+const switchCourse = (i, index) => {
+  playingIndex.value = null
+  topicObj.index = index
+  getCourseInfo(i.course_primary_id, true)
+  getCourseResource(i.course_primary_id)
+}
+
+const getBindingQuestionById = (id) => {
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoProcessQuestion/getList', {
+    video_id: id,
+  }).then((r) => {
+    if (r.data.length > 0) {
+      let questionsArray = r.data.map((i) => {
+        let q = i.question
+        return {
+          bind_id: i.id,
+          time: i.time,
+          color: '#409eff',
+          id: q.id,
+          text: q.name_label,
+          options: q.options,
+          question_type: q.question_type,
+          difficulty_level: q.difficulty_level,
+          question_status: q.question_status,
         }
+      })
+      questionList.value = questionsArray
+    } else {
+      questionList.value = []
+    }
+  })
+}
+
+const getCourseInfo = (vid, myGoodBad) => {
+  proxy.$request(
+      proxy.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList', {
+        id: vid,
+        page: 1,
+        pageSize: 1,
+      },
+      'post'
+    )
+    .then((r) => {
+      courseInfo.value = r.data.list[0]
+      params.course_primary_id = courseInfo.value.id
+      params.no_primary_course_id = courseInfo.value.course_id
+      if (myGoodBad) {
+        getMyGoodBad(params.no_primary_course_id)
       }
+      getFavorList()
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+}
+
+const getMyGoodBad = (course_id) => {
+  proxy.$request(
+    proxy.$api.videoServer + '/Video/VideoCourseCatalog/getMyGoodBad', {
+      page: 1,
+      pageSize: 1,
+      userid: user.value.userId,
+      course_id: course_id,
+    }
+  ).then((r) => {
+    if (r.data.total) {
+      my_goodBad_info.value = r.data.list[0]
+    } else {
+      my_goodBad_info.value = {
+        good_bad_id: '',
+        type: '',
+      }
+    }
+  })
+}
+
+const handleGoodBad = (type) => {
+  if (my_goodBad_info.value.good_bad_id) {
+    cancelGoodBad(type)
+  } else {
+    submitGoodBad(type)
+  }
+}
+
+const submitGoodBad = (type) => {
+  proxy.$request(
+    proxy.$api.videoServer + '/Video/VideoCourseCatalog/goodBad', {
+      id: '',
+      course_id: params.no_primary_course_id,
+      userid: user.value.userId,
+      type: type,
     },
+    'post'
+  ).then((r) => {
+    if (r.status) {
+      if (my_goodBad_info.value.type == 1) {
+        proxy.$message({
+          message: c.value.success,
+          type: 'success',
+        })
+      } else {
+        proxy.$message({
+          message: c.value.success,
+          type: 'success',
+        })
+      }
+      getCourseInfo(params.course_primary_id, 'myGoodBad')
+    }
+  })
+}
 
-    data() {
-      return {
-        currentVideo: {
-          url: ''
-        },
-        showObj: {
-          examDialog: false,
-          playlist: 'course',
-          filePreviews: false,
-          fileUrl: ""
-        },
-        currentExam: {
-          id: '',
-          questionnaire_id: '',
-          max_reply_num: 0
-        },
-        examRecord: [],
-        playingTimmerId: null,
-        reportInterval: 5 * 1000,
-        playDuration: 0,
-        params: {
-
-
-          playId: "", //播放id,从getPlayProgress方法中获取
-          userid: '', //用户id
-          train_primary_id: '', //培训主键id,只能从外部onload中获取
-          no_primary_train_id: '', //培训非主键id,只能从外部onload中获取
-          course_primary_id: '', //课程id
-          no_primary_course_id: '', //课程非主键id
-          video_id: '', //当前视频的id，从this.currentVideo中获取
-          progress: 0, //当前播放进度，单位S
-          max_progress: 0, //最大播放进度，单位S
-          is_play: true,
-
-          topic_id: "", //专题id，拥有此项会自动请求专题内其他课程
-          class_id: ''
-
-
-        },
-        my_goodBad_info: {
+const cancelGoodBad = (type) => {
+  proxy.$request(
+    proxy.$api.videoServer + '/Video/VideoCourseCatalog/cancelGoodBad', {
+      id: my_goodBad_info.value.good_bad_id,
+    },
+    'post'
+  ).then((r) => {
+    if (r.status) {
+      if (typeof type == 'number') {
+        submitGoodBad(type)
+      } else {
+        if (my_goodBad_info.value.type == 1) {
+          proxy.$message({
+            message: c.value.success,
+            type: 'success',
+          })
+        } else {
+          proxy.$message({
+            message: c.value.success,
+            type: 'success',
+          })
+        }
+        getCourseInfo(params.course_primary_id)
+        my_goodBad_info.value = {
           good_bad_id: '',
           type: '',
-        },
-        courseInfo: {
-          org_id: '',
-          name_zh: '',
-          name_tw: '',
-          name_en: '',
-          description: '',
-          thumbnail_path: '',
-          score: '',
-          totalDuration: 0,
-          create_time: '',
-          create_dept: '',
-          language: '',
-          type: '',
-          tags: [{
-            name_label: '',
-          }, ],
-          goodBad_Info: {
-            good_count: 0,
-            bad_count: 0,
-          },
-        },
-        videoList: [{
-          id: '',
-          course_id: '',
-          url: '',
-          is_process_question: false,
-          finish_time: 0,
-        }, ],
-        examList: [],
-        questionList: [],
-        attachmentList: [],
-        isPlaying: false,
-        playingIndex: null,
-        progressObj: {
-          progress: 0,
-          max_progress: 0,
-          id: ''
-        },
-        favoriteList: {
-          total: 0,
-        },
-
-        topicObj: {
-          query: {
-            college_id: "",
-            name: "",
-            page: 1,
-            pageSize: 15,
-            is_valid: 'Y'
-          },
-          list: [{
-            detail: []
-          }],
-          total: 0,
-          index: 0
-        },
-
-        publicCodeObj: {
-          language_type: [],
-          courseCatalog: []
-        },
-
-      }
-    },
-
-    methods: {
-
-      toggleVideo(index) {
-        //切换当前播放视频时，上报播放进度
-        this.reportPlayProgress()
-        this.playingIndex = index
-      },
-
-      previewFile(url) {
-        this.showObj.fileUrl = this.$api.videoServer + '/' + url
-        this.showObj.filePreviews = true
-      },
-
-      switchCourse(i, index) {
-        this.playingIndex = null
-        this.topicObj.index = index
-        this.getCourseInfo(i.course_primary_id, true)
-        this.getCourseResource(i.course_primary_id)
-      },
-
-      getBindingQuestionById(id) {
-        this.$request(this.$api.videoServer + '/Video/VideoProcessQuestion/getList', {
-          video_id: id,
-        }).then((r) => {
-          if (r.data.length > 0) {
-            let questionsArray = r.data.map((i) => {
-              // 将 time 属性添加到 question 对象中，并返回更新后的 question 对象
-              let q = i.question
-              return {
-                bind_id: i.id,
-                time: i.time,
-                color: '#409eff',
-                id: q.id,
-                text: q.name_label,
-                options: q.options,
-                question_type: q.question_type,
-                difficulty_level: q.difficulty_level,
-                question_status: q.question_status,
-              }
-            })
-            this.questionList = questionsArray
-          } else {
-            this.questionList = []
-          }
-        })
-      },
-
-      getCourseInfo(vid, myGoodBad) {
-        this.$request(
-            this.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList', {
-              id: vid,
-              page: 1,
-              pageSize: 1,
-            },
-            'post'
-          )
-          .then((r) => {
-            this.courseInfo = r.data.list[0]
-            this.params.course_primary_id = this.courseInfo.id
-            this.params.no_primary_course_id = this.courseInfo.course_id
-            if (myGoodBad) {
-              this.getMyGoodBad(this.params.no_primary_course_id)
-            }
-            this.getFavorList()
-          })
-          .catch((e) => {
-            console.log(e)
-          })
-      },
-
-      getMyGoodBad(course_id) {
-        this.$request(
-          this.$api.videoServer + '/Video/VideoCourseCatalog/getMyGoodBad', {
-            page: 1,
-            pageSize: 1,
-            userid: this.user.userId,
-            course_id: course_id,
-          }
-        ).then((r) => {
-          if (r.data.total) {
-            this.my_goodBad_info = r.data.list[0]
-          } else {
-            this.my_goodBad_info = {
-              good_bad_id: '',
-              type: '',
-            }
-          }
-        })
-      },
-
-      handleGoodBad(type) {
-        if (this.my_goodBad_info.good_bad_id) {
-          this.cancelGoodBad(type)
-        } else {
-          this.submitGoodBad(type)
         }
-      },
+      }
+    }
+  })
+}
 
-      submitGoodBad(type) {
-        this.$request(
-          this.$api.videoServer + '/Video/VideoCourseCatalog/goodBad', {
-            id: '',
-            course_id: this.params.no_primary_course_id,
-            userid: this.user.userId,
-            type: type,
-          },
-          'post'
-        ).then((r) => {
-          if (r.status) {
-            if (this.my_goodBad_info.type == 1) {
-              this.$message({
-                message: this.$c.success,
-                type: 'success',
-              })
-            } else {
-              this.$message({
-                message: this.$c.success,
-                type: 'success',
-              })
+const getCourseResource = (vid) => {
+  proxy.$request(
+      proxy.$api.videoServer +
+      '/Video/VideoCourseCatalog/getCourseVideoAndExam?course_id=' + vid)
+    .then((r) => {
+      videoList.value = []
+      examList.value = []
+      courseInfo.value.totalDuration = 0
+      if (r.data.length > 0) {
+        params.no_primary_course_id = r.data[0].no_primary_course_id
+        r.data.forEach((i, index) => {
+          if (i.video) {
+            if (!i.video.url.includes('http')) {
+              i.video.url = proxy.$api.videoServer + i.video.url
             }
-            this.getCourseInfo(this.params.course_primary_id, 'myGoodBad')
-          }
-        })
-      },
-
-      cancelGoodBad(type) {
-        this.$request(
-          this.$api.videoServer + '/Video/VideoCourseCatalog/cancelGoodBad', {
-            id: this.my_goodBad_info.good_bad_id,
-          },
-          'post'
-        ).then((r) => {
-          if (r.status) {
-            if (typeof type == 'number') {
-              this.submitGoodBad(type)
-            } else {
-              if (this.my_goodBad_info.type == 1) {
-                this.$message({
-                  message: this.$c.success,
-                  type: 'success',
-                })
-              } else {
-                this.$message({
-                  message: this.$c.success,
-                  type: 'success',
-                })
-              }
-              this.getCourseInfo(this.params.course_primary_id)
-              this.my_goodBad_info = {
-                good_bad_id: '',
-                type: '',
-              }
-            }
-          }
-        })
-      },
-
-      getCourseResource(vid) {
-        this.$request(
-            this.$api.videoServer +
-            '/Video/VideoCourseCatalog/getCourseVideoAndExam?course_id=' + vid)
-          .then((r) => {
-            this.videoList = []
-            this.examList = []
-            this.courseInfo.totalDuration = 0
-            if (r.data.length > 0) {
-              this.params.no_primary_course_id = r.data[0].no_primary_course_id
-              r.data.forEach((i, index) => {
-                if (i.video) {
-                  if (!i.video.url.includes('http')) {
-                    i.video.url = this.$api.videoServer + i.video.url
+            if (i.video.other_url) {
+              try {
+                let videoUrls = JSON.parse(i.video.other_url)
+                for (let key in videoUrls) {
+                  if (Object.prototype.hasOwnProperty.call(videoUrls, key)) {
+                    videoUrls[key] = proxy.$api.videoServer + videoUrls[key];
                   }
-                  if (i.video.other_url) {
-                    let videoUrls = JSON.parse(i.video.other_url)
-                    for (let key in videoUrls) {
-                      if (Object.prototype.hasOwnProperty.call(videoUrls, key)) {
-                        videoUrls[key] = this.$api.videoServer + videoUrls[key];
-                      }
-                    }
-                    i.video.other_url = videoUrls
-                  }
-                  i.video.finish_time = i.finish_time
-                  this.courseInfo.totalDuration += i.video.duration
-                  this.videoList.push(i.video)
-                  if (i.video.id == this.params.video_id) {
-                    this.toggleVideo(index)
-                  }
-                } else {
-                  this.examList.push(i.exam)
                 }
-              })
-              if (this.playingIndex == null) {
-                this.playingIndex = 0
-              }
+                i.video.other_url = videoUrls
+              } catch(e) { /* ignore */ }
             }
-          })
-          .catch((e) => {
-            console.log(e)
-          })
-      },
-
-      // goToExam(i) {
-      //   let url = this.$router.resolve({
-      //     name: 'examDetail',
-      //     query: {
-      //       questionnaire_id: this.currentExam.questionnaire_id,
-      //       exam_id: this.currentExam.id, //需要传入有效exam_id
-      //       no_primary_train_id: this.params.no_primary_train_id,
-      //       train_primary_id: this.params.train_primary_id,
-      //       course_primary_id: this.params.course_primary_id,
-      //       class_id: this.params.class_id,
-      //       is_test: true,
-      //       mode: 'exam'
-
-
-      //     },
-      //   }).href
-      //   // 使用window.open打开新标签页
-      //   window.open(url, '_blank')
-      // },
-
-      reviewExam(data) {
-        let url = this.$router.resolve({
-          name: 'examDetail',
-          query: {
-            exam_id: this.currentExam.id,
-            questionnaire_id: this.currentExam.questionnaire_id,
-            reply_id: data.id, //此处为回答记录主键,只需要回答记录组件，不需要课程id和培训id
-            mode: 'review'
+            i.video.finish_time = i.finish_time
+            courseInfo.value.totalDuration += i.video.duration
+            videoList.value.push(i.video)
+            if (i.video.id == params.video_id) {
+              toggleVideo(index)
+            }
+          } else {
+            examList.value.push(i.exam)
           }
-        }).href;
-        // 使用window.open打开新标签页
-        window.open(url, '_blank');
-      },
-
-      goToExam() {
-        //需要传入有效exam_id
-        let url = this.$router.resolve({
-          name: 'examDetail',
-          query: {
-            train_id: this.params.train_id,
-            train_primary_id: this.params.train_primary_id,
-            course_id: this.params.course_primary_id,
-            exam_id: this.currentExam.id,
-            questionnaire_id: this.currentExam.questionnaire_id,
-            mode: 'exam'
-          }
-        }).href;
-        // 使用window.open打开新标签页
-        window.open(url, '_blank');
-      },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      getReplyRecord(i) {
-        this.currentExam = i
-        this.$request(this.$api.videoServer + '/Video/VideoExam/getAnswerList', {
-          exam_id: i.id,
-          userid: this.user.userId,
-          questionnaire_id: i.questionnaire_id,
-          course_id: this.params.course_primary_id,
-          train_id: this.params.no_primary_train_id,
-          train_primary_id: this.params.train_primary_id,
-          course_primary_id: this.params.course_primary_id,
-          class_id: this.params.class_id,
-          is_test: false,
-
-          page: 1,
-          pageSize: 10
-        }).then(r => {
-          this.examRecord = r.data.list
-          this.showObj.examDialog = true
         })
-      },
-
-      formatDuration(totalSeconds, unit) {
-        let duration = Math.floor(totalSeconds)
-        let hours = Math.floor(duration / 3600)
-        let minutes = Math.floor((duration % 3600) / 60)
-        let seconds = duration % 60
-
-        if (unit) {
-          return [
-              hours > 0 ? `${hours}时` : '',
-              minutes.toString().padStart(2, '0') + '分',
-              seconds.toString().padStart(2, '0') + '秒',
-            ]
-            .filter(Boolean)
-            .join('')
-        } else {
-          return [
-              hours > 0 ? `${hours}:` : '',
-              minutes.toString().padStart(2, '0') + ':',
-              seconds.toString().padStart(2, '0'),
-            ]
-            .filter(Boolean)
-            .join('')
+        if (playingIndex.value == null) {
+          playingIndex.value = 0
         }
-      },
-
-      playVideoAction() {
-        if (!this.params.playId) {
-          this.$refs.videoPlayer.player.pause()
-          this.$message(this.$l.playActionError)
-          return
-        }
-        if (this.$refs.videoPlayer.player) {
-          let progress = this.$refs.videoPlayer.videoObj.currentTime //当前播放进度
-          let max_progress = this.$refs.videoPlayer.videoObj.watchMaxTime //最大播放进度
-          this.$request(
-            this.$api.videoServer + '/Video/Video/playVideoAction',
-            [{
-              playId: this.params.playId,
-              userid: this.user.userId,
-              train_id: this.params.train_primary_id,
-              no_primary_train_id: this.params.no_primary_train_id,
-              course_id: this.params.course_primary_id,
-              no_primary_course_id: this.params.no_primary_course_id,
-              video_id: this.currentVideo.id,
-              progress: progress,
-              max_progress: max_progress,
-              is_play: true,
-            }],
-            'post',
-            'noErrorDialog'
-          ).then((r) => {
-            if ((r.httpCode == 200) & (r.status == true)) {
-              // console.log(r);
-            }
-          })
-        }
-      },
-
-      reportPlayProgress() {
-        if (this.$refs.videoPlayer.player) {
-          // Get playback rate - Plyr uses .speed property, video.js uses .playbackRate()
-          let currentRate = 1
-          if (this.$refs.videoPlayer.player.speed !== undefined) {
-            // Plyr
-            currentRate = this.$refs.videoPlayer.player.speed
-          } else if (typeof this.$refs.videoPlayer.player.playbackRate === 'function') {
-            // Video.js
-            currentRate = this.$refs.videoPlayer.player.playbackRate()
-          } else if (this.$refs.videoPlayer.player.playbackRate !== undefined) {
-            // Native video element
-            currentRate = this.$refs.videoPlayer.player.playbackRate
-          }
-          
-          if (currentRate != 1) {
-            return this.$message({
-              message: this.$l.playbackSpeedError,
-              type: 'warning'
-            })
-          }
-          let progress = this.$refs.videoPlayer.videoObj.currentTime //当前播放进度
-          let max_progress = this.$refs.videoPlayer.videoObj.watchMaxTime //最大播放进度
-
-          
-
-          let playStatus = this.$refs.videoPlayer.flagObj.isPlaying //获取视频播放状态
-          if (progress > 0 && max_progress >= progress) {
-            this.$request(
-              this.$api.videoServer + '/Video/Video/uploadPlayProcess',
-              [{
-                playId: this.params.playId,
-                userid: this.user.userId,
-                train_id: this.params.train_primary_id,
-                no_primary_train_id: this.params.no_primary_train_id,
-                course_id: this.params.course_primary_id,
-                no_primary_course_id: this.params.no_primary_course_id,
-                video_id: this.currentVideo.id,
-                progress: progress,
-                max_progress: max_progress,
-                is_play: playStatus,
-              }],
-              'post',
-              'noErrorDialog'
-            ).then((r) => {
-              if ((r.httpCode == 200) & (r.status == true)) {
-                // console.log(r);
-              }
-            })
-          }
-        }
-      },
-
-      getPlayProgress() {
-        if (this.$refs.videoPlayer.player) {
-          this.$request(
-            this.$api.videoServer + '/Video/Video/getPlayProcess', {
-              playId: this.params.playId,
-              userid: this.user.userId,
-              train_id: this.params.train_primary_id,
-              no_primary_train_id: this.params.no_primary_train_id,
-              course_id: this.params.course_primary_id,
-              no_primary_course_id: this.params.no_primary_course_id,
-              video_id: this.currentVideo.id,
-              progress: 0,
-              max_progress: 0,
-              is_play: this.isPlaying
-            },
-            'post',
-            'noErrorDialog'
-          ).then((r) => {
-            if ((r.httpCode == 200) & (r.status == true)) {
-              if (r.data.playId) {
-                this.params.playId = r.data.playId
-              } else {
-                this.params.playId = r.data.id
-              }
-              let progress = parseInt(r.data.progress) //当前播放进度
-              let max_progress = parseInt(r.data.max_progress) //最大播放进度
-              this.progressObj.progress = progress <= max_progress ? progress : max_progress
-              this.progressObj.max_progress = max_progress
-            }
-          })
-        }
-      },
-
-      reportPlayDuration() {
-        if (this.$refs.videoPlayer.player) {
-          this.$request(
-            this.$api.videoServer + '/Video/Video/uploadPlayDuration', {
-              userid: this.user.userId,
-              train_id: this.params.train_primary_id,
-              no_primary_train_id: this.params.no_primary_train_id,
-              course_id: this.params.no_primary_course_id,
-              video_id: this.currentVideo.id,
-              course_primary_id: this.params.course_primary_id,
-              play_time: this.playDuration,
-              playId: this.params.playId,
-              create_time: new Date().toLocaleString()
-            },
-            'post',
-            'noErrorDialog'
-          ).then((r) => {
-            if ((r.httpCode == 200) & (r.status == true)) {
-              // console.log(r);
-            }
-          })
-        }
-      },
-
-      onVideoProgressUpdate(progressData) {
-        // Listener cho progressUpdate event từ video player
-        // Được gọi mỗi 5 giây khi video đang play, pause, hoặc ended
-        console.log('📊 Video progress updated:', progressData)
-        this.reportPlayProgress();
-        this.reportPlayDuration()
-        
-        // Có thể thêm logic xử lý tiến độ tại đây nếu cần
-        // Ví dụ: cập nhật UI, lưu vào local storage, etc.
-      },
-
-      getAttachments(id) {
-        this.attachmentList = []
-        this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/GetCourseAttachemnts', {
-            course_primary_id: id,
-            page: 1,
-            pageSize: 9999
-          })
-          .then(r => {
-            if (r.httpCode == 200) {
-              this.attachmentList = r.data.list
-            }
-          })
-          .catch(e => {
-            console.log(e);
-          })
-      },
-
-      getFavorList() {
-        this.$request(this.$api.videoServer + '/Video/Favorite/getlist', {
-          course_id: this.params.no_primary_course_id,
-          page: 1,
-          pageSize: 9999,
-        }).then((r) => {
-          // this.favoriteList.list = r.data.list
-          this.favoriteList.total = r.data.total
-        })
-      },
-
-      returnLanguageLabel(v) {
-        let item = this.language_type.find(i => {
-          return i.value == v
-        })
-        if (item) {
-          return item.label
-        } else {
-          return v
-        }
-      },
-
-      returnPublicObjLabel(value, key, label, filed) {
-        let item = this.publicCodeObj[filed].find(i => {
-          return i[key] == value
-        })
-        if (item) {
-          return item[label]
-        } else {
-          return value
-        }
-      },
-
-      getLanguage_type() {
-        this.$request(this.$api.publiccode + 'getListdetailed', {
-            queryString: {},
-            ruleno: '121',
-            pageSize: 9999
-          })
-          .then(r => {
-            let list = [];
-            r.data.list.forEach(j => {
-              list.push({
-                label: j.name_label,
-                value: j.code_no
-              });
-            })
-            this.publicCodeObj.language_type = list
-          })
-          .catch(e => {
-            this.$message.error(e.message)
-          })
-      },
-
-      getCourseCatalog() {
-        this.$request(this.$api.publiccode + 'getListdetailed', {
-            queryString: {},
-            ruleno: '122',
-            pageSize: 9999
-          })
-          .then(r => {
-            let list = [];
-            r.data.list.forEach(j => {
-              list.push({
-                label: j.name_label,
-                value: j.code_no
-              });
-            })
-            this.publicCodeObj.courseCatalog = list
-          })
-          .catch(e => {
-            this.$message.error(e.message)
-          })
-      },
-
-      getTopicList(id) {
-        this.$request(this.$api.videoServer + '/Video/VideoPageTag/getlist', {
-            ...this.topicObj.query,
-            college_id: this.vuex_collegeId,
-            id: id
-          })
-          .then(r => {
-            if (r.status) {
-              this.topicObj.list = r.data.list
-              this.topicObj.total = r.data.total
-              this.topicObj.index = r.data.list[0].detail.findIndex(i => i.course_primary_id == this
-                .params.course_id)
-            }
-          })
-          .catch(e => {
-            console.log(e);
-          })
-      },
-
-      handleFavorClick: debounce(function() {
-        let courseObj = {
-          course_id: this.params.no_primary_course_id,
-        }
-        this.$request(
-            this.$api.videoServer + '/Video/Favorite/addOrRemoveFavorite',
-            courseObj,
-            'post'
-          )
-          .then(() => {
-            this.getFavorList()
-          })
-          .catch(() => {})
-      }, 300), // 300ms 内只允许触发一次
-    },
-
-    mounted() {
-      this.getLanguage_type()
-      this.getCourseCatalog()
-      if (this.$route.query.course_primary_id) {
-        this.params = Object.assign(this.params, this.$route.query)
-        this.getAttachments(this.params.course_primary_id)
-        this.getCourseResource(this.params.course_primary_id)
-        this.getCourseInfo(this.params.course_primary_id, 'myGoodBad')
-        this.playingTimmerId = setInterval(() => {
-          if (this.isPlaying) {
-            // 如果正在播放，则发送播放进度信息到服务器
-            this.playDuration += 1
-            if (this.playDuration % 5 == 0 && this.playDuration > 0) {
-              this.reportPlayProgress()
-              this.reportPlayDuration()
-              this.playDuration = 0
-            }
-          }
-        }, 1000)
-      } else {
-        console.log('没有获取到course_primary_id');
       }
-      if (this.$route.query.topic_id) {
-        this.getTopicList(this.$route.query.topic_id)
-      }
-    },
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+}
 
-    beforeDestroy() {
-      if (this.playDuration) {
-        this.reportPlayDuration()
-        this.reportPlayProgress()
-      }
-      if (this.playingTimmerId) {
-        clearInterval(this.playingTimmerId)
-      }
-    },
+const reviewExam = (data) => {
+  let url = proxy.$router.resolve({
+    name: 'examDetail',
+    query: {
+      exam_id: currentExam.value.id,
+      questionnaire_id: currentExam.value.questionnaire_id,
+      reply_id: data.id,
+      mode: 'review'
+    }
+  }).href;
+  window.open(url, '_blank');
+}
+
+const goToExam = () => {
+  let url = proxy.$router.resolve({
+    name: 'examDetail',
+    query: {
+      train_id: params.train_id,
+      train_primary_id: params.train_primary_id,
+      course_id: params.course_primary_id,
+      exam_id: currentExam.value.id,
+      questionnaire_id: currentExam.value.questionnaire_id,
+      mode: 'exam'
+    }
+  }).href;
+  window.open(url, '_blank');
+}
+
+const getReplyRecord = (i) => {
+  currentExam.value = i
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoExam/getAnswerList', {
+    exam_id: i.id,
+    userid: user.value.userId,
+    questionnaire_id: i.questionnaire_id,
+    course_id: params.course_primary_id,
+    train_id: params.no_primary_train_id,
+    train_primary_id: params.train_primary_id,
+    course_primary_id: params.course_primary_id,
+    class_id: params.class_id,
+    is_test: false,
+    page: 1,
+    pageSize: 10
+  }).then(r => {
+    examRecord.value = r.data.list
+    showObj.examDialog = true
+  })
+}
+
+const formatDuration = (totalSeconds, unit) => {
+  let duration = Math.floor(totalSeconds)
+  let hours = Math.floor(duration / 3600)
+  let minutes = Math.floor((duration % 3600) / 60)
+  let seconds = duration % 60
+
+  if (unit) {
+    return [
+        hours > 0 ? `${hours}h ` : '',
+        minutes.toString().padStart(2, '0') + 'm ',
+        seconds.toString().padStart(2, '0') + 's',
+      ]
+      .filter(Boolean)
+      .join('')
+  } else {
+    return [
+        hours > 0 ? `${hours}:` : '',
+        minutes.toString().padStart(2, '0') + ':',
+        seconds.toString().padStart(2, '0'),
+      ]
+      .filter(Boolean)
+      .join('')
   }
+}
+
+const playVideoAction = () => {
+  if (!params.playId) {
+    if(videoPlayerRef.value?.player) videoPlayerRef.value.player.pause()
+    proxy.$message(l.value.playActionError)
+    return
+  }
+  if (videoPlayerRef.value?.player) {
+    let progress = videoPlayerRef.value.videoObj.currentTime
+    let max_progress = videoPlayerRef.value.videoObj.watchMaxTime
+    proxy.$request(
+      proxy.$api.videoServer + '/Video/Video/playVideoAction',
+      [{
+        playId: params.playId,
+        userid: user.value.userId,
+        train_id: params.train_primary_id,
+        no_primary_train_id: params.no_primary_train_id,
+        course_id: params.course_primary_id,
+        no_primary_course_id: params.no_primary_course_id,
+        video_id: currentVideo.value.id,
+        progress: progress,
+        max_progress: max_progress,
+        is_play: true,
+      }],
+      'post',
+      'noErrorDialog'
+    ).then((r) => {
+      // success
+    })
+  }
+}
+
+const reportPlayProgress = () => {
+  if (videoPlayerRef.value?.player) {
+    let currentRate = 1
+    const player = videoPlayerRef.value.player
+    if (player.speed !== undefined) {
+      currentRate = player.speed
+    } else if (typeof player.playbackRate === 'function') {
+      currentRate = player.playbackRate()
+    } else if (player.playbackRate !== undefined) {
+      currentRate = player.playbackRate
+    }
+
+    if (currentRate != 1) {
+      return proxy.$message({
+        message: l.value.playbackSpeedError,
+        type: 'warning'
+      })
+    }
+    let progress = videoPlayerRef.value.videoObj.currentTime
+    let max_progress = videoPlayerRef.value.videoObj.watchMaxTime
+    let playStatus = videoPlayerRef.value.flagObj.isPlaying
+
+    if (progress > 0 && max_progress >= progress) {
+      proxy.$request(
+        proxy.$api.videoServer + '/Video/Video/uploadPlayProcess',
+        [{
+          playId: params.playId,
+          userid: user.value.userId,
+          train_id: params.train_primary_id,
+          no_primary_train_id: params.no_primary_train_id,
+          course_id: params.course_primary_id,
+          no_primary_course_id: params.no_primary_course_id,
+          video_id: currentVideo.value.id,
+          progress: progress,
+          max_progress: max_progress,
+          is_play: playStatus,
+        }],
+        'post',
+        'noErrorDialog'
+      ).then((r) => {
+         // success
+      })
+    }
+  }
+}
+
+const getPlayProgress = () => {
+  if (videoPlayerRef.value?.player) {
+    proxy.$request(
+      proxy.$api.videoServer + '/Video/Video/getPlayProcess', {
+        playId: params.playId,
+        userid: user.value.userId,
+        train_id: params.train_primary_id,
+        no_primary_train_id: params.no_primary_train_id,
+        course_id: params.course_primary_id,
+        no_primary_course_id: params.no_primary_course_id,
+        video_id: currentVideo.value.id,
+        progress: 0,
+        max_progress: 0,
+        is_play: isPlaying.value
+      },
+      'post',
+      'noErrorDialog'
+    ).then((r) => {
+      if ((r.httpCode == 200) & (r.status == true)) {
+        if (r.data.playId) {
+          params.playId = r.data.playId
+        } else {
+          params.playId = r.data.id
+        }
+        let progress = parseInt(r.data.progress)
+        let max_progress = parseInt(r.data.max_progress)
+        progressObj.progress = progress <= max_progress ? progress : max_progress
+        progressObj.max_progress = max_progress
+      }
+    })
+  }
+}
+
+const reportPlayDuration = () => {
+  if (videoPlayerRef.value?.player) {
+    proxy.$request(
+      proxy.$api.videoServer + '/Video/Video/uploadPlayDuration', {
+        userid: user.value.userId,
+        train_id: params.train_primary_id,
+        no_primary_train_id: params.no_primary_train_id,
+        course_id: params.no_primary_course_id,
+        video_id: currentVideo.value.id,
+        course_primary_id: params.course_primary_id,
+        play_time: playDuration.value,
+        playId: params.playId,
+        create_time: new Date().toLocaleString()
+      },
+      'post',
+      'noErrorDialog'
+    ).then((r) => {
+       // success
+    })
+  }
+}
+
+const onVideoProgressUpdate = (progressData) => {
+  reportPlayProgress();
+  reportPlayDuration()
+}
+
+const getAttachments = (id) => {
+  attachmentList.value = []
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoCourseCatalog/GetCourseAttachemnts', {
+      course_primary_id: id,
+      page: 1,
+      pageSize: 9999
+    })
+    .then(r => {
+      if (r.httpCode == 200) {
+        attachmentList.value = r.data.list
+      }
+    })
+    .catch(e => {
+      console.log(e);
+    })
+}
+
+const getFavorList = () => {
+  proxy.$request(proxy.$api.videoServer + '/Video/Favorite/getlist', {
+    course_id: params.no_primary_course_id,
+    page: 1,
+    pageSize: 9999,
+  }).then((r) => {
+    favoriteList.total = r.data.total
+  })
+}
+
+const returnLanguageLabel = (v) => {
+  let item = publicCodeObj.language_type.find(i => i.value == v)
+  return item ? item.label : v
+}
+
+const returnPublicObjLabel = (value, key, label, filed) => {
+  if (!publicCodeObj[filed]) return value
+  let item = publicCodeObj[filed].find(i => i[key] == value)
+  return item ? item[label] : value
+}
+
+const getLanguage_type = () => {
+  proxy.$request(proxy.$api.publiccode + 'getListdetailed', {
+      queryString: {},
+      ruleno: '121',
+      pageSize: 9999
+    })
+    .then(r => {
+      let list = [];
+      r.data.list.forEach(j => {
+        list.push({
+          label: j.name_label,
+          value: j.code_no
+        });
+      })
+      publicCodeObj.language_type = list
+    })
+    .catch(e => {
+      proxy.$message.error(e.message)
+    })
+}
+
+const getCourseCatalog = () => {
+  proxy.$request(proxy.$api.publiccode + 'getListdetailed', {
+      queryString: {},
+      ruleno: '122',
+      pageSize: 9999
+    })
+    .then(r => {
+      let list = [];
+      r.data.list.forEach(j => {
+        list.push({
+          label: j.name_label,
+          value: j.code_no
+        });
+      })
+      publicCodeObj.courseCatalog = list
+    })
+    .catch(e => {
+      proxy.$message.error(e.message)
+    })
+}
+
+const getTopicList = (id) => {
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoPageTag/getlist', {
+      ...topicObj.query,
+      college_id: proxy.$store.getters.collegeId || '', // Check store for collegeId
+      id: id
+    })
+    .then(r => {
+      if (r.status) {
+        topicObj.list = r.data.list
+        topicObj.total = r.data.total
+        topicObj.index = r.data.list[0].detail.findIndex(i => i.course_primary_id == params.course_id)
+      }
+    })
+    .catch(e => {
+      console.log(e);
+    })
+}
+
+const handleFavorClick = debounce(function() {
+  let courseObj = {
+    course_id: params.no_primary_course_id,
+  }
+  proxy.$request(
+      proxy.$api.videoServer + '/Video/Favorite/addOrRemoveFavorite',
+      courseObj,
+      'post'
+    )
+    .then(() => {
+      getFavorList()
+    })
+    .catch(() => {})
+}, 300)
+
+// Lifecycle
+onMounted(() => {
+  getLanguage_type()
+  getCourseCatalog()
+  if (proxy.$route.query.course_primary_id) {
+    Object.assign(params, proxy.$route.query)
+    getAttachments(params.course_primary_id)
+    getCourseResource(params.course_primary_id)
+    getCourseInfo(params.course_primary_id, 'myGoodBad')
+
+    playingTimmerId.value = setInterval(() => {
+      if (isPlaying.value) {
+        playDuration.value += 1
+        if (playDuration.value % 5 == 0 && playDuration.value > 0) {
+          reportPlayProgress()
+          reportPlayDuration()
+          playDuration.value = 0
+        }
+      }
+    }, 1000)
+  } else {
+    console.log('No course_primary_id found');
+  }
+
+  if (proxy.$route.query.topic_id) {
+    getTopicList(proxy.$route.query.topic_id)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (playDuration.value) {
+    reportPlayDuration()
+    reportPlayProgress()
+  }
+  if (playingTimmerId.value) {
+    clearInterval(playingTimmerId.value)
+  }
+})
 </script>
 
 <style scoped>
-@charset "UTF-8";
-.play-container {
-  width: 100%;
-  background-color: #f3f4f6;
-  padding-top: 20px;
+/* Custom scrollbar for playlist */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
-.play-container .examRecord-dialog .goToExam {
-  margin: 5px 0px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
-.play-container .examRecord-dialog .goToExam .detail {
-  padding-left: 10px;
-  width: calc(100% - 150px);
-  white-space: nowrap;
-  overflow: hidden;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 20px;
 }
-.play-container .examRecord-dialog .goToExam .detail .num {
-  margin: 0 2px;
-  font-size: 14px;
-}
-.play-container .examRecord-dialog .goToExam .goToExam-btn {
-  width: 150px;
-  text-align: center;
-}
-.play-container .examRecord-dialog .goToExam .goToExam-btn .go {
-  font-size: 14px;
-  z-index: 6000;
-  border: none;
-  font-weight: bold;
-}
-.play-container .examRecord-dialog .goToExam .goToExam-btn .go:hover {
-  border: none;
-}
-.play-container .page-body {
-  min-width: 1000px;
-  width: 80%;
-  margin: 0 auto;
-}
-.play-container .page-body .player-wrapper {
-  width: 100%;
-  aspect-ratio: 2.539;
-  background-color: white;
-}
-.play-container .page-body .player-wrapper .title-wrapper {
-  display: flex;
-  padding: 10px;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left {
-  width: 70%;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left .title {
-  font-weight: 600;
-  font-size: 28px;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left .views {
-  color: #595959;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-left .views .view {
-  margin-left: 0.5em;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right {
-  width: 30%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right .progress {
-  font-size: 20px;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right .duration {
-  margin-top: 10px;
-}
-.play-container .page-body .player-wrapper .title-wrapper .title-wrapper-right .duration span {
-  margin-right: 8px;
-}
-.play-container .page-body .player-wrapper .video-wrapper {
-  height: 100%;
-  display: flex;
-  background-color: #1d1d1d;
-}
-.play-container .page-body .player-wrapper .video-wrapper .video-player {
-  width: 70%;
-  height: 100%;
-  z-index: 0;
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist {
-  height: 100%;
-  width: 30%;
-  padding: 0px 1%;
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist .navi {
-  display: flex;
-  justify-content: space-evenly;
-  color: white;
-  margin-top: 10px;
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist .list {
-  width: 100%;
-  height: 90%;
-  overflow-y: scroll;
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item {
-  margin-top: 10px;
-  padding: 5px;
-  color: white;
-  background-color: #35353a;
-  border-radius: 8px;
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item .title {
-  font-size: 18px;
-  display: flex;
-  justify-content: space-between;
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item .title .playing {
-  animation: fadeInOut 6s infinite ease-in-out;
-  /* 4秒，无限循环，缓动函数为ease-in-out */
-}
-.play-container .page-body .player-wrapper .video-wrapper .playlist .list .item .duration {
-  width: 100%;
-  margin-top: 5px;
-  display: flex;
-  justify-content: space-between;
-  color: white;
-}
-.play-container .page-body .info-wrapper {
-  width: 100%;
-  height: 80vh;
-  padding: 20px 10px;
-  display: flex;
-  background-color: #f8f9fb;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left {
-  width: 70%;
-  padding: 10px;
-  margin-right: 10px;
-  background-color: white;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .goodBad {
-  display: flex;
-  align-items: center;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .goodBad .gb_item {
-  margin-right: 50px;
-  font-size: 20px;
-  cursor: pointer;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .goodBad .gb_item i {
-  font-size: 36px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .info {
-  border-bottom: 1px solid gainsboro;
-  padding-bottom: 10px;
-  font-size: 20px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .sub-info {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 10px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .sub-info .info-item {
-  width: 20%;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .sub-info .info-item .info-label {
-  color: black;
-  font-size: 16px;
-  padding-bottom: 10px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .desc-label {
-  width: 100%;
-  font-size: 16px;
-  margin-bottom: 10px;
-  color: black;
-  margin-top: 20px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-left .desc-label .desc {
-  width: 100%;
-  height: auto;
-  display: block;
-  color: #333333;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 30%;
-  flex-grow: 1;
-  padding: 0px 0px 0px 20px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material {
-  height: 49%;
-  padding: 10px;
-  background-color: white;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material .title {
-  color: #1d1d1d;
-  font-weight: 600;
-  font-size: 20px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper {
-  width: 100%;
-  height: 100%;
-  max-height: 100%;
-  overflow: auto;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item {
-  width: 100%;
-  height: 40px;
-  line-height: 40px;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #f3f4f6;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item .label {
-  color: #555;
-  height: 40px;
-  line-height: 40px;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item .button {
-  width: 60px;
-}
-.play-container .page-body .info-wrapper .info-wrapper-right .material .list-wrapper .item:hover {
-  background-color: #f3f4f6;
-}
-
-@keyframes fadeInOut {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 1;
-  }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
 }
 </style>
