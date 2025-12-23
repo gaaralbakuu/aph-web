@@ -105,7 +105,7 @@
           </h1>
 
           <!-- Channel Info & Action Buttons Row -->
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex flex-col justify-between gap-4">
 
              <!-- Channel Info -->
              <div class="flex items-center gap-3">

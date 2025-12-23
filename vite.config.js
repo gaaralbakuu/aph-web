@@ -21,7 +21,7 @@ export default defineConfig(({ mode, command }) => {
 
   return {
     // 📋 Log config chi tiết khi build
-    logLevel: command === 'build' ? 'info' : 'warn',
+    logLevel: 'info',
     // 1) cacheDir để giảm cold-start
     cacheDir: 'node_modules/.vite_cache',
 
