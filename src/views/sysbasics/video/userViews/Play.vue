@@ -7,10 +7,9 @@
       @update:visible="showObj.filePreviews = $event"
     />
 
-    <!-- Custom Exam Record Modal (Replaces el-dialog) -->
+    <!-- Custom Exam Record Modal -->
     <div v-if="showObj.examDialog" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <!-- Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-[#e5e5e5]">
           <h2 class="text-xl font-bold text-[#0f0f0f]">{{ l.examRecord }}</h2>
           <button @click="showObj.examDialog = false" class="p-2 hover:bg-gray-100 rounded-full transition text-[#606060] hover:text-[#0f0f0f]">
@@ -20,10 +19,7 @@
             </svg>
           </button>
         </div>
-
-        <!-- Body -->
         <div class="p-6 overflow-y-auto">
-          <!-- Custom Table (Replaces el-table) -->
           <div class="border border-[#e5e5e5] rounded-lg overflow-hidden mb-6">
             <div class="bg-gray-50 border-b border-[#e5e5e5] grid grid-cols-12 gap-4 px-4 py-3 text-sm font-semibold text-[#606060]">
                <div class="col-span-1">{{ c.sn }}</div>
@@ -49,8 +45,6 @@
                </div>
             </div>
           </div>
-
-          <!-- Info Box -->
           <div class="flex flex-col sm:flex-row items-center justify-between bg-blue-50 p-4 rounded-xl border border-blue-100 gap-4">
              <div class="text-sm text-[#0f0f0f]">
                 {{l.mostExam}}
@@ -68,26 +62,16 @@
              </button>
           </div>
         </div>
-
-        <!-- Footer -->
-        <div class="px-6 py-4 border-t border-[#e5e5e5] flex justify-end gap-3 bg-gray-50">
-          <button @click="getReplyRecord(currentExam)" class="px-5 py-2 text-[#065FD4] hover:bg-blue-50 font-semibold text-sm rounded-full transition border border-transparent hover:border-blue-100">
-             {{l.refresh}}
-          </button>
-          <button @click="showObj.examDialog = false" class="px-5 py-2 bg-[#065FD4] text-white font-semibold text-sm rounded-full hover:bg-[#0056b3] transition shadow-sm">
-             {{l.close}}
-          </button>
-        </div>
       </div>
     </div>
 
     <!-- Main Layout -->
-    <div class="max-w-[1800px] mx-auto p-4 lg:p-6 flex flex-col lg:flex-row gap-6">
+    <div class="max-w-[1800px] mx-auto p-4 lg:px-6 lg:py-6 flex flex-col lg:flex-row gap-6">
 
       <!-- Left Column: Video & Info -->
       <div class="flex-1 min-w-0">
         <!-- Video Player Wrapper -->
-        <div class="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-lg relative group">
+        <div class="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-sm relative group">
           <videoPlayer
             ref="videoPlayerRef"
             :src="currentVideo.url"
@@ -114,86 +98,105 @@
         </div>
 
         <!-- Video Info Section -->
-        <div class="mt-4">
-          <h1 class="text-xl lg:text-2xl font-bold text-[#0f0f0f] leading-snug break-words">
+        <div class="mt-3">
+          <!-- Title -->
+          <h1 class="text-[20px] font-bold text-[#0f0f0f] leading-7 break-words mb-2">
              {{ currentVideoTitle || courseInfo.name_label || l.courseTitle }}
           </h1>
 
-          <!-- Action Bar -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-2 pb-2 border-b border-[#e5e5e5] gap-4">
-             <div class="text-sm text-[#606060] flex items-center gap-2">
-                <span>{{ courseInfo.create_dept }}</span>
-                <span class="w-1 h-1 bg-[#606060] rounded-full"></span>
-                <span>{{ courseInfo.create_time }}</span>
+          <!-- Channel Info & Action Buttons Row -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+             <!-- Channel Info -->
+             <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#606060] font-bold text-lg overflow-hidden">
+                   <!-- Placeholder Avatar if none -->
+                   {{ (courseInfo.create_dept || 'C').charAt(0).toUpperCase() }}
+                </div>
+                <div class="flex flex-col">
+                   <span class="text-[16px] font-bold text-[#0f0f0f] leading-tight">
+                      {{ courseInfo.create_dept || 'Channel Name' }}
+                   </span>
+                   <span class="text-[12px] text-[#606060]">
+                      {{ courseInfo.create_user || 'Subscribers' }}
+                   </span>
+                </div>
+                <button class="ml-4 px-4 py-2 bg-black text-white text-sm font-medium rounded-full hover:bg-gray-800 transition">
+                   Subscribe
+                </button>
              </div>
 
-             <div class="flex items-center gap-2">
-                <!-- Like/Dislike -->
-                <div class="flex items-center bg-[#f2f2f2] rounded-full overflow-hidden h-9">
+             <!-- Action Buttons -->
+             <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+
+                <!-- Like/Dislike Pill -->
+                <div class="flex items-center bg-[#f2f2f2] rounded-full h-9 overflow-hidden">
                    <button
                      @click="handleGoodBad(1)"
-                     class="flex items-center gap-2 px-4 h-full hover:bg-[#e5e5e5] transition border-r border-[#d9d9d9]"
-                     :class="{'text-[#065FD4] bg-[#e5f2ff] hover:bg-[#d9ecff]': my_goodBad_info.type === 1}"
+                     class="flex items-center gap-2 px-4 h-full hover:bg-[#e5e5e5] transition border-r border-[#d9d9d9] relative"
                    >
-                      <i :class="my_goodBad_info.type === 1 ? 'iconfont icon-appreciate_fill_light' : 'iconfont icon-appreciate_light'"></i>
+                      <svg v-if="my_goodBad_info.type === 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
                       <span class="text-sm font-medium">{{ courseInfo.goodBad_Info.good_count || 0 }}</span>
                    </button>
                    <button
                      @click="handleGoodBad(0)"
                      class="flex items-center px-4 h-full hover:bg-[#e5e5e5] transition"
-                     :class="{'text-[#CC0000] bg-[#ffe5e5] hover:bg-[#ffdede]': my_goodBad_info.type === 0}"
                    >
-                      <i :class="my_goodBad_info.type === 0 ? 'iconfont icon-oppose_fill_light' : 'iconfont icon-oppose_light'"></i>
-                      <span class="text-sm font-medium ml-2">{{ courseInfo.goodBad_Info.bad_count || 0 }}</span>
+                      <svg v-if="my_goodBad_info.type === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mt-1"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mt-1"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
                    </button>
                 </div>
 
-                <!-- Favorite -->
-                 <button
+                <!-- Share (Generic) -->
+                <button class="flex items-center gap-2 px-4 h-9 bg-[#f2f2f2] rounded-full hover:bg-[#e5e5e5] transition text-sm font-medium">
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                   Share
+                </button>
+
+                <!-- Favorite (Save) -->
+                <button
                    @click="handleFavorClick"
-                   class="flex items-center gap-2 px-4 h-9 bg-[#f2f2f2] rounded-full hover:bg-[#e5e5e5] transition"
+                   class="flex items-center gap-2 px-4 h-9 bg-[#f2f2f2] rounded-full hover:bg-[#e5e5e5] transition text-sm font-medium"
                  >
-                    <i :class="favoriteList.total == 0 ? 'iconfont icon-favor_light' : 'iconfont icon-favor_fill_light text-[#065FD4]'"></i>
-                    <span class="text-sm font-medium">{{ favoriteList.total > 0 ? l.favorited : l.favorite }}</span>
+                    <svg v-if="favoriteList.total > 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-[#065FD4]"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    {{ favoriteList.total > 0 ? l.favorited : l.favorite }}
+                 </button>
+
+                 <!-- More Options -->
+                 <button class="w-9 h-9 flex items-center justify-center bg-[#f2f2f2] rounded-full hover:bg-[#e5e5e5] transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="5" cy="12" r="2"></circle></svg>
                  </button>
              </div>
           </div>
 
           <!-- Description Box -->
-          <div class="mt-4 bg-[#f2f2f2] rounded-xl p-4 hover:bg-[#e5e5e5] transition cursor-pointer group" @click="toggleDesc">
-             <div class="flex items-start gap-3">
-                 <div class="flex-1">
-                    <div class="font-bold text-[#0f0f0f] text-sm mb-1">
-                      {{ formatDuration(courseInfo.totalDuration, true) }} • {{ l.score }}: {{ courseInfo.score }}
-                    </div>
-                    <div class="text-sm text-[#0f0f0f] whitespace-pre-wrap leading-relaxed" :class="{'line-clamp-2': !isDescExpanded}">
-                       {{ courseInfo.description || l.noDescription }}
-                    </div>
-
-                    <!-- Tags -->
-                    <div class="mt-2 flex flex-wrap gap-2" v-if="courseInfo.tags && courseInfo.tags.length > 0">
-                       <span v-for="(tag, idx) in courseInfo.tags" :key="idx" class="text-xs text-[#065FD4] hover:underline">
-                          #{{ tag.name_label }}
-                       </span>
-                    </div>
-
-                    <button class="mt-2 text-sm font-semibold text-[#606060] group-hover:text-[#0f0f0f]" v-if="!isDescExpanded">
-                       {{ l.showMore }}
-                    </button>
-                    <button class="mt-2 text-sm font-semibold text-[#606060] group-hover:text-[#0f0f0f]" v-else>
-                       {{ l.showLess }}
-                    </button>
-                 </div>
+          <div class="mt-4 bg-[#f2f2f2] rounded-xl p-3 cursor-pointer hover:bg-[#e5e5e5] transition" @click="toggleDesc">
+             <div class="text-[14px] font-bold text-[#0f0f0f] mb-1">
+               {{ formatDuration(courseInfo.totalDuration, true) }} • {{ courseInfo.create_time }}
              </div>
+             <div class="text-[14px] text-[#0f0f0f] leading-5 whitespace-pre-wrap" :class="{'line-clamp-2': !isDescExpanded}">
+                <span class="font-medium mr-2" v-if="courseInfo.tags && courseInfo.tags.length > 0">
+                    <span v-for="(tag, idx) in courseInfo.tags" :key="idx" class="text-[#065FD4] mr-1">#{{ tag.name_label }}</span>
+                </span>
+                {{ courseInfo.description || l.noDescription }}
+             </div>
+             <button class="mt-1 text-[14px] font-bold text-[#0f0f0f]" v-if="!isDescExpanded">
+                {{ l.showMore || 'Show more' }}
+             </button>
+             <button class="mt-1 text-[14px] font-bold text-[#0f0f0f]" v-else>
+                {{ l.showLess || 'Show less' }}
+             </button>
           </div>
 
-          <!-- Course Details & Resources Tabs -->
+          <!-- Tabs (Comments, etc) -->
           <div class="mt-6">
             <div class="border-b border-[#e5e5e5] flex gap-6">
                <button
                  v-for="tab in ['details', 'resources', 'exams']"
                  :key="tab"
-                 class="pb-2 text-base font-semibold border-b-2 transition capitalize"
+                 class="pb-2 text-[16px] font-bold border-b-2 transition capitalize"
                  :class="activeTab === tab ? 'border-[#0f0f0f] text-[#0f0f0f]' : 'border-transparent text-[#606060] hover:text-[#0f0f0f]'"
                  @click="activeTab = tab"
                >
@@ -201,9 +204,10 @@
                </button>
             </div>
 
+            <!-- Tab Content (Same as before but cleaner) -->
             <div class="py-4">
-               <!-- Details Tab -->
                <div v-if="activeTab === 'details'" class="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8 text-sm">
+                  <!-- Reuse existing logic for rows -->
                   <div class="flex border-b border-dashed border-gray-200 pb-2">
                      <span class="text-[#606060] w-32 shrink-0">{{ l.lecturer }}</span>
                      <span class="text-[#0f0f0f]">{{ courseInfo.lecturer == 1 ? l.internalLecturer : l.externalLecturer }}</span>
@@ -212,59 +216,35 @@
                      <span class="text-[#606060] w-32 shrink-0">{{ l.courseCatalog }}</span>
                      <span class="text-[#0f0f0f]">{{ returnPublicObjLabel(courseInfo.type, 'value', 'label', 'courseCatalog') }}</span>
                   </div>
-                  <div class="flex border-b border-dashed border-gray-200 pb-2">
-                     <span class="text-[#606060] w-32 shrink-0">{{ l.trainLanguage }}</span>
-                     <span class="text-[#0f0f0f]">{{ returnPublicObjLabel(courseInfo.language, 'value', 'label', 'language_type') }}</span>
-                  </div>
-                  <div class="flex border-b border-dashed border-gray-200 pb-2">
-                     <span class="text-[#606060] w-32 shrink-0">{{ l.applicableGroup }}</span>
-                     <span class="text-[#0f0f0f]">{{ courseInfo.applicable_group }}</span>
-                  </div>
-                  <div class="flex border-b border-dashed border-gray-200 pb-2 md:col-span-2">
+                   <div class="flex border-b border-dashed border-gray-200 pb-2">
                      <span class="text-[#606060] w-32 shrink-0">{{ l.profit }}</span>
                      <span class="text-[#0f0f0f]">{{ courseInfo.profit }}</span>
                   </div>
                </div>
 
-               <!-- Resources Tab -->
                <div v-if="activeTab === 'resources'" class="space-y-2">
-                  <div v-if="attachmentList.length === 0" class="text-center py-8 text-[#606060] bg-gray-50 rounded-lg">
-                     {{ c.noData }}
-                  </div>
-                  <div v-else v-for="item in attachmentList" :key="item.id" class="flex items-center justify-between p-3 bg-white border border-[#e5e5e5] rounded-lg hover:bg-gray-50 transition group">
-                      <div class="flex items-center gap-3 overflow-hidden">
-                         <div class="w-10 h-10 bg-red-100 text-red-600 rounded flex items-center justify-center shrink-0">
-                            <!-- Replaced el-icon with SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
-                            </svg>
+                  <div v-if="attachmentList.length === 0" class="text-center py-8 text-[#606060] bg-gray-50 rounded-lg">{{ c.noData }}</div>
+                  <div v-else v-for="item in attachmentList" :key="item.id" class="flex items-center justify-between p-3 bg-white border border-[#e5e5e5] rounded-lg hover:bg-gray-50 transition">
+                      <div class="flex items-center gap-3">
+                         <div class="w-8 h-8 bg-red-100 text-red-600 rounded flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
                          </div>
                          <span class="text-sm font-medium truncate text-[#0f0f0f]">{{ item.name_label }}</span>
                       </div>
-                      <button @click="previewFile(item.file_url)" class="px-3 py-1.5 text-xs font-semibold text-[#065FD4] bg-blue-50 rounded hover:bg-blue-100 transition">
-                         {{ c.check }}
-                      </button>
+                      <button @click="previewFile(item.file_url)" class="text-[#065FD4] font-semibold text-xs hover:underline">{{ c.check }}</button>
                   </div>
                </div>
 
-               <!-- Exams Tab -->
                <div v-if="activeTab === 'exams'" class="space-y-2">
-                  <div v-if="examList.length === 0" class="text-center py-8 text-[#606060] bg-gray-50 rounded-lg">
-                     {{ c.noData }}
-                  </div>
-                  <div v-else v-for="item in examList" :key="item.id" class="flex items-center justify-between p-3 bg-white border border-[#e5e5e5] rounded-lg hover:bg-gray-50 transition group">
-                      <div class="flex items-center gap-3 overflow-hidden">
-                         <div class="w-10 h-10 bg-green-100 text-green-600 rounded flex items-center justify-center shrink-0">
-                            <!-- Replaced el-icon with SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                            </svg>
+                   <div v-if="examList.length === 0" class="text-center py-8 text-[#606060] bg-gray-50 rounded-lg">{{ c.noData }}</div>
+                   <div v-else v-for="item in examList" :key="item.id" class="flex items-center justify-between p-3 bg-white border border-[#e5e5e5] rounded-lg hover:bg-gray-50 transition">
+                      <div class="flex items-center gap-3">
+                         <div class="w-8 h-8 bg-green-100 text-green-600 rounded flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                          </div>
                          <span class="text-sm font-medium truncate text-[#0f0f0f]">{{ item.name_label }}</span>
                       </div>
-                      <button @click="getReplyRecord(item)" class="px-3 py-1.5 text-xs font-semibold text-[#065FD4] bg-blue-50 rounded hover:bg-blue-100 transition">
-                         {{ l.examDetail }}
-                      </button>
+                      <button @click="getReplyRecord(item)" class="text-[#065FD4] font-semibold text-xs hover:underline">{{ l.examDetail }}</button>
                   </div>
                </div>
             </div>
@@ -272,110 +252,89 @@
         </div>
       </div>
 
-      <!-- Right Column: Playlist / Sidebar -->
+      <!-- Right Column: Playlist / Up Next -->
       <div class="w-full lg:w-[400px] shrink-0">
-         <div class="bg-white border border-[#e5e5e5] rounded-xl overflow-hidden shadow-sm flex flex-col max-h-[calc(100vh-40px)] sticky top-4">
-             <!-- Playlist Header -->
-             <div class="flex items-center justify-between p-4 border-b border-[#e5e5e5] bg-gray-50">
-                <div class="font-bold text-lg text-[#0f0f0f]">
-                   {{ showObj.playlist === 'course' ? l.courseTitle : l.topicTitle }}
-                </div>
-                <!-- Toggle Playlist Type -->
-                <div class="flex bg-[#e5e5e5] rounded p-1" v-if="topicObj.list[0].detail.length > 1">
-                    <button
-                       @click="showObj.playlist='course'"
-                       class="px-3 py-1 text-xs font-semibold rounded transition"
-                       :class="showObj.playlist === 'course' ? 'bg-white shadow text-black' : 'text-[#606060]'"
-                    >{{ l.course }}</button>
-                    <button
-                       @click="showObj.playlist='topic'"
-                       class="px-3 py-1 text-xs font-semibold rounded transition"
-                       :class="showObj.playlist === 'topic' ? 'bg-white shadow text-black' : 'text-[#606060]'"
-                    >{{ l.topic }}</button>
-                </div>
+         <div class="flex flex-col gap-4">
+             <!-- Playlist Header / Filter -->
+             <div class="flex items-center gap-2 mb-2">
+                 <button
+                    @click="showObj.playlist='course'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-lg transition"
+                    :class="showObj.playlist === 'course' ? 'bg-black text-white' : 'bg-[#f2f2f2] text-[#0f0f0f] hover:bg-[#e5e5e5]'"
+                 >{{ l.course || 'All' }}</button>
+                 <button
+                    @click="showObj.playlist='topic'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-lg transition"
+                    :class="showObj.playlist === 'topic' ? 'bg-black text-white' : 'bg-[#f2f2f2] text-[#0f0f0f] hover:bg-[#e5e5e5]'"
+                 >{{ l.topic || 'Related' }}</button>
              </div>
 
-             <!-- List Content -->
-             <div class="overflow-y-auto flex-1 p-2 space-y-1 custom-scrollbar">
+             <!-- Course Playlist Items -->
+             <template v-if="showObj.playlist === 'course'">
+                <div
+                   v-for="(video, index) in videoList"
+                   :key="video.id"
+                   @click="toggleVideo(index)"
+                   class="flex gap-2 cursor-pointer group"
+                >
+                   <!-- Thumbnail -->
+                   <div class="relative w-[168px] h-[94px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center group-hover:rounded-none transition-all duration-200">
+                       <img v-if="courseInfo.thumbnail_path" :src="courseInfo.thumbnail_path" class="w-full h-full object-cover" />
+                       <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition"></div>
 
-                <!-- Course Playlist -->
-                <template v-if="showObj.playlist === 'course'">
-                   <div
-                      v-for="(video, index) in videoList"
-                      :key="video.id"
-                      @click="toggleVideo(index)"
-                      class="flex gap-3 p-2 rounded-lg cursor-pointer transition group"
-                      :class="playingIndex === index ? 'bg-[#e5f2ff]' : 'hover:bg-[#f2f2f2]'"
-                   >
-                      <div class="relative w-[100px] h-[56px] bg-gray-200 rounded overflow-hidden shrink-0 flex items-center justify-center">
-                          <!-- Use course thumbnail or default pattern -->
-                          <img v-if="courseInfo.thumbnail_path" :src="courseInfo.thumbnail_path" class="w-full h-full object-cover opacity-80" />
-                          <span v-else class="text-xs text-gray-500 font-bold">{{ index + 1 }}</span>
+                       <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                           <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M14 19h4V5h-4v14zm-8 0h4V5H6v14z"/></svg>
+                           <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M8 5v14l11-7z"/></svg>
+                       </div>
 
-                          <!-- Playing Overlay -->
-                          <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
-                              <!-- Replaced el-icon with SVG -->
-                              <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M14 19h4V5h-4v14zm-8 0h4V5H6v14z"/></svg>
-                              <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M8 5v14l11-7z"/></svg>
-                          </div>
-
-                          <!-- Duration Badge -->
-                          <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
-                             {{ formatDuration(video.duration) }}
-                          </div>
-                      </div>
-                      <div class="flex-1 min-w-0 flex flex-col justify-center">
-                          <h3
-                            class="text-sm font-semibold line-clamp-2 leading-tight mb-1"
-                            :class="playingIndex === index ? 'text-[#065FD4]' : 'text-[#0f0f0f] group-hover:text-black'"
-                          >
-                             {{ video.title }}
-                          </h3>
-                          <div class="flex items-center text-xs text-[#606060]">
-                             <!-- Replaced el-icon with SVG -->
-                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3 mr-1"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                             {{ l.needToLearn }}: {{ formatDuration(video.finish_time) }}
-                          </div>
-                      </div>
+                       <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs font-medium px-1 rounded">
+                          {{ formatDuration(video.duration) }}
+                       </div>
                    </div>
-                </template>
 
-                <!-- Topic Playlist -->
-                <template v-if="showObj.playlist === 'topic'">
-                   <div
-                      v-for="(item, index) in topicObj.list[0].detail"
-                      :key="item.id"
-                      @click="switchCourse(item, index)"
-                      class="flex gap-3 p-2 rounded-lg cursor-pointer transition group"
-                      :class="topicObj.index === index ? 'bg-[#e5f2ff]' : 'hover:bg-[#f2f2f2]'"
-                   >
-                      <div class="relative w-[100px] h-[56px] bg-gray-200 rounded overflow-hidden shrink-0 flex items-center justify-center">
-                          <img v-if="item.thumbnail_path" :src="item.thumbnail_path" class="w-full h-full object-cover opacity-80" />
-                          <span v-else class="text-xs text-gray-500 font-bold">{{ index + 1 }}</span>
-                          <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
-                              <!-- Replaced el-icon with SVG -->
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                          </div>
-                      </div>
-                      <div class="flex-1 min-w-0 flex flex-col justify-center">
-                          <h3
-                            class="text-sm font-semibold line-clamp-2 leading-tight mb-1"
-                            :class="topicObj.index === index ? 'text-[#065FD4]' : 'text-[#0f0f0f] group-hover:text-black'"
-                          >
-                             {{ item.course_name_label }}
-                          </h3>
-                          <div class="flex justify-between items-center text-xs text-[#606060]">
-                             <span>{{ item.create_time }}</span>
-                          </div>
-                          <div class="flex items-center gap-2 mt-1 text-xs text-[#606060]">
-                             <span class="flex items-center"><i class="iconfont icon-appreciate_light text-xs mr-0.5"></i>{{item.goodBad_Info.good_count}}</span>
-                             <span class="flex items-center"><i class="iconfont icon-oppose_light text-xs mr-0.5"></i>{{item.goodBad_Info.bad_count}}</span>
-                          </div>
-                      </div>
+                   <!-- Info -->
+                   <div class="flex-1 min-w-0 py-1">
+                       <h3 class="text-[14px] font-semibold text-[#0f0f0f] leading-5 line-clamp-2 mb-1 group-hover:text-black">
+                          {{ video.title }}
+                       </h3>
+                       <div class="text-[12px] text-[#606060]">
+                          {{ courseInfo.create_dept || 'Channel Name' }}
+                       </div>
+                       <div class="text-[12px] text-[#606060] flex items-center mt-1">
+                          <span v-if="video.finish_time > 0" class="text-[#065FD4] bg-blue-50 px-1 rounded">
+                             Watched: {{ formatDuration(video.finish_time) }}
+                          </span>
+                       </div>
                    </div>
-                </template>
+                </div>
+             </template>
 
-             </div>
+             <!-- Topic Playlist Items -->
+             <template v-if="showObj.playlist === 'topic'">
+                <div
+                   v-for="(item, index) in topicObj.list[0].detail"
+                   :key="item.id"
+                   @click="switchCourse(item, index)"
+                   class="flex gap-2 cursor-pointer group"
+                >
+                   <div class="relative w-[168px] h-[94px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                       <img v-if="item.thumbnail_path" :src="item.thumbnail_path" class="w-full h-full object-cover" />
+                       <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition"></div>
+                       <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                       </div>
+                   </div>
+                   <div class="flex-1 min-w-0 py-1">
+                       <h3 class="text-[14px] font-semibold text-[#0f0f0f] leading-5 line-clamp-2 mb-1">
+                          {{ item.course_name_label }}
+                       </h3>
+                       <div class="text-[12px] text-[#606060]">
+                          {{ item.create_time }}
+                       </div>
+                   </div>
+                </div>
+             </template>
+
          </div>
       </div>
 
@@ -1097,18 +1056,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Custom scrollbar for playlist */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+/* No custom scrollbar needed usually for tailwind, but keeping if desire */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
-  border-radius: 20px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #9ca3af;
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>
