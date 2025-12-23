@@ -110,7 +110,6 @@
              <!-- Channel Info -->
              <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#606060] font-bold text-lg overflow-hidden">
-                   <!-- Placeholder Avatar if none -->
                    {{ (courseInfo.create_dept || 'C').charAt(0).toUpperCase() }}
                 </div>
                 <div class="flex flex-col">
@@ -204,10 +203,9 @@
                </button>
             </div>
 
-            <!-- Tab Content (Same as before but cleaner) -->
+            <!-- Tab Content -->
             <div class="py-4">
                <div v-if="activeTab === 'details'" class="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8 text-sm">
-                  <!-- Reuse existing logic for rows -->
                   <div class="flex border-b border-dashed border-gray-200 pb-2">
                      <span class="text-[#606060] w-32 shrink-0">{{ l.lecturer }}</span>
                      <span class="text-[#0f0f0f]">{{ courseInfo.lecturer == 1 ? l.internalLecturer : l.externalLecturer }}</span>
@@ -254,87 +252,87 @@
 
       <!-- Right Column: Playlist / Up Next -->
       <div class="w-full lg:w-[400px] shrink-0">
-         <div class="flex flex-col gap-4">
-             <!-- Playlist Header / Filter -->
-             <div class="flex items-center gap-2 mb-2">
-                 <button
-                    @click="showObj.playlist='course'"
-                    class="px-3 py-1.5 text-sm font-medium rounded-lg transition"
-                    :class="showObj.playlist === 'course' ? 'bg-black text-white' : 'bg-[#f2f2f2] text-[#0f0f0f] hover:bg-[#e5e5e5]'"
-                 >{{ l.course || 'All' }}</button>
-                 <button
-                    @click="showObj.playlist='topic'"
-                    class="px-3 py-1.5 text-sm font-medium rounded-lg transition"
-                    :class="showObj.playlist === 'topic' ? 'bg-black text-white' : 'bg-[#f2f2f2] text-[#0f0f0f] hover:bg-[#e5e5e5]'"
-                 >{{ l.topic || 'Related' }}</button>
+         <div class="bg-white border border-[#e5e5e5] rounded-xl overflow-hidden flex flex-col max-h-[calc(100vh-40px)] sticky top-4">
+             <!-- Playlist Header -->
+             <div class="p-3 border-b border-[#e5e5e5] flex items-center justify-between bg-gray-50">
+                <div class="font-bold text-[#0f0f0f]">{{ l.course || 'Course Content' }}</div>
+                <div class="flex gap-1">
+                   <button
+                      @click="showObj.playlist='course'"
+                      class="px-2 py-1 text-xs font-medium rounded transition"
+                      :class="showObj.playlist === 'course' ? 'bg-black text-white' : 'text-[#606060] hover:bg-gray-200'"
+                   >{{ l.course || 'All' }}</button>
+                   <button
+                      @click="showObj.playlist='topic'"
+                      class="px-2 py-1 text-xs font-medium rounded transition"
+                      :class="showObj.playlist === 'topic' ? 'bg-black text-white' : 'text-[#606060] hover:bg-gray-200'"
+                   >{{ l.topic || 'Related' }}</button>
+                </div>
              </div>
 
-             <!-- Course Playlist Items -->
-             <template v-if="showObj.playlist === 'course'">
-                <div
-                   v-for="(video, index) in videoList"
-                   :key="video.id"
-                   @click="toggleVideo(index)"
-                   class="flex gap-2 cursor-pointer group"
-                >
-                   <!-- Thumbnail -->
-                   <div class="relative w-[168px] h-[94px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center group-hover:rounded-none transition-all duration-200">
-                       <img v-if="courseInfo.thumbnail_path" :src="courseInfo.thumbnail_path" class="w-full h-full object-cover" />
-                       <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition"></div>
+             <!-- List Content -->
+             <div class="overflow-y-auto flex-1 p-2 space-y-2 custom-scrollbar">
+                <!-- Course Playlist Items -->
+                <template v-if="showObj.playlist === 'course'">
+                   <div
+                      v-for="(video, index) in videoList"
+                      :key="video.id"
+                      @click="toggleVideo(index)"
+                      class="flex gap-2 cursor-pointer group p-1 hover:bg-gray-100 rounded-lg transition"
+                      :class="{'bg-[#E5E5E5]': playingIndex === index}"
+                   >
+                      <!-- Thumbnail -->
+                      <div class="relative w-[120px] h-[68px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                          <img v-if="courseInfo.thumbnail_path" :src="courseInfo.thumbnail_path" class="w-full h-full object-cover" />
 
-                       <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
-                           <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M14 19h4V5h-4v14zm-8 0h4V5H6v14z"/></svg>
-                           <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M8 5v14l11-7z"/></svg>
-                       </div>
+                          <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                              <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M14 19h4V5h-4v14zm-8 0h4V5H6v14z"/></svg>
+                              <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M8 5v14l11-7z"/></svg>
+                          </div>
 
-                       <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs font-medium px-1 rounded">
-                          {{ formatDuration(video.duration) }}
-                       </div>
+                          <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
+                             {{ formatDuration(video.duration) }}
+                          </div>
+                      </div>
+
+                      <!-- Info -->
+                      <div class="flex-1 min-w-0 flex flex-col justify-center">
+                          <h3 class="text-[14px] font-semibold text-[#0f0f0f] leading-5 line-clamp-2 mb-1" :class="{'text-[#065FD4]': playingIndex === index}">
+                             {{ video.title }}
+                          </h3>
+                          <div class="text-[12px] text-[#606060]">
+                             {{ courseInfo.create_dept || 'Channel' }}
+                          </div>
+                      </div>
                    </div>
+                </template>
 
-                   <!-- Info -->
-                   <div class="flex-1 min-w-0 py-1">
-                       <h3 class="text-[14px] font-semibold text-[#0f0f0f] leading-5 line-clamp-2 mb-1 group-hover:text-black">
-                          {{ video.title }}
-                       </h3>
-                       <div class="text-[12px] text-[#606060]">
-                          {{ courseInfo.create_dept || 'Channel Name' }}
-                       </div>
-                       <div class="text-[12px] text-[#606060] flex items-center mt-1">
-                          <span v-if="video.finish_time > 0" class="text-[#065FD4] bg-blue-50 px-1 rounded">
-                             Watched: {{ formatDuration(video.finish_time) }}
-                          </span>
-                       </div>
+                <!-- Topic Playlist Items -->
+                <template v-if="showObj.playlist === 'topic'">
+                   <div
+                      v-for="(item, index) in topicObj.list[0].detail"
+                      :key="item.id"
+                      @click="switchCourse(item, index)"
+                      class="flex gap-2 cursor-pointer group p-1 hover:bg-gray-100 rounded-lg transition"
+                      :class="{'bg-[#E5E5E5]': topicObj.index === index}"
+                   >
+                      <div class="relative w-[120px] h-[68px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                          <img v-if="item.thumbnail_path" :src="item.thumbnail_path" class="w-full h-full object-cover" />
+                          <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                          </div>
+                      </div>
+                      <div class="flex-1 min-w-0 flex flex-col justify-center">
+                          <h3 class="text-[14px] font-semibold text-[#0f0f0f] leading-5 line-clamp-2 mb-1">
+                             {{ item.course_name_label }}
+                          </h3>
+                          <div class="text-[12px] text-[#606060]">
+                             {{ item.create_time }}
+                          </div>
+                      </div>
                    </div>
-                </div>
-             </template>
-
-             <!-- Topic Playlist Items -->
-             <template v-if="showObj.playlist === 'topic'">
-                <div
-                   v-for="(item, index) in topicObj.list[0].detail"
-                   :key="item.id"
-                   @click="switchCourse(item, index)"
-                   class="flex gap-2 cursor-pointer group"
-                >
-                   <div class="relative w-[168px] h-[94px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
-                       <img v-if="item.thumbnail_path" :src="item.thumbnail_path" class="w-full h-full object-cover" />
-                       <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition"></div>
-                       <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
-                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                       </div>
-                   </div>
-                   <div class="flex-1 min-w-0 py-1">
-                       <h3 class="text-[14px] font-semibold text-[#0f0f0f] leading-5 line-clamp-2 mb-1">
-                          {{ item.course_name_label }}
-                       </h3>
-                       <div class="text-[12px] text-[#606060]">
-                          {{ item.create_time }}
-                       </div>
-                   </div>
-                </div>
-             </template>
-
+                </template>
+             </div>
          </div>
       </div>
 
@@ -1056,12 +1054,18 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* No custom scrollbar needed usually for tailwind, but keeping if desire */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Custom scrollbar for playlist */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 20px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
 }
 </style>
