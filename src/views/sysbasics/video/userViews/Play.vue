@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#F9F9F9] font-sans text-[#0f0f0f]">
+  <div class="min-h-screen bg-[#F9F9F9] text-[#0f0f0f] relative">
     <!-- File Preview Component -->
     <FilePreviews
       :file-url="showObj.fileUrl"
@@ -56,7 +56,7 @@
              <button
                @click="goToExam"
                :disabled="currentExam.max_reply_num - examRecord.length <= 0"
-               class="px-5 py-2 bg-[#065FD4] text-white text-sm font-semibold rounded-full hover:bg-[#0056b3] disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+               class="px-5 py-2 bg-[#065FD4] text-white! text-sm font-semibold rounded-full hover:bg-[#0056b3] disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
              >
                {{l.goExam}}
              </button>
@@ -66,7 +66,7 @@
     </div>
 
     <!-- Main Layout -->
-    <div class="max-w-[1800px] mx-auto p-4 lg:px-6 lg:py-6 flex flex-col lg:flex-row gap-6">
+    <div class="max-w-[1800px] mx-auto p-4 lg:px-6 lg:py-6 flex flex-col xl:flex-row! gap-6">
 
       <!-- Left Column: Video & Info -->
       <div class="flex-1 min-w-0">
@@ -100,7 +100,7 @@
         <!-- Video Info Section -->
         <div class="mt-3">
           <!-- Title -->
-          <h1 class="text-[20px] font-bold text-[#0f0f0f] leading-7 break-words mb-2">
+          <h1 class="text-[20px] font-bold text-[#0f0f0f] leading-7 wrap-break-word mb-2 font-display">
              {{ currentVideoTitle || courseInfo.name_label || l.courseTitle }}
           </h1>
 
@@ -108,7 +108,7 @@
           <div class="flex flex-col justify-between gap-4">
 
              <!-- Channel Info -->
-             <div class="flex items-center gap-3">
+             <!-- <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#606060] font-bold text-lg overflow-hidden">
                    {{ (courseInfo.create_dept || 'C').charAt(0).toUpperCase() }}
                 </div>
@@ -120,10 +120,10 @@
                       {{ courseInfo.create_user || 'Subscribers' }}
                    </span>
                 </div>
-                <button class="ml-4 px-4 py-2 bg-black text-white text-sm font-medium rounded-full hover:bg-gray-800 transition">
+                <button class="ml-4 px-4 py-2 bg-black text-white! text-sm font-medium rounded-full hover:bg-gray-800 transition">
                    Subscribe
                 </button>
-             </div>
+             </div> -->
 
              <!-- Action Buttons -->
              <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
@@ -251,8 +251,8 @@
       </div>
 
       <!-- Right Column: Playlist / Up Next -->
-      <div class="w-full lg:w-[400px] shrink-0">
-         <div class="bg-white border border-[#e5e5e5] rounded-xl overflow-hidden flex flex-col max-h-[calc(100vh-40px)] sticky top-4">
+      <div class="w-full xl:w-[400px]! shrink-0">
+         <div class="bg-white border border-[#e5e5e5] rounded-xl overflow-hidden flex flex-col xl:max-h-[calc(100vh-40px)]! xl:sticky! xl:top-[90px]!">
              <!-- Playlist Header -->
              <div class="p-3 border-b border-[#e5e5e5] flex items-center justify-between bg-gray-50">
                 <div class="font-bold text-[#0f0f0f]">{{ l.course || 'Course Content' }}</div>
@@ -260,12 +260,12 @@
                    <button
                       @click="showObj.playlist='course'"
                       class="px-2 py-1 text-xs font-medium rounded transition"
-                      :class="showObj.playlist === 'course' ? 'bg-black text-white' : 'text-[#606060] hover:bg-gray-200'"
+                      :class="showObj.playlist === 'course' ? 'bg-black text-white!' : 'text-[#606060] hover:bg-gray-200'"
                    >{{ l.course || 'All' }}</button>
                    <button
                       @click="showObj.playlist='topic'"
                       class="px-2 py-1 text-xs font-medium rounded transition"
-                      :class="showObj.playlist === 'topic' ? 'bg-black text-white' : 'text-[#606060] hover:bg-gray-200'"
+                      :class="showObj.playlist === 'topic' ? 'bg-black text-white!' : 'text-[#606060] hover:bg-gray-200'"
                    >{{ l.topic || 'Related' }}</button>
                 </div>
              </div>
@@ -285,12 +285,12 @@
                       <div class="relative w-[120px] h-[68px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
                           <img v-if="courseInfo.thumbnail_path" :src="courseInfo.thumbnail_path" class="w-full h-full object-cover" />
 
-                          <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                          <div v-if="playingIndex === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white!">
                               <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M14 19h4V5h-4v14zm-8 0h4V5H6v14z"/></svg>
                               <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M8 5v14l11-7z"/></svg>
                           </div>
 
-                          <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
+                          <div class="absolute bottom-1 right-1 bg-black/80 text-white! text-[10px] px-1 rounded">
                              {{ formatDuration(video.duration) }}
                           </div>
                       </div>
@@ -318,7 +318,7 @@
                    >
                       <div class="relative w-[120px] h-[68px] bg-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
                           <img v-if="item.thumbnail_path" :src="item.thumbnail_path" class="w-full h-full object-cover" />
-                          <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                          <div v-if="topicObj.index === index" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white!">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                           </div>
                       </div>
@@ -345,12 +345,13 @@ import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, getCurrentI
 import debounce from 'lodash.debounce'
 import videoPlayer from '@/components/videoPlayer/VideoPlayerPlyr.vue'
 import FilePreviews from '@/views/_common/FilePreviews.vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
 // Global Instance
 const { proxy } = getCurrentInstance()
 // Robust fallback for i18n
-const l = computed(() => proxy.$l || new Proxy({}, { get: (_, prop) => prop }))
-const c = computed(() => proxy.$c || new Proxy({}, { get: (_, prop) => prop }))
+const { l, c } = useLocalI18n('videoUserPlay')
+
 const user = computed(() => proxy.$store.getters.user || {})
 
 // State
