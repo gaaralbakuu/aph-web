@@ -5,7 +5,7 @@
       <div class="text-6xl text-gray-300 mb-4">
         <i class="el-icon-document"></i>
       </div>
-      <div class="text-base font-medium text-gray-600 mb-2">{{ $c.table_empty }}</div>
+      <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
       <div class="text-sm text-gray-400">{{ $t('improveManagement_table.no_data') }}</div>
     </div>
 
@@ -38,7 +38,7 @@
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="max-w-[280px]">
                   <el-tooltip effect="dark" :content="item[col.id]" placement="top" :disabled="!item[col.id] || item[col.id].length < 30">
-                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap text-black font-bold dark:text-gray-300">{{ item[col.id] || $c.empty }}</div>
+                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap text-black font-bold dark:text-gray-300">{{ item[col.id] || c.empty }}</div>
                   </el-tooltip>
                 </div>
 
@@ -56,7 +56,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                       </svg>
 
-                      <span>{{ $c.view }}</span>
+                      <span>{{ c.view }}</span>
                     </button>
                   </div>
                 </template>
@@ -65,7 +65,7 @@
                 <template v-else>
                   <div class="text-black dark:text-gray-400">
                     <span v-if="item[col.id] === undefined || item[col.id] === null || item[col.id] === ''" class="text-gray-300 italic text-xs">
-                      {{ $c.empty }}
+                      {{ c.empty }}
                     </span>
                     <span v-else class="text-sm">{{ item[col.id] }}</span>
                   </div>
@@ -79,107 +79,110 @@
   </div>
 </template>
 
-<script>
-/*
-  Chú ý: Các text hiển thị đều lấy từ file ngôn ngữ qua $l.key.
-  Nếu muốn custom thêm cột, sửa columns phía dưới và bổ sung key vào file ngôn ngữ.
-*/
+<script setup>
+import { reactive, ref, computed, onMounted, getCurrentInstance } from 'vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'ImproveManagementTable',
-  props: {
-    data: {
-      type: Array,
-      default: () => [],
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    page: {
-      type: Object,
-      default: () => ({
-        page: 1,
-        pageSize: 15,
-      }),
-    },
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('ImproveManagementTable') // Assuming namespace
+
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => [],
   },
-  data() {
-    return {
-      columns: [
-        { id: 'index', title: '#', width: 60, textAlign: 'left' },
-        { id: 'name_en', title: 'factory_name', width: 260, textAlign: 'left' },
-        { id: 'vendor_code', title: 'vendor_code', width: 160, textAlign: 'left' },
-        { id: 'audit_time', title: 'audit_date', width: 160, textAlign: 'left' },
-        { id: 'total_issue', title: 'total_threshold_issues', width: 180, textAlign: 'left' },
-        { id: 'finish', title: 'number_of_closed_ti', width: 180, textAlign: 'left' },
-        { id: 'percent_closed_ti', title: 'percent_closed_ti', width: 140, textAlign: 'left' },
-        { id: 'last_date', title: 'last_updated', width: 160, textAlign: 'left' },
-        { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
-      ],
-      rowHeight: 44,
-      scrollTop: 0,
-      height: 400, // mặc định, có thể truyền prop hoặc tính toán động
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+  page: {
+    type: Object,
+    default: () => ({
+      page: 1,
+      pageSize: 15,
+    }),
+  },
+})
+
+const emit = defineEmits(['action', 'view', 'row-click', 'row-hover'])
+
+const columns = ref([
+  { id: 'index', title: '#', width: 60, textAlign: 'left' },
+  { id: 'name_en', title: 'factory_name', width: 260, textAlign: 'left' },
+  { id: 'vendor_code', title: 'vendor_code', width: 160, textAlign: 'left' },
+  { id: 'audit_time', title: 'audit_date', width: 160, textAlign: 'left' },
+  { id: 'total_issue', title: 'total_threshold_issues', width: 180, textAlign: 'left' },
+  { id: 'finish', title: 'number_of_closed_ti', width: 180, textAlign: 'left' },
+  { id: 'percent_closed_ti', title: 'percent_closed_ti', width: 140, textAlign: 'left' },
+  { id: 'last_date', title: 'last_updated', width: 160, textAlign: 'left' },
+  { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
+])
+
+const rowHeight = ref(44)
+const scrollTop = ref(0)
+const height = ref(400)
+
+const handleScroll = (e) => {
+  scrollTop.value = e.target.scrollTop
+}
+
+const getStickyStyle = (col, colIdx, isHeader) => {
+  if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
+  let style = {
+    width: col.width + 'px',
+    textAlign: col.textAlign,
+    position: 'sticky',
+    zIndex: isHeader ? 10 : 2,
+    background: isHeader ? '#f9fafb' : '#ffffff',
+  }
+  if (col.freeze === 'left') {
+    let left = 0
+    for (let i = 0; i < colIdx; i++) {
+      if (columns.value[i].freeze === 'left' || !columns.value[i].freeze) left += columns.value[i].width
     }
-  },
-  computed: {},
-  methods: {
-    handleScroll(e) {
-      this.scrollTop = e.target.scrollTop
-    },
-    getStickyStyle(col, colIdx, isHeader) {
-      if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = {
-        width: col.width + 'px',
-        textAlign: col.textAlign,
-        position: 'sticky',
-        zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff',
-      }
-      if (col.freeze === 'left') {
-        let left = 0
-        for (let i = 0; i < colIdx; i++) {
-          if (this.columns[i].freeze === 'left' || !this.columns[i].freeze) left += this.columns[i].width
-        }
-        style.left = left + 'px'
-      } else if (col.freeze === 'right') {
-        let right = 0
-        for (let i = this.columns.length - 1; i > colIdx; i--) {
-          if (this.columns[i].freeze === 'right' || !this.columns[i].freeze) right += this.columns[i].width
-        }
-        style.right = right + 'px'
-      }
-      return style
-    },
-    handleAction(cmd, row) {
-      this.$emit('action', { action: cmd, row })
-    },
-    handleView(cmd, row) {
-      this.$emit('view', { action: cmd, row })
-    },
-    handleRowClick(row) {
-      this.$emit('row-click', row)
-    },
-    handleRowHover(row, isEnter) {
-      this.$emit('row-hover', { row, isEnter })
-    },
-    getStatusType(status) {
-      const statusMap = {
-        onboarding: 'warning',
-        discontinued: 'info',
-        in_use: 'success',
-      }
-      return statusMap[status] || 'default'
-    },
-    getStatusText(status) {
-      const textMap = {
-        onboarding: this.$t('improveManagement_table.onboarding'),
-        discontinued: this.$t('improveManagement_table.discontinued'),
-        in_use: this.$t('improveManagement_table.in_use'),
-      }
-      return textMap[status] || status
-    },
-  },
+    style.left = left + 'px'
+  } else if (col.freeze === 'right') {
+    let right = 0
+    for (let i = columns.value.length - 1; i > colIdx; i--) {
+      if (columns.value[i].freeze === 'right' || !columns.value[i].freeze) right += columns.value[i].width
+    }
+    style.right = right + 'px'
+  }
+  return style
+}
+
+const handleAction = (cmd, row) => {
+  emit('action', { action: cmd, row })
+}
+
+const handleView = (cmd, row) => {
+  emit('view', { action: cmd, row })
+}
+
+const handleRowClick = (row) => {
+  emit('row-click', row)
+}
+
+const handleRowHover = (row, isEnter) => {
+  emit('row-hover', { row, isEnter })
+}
+
+const getStatusType = (status) => {
+  const statusMap = {
+    onboarding: 'warning',
+    discontinued: 'info',
+    in_use: 'success',
+  }
+  return statusMap[status] || 'default'
+}
+
+const getStatusText = (status) => {
+  const textMap = {
+    onboarding: proxy.$t('improveManagement_table.onboarding'),
+    discontinued: proxy.$t('improveManagement_table.discontinued'),
+    in_use: proxy.$t('improveManagement_table.in_use'),
+  }
+  return textMap[status] || status
 }
 </script>
 
