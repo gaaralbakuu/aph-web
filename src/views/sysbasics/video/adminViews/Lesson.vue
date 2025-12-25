@@ -2,7 +2,7 @@
   <div class="flex-1 flex overflow-hidden">
     <div class="h-full border-r border-gray-200">
       <div class="w-64 flex flex-col">
-        <div class="menu-label">{{ $c.lessonLayout }}</div>
+        <div class="menu-label">{{ c.lessonLayout }}</div>
         <div class="menu-wrapper">
           <el-menu :default-active="defaultIndex" class="border-0!">
             <!-- 假设我们不直接遍历第一层导航栏，而是遍历其下的子菜单 -->
@@ -26,7 +26,9 @@ export default {
 <script setup>
 import { ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
 import RecursiveMenu from './RecursiveMenu.vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
+const { l, c } = useLocalI18n('lessonLayout')
 const type = 'lesson'
 const { proxy } = getCurrentInstance()
 

@@ -1,13 +1,4 @@
-Plan to update remaining files to Composition API (Vue 2.7.16):
-
-Directory: src/views/sysbasics/video/adminViews
-
-1. Analyze.vue
-2. Exam.vue (Main wrapper)
-3. Lesson.vue (Main wrapper)
-4. RecursiveMenu.vue
-5. System.vue (Main wrapper)
-6. Training.vue (Main wrapper)
+Plan to update remaining files to Composition API script setup (Vue 2.7.16):
 
 Directory: src/views/sysbasics/video/adminViews/component/analyze
 1. CollegeTraining.vue
@@ -49,5 +40,5 @@ Conversion Steps for each file:
 7.  Convert `methods` to standard functions.
 8.  Convert `computed` properties.
 9.  Convert lifecycle hooks (`mounted` -> `onMounted`, etc.).
-10. Update template to use `l` instead of `$l` and remove `this` references if logic moved to template (though template stays mostly same, just variable names need to match setup return).
-11. Verify imports of child components (auto-imported in setup if using standard components, but check local registrations).
+10. Update template to use `l` instead of `$l` and remove `this` references.
+11. Verify imports of child components.
