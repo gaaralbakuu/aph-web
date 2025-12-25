@@ -24,18 +24,13 @@
             </span>
             <i class="el-icon-arrow-down text-[#606060] text-xs group-hover:rotate-180 transition-transform"></i>
           </button>
-           <!-- Invisible hover bridge -->
+          <!-- Invisible hover bridge -->
           <div class="absolute top-full left-0 right-0 h-1 hidden group-hover:block"></div>
           <!-- Dropdown Menu -->
           <div class="absolute top-full left-0 right-0 pt-1 hidden group-hover:block z-50">
             <div class="bg-white border border-[#E5E5E5] rounded shadow-lg">
               <div class="max-h-56 overflow-y-auto">
-                <button
-                  v-for="college in publicCodeObj.collegeList"
-                  :key="college.id"
-                  class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5] last:border-b-0"
-                  :class="college_id === college.id ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''"
-                  @click="college_id = college.id">
+                <button v-for="college in publicCodeObj.collegeList" :key="college.id" class="w-full text-left px-3 py-2 hover:bg-[#F2F2F2] text-sm text-[#0D0D0D] border-b border-[#E5E5E5] last:border-b-0" :class="college_id === college.id ? 'bg-[#F0F0F0] text-[#065FD4] font-medium' : ''" @click="college_id = college.id">
                   <div class="flex items-center gap-2">
                     <i class="el-icon-check text-[#065FD4]" :class="college_id === college.id ? 'opacity-100' : 'opacity-0'"></i>
                     <span>{{ college.name_label }}</span>
@@ -52,21 +47,20 @@
         </div>
 
         <div class="relative w-40">
-           <select v-model="questionObj.query.question_type" @change="getQuestionList" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
-              <option value="">{{ l.all }}</option>
-              <option v-for="i in publicCodeObj.question_type" :key="i.value" :value="i.value">{{ i.label }}</option>
-           </select>
+          <select v-model="questionObj.query.question_type" @change="getQuestionList" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+            <option value="">{{ l.all }}</option>
+            <option v-for="i in publicCodeObj.question_type" :key="i.value" :value="i.value">{{ i.label }}</option>
+          </select>
         </div>
 
         <div class="relative w-40">
-           <select v-model="questionObj.query.question_status" @change="getQuestionList" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
-              <option value="">{{ l.all }}</option>
-              <option v-for="i in publicCodeObj.question_status" :key="i.value" :value="i.value">{{ i.label }}</option>
-           </select>
+          <select v-model="questionObj.query.question_status" @change="getQuestionList" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]">
+            <option value="">{{ l.all }}</option>
+            <option v-for="i in publicCodeObj.question_status" :key="i.value" :value="i.value">{{ i.label }}</option>
+          </select>
         </div>
 
         <button class="bg-[#065FD4] text-white! px-4 py-2 rounded text-sm uppercase font-medium shadow-sm hover:bg-[#0551B4]" @click="getQuestionList">{{ l.search }}</button>
-
       </div>
     </div>
 
@@ -75,30 +69,23 @@
       <!-- Left: Catalog Tree -->
       <div class="w-[300px] bg-white border-r border-[#E5E5E5] flex flex-col">
         <div class="p-4 border-b border-[#E5E5E5] bg-[#F9F9F9] flex justify-between items-center">
-           <h2 class="font-medium text-sm text-[#0D0D0D] mb-0!">{{ l.catalogDrawerTitle }}</h2>
-           <button class="text-[#065FD4] text-sm hover:underline" @click="addCatalog">{{ l.add }}</button>
+          <h2 class="font-medium text-sm text-[#0D0D0D] mb-0!">{{ l.catalogDrawerTitle }}</h2>
+          <button class="text-[#065FD4] text-sm hover:underline" @click="addCatalog">{{ l.add }}</button>
         </div>
         <div class="p-2 border-b border-[#E5E5E5]">
           <div class="flex gap-2">
-             <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center bg-white">
-                <input v-model="filterCatalogText" :placeholder="l.filterCatalog" class="w-full text-xs outline-none" />
-             </div>
-             <select v-model="catalogObj.query.is_valid" @change="getCatalogList" class="border border-[#CCCCCC] rounded px-1 py-1 text-xs outline-none bg-white w-20">
-                <option value="">{{ l.all }}</option>
-                <option value="Y">{{ l.enableFilter }}</option>
-                <option value="N">{{ l.disableFilter }}</option>
-             </select>
+            <div class="flex-1 border border-[#CCCCCC] rounded px-2 py-1 flex items-center bg-white">
+              <input v-model="filterCatalogText" :placeholder="l.filterCatalog" class="w-full text-xs outline-none" />
+            </div>
+            <select v-model="catalogObj.query.is_valid" @change="getCatalogList" class="border border-[#CCCCCC] rounded px-1 py-1 text-xs outline-none bg-white w-20">
+              <option value="">{{ l.all }}</option>
+              <option value="Y">{{ l.enableFilter }}</option>
+              <option value="N">{{ l.disableFilter }}</option>
+            </select>
           </div>
         </div>
         <div class="flex-1 overflow-y-auto p-2 overflow-x-hidden">
-           <el-tree
-              ref="catalogTree"
-              node-key="id"
-              :expand-on-click-node="false"
-              :accordion="true"
-              :default-expand-all="true"
-              :data="catalogObj.list"
-              :filter-node-method="filterCatalog">
+          <el-tree ref="catalogTree" node-key="id" :expand-on-click-node="false" :accordion="true" :default-expand-all="true" :data="catalogObj.list" :filter-node-method="filterCatalog">
             <template #default="{ node, data }">
               <div class="flex-1 flex justify-between items-center pr-2 py-1 group cursor-pointer overflow-hidden" @click="clickQuestionCatalog(data.id)">
                 <span class="text-sm truncate flex-1" :class="questionObj.query.question_category_id === data.id ? 'text-[#065FD4] font-medium' : 'text-[#0D0D0D]'">{{ data.name_label }}</span>
@@ -115,49 +102,49 @@
 
       <!-- Right: Question List -->
       <div class="flex-1 overflow-y-auto bg-white flex flex-col">
-          <div class="grid grid-cols-[50px_3fr_100px_120px_100px_100px_120px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
-            <div>{{ l.serialNumber }}</div>
-            <div>{{ l.question || "--" }}</div>
-            <div>{{ l.difficulty }}</div>
-            <div>{{ l.questionTypeColumn }}</div>
-            <div>{{ l.publishStatusColumn }}</div>
-            <div>{{ l.status }}</div>
-            <div class="text-right">{{ l.actions }}</div>
-          </div>
+        <div class="grid grid-cols-[50px_3fr_100px_120px_100px_100px_120px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10">
+          <div>{{ l.serialNumber }}</div>
+          <div>{{ l.question || '--' }}</div>
+          <div>{{ l.difficulty }}</div>
+          <div>{{ l.questionTypeColumn }}</div>
+          <div>{{ l.publishStatusColumn }}</div>
+          <div>{{ l.status }}</div>
+          <div class="text-right">{{ l.actions }}</div>
+        </div>
 
-          <div class="divide-y divide-[#E5E5E5]">
-             <div v-if="questionObj.list.length === 0" class="flex flex-col items-center justify-center py-20">
-              <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
-                <i class="el-icon-document text-4xl text-[#CCCCCC]"></i>
-              </div>
-              <p class="text-[#0D0D0D]">{{ c.noData }}</p>
+        <div class="divide-y divide-[#E5E5E5]">
+          <div v-if="questionObj.list.length === 0" class="flex flex-col items-center justify-center py-20">
+            <div class="w-32 h-32 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
+              <i class="el-icon-document text-4xl text-[#CCCCCC]"></i>
             </div>
-            <div v-else v-for="(item, index) in questionObj.list" :key="item.id" class="grid grid-cols-[50px_3fr_100px_120px_100px_100px_120px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D]">
-               <div class="text-[#606060]">{{ (questionObj.query.page - 1) * questionObj.query.pageSize + index + 1 }}</div>
-               <div class="font-medium truncate" :title="item.name_label">{{ item.name_label || "--" }}</div>
-               <div>{{ item.difficulty_level }}</div>
-               <div>{{ returnPublicObjLabel(item.question_type, 'value', 'label', 'question_type') }}</div>
-               <div>{{ returnPublicObjLabel(item.question_status, 'value', 'label', 'question_status') }}</div>
-               <div>
-                  <span :class="item.is_valid === 'Y' ? 'text-[#069C56]' : 'text-[#CC0000]'">
-                    {{ item.is_valid === 'Y' ? l.enableStatus : l.disableStatus }}
-                  </span>
-               </div>
-               <div class="flex items-center justify-end gap-3">
-                  <button class="text-[#606060] hover:text-[#0D0D0D]" @click="editQuestion(item)">
-                    <i class="el-icon-edit text-lg"></i>
-                  </button>
-                   <button class="" :class="item.is_valid === 'Y' ? 'text-[#CC0000]' : 'text-[#069C56]'" @click="toggleQuestionStatus(item)">
-                    <i :class="item.is_valid === 'Y' ? 'el-icon-video-pause' : 'el-icon-video-play'" class="text-lg"></i>
-                  </button>
-               </div>
+            <p class="text-[#0D0D0D]">{{ c.noData }}</p>
+          </div>
+          <div v-else v-for="(item, index) in questionObj.list" :key="item.id" class="grid grid-cols-[50px_3fr_100px_120px_100px_100px_120px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D]">
+            <div class="text-[#606060]">{{ (questionObj.query.page - 1) * questionObj.query.pageSize + index + 1 }}</div>
+            <div class="font-medium truncate" :title="item.name_label">{{ item.name_label || '--' }}</div>
+            <div>{{ item.difficulty_level }}</div>
+            <div>{{ returnPublicObjLabel(item.question_type, 'value', 'label', 'question_type') }}</div>
+            <div>{{ returnPublicObjLabel(item.question_status, 'value', 'label', 'question_status') }}</div>
+            <div>
+              <span :class="item.is_valid === 'Y' ? 'text-[#069C56]' : 'text-[#CC0000]'">
+                {{ item.is_valid === 'Y' ? l.enableStatus : l.disableStatus }}
+              </span>
+            </div>
+            <div class="flex items-center justify-end gap-3">
+              <button class="text-[#606060] hover:text-[#0D0D0D]" @click="editQuestion(item)">
+                <i class="el-icon-edit text-lg"></i>
+              </button>
+              <button class="" :class="item.is_valid === 'Y' ? 'text-[#CC0000]' : 'text-[#069C56]'" @click="toggleQuestionStatus(item)">
+                <i :class="item.is_valid === 'Y' ? 'el-icon-video-pause' : 'el-icon-video-play'" class="text-lg"></i>
+              </button>
             </div>
           </div>
+        </div>
       </div>
     </div>
 
     <!-- Pagination -->
-     <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
+    <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
       <div class="flex items-center gap-2">
         <span>{{ l.rowsPerPage }}:</span>
         <select
@@ -179,166 +166,166 @@
 
     <!-- Catalog Drawer -->
     <a-drawer :visible="showObj.catalogDrawer" :title="l.catalogDrawerTitle" :width="600" @close="showObj.catalogDrawer = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
-          <div class="flex-1 overflow-y-auto p-6 space-y-4">
-             <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-1">{{ l.college }}</label>
-                <select v-model="catalogObj.form.college_id" class="w-full outline-none text-sm bg-transparent" @change="catalogCollegeChange">
-                  <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
-                </select>
-             </div>
-
-             <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-1">{{ l.parentCatalog }}</label>
-                 <el-cascader v-model="catalogObj.form.pid" :options="publicCodeObj.catalogList" clearable :placeholder="l.defaultRootCatalog" style="width: 100%" :props="catalogObj.cascaderProps" class="w-full no-border-input"></el-cascader>
-             </div>
-
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameZh }}</label>
-                <input v-model="catalogObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" />
-             </div>
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameTw }}</label>
-                <input v-model="catalogObj.form.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" />
-             </div>
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameEn }}</label>
-                <input v-model="catalogObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" />
-             </div>
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameVi }}</label>
-                <input v-model="catalogObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" />
-             </div>
-
-             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.catalogDescription }}</label>
-                <textarea v-model="catalogObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="4"></textarea>
-             </div>
+      <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
+        <div class="flex-1 overflow-y-auto p-6 space-y-4">
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-1">{{ l.college }}</label>
+            <select v-model="catalogObj.form.college_id" class="w-full outline-none text-sm bg-transparent" @change="catalogCollegeChange">
+              <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+            </select>
           </div>
-          <div class="p-4 border-t border-[#E5E5E5] flex justify-end gap-2 bg-white">
-            <button class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="showObj.catalogDrawer = false">
-              {{ l.close }}
-            </button>
-            <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitCatalog">
-              {{ l.submit }}
-            </button>
+
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-1">{{ l.parentCatalog }}</label>
+            <el-cascader v-model="catalogObj.form.pid" :options="publicCodeObj.catalogList" clearable :placeholder="l.defaultRootCatalog" style="width: 100%" :props="catalogObj.cascaderProps" class="w-full no-border-input"></el-cascader>
           </div>
-       </div>
+
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameZh }}</label>
+            <input v-model="catalogObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" />
+          </div>
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameTw }}</label>
+            <input v-model="catalogObj.form.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" />
+          </div>
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameEn }}</label>
+            <input v-model="catalogObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" />
+          </div>
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameVi }}</label>
+            <input v-model="catalogObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" />
+          </div>
+
+          <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.catalogDescription }}</label>
+            <textarea v-model="catalogObj.form.description" class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="4"></textarea>
+          </div>
+        </div>
+        <div class="p-4 border-t border-[#E5E5E5] flex justify-end gap-2 bg-white">
+          <button class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="showObj.catalogDrawer = false">
+            {{ l.close }}
+          </button>
+          <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitCatalog">
+            {{ l.submit }}
+          </button>
+        </div>
+      </div>
     </a-drawer>
 
     <!-- Question Drawer -->
     <a-drawer :visible="showObj.questionDrawer" :title="l.questionDrawerTitle" :width="900" @close="showObj.questionDrawer = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
-          <div class="flex-1 overflow-y-auto p-6 space-y-4">
-             <!-- Top Form -->
-             <div class="grid grid-cols-2 gap-4">
-               <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                  <label class="block text-xs text-[#606060] mb-1">{{ l.college }}</label>
-                  <select v-model="questionObj.form.college_id" class="w-full outline-none text-sm bg-transparent" @change="questionCollegeChange">
-                    <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
-                  </select>
-               </div>
-               <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                  <label class="block text-xs text-[#606060] mb-1">{{ l.questionCategory }}</label>
-                   <el-cascader v-model="questionObj.form.question_category_id" :options="publicCodeObj.catalogList" clearable :placeholder="l.defaultRootCatalog" :props="catalogObj.cascaderProps" style="width: 100%" class="no-border-input"></el-cascader>
-               </div>
-             </div>
-
-             <div class="grid grid-cols-2 gap-4">
-               <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                  <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameZh }}</label>
-                  <input v-model="questionObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" />
-               </div>
-               <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                  <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameTw }}</label>
-                  <input v-model="questionObj.form.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" />
-               </div>
-               <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                  <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameEn }}</label>
-                  <input v-model="questionObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" />
-               </div>
-               <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                  <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameVi }}</label>
-                  <input v-model="questionObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" />
-               </div>
-             </div>
-
-             <div class="grid grid-cols-3 gap-4">
-                <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                   <label class="block text-xs text-[#606060] mb-1">{{ l.questionType }}</label>
-                   <select v-model="questionObj.form.question_type" class="w-full outline-none text-sm bg-transparent" @change="question_typeChange">
-                      <option v-for="i in publicCodeObj.question_type" :key="i.value" :value="i.value">{{ i.label }}</option>
-                   </select>
-                </div>
-                 <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                   <label class="block text-xs text-[#606060] mb-1">{{ l.publishStatus }}</label>
-                   <select v-model="questionObj.form.question_status" class="w-full outline-none text-sm bg-transparent">
-                      <option v-for="i in publicCodeObj.question_status" :key="i.value" :value="i.value">{{ i.label }}</option>
-                   </select>
-                </div>
-                 <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
-                   <label class="block text-xs text-[#606060] mb-1">{{ l.difficultyLevel }}</label>
-                   <select v-model="questionObj.form.difficulty_level" class="w-full outline-none text-sm bg-transparent">
-                      <option v-for="i in 10" :key="i" :value="i">{{ i }}</option>
-                   </select>
-                </div>
-             </div>
-
-             <!-- Options Section -->
-             <div class="mt-6">
-                <div v-if="questionObj.form.question_type === 0">
-                    <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
-                      <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.inputContent }}</label>
-                      <textarea class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="2"></textarea>
-                    </div>
-                </div>
-
-                <div v-else-if="questionObj.form.question_type == 1 || questionObj.form.question_type == 2 || questionObj.form.question_type == 3">
-                   <div v-for="(i, index) in (questionObj.form.question_type == 3 ? templateObj.judge : templateObj.radio)" :key="index" class="mb-4 border border-[#E5E5E5] rounded p-4 bg-[#F9F9F9]">
-                      <div class="flex justify-between items-center mb-2 pb-2 border-b border-[#E5E5E5]">
-                         <span class="font-medium text-sm">{{ l.option }} {{ index + 1 }}</span>
-                         <div class="flex gap-2">
-                            <i v-if="questionObj.form.question_type != 3" class="el-icon-remove-outline text-[#CC0000] text-xl cursor-pointer" @click="removeOption(index, 'radio')"></i>
-                            <i v-if="questionObj.form.question_type != 3 && index + 1 == templateObj.radio.length" class="el-icon-circle-plus-outline text-[#065FD4] text-xl cursor-pointer" @click="addOption"></i>
-                         </div>
-                      </div>
-                      <div class="grid grid-cols-2 gap-2 mb-2">
-                         <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.zh }}</span>
-                            <input v-model="i.name_zh" class="flex-1 px-2 py-1 outline-none text-sm" />
-                         </div>
-                          <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.en }}</span>
-                            <input v-model="i.name_en" class="flex-1 px-2 py-1 outline-none text-sm" />
-                         </div>
-                         <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.vi }}</span>
-                            <input v-model="i.name_vi" class="flex-1 px-2 py-1 outline-none text-sm" />
-                         </div>
-                         <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
-                            <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.tw }}</span>
-                            <input v-model="i.name_tw" class="flex-1 px-2 py-1 outline-none text-sm" />
-                         </div>
-                      </div>
-                      <div class="flex justify-end">
-                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" v-model="i.is_correct" class="accent-[#069C56]" />
-                            <span class="text-sm font-medium" :class="i.is_correct ? 'text-[#069C56]' : 'text-[#606060]'">{{ l.correctAnswer }}</span>
-                         </label>
-                      </div>
-                   </div>
-                </div>
-             </div>
+      <div class="flex flex-col bg-white font-roboto absolute top-[55px] left-0 right-0 bottom-0">
+        <div class="flex-1 overflow-y-auto p-6 space-y-4">
+          <!-- Top Form -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-1">{{ l.college }}</label>
+              <select v-model="questionObj.form.college_id" class="w-full outline-none text-sm bg-transparent" @change="questionCollegeChange">
+                <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+              </select>
+            </div>
+            <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-1">{{ l.questionCategory }}</label>
+              <el-cascader v-model="questionObj.form.question_category_id" :options="publicCodeObj.catalogList" clearable :placeholder="l.defaultRootCatalog" :props="catalogObj.cascaderProps" style="width: 100%" class="no-border-input"></el-cascader>
+            </div>
           </div>
-          <div class="p-4 border-t border-[#E5E5E5] flex justify-end gap-2 bg-white">
-            <button class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="showObj.questionDrawer = false">
-              {{ l.close }}
-            </button>
-            <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitQuestion">
-              {{ l.submit }}
-            </button>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameZh }}</label>
+              <input v-model="questionObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" />
+            </div>
+            <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameTw }}</label>
+              <input v-model="questionObj.form.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" />
+            </div>
+            <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameEn }}</label>
+              <input v-model="questionObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" />
+            </div>
+            <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.nameVi }}</label>
+              <input v-model="questionObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" />
+            </div>
           </div>
-       </div>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-1">{{ l.questionType }}</label>
+              <select v-model="questionObj.form.question_type" class="w-full outline-none text-sm bg-transparent" @change="question_typeChange">
+                <option v-for="i in publicCodeObj.question_type" :key="i.value" :value="i.value">{{ i.label }}</option>
+              </select>
+            </div>
+            <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-1">{{ l.publishStatus }}</label>
+              <select v-model="questionObj.form.question_status" class="w-full outline-none text-sm bg-transparent">
+                <option v-for="i in publicCodeObj.question_status" :key="i.value" :value="i.value">{{ i.label }}</option>
+              </select>
+            </div>
+            <div class="relative group border border-[#CCCCCC] rounded px-3 py-2 focus-within:border-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-1">{{ l.difficultyLevel }}</label>
+              <select v-model="questionObj.form.difficulty_level" class="w-full outline-none text-sm bg-transparent">
+                <option v-for="i in 10" :key="i" :value="i">{{ i }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Options Section -->
+          <div class="mt-6">
+            <div v-if="questionObj.form.question_type === 0">
+              <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.inputContent }}</label>
+                <textarea class="w-full outline-none text-[#0D0D0D] text-sm resize-none" rows="2"></textarea>
+              </div>
+            </div>
+
+            <div v-else-if="questionObj.form.question_type == 1 || questionObj.form.question_type == 2 || questionObj.form.question_type == 3">
+              <div v-for="(i, index) in questionObj.form.question_type == 3 ? templateObj.judge : templateObj.radio" :key="index" class="mb-4 border border-[#E5E5E5] rounded p-4 bg-[#F9F9F9]">
+                <div class="flex justify-between items-center mb-2 pb-2 border-b border-[#E5E5E5]">
+                  <span class="font-medium text-sm">{{ l.option }} {{ index + 1 }}</span>
+                  <div class="flex gap-2">
+                    <i v-if="questionObj.form.question_type != 3" class="el-icon-remove-outline text-[#CC0000] text-xl cursor-pointer" @click="removeOption(index, 'radio')"></i>
+                    <i v-if="questionObj.form.question_type != 3 && index + 1 == templateObj.radio.length" class="el-icon-circle-plus-outline text-[#065FD4] text-xl cursor-pointer" @click="addOption"></i>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                  <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
+                    <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.zh }}</span>
+                    <input v-model="i.name_zh" class="flex-1 px-2 py-1 outline-none text-sm" />
+                  </div>
+                  <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
+                    <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.en }}</span>
+                    <input v-model="i.name_en" class="flex-1 px-2 py-1 outline-none text-sm" />
+                  </div>
+                  <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
+                    <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.vi }}</span>
+                    <input v-model="i.name_vi" class="flex-1 px-2 py-1 outline-none text-sm" />
+                  </div>
+                  <div class="flex items-center border border-[#CCCCCC] rounded bg-white overflow-hidden">
+                    <span class="bg-[#F2F2F2] px-2 py-2 text-xs text-[#606060] border-r border-[#CCCCCC] text-center whitespace-pre">{{ l.tw }}</span>
+                    <input v-model="i.name_tw" class="flex-1 px-2 py-1 outline-none text-sm" />
+                  </div>
+                </div>
+                <div class="flex justify-end">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" v-model="i.is_correct" class="accent-[#069C56]" />
+                    <span class="text-sm font-medium" :class="i.is_correct ? 'text-[#069C56]' : 'text-[#606060]'">{{ l.correctAnswer }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 border-t border-[#E5E5E5] flex justify-end gap-2 bg-white">
+          <button class="px-4 py-2 text-[#065FD4] font-medium text-sm uppercase hover:bg-[#F2F8FF] rounded-sm transition-colors" @click="showObj.questionDrawer = false">
+            {{ l.close }}
+          </button>
+          <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitQuestion">
+            {{ l.submit }}
+          </button>
+        </div>
+      </div>
     </a-drawer>
   </div>
 </template>
@@ -378,14 +365,14 @@ const publicCodeObj = reactive({
   catalogList: [],
   collegeList: [],
   question_type: [
-    { label: '填空题', value: 0 },
-    { label: '单选题', value: 1 },
-    { label: '多选题', value: 2 },
-    { label: '判断题', value: 3 },
+    { label: l.value.fillInBlank, value: 0 },
+    { label: l.value.singleChoice, value: 1 },
+    { label: l.value.multipleChoice, value: 2 },
+    { label: l.value.judgement, value: 3 },
   ],
   question_status: [
-    { label: '未发布', value: 0 },
-    { label: '已发布', value: 1 },
+    { label: l.value.unpublished, value: 0 },
+    { label: l.value.published, value: 1 },
   ],
 })
 
@@ -489,11 +476,11 @@ const returnPublicObjLabel = (inputValue, key, outputValue, filed) => {
 
 // Question Logic
 const question_typeChange = (e) => {
-   // e is event or value depending on browser, in Vue @change on select returns event.
-   // But v-model updates value. Actually in Vue 2 select change param is value? No standard DOM event.
-   // Wait, we used v-model.
-   const v = questionObj.form.question_type;
-   if (v == 1 || v == 2) {
+  // e is event or value depending on browser, in Vue @change on select returns event.
+  // But v-model updates value. Actually in Vue 2 select change param is value? No standard DOM event.
+  // Wait, we used v-model.
+  const v = questionObj.form.question_type
+  if (v == 1 || v == 2) {
     if (templateObj.radio.length == 0) {
       addOption()
     }
@@ -501,10 +488,30 @@ const question_typeChange = (e) => {
     if (templateObj.judge.length == 0) {
       templateObj.judge = [
         {
-          id: '', option_id: '', pid: '', name_zh: '正确', name_tw: '正確', name_en: 'True', name_vi: 'Đúng', is_correct: false, sort: '', is_valid: 'Y', rec_status: 1,
+          id: '',
+          option_id: '',
+          pid: '',
+          name_zh: '正确',
+          name_tw: '正確',
+          name_en: 'True',
+          name_vi: 'Đúng',
+          is_correct: false,
+          sort: '',
+          is_valid: 'Y',
+          rec_status: 1,
         },
         {
-          id: '', option_id: '', pid: '', name_zh: '错误', name_tw: '錯誤', name_en: 'False', name_vi: 'Sai', is_correct: false, sort: '', is_valid: 'Y', rec_status: 1,
+          id: '',
+          option_id: '',
+          pid: '',
+          name_zh: '错误',
+          name_tw: '錯誤',
+          name_en: 'False',
+          name_vi: 'Sai',
+          is_correct: false,
+          sort: '',
+          is_valid: 'Y',
+          rec_status: 1,
         },
       ]
     }
@@ -546,7 +553,7 @@ const addQuestion = () => {
 
   for (let key in questionObj.form) {
     if (questionObj.form.hasOwnProperty(key)) {
-      if(key === 'options') questionObj.form[key] = []
+      if (key === 'options') questionObj.form[key] = []
       else questionObj.form[key] = ''
     }
   }
@@ -665,7 +672,18 @@ const filterCatalog = (value, data) => {
 
 const addCatalog = () => {
   catalogObj.form = {
-    id: '', pid: '', pname: '', sort: '', name_zh: '', name_tw: '', name_en: '', name_vi: '', description: '', is_valid: 'Y', rec_status: 1, college_id: college_id.value,
+    id: '',
+    pid: '',
+    pname: '',
+    sort: '',
+    name_zh: '',
+    name_tw: '',
+    name_en: '',
+    name_vi: '',
+    description: '',
+    is_valid: 'Y',
+    rec_status: 1,
+    college_id: college_id.value,
   }
   showObj.catalogDrawer = true
 }
