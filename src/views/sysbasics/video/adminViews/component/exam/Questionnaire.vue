@@ -403,7 +403,7 @@ const getQuestionnaireList = () => {
       ...questionnaireObj.query,
       college_id: college_id.value
     })
-    .then(r => {
+    .then((r) => {
       questionnaireObj.list = r.data.list
       questionnaireObj.total = r.data.total
     })

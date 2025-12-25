@@ -320,14 +320,14 @@ const showObj = reactive({
 const publicCodeObj = reactive({
   collegeList: [],
   question_type: [
-    { label: l.value.blankQuestion, value: 0 },
-    { label: l.value.singleChoiceQuestion, value: 1 },
-    { label: l.value.multipleChoiceQuestion, value: 2 },
-    { label: l.value.trueFalseQuestion, value: 3 },
+    { label: '填空题', value: 0 },
+    { label: '单选题', value: 1 },
+    { label: '多选题', value: 2 },
+    { label: '判断题', value: 3 },
   ],
   question_status: [
-    { label: l.value.notPublished, value: 0 },
-    { label: l.value.published, value: 1 },
+    { label: '未发布', value: 0 },
+    { label: '已发布', value: 1 },
   ],
 })
 
