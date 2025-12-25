@@ -17,7 +17,7 @@
           :class="queryParams.is_valid === '' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
           @click="
             queryParams.is_valid = ''
-            getVideoList()
+            refetchTagList()
           ">
           {{ c.all || 'All' }}
         </button>
@@ -26,7 +26,7 @@
           :class="queryParams.is_valid === 'Y' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
           @click="
             queryParams.is_valid = 'Y'
-            getVideoList()
+            refetchTagList()
           ">
           {{ l.enable || 'Enable' }}
         </button>
@@ -35,7 +35,7 @@
           :class="queryParams.is_valid === 'N' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
           @click="
             queryParams.is_valid = 'N'
-            getVideoList()
+            refetchTagList()
           ">
           {{ l.disable || 'Disable' }}
         </button>

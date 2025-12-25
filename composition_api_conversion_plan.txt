@@ -1,20 +1,5 @@
 Plan to update remaining files to Composition API script setup (Vue 2.7.16):
 
-Directory: src/views/sysbasics/video/adminViews/component/analyze
-1. CollegeTraining.vue
-2. Index.vue
-
-Directory: src/views/sysbasics/video/adminViews/component/common
-1. Button.vue
-2. Dropdown.vue
-3. Pagination.vue
-4. SearchInput.vue
-
-Directory: src/views/sysbasics/video/adminViews/component/exam
-1. Exam.vue (Component)
-2. Question.vue
-3. Questionnaire.vue
-
 Directory: src/views/sysbasics/video/adminViews/component/lesson
 1. Catalogue.vue
 2. Content.vue

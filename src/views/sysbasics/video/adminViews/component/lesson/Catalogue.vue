@@ -1,260 +1,181 @@
 <template>
-  <div ref="lesssonCatalogue-container" class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+  <div ref="lesssonCatalogue-container" class="lesssonCatalogue-container">
+    <el-drawer class="drawer-container" :visible.sync="showObj.catalog_show" :wrapperClosable="false" size="40%" :before-close="getCatalogList">
+      <div slot="title" class="title">{{ l.addEditCatalogue }}</div>
+      <div class="form-container">
+        <div class="form">
+          <el-form label-width="100px" size="medium">
+            <el-form-item :label="$l.belongCollege" required>
+              <el-select v-model="catalogObj.form.college_id" style="width: 100%" @change="collegeChange">
+                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label" :value="i.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="$l.parentCatalogue" v-if="catalogObj.form.college_id != ''">
+              <el-cascader v-model="catalogObj.form.pid" :options="catalogObj.list" clearable :placeholder="$l.emptyIsRootCatalogue" style="width: 100%" :props="catalogObj.cascaderProps"> </el-cascader>
+            </el-form-item>
+            <el-form-item :label="$l.simplifiedChineseName" required>
+              <el-input v-model="catalogObj.form.name_zh"></el-input>
+            </el-form-item>
+            <el-form-item :label="$l.traditionalChineseName">
+              <el-input v-model="catalogObj.form.name_tw"></el-input>
+            </el-form-item>
+            <el-form-item :label="$l.englishName">
+              <el-input v-model="catalogObj.form.name_en"></el-input>
+            </el-form-item>
+            <el-form-item :label="$l.vietnameseName">
+              <el-input v-model="catalogObj.form.name_vi"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="buttonBar">
+          <el-button type="primary" @click="submitCatalog">{{ l.submit }}</el-button>
+          <el-button type="danger" @click="showObj.catalog_show = false">{{ l.close }}</el-button>
+        </div>
+      </div>
+    </el-drawer>
 
-    <!-- Header -->
-    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white h-[70px]">
-      <h1 class="text-xl font-medium mb-0!">{{ l.catalogueManagement || 'Catalogue Management' }}</h1>
-    </div>
-
-    <!-- Main Content Split View -->
-    <div class="flex-1 overflow-hidden flex">
-
-       <!-- Left: Organization Tree -->
-       <div class="w-[300px] flex flex-col border-r border-[#E5E5E5] bg-white">
-          <div class="p-4 border-b border-[#E5E5E5] bg-[#F9F9F9]">
-             <h2 class="text-sm font-medium text-[#0D0D0D] mb-3">{{ l.college || 'College Organization' }}</h2>
-             <div class="flex gap-2">
-                <input v-model="filterOrgText" class="flex-1 px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" :placeholder="l.keyword" />
-                <button class="px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm hover:bg-[#F2F2F2] transition-colors" @click="getCollegeList">
-                   <i class="el-icon-refresh"></i>
-                </button>
-             </div>
+    <div style="display: flex; justify-content: space-around">
+      <div style="width: 30%">
+        <div class="org_filter" style="display: flex; height: 60px; padding: 14px 0px">
+          <el-input :placeholder="$l.inputKeywordFilter" v-model="filterOrgText"></el-input>
+          <el-button type="success" @click="getCollegeList" style="margin-left: 10px">{{ l.refresh }}</el-button>
+        </div>
+        <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true" :data="publicCodeObj.collegeList" :filter-node-method="filterOrg">
+          <div class="org-tree-node" slot-scope="{ node, data }" @click="clickCollege(data.id)">
+            <span>{{ data.name_label }}</span>
           </div>
-          <div class="flex-1 overflow-y-auto p-2">
-             <el-tree class="filter-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true"
-                :data="collegeList" :filter-node-method="filterOrg" :expand-on-click-node="false">
-                <template #default="{ node, data }">
-                  <div class="flex-1 flex items-center py-1 cursor-pointer hover:bg-[#F2F8FF] rounded px-2 transition-colors"
-                       :class="catalogObj.query.college_id === data.id ? 'bg-[#E5F6FD] text-[#065FD4] font-medium' : 'text-[#0D0D0D]'"
-                       @click="clickCollege(data.id)">
-                    <span class="truncate">{{ data.name_label }}</span>
-                  </div>
-                </template>
-             </el-tree>
+        </el-tree>
+      </div>
+      <div style="width: 65%">
+        <div v-show="catalogObj.query.college_id != ''">
+          <div class="catalog_filter" style="display: flex; height: 60px; padding: 14px 0px">
+            <el-select v-model="catalogObj.query.is_valid" @change="getCatalogList">
+              <el-option :label="$l.all" value=""></el-option>
+              <el-option :label="$l.enabled" value="Y"></el-option>
+              <el-option :label="$l.disabled" value="N"></el-option>
+            </el-select>
+            <el-input :placeholder="$l.inputKeywordFilter" v-model="filterCatalogText" style="margin-left: 10px"></el-input>
+            <el-button type="success" @click="getCatalogList" style="margin-left: 10px">{{ l.refresh }}</el-button>
+            <el-button type="primary" @click="addCatalog()" style="margin-left: 10px">{{ l.addCatalogue }}</el-button>
           </div>
-       </div>
-
-       <!-- Right: Catalogue Tree -->
-       <div class="flex-1 flex flex-col bg-white">
-          <div v-if="!catalogObj.query.college_id" class="flex flex-col items-center justify-center h-full text-[#606060]">
-             <i class="el-icon-office-building text-4xl mb-2"></i>
-             <p>{{ l.plsSelectCollegeToManage }}</p>
-          </div>
-          <div v-else class="flex flex-col h-full">
-             <!-- Toolbar -->
-             <div class="p-4 border-b border-[#E5E5E5] bg-white flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                   <div class="relative group w-32">
-                      <select v-model="catalogObj.query.is_valid" @change="getCatalogList" class="w-full px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm text-[#0D0D0D] hover:border-[#606060] outline-none focus:border-[#065FD4]">
-                         <option value="">{{ c.all }}</option>
-                         <option value="Y">{{ c.enable }}</option>
-                         <option value="N">{{ c.disable }}</option>
-                      </select>
-                   </div>
-                   <input v-model="filterCatalogText" class="w-64 px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" :placeholder="l.keyword" />
-                   <button class="px-3 py-1.5 bg-white border border-[#CCCCCC] rounded text-sm hover:bg-[#F2F2F2] transition-colors" @click="getCatalogList">
-                      <i class="el-icon-refresh"></i>
-                   </button>
-                </div>
-                <button class="flex items-center gap-2 px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm" @click="addCatalog">
-                   <i class="el-icon-plus"></i>
-                   <span>{{ l.addCatalog }}</span>
-                </button>
-             </div>
-
-             <!-- Tree Content -->
-             <div class="flex-1 overflow-y-auto p-4 bg-[#F9F9F9]">
-                <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data"
-                   :filter-node-method="filterCatalog" :empty-text="l.emptyCatalogue">
-                   <template #default="{ node, data }">
-                      <div class="flex-1 flex items-center justify-between py-2 px-3 bg-white border border-[#E5E5E5] mb-1 rounded shadow-sm group hover:border-[#065FD4] transition-colors">
-                         <div class="flex items-center gap-2">
-                            <span class="font-medium text-[#0D0D0D]">{{ data.name_label }}</span>
-                            <span v-if="data.is_valid == 'N'" class="bg-[#F0F0F0] text-[#606060] text-[10px] px-1 rounded">{{ c.disable }}</span>
-                         </div>
-                         <div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button class="text-[#065FD4] text-xs hover:underline uppercase font-medium" @click.stop="addCatalog(data)">{{ l.addChildCatalog }}</button>
-                            <button class="text-[#606060] text-xs hover:underline uppercase font-medium" @click.stop="editCatalog(data)">{{ c.edit }}</button>
-                            <button class="text-[#065FD4] text-xs hover:underline uppercase font-medium" @click.stop="getCourseListById(data.id)">{{ l.manage }}</button>
-                            <button v-if="data.is_valid=='N'" class="text-[#069C56] text-xs hover:underline uppercase font-medium" @click.stop="modifyCatalogStatus(data)">{{ c.enable }}</button>
-                            <button v-else class="text-[#CC0000] text-xs hover:underline uppercase font-medium" @click.stop="modifyCatalogStatus(data)">{{ c.disable }}</button>
-                         </div>
-                      </div>
-                   </template>
-                </el-tree>
-             </div>
-          </div>
-       </div>
-
-    </div>
-
-    <!-- Modals & Drawers -->
-
-    <!-- Add/Edit Catalog Drawer -->
-    <a-drawer :visible="showObj.catalog_show" :width="500" @close="showObj.catalog_show = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col h-full font-roboto bg-white">
-          <div class="px-6 py-4 border-b border-[#E5E5E5] text-lg font-medium text-[#0D0D0D]">
-             {{ catalogObj.form.id ? l.editCatalogue : l.addCatalogue }}
-          </div>
-          <div class="flex-1 overflow-y-auto p-6 space-y-6">
-             <div class="group">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.belongCollege }} <span class="text-red-500">*</span></label>
-                <select v-model="catalogObj.form.college_id" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" @change="collegeChange">
-                   <option v-for="i in collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
-                </select>
-             </div>
-
-             <div class="group" v-if="catalogObj.form.college_id">
-                <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.parentCatalogue }}</label>
-                <a-cascader v-model:value="catalogObj.form.pid" :options="catalogObj.list" allow-clear
-                   :placeholder="l.emptyIsRootCatalogue" class="w-full" :field-names="catalogObj.cascaderProps">
-                </a-cascader>
-             </div>
-
-             <div class="grid grid-cols-2 gap-4">
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_zh }} <span class="text-red-500">*</span></label>
-                   <input v-model="catalogObj.form.name_zh" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
-                </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_tw }}</label>
-                   <input v-model="catalogObj.form.name_tw" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
-                </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_en }}</label>
-                   <input v-model="catalogObj.form.name_en" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
-                </div>
-                <div class="group">
-                   <label class="block text-xs font-medium text-[#606060] mb-1">{{ l.name_vi }}</label>
-                   <input v-model="catalogObj.form.name_vi" class="w-full p-2 bg-white border border-[#CCCCCC] rounded text-sm outline-none focus:border-[#065FD4]" />
-                </div>
-             </div>
-          </div>
-          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-2">
-             <button class="px-4 py-2 text-[#606060] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors" @click="showObj.catalog_show = false">{{ l.giveup }}</button>
-             <button class="px-6 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="submitCatalog">{{ l.submit }}</button>
-          </div>
-       </div>
-    </a-drawer>
-
-    <!-- Course Management Drawer -->
-    <a-drawer :visible="showObj.course_show" :width="800" @close="showObj.course_show = false" :body-style="{ padding: 0 }">
-       <div class="flex flex-col h-full font-roboto bg-white">
-          <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
-             <h3 class="text-lg font-medium text-[#0D0D0D]">{{ l.courseManage }}</h3>
-             <button class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm uppercase rounded-sm shadow-sm hover:bg-[#0551B4] transition-colors" @click="beforeOpenCourseDialog">
-                {{ l.addCourse }}
-             </button>
-          </div>
-
-          <div class="flex-1 overflow-y-auto p-0">
-             <a-table :dataSource="courseObj.list" row-key="id" :pagination="false">
-                <a-table-column :title="l.cover">
-                   <template #default="{ record }">
-                      <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-20 h-12 object-cover bg-gray-200" />
-                   </template>
-                </a-table-column>
-                <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
-                <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
-                <a-table-column :title="c.operation">
-                   <template #default="{ record }">
-                      <button class="text-[#CC0000] text-xs hover:underline uppercase" @click="toggleCourseStatus(record)">{{ l.remove }}</button>
-                   </template>
-                </a-table-column>
-             </a-table>
-          </div>
-
-          <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end">
-             <button class="px-4 py-2 bg-[#F2F2F2] text-[#0D0D0D] font-medium text-sm rounded-sm hover:bg-[#E5E5E5] transition-colors" @click="showObj.course_show = false">{{ c.close }}</button>
-          </div>
-       </div>
-    </a-drawer>
-
-    <!-- Add Course Modal -->
-    <a-modal v-model:open="showObj.selectCourse" :width="1000" :title="l.addCourseToCatalogue" @ok="bindCourseToCatalog" @cancel="cancelBindCourse">
-       <div class="flex flex-col h-[600px] font-roboto">
-          <div class="flex h-full gap-4">
-             <!-- Left: Source List -->
-             <div class="flex-1 flex flex-col border border-[#E5E5E5] rounded">
-                <div class="p-2 border-b border-[#E5E5E5] bg-[#F9F9F9] flex gap-2">
-                   <input v-model="courseObj.query.name" class="flex-1 px-2 py-1 text-sm border rounded" :placeholder="l.keyword" @keyup.enter="getCourseList" />
-                   <button class="px-3 py-1 bg-[#065FD4] text-white! text-xs rounded" @click="getCourseList">{{ l.search }}</button>
-                   <button class="px-3 py-1 bg-[#069C56] text-white! text-xs rounded" @click="multipleAdd">{{ l.multipleAdd }}</button>
-                </div>
-                <div class="flex-1 overflow-auto">
-                   <a-table :dataSource="courseObj.courseList" row-key="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChangeToBeAdded }">
-                      <a-table-column :title="l.cover" width="80px">
-                         <template #default="{ record }">
-                            <img v-if="record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-12 h-8 object-cover" />
-                         </template>
-                      </a-table-column>
-                      <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
-                      <a-table-column width="60px">
-                         <template #default="{ record }">
-                            <button class="text-[#065FD4] text-xs" @click="addCourse(record)">{{ l.add }}</button>
-                         </template>
-                      </a-table-column>
-                   </a-table>
-                </div>
-             </div>
-
-             <!-- Right: Selected List -->
-             <div class="flex-1 flex flex-col border border-[#E5E5E5] rounded">
-                <div class="p-2 border-b border-[#E5E5E5] bg-[#F9F9F9] flex justify-between items-center">
-                   <span class="text-sm font-medium">{{ l.toBeAddedList }}</span>
-                   <button class="px-3 py-1 bg-[#CC0000] text-white! text-xs rounded" @click="multipleRemove">{{ l.multipleRemove }}</button>
-                </div>
-                <div class="flex-1 overflow-auto">
-                   <a-table :dataSource="courseObj.form" row-key="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChangeToBeRemoved }">
-                      <a-table-column :title="l.title" dataIndex="name_zh"></a-table-column>
-                      <a-table-column width="60px">
-                         <template #default="{ index }">
-                            <button class="text-[#CC0000] text-xs" @click="removeCourse(index)">{{ l.remove }}</button>
-                         </template>
-                      </a-table-column>
-                   </a-table>
-                </div>
-             </div>
-          </div>
-       </div>
-    </a-modal>
-
-    <!-- Confirm Dialog Modal -->
-    <div v-if="showObj.confirmShow" class="fixed inset-0 z-50 flex items-center justify-center font-roboto">
-      <div class="fixed inset-0 bg-black/50" @click="handleConfirmCancel"></div>
-      <div class="relative bg-white rounded shadow-xl p-6 max-w-sm w-full mx-4 border border-[#E5E5E5]">
-        <h3 class="text-lg font-medium text-[#0D0D0D] mb-4">{{ showObj.confirmData.title }}</h3>
-        <p class="text-[#606060] mb-6 text-sm">{{ showObj.confirmData.message }}</p>
-        <div class="flex justify-end gap-2">
-          <button @click="handleConfirmCancel" class="px-4 py-2 text-[#0D0D0D] font-medium text-sm hover:bg-[#F2F2F2] rounded-sm transition-colors">
-            {{ l.giveup || 'Cancel' }}
-          </button>
-          <button @click="handleConfirmOk" class="px-4 py-2 bg-[#065FD4] text-white! font-medium text-sm rounded-sm hover:bg-[#0551B4] transition-colors shadow-sm">
-            {{ l.submit || 'OK' }}
-          </button>
+          <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data" :filter-node-method="filterCatalog" :empty-text="$l.emptyCatalogue">
+            <div class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{ data.name_label }}</span>
+              <span>
+                <el-button type="text" @click.stop="addCatalog(data)">{{ l.addChildCatalogue }}</el-button>
+                <el-button type="text" @click.stop="editCatalog(data)">{{ l.edit }}</el-button>
+                <el-button type="text" @click.stop="getCourseListById(data.id)">{{ l.manage }}</el-button>
+                <el-button v-if="data.is_valid == 'N'" type="text" style="color: seagreen" @click.stop="modifyCatalogStatus(data)">{{ l.enable }}</el-button>
+                <el-button v-else type="text" style="color: red" @click.stop="modifyCatalogStatus(data)">{{ l.disable }}</el-button>
+              </span>
+            </div>
+          </el-tree>
+        </div>
+        <div v-show="catalogObj.query.college_id == ''" style="width: 100%; height: 500px; line-height: 500px; text-align: center; color: #aaa; font-size: 20px">
+          {{ l.selectCollegeToView }}
         </div>
       </div>
     </div>
 
+    <!-- 课程管理drawer -->
+    <el-drawer class="drawer-container" :visible.sync="showObj.course_show" :wrapperClosable="false" size="50%">
+      <div slot="title" class="title">{{ l.courseManagement }}</div>
+      <div class="form-container">
+        <el-button type="primary" @click="beforeOpenCourseDialog">{{ l.addCourse }}</el-button>
+        <el-table :data="courseObj.list" style="width: 100%">
+          <el-table-column prop="thumbnail_path" :label="$l.cover">
+            <template slot-scope="scope">
+              <div class="img" v-if="scope.row.thumbnail_path">
+                <img class="auto-img" :src="$api.videoServer + '/' + scope.row.thumbnail_path" />
+              </div>
+              <div v-else style="text-align: center; width: 100%">
+                <i class="el-icon-picture-outline" style="font-size: 60px"></i>
+                <div>{{ $l.noCover }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name_zh" :label="$l.title"></el-table-column>
+          <el-table-column prop="is_valid" :label="$l.status"></el-table-column>
+          <el-table-column :label="$l.operation">
+            <template slot-scope="scope">
+              <el-button type="text" style="color: red" @click="toggleCourseStatus(scope.row)">{{ $l.remove }}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="buttonBar">
+        <el-button type="danger" @click="showObj.course_show = false">{{ $l.close }}</el-button>
+      </div>
+    </el-drawer>
+
+    <!-- 选择课程 -->
+    <el-dialog :visible.sync="showObj.selectCourse" :title="$l.addCourse" width="70%">
+      <div style="height: 500px; display: flex; justify-content: space-between">
+        <div style="width: 48%; border: 1px solid #ddd; border-radius: 5px; padding: 5px">
+          <div style="margin-bottom: 10px; display: flex; justify-content: space-between">
+            <el-input v-model="courseObj.query.name" style="width: 200px" @keyup.native.enter="getCourseList"></el-input>
+            <el-button type="primary" @click="getCourseList">{{ $l.search }}</el-button>
+            <el-button type="success" @click="multipleAdd">{{ $l.batchAdd }}</el-button>
+          </div>
+          <el-table :data="courseObj.courseList" height="420" @selection-change="handleSelectionChangeToBeAdded">
+            <el-table-column type="selection" width="55"> </el-table-column>
+            <el-table-column prop="thumbnail_path" :label="$l.cover">
+              <template slot-scope="scope">
+                <div class="img" v-if="scope.row.thumbnail_path">
+                  <img class="auto-img" :src="$api.videoServer + '/' + scope.row.thumbnail_path" />
+                </div>
+                <div v-else style="text-align: center; width: 100%">
+                  <i class="el-icon-picture-outline" style="font-size: 30px"></i>
+                  <div style="font-size: 10px">{{ $l.noCover }}</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name_zh" :label="$l.title"></el-table-column>
+            <el-table-column :label="$l.operation">
+              <template slot-scope="scope">
+                <el-button type="text" @click="addCourse(scope.row)">{{ $l.add }}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div style="width: 48%; border: 1px solid #ddd; border-radius: 5px; padding: 5px">
+          <div style="margin-bottom: 10px; display: flex; justify-content: space-between">
+            <div>{{ $l.toBeAddedList }}</div>
+            <el-button type="danger" @click="multipleRemove">{{ $l.batchRemove }}</el-button>
+          </div>
+          <el-table :data="courseObj.form" height="420" @selection-change="handleSelectionChangeToBeRemoved">
+            <el-table-column type="selection" width="55"> </el-table-column>
+            <el-table-column prop="name_zh" :label="$l.title"></el-table-column>
+            <el-table-column :label="$l.operation">
+              <template slot-scope="scope">
+                <el-button type="text" style="color: red" @click="removeCourse(scope.$index)">{{ $l.remove }}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="bindCourseToCatalog">{{ $l.confirm }}</el-button>
+        <el-button @click="showObj.selectCourse = false">{{ $l.cancel }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { reactive, computed, onMounted, watch, getCurrentInstance, ref } from 'vue'
-import { useQuery, useMutation } from '@tanstack/vue-query'
-import api from '@/api'
+import { reactive, ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
-import store from '@/store'
 
-const instance = getCurrentInstance()
-const route = instance.proxy.$route
-const router = instance.proxy.$router
-const { $request, $message, $prompt } = instance.proxy
 const { l, c } = useLocalI18n('videoAdminCatalogue')
+const { proxy } = getCurrentInstance()
+const isAdmin = computed(() => proxy.$store.getters.isAdmin)
+
+const filterOrgText = ref('')
+const filterCatalogText = ref('')
 
 const multipleSelectionObj = reactive({
   toBeAdded: [],
-  toBeRemoved: []
+  toBeRemoved: [],
 })
 
 const showObj = reactive({
@@ -262,15 +183,10 @@ const showObj = reactive({
   catalog_show: false,
   course_show: false,
   selectCourse: false,
-  confirmShow: false,
-  confirmData: { title: '', message: '', callback: null }
 })
 
-const filterOrgText = ref('')
-const filterCatalogText = ref('')
-
 const publicCodeObj = reactive({
-  collegeList: []
+  collegeList: [],
 })
 
 const catalogObj = reactive({
@@ -280,29 +196,24 @@ const catalogObj = reactive({
     emitPath: false,
     value: 'id',
     label: 'name_label',
-    children: 'children'
+    children: 'children',
   },
   data: [],
   list: [],
   query: {
-    college_id: "",
-    is_valid: ''
+    college_id: '',
+    is_valid: '',
   },
   form: {
-    id: "",
-    pid: "",
-    college_id: "",
-    name_zh: "",
-    name_en: "",
-    name_tw: "",
-    name_vi: "",
-    sort: 0
-  }
-})
-
-const defaultProps = reactive({
-  children: 'children',
-  label: 'label'
+    id: '',
+    pid: '',
+    college_id: '',
+    name_zh: '',
+    name_en: '',
+    name_tw: '',
+    name_vi: '',
+    sort: 0,
+  },
 })
 
 const courseObj = reactive({
@@ -311,201 +222,128 @@ const courseObj = reactive({
   query: {
     page: 1,
     pageSize: 10,
-    college_id: "",
-    is_public: "",
-    name: "",
-    is_his: 0
+    college_id: '',
+    is_public: '',
+    name: '',
+    is_his: 0,
   },
   form: [],
   total: 0,
   list: [],
-  courseList: []
+  courseList: [],
 })
 
-// Queries
-const { data: collegeListData, refetch: refetchCollege } = useQuery({
-  queryKey: ['collegeList'],
-  queryFn: () => $request(api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
-    resource_path: route.path
-  })
-})
+const filterOrg = (value, data) => {
+  if (!value) return true
+  return data.name_label.indexOf(value) !== -1
+}
 
-const collegeList = computed(() => collegeListData.value ? collegeListData.value.data : [])
-
-const { data: catalogListData, refetch: refetchCatalog } = useQuery({
-  queryKey: ['catalogList', catalogObj.query],
-  queryFn: () => {
-    if (catalogObj.query.college_id) {
-      return $request(api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', catalogObj.query)
-    }
-    return Promise.resolve({ data: [] })
-  },
-  enabled: computed(() => !!catalogObj.query.college_id)
-})
-
-watch(() => catalogListData.value, (newVal) => {
-  if (newVal) {
-    catalogObj.data = newVal.data
-    showObj.catalog_show = false
-  }
-})
-
-const { data: catalogListByIdData, refetch: refetchCatalogById } = useQuery({
-  queryKey: ['catalogListById', catalogObj.form.college_id, catalogObj.query.is_valid],
-  queryFn: ({ queryKey }) => {
-    return $request(api.baseUrl + '/Video/VideoCourseCatalog/getCatalogList', {
-      college_id: catalogObj.form.college_id,
-      is_valid: catalogObj.query.is_valid
-    })
-  },
-  enabled: false
-})
-
-watch(() => catalogListByIdData.value, (newVal) => {
-  if (newVal) {
-    catalogObj.list = newVal.data
-  }
-})
-
-const { data: courseListData, refetch: refetchCourseList } = useQuery({
-  queryKey: ['courseList', courseObj.query],
-  queryFn: () => {
-    courseObj.query.is_public = ""
-    if (!isAdmin.value) {
-      if (courseObj.query.college_id == '') {
-        courseObj.query.is_public = 1
-      }
-    }
-    return $request(api.videoServer + '/Video/VideoCourseCatalog/getCourseList', courseObj.query, 'post')
-  },
-  enabled: false
-})
-
-watch(() => courseListData.value, (newVal) => {
-  if (newVal) {
-    courseObj.courseList = newVal.data.list
-    courseObj.total = newVal.data.total
-  }
-})
-
-const { data: courseListByIdData, refetch: refetchCourseListById } = useQuery({
-  queryKey: ['courseListById', courseObj.catalog_id],
-  queryFn: () => {
-    return $request(api.videoServer + '/Video/VideoCourseCatalog/getCourseList', {
-      page: 1,
-      pageSize: 10,
-      catalog_id: courseObj.catalog_id,
-      is_his: 0
-    }, 'post')
-  },
-  enabled: false
-})
-
-watch(() => courseListByIdData.value, (newVal) => {
-  if (newVal) {
-    courseObj.list = newVal.data.list
-    showObj.course_show = true
-  }
-})
-
-// Mutations
-const submitCatalogMutation = useMutation({
-  mutationFn: (formData) => $request(api.baseUrl + '/Video/VideoCourseCatalog/addOrModifyCatalog', formData, 'post'),
-  onSuccess: (r) => {
-    if (r.httpCode == 200) {
-      $message.success(l.value.oprateSuccess)
-      setTimeout(() => {
-        showObj.catalog_show = false
-        refetchCatalog()
-      }, 1500)
-    }
-  }
-})
-
-const changeCatalogStatusMutation = useMutation({
-  mutationFn: ({ key, value, remark }) => $request(api.baseUrl + '/Video/VideoCourseCatalog/changeCatalogIsValid', {
-    key, value, remark
-  }, 'post'),
-  onSuccess: () => {
-    $message.success(l.value.oprateSuccess)
-    refetchCatalog()
-  }
-})
-
-const addCourseToCatalogMutation = useMutation({
-  mutationFn: (postData) => $request(api.videoServer + '/Video/VideoCourseCatalog/addCourseToCatalog', postData, 'post'),
-  onSuccess: (r) => {
-    if (r.httpCode == 200) {
-      $message.success(l.value.oprateSuccess)
-      setTimeout(() => {
-        courseObj.form = []
-        showObj.selectCourse = false
-        refetchCourseListById()
-      }, 1500)
-    }
-  }
-})
-
-const deleteCourseFromCatalogMutation = useMutation({
-  mutationFn: ({ course_id, catalog_id, is_valid }) => $request(api.baseUrl + '/Video/VideoCourseCatalog/deleteCourseFromCatalog', {
-    course_id, catalog_id, is_valid
-  }, 'post'),
-  onSuccess: () => {
-    $message.success(l.value.oprateSuccess)
-    refetchCourseListById()
-  }
-})
-
-// Computed
-const isAdmin = computed(() => {
-  return store.getters.roles && store.getters.roles.includes('admin')
-})
-
-// Watchers
 watch(filterOrgText, (val) => {
-  instance.refs.orgTree?.filter(val)
+  proxy.$refs.orgTree.filter(val)
 })
+
+const filterCatalog = (value, data) => {
+  if (!value) return true
+  return data.name_label.indexOf(value) !== -1
+}
 
 watch(filterCatalogText, (val) => {
-  instance.refs.catalogTree?.filter(val)
+  proxy.$refs.catalogTree.filter(val)
 })
 
-// Functions
 const getCollegeList = () => {
-  refetchCollege()
+  proxy
+    .$request(proxy.$api.videoServer + '/Video/VideoMenu/getCollegeRoleByPath', {
+      resource_path: proxy.$route.path,
+    })
+    .then((r) => {
+      publicCodeObj.collegeList = r.data
+    })
+    .catch((e) => {
+      proxy.$message.error(e.message)
+    })
 }
 
 const getCatalogList = () => {
   if (catalogObj.query.college_id) {
-    refetchCatalog()
+    proxy
+      .$request(proxy.$api.videoServer + '/Video/VideoCourseCatalog/getCatalogList', catalogObj.query)
+      .then((r) => {
+        catalogObj.data = r.data
+        showObj.catalog_show = false
+      })
+      .catch((e) => {
+        console.log(e)
+      })
   } else {
     showObj.catalog_show = false
   }
 }
 
-const getCatalogListById = (id) => {
-  refetchCatalogById()
+const getCatalogListById = () => {
+  proxy
+    .$request(proxy.$api.videoServer + '/Video/VideoCourseCatalog/getCatalogList', {
+      college_id: catalogObj.form.college_id,
+      is_valid: catalogObj.query.is_valid,
+    })
+    .then((r) => {
+      catalogObj.list = r.data
+    })
+    .catch((e) => {
+      console.log(e)
+    })
 }
 
 const getCourseList = () => {
-  refetchCourseList()
+  courseObj.query.is_public = ''
+  if (!isAdmin.value) {
+    if (courseObj.query.college_id == '') {
+      courseObj.query.is_public = 1
+    }
+  }
+  proxy
+    .$request(proxy.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList', courseObj.query, 'post')
+    .then((r) => {
+      courseObj.courseList = r.data.list
+      courseObj.total = r.data.total
+    })
+    .catch((e) => {
+      console.log(e)
+    })
 }
 
 const getCourseListById = (id) => {
   if (id) {
     courseObj.catalog_id = id
   }
-  refetchCourseListById()
+  proxy
+    .$request(
+      proxy.$api.videoServer + '/Video/VideoCourseCatalog/getCourseList',
+      {
+        page: 1,
+        pageSize: 10,
+        catalog_id: courseObj.catalog_id,
+        is_his: 0,
+      },
+      'post'
+    )
+    .then((r) => {
+      courseObj.list = r.data.list
+      showObj.course_show = true
+    })
+    .catch((e) => {
+      console.log(e)
+    })
 }
 
 const collegeChange = (v) => {
   catalogObj.form.pid = ''
-  refetchCatalogById()
+  getCatalogListById()
 }
 
 const clickCollege = (id) => {
   catalogObj.query.college_id = id
-  refetchCatalog()
+  getCatalogList()
 }
 
 const handleSelectionChangeToBeAdded = (val) => {
@@ -517,96 +355,112 @@ const handleSelectionChangeToBeRemoved = (val) => {
 }
 
 const multipleAdd = () => {
-  const allVideoArray = [...courseObj.list, ...courseObj.form]
-  const videoIdSet = new Set(allVideoArray.map(i => i.id))
-  multipleSelectionObj.toBeAdded.forEach(i => {
+  let allVideoArray = [...courseObj.list, ...courseObj.form]
+  let videoIdSet = new Set(allVideoArray.map((i) => i.id))
+  multipleSelectionObj.toBeAdded.forEach((i) => {
     if (!videoIdSet.has(i.id)) {
       courseObj.form.push(i)
     }
   })
-  // Clear selection if needed
-  $message.success(l.value.addToListSuccess)
 }
 
 const multipleRemove = () => {
-  const idsToDelete = multipleSelectionObj.toBeRemoved.map(item => item.id)
-  courseObj.form = courseObj.form.filter(item => !idsToDelete.includes(item.id))
+  let idsToDelete = multipleSelectionObj.toBeRemoved.map((item) => item.id)
+  courseObj.form = courseObj.form.filter((item) => !idsToDelete.includes(item.id))
 }
 
-const filterOrg = (value, data) => {
-  if (!value) return true
-  return data.name_label.indexOf(value) !== -1
-}
-
-const filterCatalog = (value, data) => {
-  if (!value) return true
-  return data.name_label.indexOf(value) !== -1
-}
-
-const addCatalog = async (data) => {
+const addCatalog = (data) => {
   if (catalogObj.list.length == 0) {
-    await refetchCatalogById()
+    getCatalogListById()
   }
-  Object.assign(catalogObj.form, {
-    id: "",
-    pid: data ? data.id : "",
+  catalogObj.form = Object.assign(catalogObj.form, {
+    id: '',
+    pid: data ? data.id : '',
     college_id: data ? data.college_id : catalogObj.query.college_id,
-    name_zh: "",
-    name_en: "",
-    name_tw: "",
-    name_vi: "",
+    name_zh: '',
+    name_en: '',
+    name_tw: '',
+    name_vi: '',
   })
   showObj.catalog_show = true
 }
 
 const editCatalog = (data) => {
-  Object.assign(catalogObj.form, data)
+  catalogObj.form = Object.assign(catalogObj.form, data)
   showObj.catalog_show = true
 }
 
 const modifyCatalogStatus = (i) => {
-  const msg = i.is_valid == 'Y' ? l.value.disable + '《' + i.name_label + '》？' + l.value.confirmTips : l.value.enable + '《' + i.name_label + '》？' + l.value.confirmTips
-  const status = i.is_valid == 'Y' ? 'N' : 'Y'
-
-  showObj.confirmData = {
-      title: l.value.confirmTips || 'Confirm',
-      message: msg,
-      callback: () => {
-         changeCatalogStatusMutation.mutate({ key: i.id, value: status, remark: '' })
-      }
+  let currentStatus = i.is_valid
+  let value
+  let oprate
+  if (currentStatus == 'N') {
+    value = 'Y'
+    oprate = l.value.enable
+  } else {
+    value = 'N'
+    oprate = l.value.disable
   }
-  showObj.confirmShow = true
-}
 
-const handleConfirmOk = () => {
-  if (showObj.confirmData.callback) {
-      showObj.confirmData.callback()
-  }
-  showObj.confirmShow = false
-}
-
-const handleConfirmCancel = () => {
-  showObj.confirmShow = false
+  proxy
+    .$confirm(oprate + '《' + i.name_label + '》？' + l.value.confirm, {
+      confirmButtonText: l.value.confirm,
+      cancelButtonText: l.value.cancel,
+      type: 'warning',
+    })
+    .then(() => {
+      proxy
+        .$request(
+          proxy.$api.videoServer + '/Video/VideoCourseCatalog/changeCatalogIsValid',
+          {
+            key: i.id,
+            value: value,
+            remark: '',
+          },
+          'post'
+        )
+        .then((r) => {
+          proxy.$message({
+            type: 'success',
+            message: l.value.operationSuccess,
+          })
+          getCatalogList()
+        })
+    })
+    .catch(() => {})
 }
 
 const submitCatalog = () => {
-  if (!catalogObj.form.college_id) {
-    $message.error(l.value.plsSelectBelongCollege)
-    return
+  if (catalogObj.form.college_id == '') {
+    return proxy.$message.error(l.value.pleaseSelectCollege)
   }
-  if (!catalogObj.form.name_zh) {
-    $message.error(l.value.plsInputName_zh)
-    return
+  if (catalogObj.form.name_zh == '') {
+    return proxy.$message.error(l.value.pleaseInputChineseName)
   }
-  submitCatalogMutation.mutate(catalogObj.form)
+  proxy
+    .$request(proxy.$api.videoServer + '/Video/VideoCourseCatalog/addOrModifyCatalog', catalogObj.form, 'post')
+    .then((r) => {
+      if (r.httpCode == 200) {
+        proxy.$message({
+          type: 'success',
+          message: l.value.submitSuccess,
+        })
+        setTimeout(() => {
+          getCatalogList()
+        }, 1500)
+      }
+    })
+    .catch((e) => {
+      console.log(e)
+    })
 }
 
 const addCourse = (data) => {
-  if (courseObj.list.some(i => i.id === data.id)) {
-    $message.error(l.value.alreadyExistedInCatalogue)
+  if (courseObj.list.some((i) => i.id === data.id)) {
+    proxy.$message.error(l.value.courseAlreadyExist)
   } else {
-    if (courseObj.form.some(i => i.id === data.id)) {
-      $message.error(l.value.alreadyExistedInToBeAddedList)
+    if (courseObj.form.some((i) => i.id === data.id)) {
+      proxy.$message.error(l.value.courseAlreadyInAddList)
     } else {
       courseObj.form.push(data)
     }
@@ -623,48 +477,140 @@ const beforeOpenCourseDialog = () => {
 }
 
 const bindCourseToCatalog = () => {
-  const postData = courseObj.form.map(i => ({
-    id: "",
-    catalog_id: courseObj.catalog_id,
-    course_id: i.course_id
-  }))
-  addCourseToCatalogMutation.mutate(postData)
-}
-
-const cancelBindCourse = () => {
-  showObj.selectCourse = false
+  let postData = []
+  courseObj.form.forEach((i) => {
+    let j = {
+      id: '',
+      catalog_id: courseObj.catalog_id,
+      course_id: i.id,
+    }
+    postData.push(j)
+  })
+  proxy
+    .$request(proxy.$api.videoServer + '/Video/VideoCourseCatalog/addCourseToCatalog', postData, 'post')
+    .then((r) => {
+      if (r.httpCode == 200) {
+        proxy.$message({
+          type: 'success',
+          message: l.value.submitSuccess,
+        })
+        setTimeout(() => {
+          courseObj.form = []
+          showObj.selectCourse = false
+          getCourseListById()
+        }, 1500)
+      }
+    })
+    .catch((e) => {
+      console.log(e)
+    })
 }
 
 const toggleCourseStatus = (data) => {
-  const value = data.is_valid == 'Y' ? 'N' : 'Y'
-  const msg = data.is_valid == 'Y' 
-    ? l.value.confirmDisable + ` 《${data.name_zh}》 ?`
-    : l.value.confirmEnable + ` 《${data.name_zh}》 ?`
-
-  showObj.confirmData = {
-      title: l.value.confirmTips || 'Confirm',
-      message: msg,
-      callback: () => {
-         deleteCourseFromCatalogMutation.mutate({
-            course_id: data.course_id,
-            catalog_id: courseObj.catalog_id,
-            is_valid: value
-         })
-      }
+  let value
+  let oprate
+  if (data.is_valid == 'Y') {
+    value = 'N'
+    oprate = l.value.remove
+  } else {
+    value = 'Y'
+    oprate = l.value.recover
   }
-  showObj.confirmShow = true
+
+  proxy
+    .$confirm(oprate + '《' + data.name_zh + '》？', {
+      confirmButtonText: l.value.confirm,
+      cancelButtonText: l.value.cancel,
+      type: 'warning',
+    })
+    .then(() => {
+      proxy
+        .$request(
+          proxy.$api.videoServer + '/Video/VideoCourseCatalog/deleteCourseFromCatalog',
+          {
+            course_id: data.id,
+            catalog_id: courseObj.catalog_id,
+            is_valid: value,
+          },
+          'post'
+        )
+        .then((r) => {
+          proxy.$message({
+            type: 'success',
+            message: l.value.operationSuccess,
+          })
+          getCourseListById()
+        })
+    })
+    .catch(() => {})
 }
 
 onMounted(() => {
-  refetchCollege()
+  getCollegeList()
 })
 </script>
 
 <style>
-  .el-tree{
-    background-color: unset;
-  }
-  .el-tree-node__content{
-    height: unset!important;
-  }
+.img {
+  width: 80%;
+  height: 60px;
+}
+.img .auto-img {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+
+.custom-tree-node {
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesssonCatalogue-container {
+  width: 100%;
+  height: 100%;
+}
+.lesssonCatalogue-container .drawer-container .title {
+  padding: 0px 20px 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+}
+.lesssonCatalogue-container .drawer-container .form-container {
+  width: 100%;
+  height: 95%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.lesssonCatalogue-container .drawer-container .form-container .form {
+  width: 90%;
+  margin: 0 auto;
+}
+.lesssonCatalogue-container .drawer-container .form-container .buttonBar {
+  width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: absolute;
+  bottom: 0px;
+  border-top: 1px solid #ccc;
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.lesssonCatalogue-container .org-tree-node {
+  width: 85%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>

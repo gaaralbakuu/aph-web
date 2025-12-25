@@ -273,23 +273,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'videoAdminTopic',
-}
-</script>
-
 <script setup>
 import { ref, reactive, computed, watch, onMounted, getCurrentInstance } from 'vue'
-
 import { _ } from '@/views/_common'
 import Dropdown from '../common/Dropdown.vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
 const { proxy } = getCurrentInstance()
-const $l = proxy.$l
-const $c = proxy.$c
-const l = $l
-const c = $c
+const { l, c } = useLocalI18n('videoAdminTopic')
 const $api = proxy.$api
 const $request = proxy.$request
 const $message = proxy.$message
@@ -320,11 +311,11 @@ const topicObj = reactive({
     title_tw: '',
     title_vi: '',
     page: '',
-    sort: '',
-    type: '',
-    is_valid: '',
-    rec_status: '',
-    detail: [], // Initialize as empty array
+    sort: '10',
+    type: 'topic',
+    is_valid: 'Y',
+    rec_status: 1,
+    detail: [],
   },
   list: [],
   total: 0,
@@ -354,15 +345,15 @@ const publicCodeObj = reactive({
   collegeList: [],
   type: [
     {
-      label: $l.topic,
+      label: l.value.topic,
       id: 'topic',
     },
   ],
   page: [
-    { label: c.all, id: '' },
+    { label: c.value.all, value: '' },
     {
-      label: l.homePage,
-      id: 'home',
+      label: l.value.homePage,
+      value: 'home',
     },
   ],
 })
@@ -442,8 +433,10 @@ const getCollegeList = () => {
     .then((r) => {
       publicCodeObj.collegeList = r.data
 
-      topicObj.query.college_id = publicCodeObj.collegeList[0].id
-      courseObj.query.college_id = publicCodeObj.collegeList[0].id
+      if(publicCodeObj.collegeList.length > 0) {
+        topicObj.query.college_id = publicCodeObj.collegeList[0].id
+        courseObj.query.college_id = publicCodeObj.collegeList[0].id
+      }
 
       getTopicList()
     })
@@ -493,14 +486,14 @@ const modifyTopicStatus = (row) => {
   let oprateText
   if (row.is_valid == 'Y') {
     is_valid = 'N'
-    oprateText = $l.confirmDisable
+    oprateText = l.value.confirmDisable
   } else {
     is_valid = 'Y'
-    oprateText = $l.confirmEnable
+    oprateText = l.value.confirmEnable
   }
-  $confirm(oprateText, $l.recommendationTopic, {
-    confirmButtonText: $l.confirm,
-    cancelButtonText: $l.cancel,
+  $confirm(oprateText, l.value.recommendationTopic, {
+    confirmButtonText: l.value.confirm,
+    cancelButtonText: l.value.cancel,
     type: 'warning',
   })
     .then(() => {
@@ -513,25 +506,25 @@ const modifyTopicStatus = (row) => {
         'post'
       )
         .then((r) => {
-          $message.success($l.modifySuccess)
+          $message.success(l.value.modifySuccess)
           getTopicList()
         })
         .catch(() => {
-          $message.error($l.modifyFailed)
+          $message.error(l.value.modifyFailed)
         })
     })
     .catch(() => {
-      $message.info($l.cancelModify)
+      $message.info(l.value.cancelModify)
     })
 }
 
 const submitTopic = () => {
   if (!topicObj.form.title_zh) {
-    return $message.error($l.pleaseEnterNameZh)
+    return $message.error(l.value.pleaseEnterNameZh)
   }
 
   if (!topicObj.form.college_id) {
-    return $message.error($l.pleaseSelectCollege)
+    return $message.error(l.value.pleaseSelectCollege)
   }
 
   $request($api.videoServer + '/Video/VideoPageTag/addOrModifyPageTag', topicObj.form, 'post').then((r) => {
@@ -539,7 +532,7 @@ const submitTopic = () => {
     getTopicList()
     $message({
       type: 'success',
-      message: $l.submitSuccess,
+      message: l.value.submitSuccess,
     })
   })
 }
@@ -549,13 +542,7 @@ const isCourseIdExists = (array, course_id) => {
 }
 
 const addSingleCourseToTopic = (i) => {
-  // We need to work with current form (if editing) or current detailed topic
-  // If user hasn't selected "Edit" on a topic, they might be in view mode (detailObj).
-  // But to add courses, they usually need to be in 'edit' context OR we support adding directly to current active topic.
-  // The UI suggests adding to the *current displayed* topic.
-
   if (!topicObj.form.id && detailObj.currentId) {
-    // If form is empty but we are viewing a topic, load it into form
     let currentTopic = topicObj.list.find((t) => t.id === detailObj.currentId)
     if (currentTopic) topicObj.form = _.cloneDeep(currentTopic)
   }
@@ -565,16 +552,15 @@ const addSingleCourseToTopic = (i) => {
   }
 
   if (isCourseIdExists(topicObj.form.detail, i.id)) {
-    // Note: course list item id is the course_id
     return $message({
       type: 'error',
-      message: $l.courseAlreadyExists,
+      message: l.value.courseAlreadyExists,
     })
   }
 
   let course = {
     id: '',
-    course_id: i.course_id, // course list item id
+    course_id: i.id, // Fixed: i.id is the correct ID from getCourseList
     pid: topicObj.form.id,
     title_zh: i.name_zh,
     title_en: i.name_en,
@@ -589,12 +575,9 @@ const addSingleCourseToTopic = (i) => {
 
   topicObj.form.detail.push(course)
 
-  // Update detail view for immediate feedback
-  // We need to match the structure expected by detail list (which seems to be flat course objects with extra fields)
-  // Re-mapping for display:
   detailObj.list.push({
     ...i,
-    course_id: i.course_id,
+    course_id: i.id,
     course_primary_id: i.id,
     course_name_label: i.name_zh,
     description: i.description,
@@ -633,7 +616,7 @@ const addMultipleCourseToTopic = () => {
         })
         detailObj.list.push({
           ...i,
-          course_id: i.course_id,
+          course_id: i.id,
           course_primary_id: i.id,
           course_name_label: i.name_zh,
           description: i.description,
@@ -645,7 +628,7 @@ const addMultipleCourseToTopic = () => {
   } else {
     $message({
       type: 'error',
-      message: $l.pleaseSelectList,
+      message: l.value.pleaseSelectList,
     })
   }
 }
@@ -659,17 +642,13 @@ const getDetailList = (i) => {
 }
 
 const updateDetailList = () => {
-  // This function seemed to sync detailObj.list changes back to topicObj.form.detail
-  // But we update topicObj.form.detail directly in add/remove.
-  // It might be for re-ordering or external changes?
-  // Re-building topicObj.form.detail from detailObj.list
   let detail = []
   detailObj.list.forEach((i) => {
     detail.push({
-      id: i.id || '', // Keep existing ID if any
+      id: i.id || '',
       course_id: i.course_id,
       pid: topicObj.form.id,
-      title_zh: i.title_zh || i.course_name_label, // Fallback
+      title_zh: i.title_zh || i.course_name_label,
       title_en: i.title_en,
       title_tw: i.title_tw,
       title_vi: i.title_vi,
@@ -686,7 +665,6 @@ const updateDetailList = () => {
 
 const deleteDetail = (index) => {
   detailObj.list.splice(index, 1)
-  // Also remove from form to keep in sync if we save
   if (topicObj.form.detail && topicObj.form.detail[index]) {
     topicObj.form.detail.splice(index, 1)
   }
@@ -710,7 +688,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Tailwind handles most, just minor overrides */
 :deep(.drawer-no-padding .el-drawer__body) {
   padding: 0;
   height: 100%;

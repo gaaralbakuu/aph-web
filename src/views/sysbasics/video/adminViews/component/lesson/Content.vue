@@ -5,10 +5,10 @@
       <h1 class="text-xl font-medium mb-0!">{{ l.channel }}</h1>
 
       <div class="flex gap-2">
-        <Button variant="danger" @click="uploadNewVideo" class="flex items-center gap-2">
+        <button class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded-sm hover:bg-[#990000] transition-colors shadow-sm" @click="uploadNewVideo">
           <i class="el-icon-video-camera-solid text-lg"></i>
           <span>{{ l.create }}</span>
-        </Button>
+        </button>
       </div>
     </div>
 
