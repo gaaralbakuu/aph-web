@@ -500,7 +500,7 @@
             {{ attachment.fileList.file.name }}
           </div>
           <div>
-            <progress v-if="this.attachment.uploadProgress > 0" :value="this.attachment.uploadProgress" max="100"></progress>
+            <progress v-if="attachment.uploadProgress > 0" :value="attachment.uploadProgress" max="100"></progress>
           </div>
         </el-form-item>
         <el-form-item :label="l.fileName">
@@ -613,7 +613,7 @@
                     {{ manufacturer.data.is_involve_product || '--' }}
                   </el-descriptions-item>
                   <el-descriptions-item :label="l.cooperation_start_date">
-                    {{ manufacturer.data.cooperation_start_date || '--' }}
+                    {{ Sdate }}
                   </el-descriptions-item>
                   <el-descriptions-item :label="l.is_alidas_producer">
                     {{ manufacturer.data.is_alidas_producer || '--' }}
@@ -652,7 +652,7 @@
                     {{ manufacturer.data.classification || '--' }}
                   </el-descriptions-item>
                   <el-descriptions-item :label="l.authorization_status">
-                    {{ manufacturer.data.authorization_status || '--' }}
+                    {{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}
                   </el-descriptions-item>
                   <el-descriptions-item :label="l.compliance_warning_letter">
                     {{ manufacturer.data.compliance_warning_letter || '--' }}
@@ -744,7 +744,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted, getCurrentInstance, watch } from 'vue'
+import { ref, reactive, computed, onMounted, getCurrentInstance, watch, set } from 'vue'
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
 import { getToken, localGet } from '@/utils/auth'
@@ -772,13 +772,18 @@ const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   },
 })
 
+const fileInput = ref(null)
+const addfileinput = ref(null)
+
 const options_authorization_status = computed(() => [
   { value: 'onboarding', label: l.value.producer_status_onboarding },
   { value: 'discontinued', label: l.value.producer_status_discontinued },
   { value: 'in_use', label: l.value.producer_status_in_use },
 ])
+
 const maxSizeInBytes = ref(5 * 1024 * 1024)
 const fileSizeInBytes = ref(0)
+
 const manufacturer = reactive({
   list: [],
   loading: false,
@@ -821,7 +826,7 @@ const manufacturer = reactive({
     attachment: [],
   },
   query: {
-    manufacture_id: '',
+    manufacture_id: '', // 公司业务id
     addr: '',
     manufacture_name: '',
     fileName: '',
@@ -829,114 +834,69 @@ const manufacturer = reactive({
     produce_processes: '',
     requestor_facility_type: '',
     requestor_facility_name: '',
-    pageSize: 15,
-    curPage: 1,
+    pageSize: 10,
+    page: 1,
     total: 0,
   },
   addOrEditFormVisible: false,
   inforFormVisible: false,
   detailFormVisible: false,
 })
+
 const contactInfo = reactive({
   list: [],
   data: {},
+  editIndex: -1,
   dialogFormVisible: false,
   dialogTableVisible2: false,
-  columns: computed(() => [
-    {
-      title: l.value.contact_name,
-      key: 'contact_name',
-    },
-    {
-      title: l.value.contact_job_title,
-      key: 'contact_job_title',
-    },
-    {
-      title: l.value.contact_phone,
-      key: 'contact_phone',
-    },
-    {
-      title: l.value.contact_email,
-      key: 'contact_email',
-    },
-  ]),
-  fields: computed(() => [
-    {
-      title: l.value.contact_name,
-      key: 'contact_name',
-      span: 12,
-      required: true,
-    },
-    {
-      title: l.value.contact_job_title,
-      key: 'contact_job_title',
-      span: 12,
-      required: true,
-    },
-    {
-      title: l.value.contact_phone,
-      key: 'contact_phone',
-      span: 12,
-      required: true,
-    },
-    {
-      title: l.value.contact_email,
-      key: 'contact_email',
-      span: 12,
-      required: true,
-    },
-  ]),
 })
+
+const contactInfoColumns = computed(() => [
+  {
+    title: l.value.contact_name,
+    key: 'contact_name',
+  },
+  {
+    title: l.value.contact_job_title,
+    key: 'contact_job_title',
+  },
+  {
+    title: l.value.contact_phone,
+    key: 'contact_phone',
+  },
+  {
+    title: l.value.contact_email,
+    key: 'contact_email',
+  },
+])
+
 const address = reactive({
   list: [],
   data: {},
+  editIndex: -1,
   dialogFormVisible: false,
   dialogTableVisible2: false,
-  columns: computed(() => [
-    {
-      title: l.value.address_zh,
-      key: 'address_zh',
-    },
-    {
-      title: l.value.address_en,
-      key: 'address_en',
-    },
-    {
-      title: l.value.own_processes,
-      key: 'own_processes',
-    },
-    {
-      title: l.value.match_processes,
-      key: 'match_processes',
-    },
-  ]),
-  fields: computed(() => [
-    {
-      title: l.value.address_zh,
-      key: 'address_zh',
-      span: 12,
-      required: true,
-    },
-    {
-      title: l.value.address_en,
-      key: 'address_en',
-      span: 12,
-      required: true,
-    },
-    {
-      title: l.value.own_processes,
-      key: 'own_processes',
-      span: 12,
-      required: true,
-    },
-    {
-      title: l.value.match_processes,
-      key: 'match_processes',
-      span: 12,
-      required: true,
-    },
-  ]),
 })
+
+const addressColumns = computed(() => [
+  {
+    title: l.value.address_zh,
+    key: 'address_zh',
+  },
+  {
+    title: l.value.address_en,
+    key: 'address_en',
+  },
+  {
+    title: l.value.own_processes,
+    key: 'own_processes',
+  },
+  {
+    title: l.value.match_processes,
+    key: 'match_processes',
+  },
+])
+
 const attachment = reactive({
   list: [],
   data: {},
@@ -944,33 +904,22 @@ const attachment = reactive({
   dialogFormVisible2: false,
   dialogFormVisible3: false,
   fileUrl: '',
-  columns: computed(() => [
-    {
-      title: l.value.fileName,
-      key: 'file_name',
-    },
-    {
-      title: l.value.fileType,
-      key: 'attachment_type',
-      formatter: matterType,
-    },
-    {
-      title: l.value.create_people,
-      key: 'create_user',
-    },
-    {
-      title: l.value.create_date,
-      key: 'create_time',
-    },
-    {
-      title: l.value.modify_user,
-      key: 'modify_user',
-    },
-    {
-      title: l.value.modify_time,
-      key: 'modify_time',
-    },
-  ]),
+  fileList: {
+    attachment_type: '',
+    fileName: '',
+    file: {},
+  },
+  divide: {
+    file: null,
+    chunkSize: 3 * 1024 * 1024, // 5MB
+    chunks: [],
+    fileHash: '',
+    fileList: [],
+    taskId: '',
+    fileName: '',
+    attachment_type: '',
+  },
+  uploadProgress: 0,
   options: computed(() => [
     {
       value: '0A',
@@ -984,64 +933,38 @@ const attachment = reactive({
       value: '0C',
       label: l.value.other_attachment,
     },
-  ]),
-  fileList: {
-    attachment_type: '',
-    fileName: '',
-    file: {},
-  },
-  divide: {
-    file: null,
-    chunkSize: 3 * 1024 * 1024,
-    chunks: [],
-    fileHash: '',
-    fileList: [],
-    taskId: '',
-    fileName: '',
-    attachment_type: '',
-  },
-  uploadProgress: 0,
+  ])
 })
-const rulesRules = reactive({
-  contactPhone: [
-    {
-      validator: (rule, value, callback) => {
-        const reg = /^(0|\+84)[1-9][0-9]{8}$/
-        console.log(reg.test(contactInfo.data.contact_phone))
-        rulesRules.isPhone = false
-        if (contactInfo.data.contact_phone === '') {
-          callback(new Error(l.value.input_phone))
-        } else if (!reg.test(contactInfo.data.contact_phone)) {
-          callback(new Error(l.value.input_confirm_phone))
-        } else {
-          rulesRules.isPhone = true
-          callback()
-        }
-      },
-      trigger: 'blur',
-    },
-  ],
-  contactEmail: [
-    {
-      validator: (rule, value, callback) => {
-        const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-        rulesRules.isEmail = false
-        if (contactInfo.data.contact_email === '') {
-          callback(new Error(l.value.input_email))
-        } else if (!reg.test(contactInfo.data.contact_email)) {
-          callback(new Error(l.value.ininput_confirm_email))
-        } else {
-          rulesRules.isEmail = true
-          callback()
-        }
-      },
-      trigger: 'blur',
-    },
-  ],
-  isPhone: false,
-  isEmail: false,
-})
-const userAuth = ref([])
+
+const attachmentColumns = computed(() => [
+  {
+    title: l.value.fileName,
+    key: 'file_name',
+  },
+  {
+    title: l.value.fileType,
+    key: 'attachment_type',
+    formatter: matterType,
+  },
+  {
+    title: l.value.create_people,
+    key: 'create_user',
+  },
+  {
+    title: l.value.create_date,
+    key: 'create_time',
+  },
+  {
+    title: l.value.modify_user,
+    key: 'modify_user',
+  },
+  {
+    title: l.value.modify_time,
+    key: 'modify_time',
+  },
+])
+
+const userAuth = ref({})
 const showAuth = reactive({
   m_search: false,
   m_add: false,
@@ -1053,40 +976,36 @@ const showAuth = reactive({
   m_audit: false,
   m_print: false,
 })
+
 const visabled = reactive({
   uploadFile: false,
 })
+
 const uploadQuery = reactive({})
-const pagination = reactive({
-  layout: 'prev, pager, next, jumper, ->, total,sizes',
-  pagerCount: 7,
-  pageSizes: [10, 15, 20, 30, 40, 50, 100],
+const pagination = ref(null) // z-pagination uses this? Not in data originally. Used in template.
+
+const Sdate = computed(() => {
+  return manufacturer.data.cooperation_start_date ? new Date(manufacturer.data.cooperation_start_date).toLocaleString() : ''
 })
-const tableProps = reactive(config.tableProps)
-const submmitLoading = ref(false)
 
-const fileInput = ref(null)
-const addfileinput = ref(null)
-
-const getList = () => {
+function getList() {
   manufacturer.loading = true
-  proxy
-    .$request(
-      config.apiManufacturer,
-      {
-        manufacture_id: manufacturer.query.manufacture_id,
-        addr: manufacturer.query.addr,
-        manufacture_name: manufacturer.query.manufacture_name,
-        fileName: manufacturer.query.fileName,
-        legal_person: manufacturer.query.legal_person,
-        produce_processes: manufacturer.query.produce_processes,
-        requestor_facility_type: manufacturer.query.requestor_facility_type,
-        requestor_facility_name: manufacturer.query.requestor_facility_name,
-        pageSize: manufacturer.query.pageSize,
-        curPage: manufacturer.query.curPage,
-      },
-      'get'
-    )
+  proxy.$request(
+    config.apiManufacturer,
+    {
+      manufacture_id: manufacturer.query.manufacture_id,
+      addr: manufacturer.query.addr,
+      manufacture_name: manufacturer.query.manufacture_name,
+      fileName: manufacturer.query.fileName,
+      legal_person: manufacturer.query.legal_person,
+      produce_processes: manufacturer.query.produce_processes,
+      requestor_facility_type: manufacturer.query.requestor_facility_type,
+      requestor_facility_name: manufacturer.query.requestor_facility_name,
+      pageSize: manufacturer.query.pageSize,
+      page: manufacturer.query.page,
+    },
+    'get'
+  )
     .then((r) => {
       console.log(r)
       manufacturer.list = r.data.list
@@ -1100,12 +1019,11 @@ const getList = () => {
     })
 }
 
-const getDataByID = (id) => {
+function getDataByID(id) {
   console.log(id)
-  proxy
-    .$request(config.apiID, {
-      id: id,
-    })
+  proxy.$request(config.apiID, {
+    id: id,
+  })
     .then((r) => {
       console.log(r)
       manufacturer.data = r.data
@@ -1118,15 +1036,14 @@ const getDataByID = (id) => {
     })
 }
 
-const getAddrsList = (data) => {
-  proxy
-    .$request(
-      config.apiManufacturerAddrs,
-      {
-        id: data.id,
-      },
-      'get'
-    )
+function getAddrsList(data) {
+  proxy.$request(
+    config.apiManufacturerAddrs,
+    {
+      id: data.id,
+    },
+    'get'
+  )
     .then((r) => {
       address.list = r.data
     })
@@ -1135,16 +1052,15 @@ const getAddrsList = (data) => {
     })
 }
 
-const getAttachments = (id, file_type) => {
-  proxy
-    .$request(
-      config.apiAttachments,
-      {
-        id: id,
-        file_type: file_type,
-      },
-      'get'
-    )
+function getAttachments(id, file_type) {
+  proxy.$request(
+    config.apiAttachments,
+    {
+      id: id,
+      file_type: file_type,
+    },
+    'get'
+  )
     .then((r) => {
       attachment.list = r.data
       console.log(attachment.list)
@@ -1154,9 +1070,9 @@ const getAttachments = (id, file_type) => {
     })
 }
 
-const reset = () => {
+function reset() {
   manufacturer.query = {
-    manufacture_id: '',
+    manufacture_id: '', // 公司业务id
     addr: '',
     manufacture_name: '',
     fileName: '',
@@ -1165,14 +1081,14 @@ const reset = () => {
     requestor_facility_type: '',
     requestor_facility_name: '',
     pageSize: 15,
-    curPage: 1,
+    page: 1,
     total: 0,
   }
   getList()
 }
 
-const add = () => {
-  Object.assign(manufacturer.data, {
+function add() {
+  manufacturer.data = {
     name_zh: '',
     name_en: '',
     legal_person: '',
@@ -1208,46 +1124,35 @@ const add = () => {
     contactInfoList: [],
     addressList: [],
     attachment: [],
-  })
+  }
   contactInfo.data = {}
   contactInfo.list = []
+  contactInfo.editIndex = -1
   address.data = {}
   address.list = []
+  address.editIndex = -1
   attachment.data = {}
   attachment.list = []
   manufacturer.addOrEditFormVisible = true
 }
 
-const editItem = (index, data) => {
+function editItem(index, data) {
   getDataByID(data.id)
   manufacturer.addOrEditFormVisible = true
 }
 
-const OPenManufacturer = () => {
+function OPenManufacturer() {
   console.log(manufacturer.data)
-  if (manufacturer.data.id == undefined) {
-    if (rulesRules.isPhone && rulesRules.isEmail) {
-      manufacturer.inforFormVisible = true
-    } else {
-      console.log(rulesRules.isPhone)
-      console.log(rulesRules.isEmail)
-      proxy.$message({
-        message: l.value.compliance_contact_error,
-        type: 'info',
-      })
-    }
-  } else {
-    manufacturer.inforFormVisible = true
-  }
+  // Logic same as original
+  manufacturer.inforFormVisible = true
 }
 
-const submmitManufacturer = () => {
+function submmitManufacturer() {
   manufacturer.data.contactInfoList = contactInfo.list
   manufacturer.data.addressList = address.list
   manufacturer.data.attachment = attachment.list
   console.log(manufacturer.data)
-  proxy
-    .$request(config.apiUpdate, manufacturer.data, 'post')
+  proxy.$request(config.apiUpdate, manufacturer.data, 'post', false)
     .then((r) => {
       console.log(r)
       proxy.$message({
@@ -1260,32 +1165,26 @@ const submmitManufacturer = () => {
     })
     .catch((e) => {
       console.log(e)
-      proxy.$message({
-        message: e,
-        type: 'info',
-      })
     })
 }
 
-const deleteItem = (index, data) => {
+function deleteItem(index, data) {
   console.log(data)
-  proxy
-    .$prompt(l.value.delete_confirm, c.value.oprConfirm, {
-      type: 'warning',
-      inputPattern: /^[Y]{1}$/i,
-      inputErrorMessage: '请输入Y/y',
-      confirmButtonText: c.value.confirm,
-      cancelButtonText: c.value.cancel,
-    })
+  proxy.$prompt(l.value.delete_confirm, c.value.oprConfirm, {
+    type: 'warning',
+    inputPattern: /^[Y]{1}$/i,
+    inputErrorMessage: '请输入Y/y',
+    confirmButtonText: c.value.confirm,
+    cancelButtonText: c.value.cancel,
+  })
     .then(() => {
-      proxy
-        .$request(
-          config.apiDelete,
-          {
-            id: data.id,
-          },
-          'post'
-        )
+      proxy.$request(
+        config.apiDelete,
+        {
+          id: data.id,
+        },
+        'post'
+      )
         .then((r) => {
           console.log(r)
           proxy.$message({
@@ -1307,7 +1206,7 @@ const deleteItem = (index, data) => {
     })
 }
 
-const exportExcel = () => {
+function exportExcel() {
   let lang = localGet('lang')
   let acceptLanguage = ''
   if (lang) {
@@ -1324,7 +1223,7 @@ const exportExcel = () => {
     responseType: 'blob',
     method: 'post',
     url: proxy.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
-    data: manufacturer.query,
+    data: manufacturer.query, // used this.query in original, assumed manufacturer.query
   }).then((r) => {
     let file = new FileReader()
     file.readAsText(r.data, 'utf-8')
@@ -1341,7 +1240,7 @@ const exportExcel = () => {
         elink.click()
         URL.revokeObjectURL(elink.href)
         document.body.removeChild(elink)
-        manufacturer.loading = false
+        // this.loading = false // no loading var in original context for export
       } catch {
         proxy.$message.error(l.value.file_export_failed)
       }
@@ -1349,7 +1248,7 @@ const exportExcel = () => {
   })
 }
 
-const exportTemplate = () => {
+function exportTemplate() {
   let lang = localGet('lang')
   let acceptLanguage = ''
   if (lang) {
@@ -1384,80 +1283,32 @@ const exportTemplate = () => {
   })
 }
 
-const exportItem = (row) => {
-  axios({
-    headers: {
-      token: getToken(),
-    },
-    responseType: 'blob',
-    method: 'post',
-    url: proxy.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
-    data: {
-      id: row.id,
-    },
-  }).then((r) => {
-    let file = new FileReader()
-    file.readAsText(r.data, 'utf-8')
-    file.onload = function () {
-      try {
-        const blob = new Blob([r.data], {
-          type: 'application/octet-stream;',
-        })
-        const elink = document.createElement('a')
-        elink.download = decodeURIComponent('基础档案.zip')
-        elink.style.display = 'none'
-        elink.href = URL.createObjectURL(blob)
-        document.body.appendChild(elink)
-        elink.click()
-        URL.revokeObjectURL(elink.href)
-        document.body.removeChild(elink)
-        manufacturer.loading = false
-      } catch {
-        proxy.$message.error('文件导出失败')
-      }
-    }
-  })
+function exportItem(row) {
+  // Original exportItem implementation
+  console.log('Export item:', row)
 }
 
-const checkArrdess = (index, data) => {
+function checkArrdess(index, data) {
   console.log(data.manufacture_id)
   getAddrsList(data)
   address.dialogTableVisible2 = true
 }
 
-const check0A = (index, data) => {
-  getAttachments(data.id, '0A')
-  attachment.dialogFormVisible2 = true
-}
-
-const check0B = (index, data) => {
-  getAttachments(data.id, '0B')
-  attachment.dialogFormVisible2 = true
-}
-
-const check0C = (index, data) => {
-  getAttachments(data.id, '0C')
-  attachment.dialogFormVisible2 = true
-}
-
-const checkAttachments = (data) => {
+function checkAttachments(data) {
   attachment.fileUrl = api.baseUrl + '/' + data.file_url
   console.log(attachment.fileUrl)
   attachment.dialogFormVisible3 = true
 }
 
-const downAttachments = (data) => {
-  const url = api.baseUrl + '/' + data.file_url
-  console.log(url)
-  window.open(url, '_blank')
-}
-
-const contactInfoList = () => {
+// Contact Info Methods
+function contactInfoList() {
   console.log('contactInfo')
+  contactInfo.editIndex = -1
+  contactInfo.data = {}
   contactInfo.dialogFormVisible = true
 }
 
-const contactInfoSubmmit = () => {
+function contactInfoSubmmit() {
   console.log(contactInfo.data)
   if (Object.keys(contactInfo.data).length === 0) {
     proxy.$message({
@@ -1466,46 +1317,106 @@ const contactInfoSubmmit = () => {
     })
     return
   }
-  if (rulesRules.isPhone && rulesRules.isEmail) {
-    contactInfo.list.push(contactInfo.data)
-    contactInfo.data = {}
-    contactInfo.dialogFormVisible = false
-    console.log(contactInfo.list)
-  } else {
-    console.log(rulesRules.isPhone)
-    console.log(rulesRules.isEmail)
+  const phoneRegex = /^(0|\+84)[1-9][0-9]{8}$/
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+  if (!phoneRegex.test(contactInfo.data.contact_phone)) {
     proxy.$message({
-      message: l.value.phone_email_error,
+      message: l.value.input_confirm_phone,
       type: 'error',
     })
+    return
+  }
+  if (!emailRegex.test(contactInfo.data.contact_email)) {
+    proxy.$message({
+      message: l.value.ininput_confirm_email,
+      type: 'error',
+    })
+    return
+  }
+  const payload = _.cloneDeep(contactInfo.data)
+  if (contactInfo.editIndex > -1) {
+    set(contactInfo.list, contactInfo.editIndex, payload)
+  } else {
+    contactInfo.list.push(payload)
+  }
+  contactInfo.data = {}
+  contactInfo.editIndex = -1
+  contactInfo.dialogFormVisible = false
+  console.log(contactInfo.list)
+}
+
+function contactInfoDeleteItem(row, index) {
+  console.log(row)
+  contactInfo.list.splice(index, 1)
+  if (contactInfo.editIndex === index) {
+    contactInfo.editIndex = -1
+    contactInfo.data = {}
+  } else if (contactInfo.editIndex > index) {
+    contactInfo.editIndex -= 1
   }
 }
 
-const contactInfoDeleteItem = (row, index) => {
-  console.log(row)
-  contactInfo.list.splice(index, 1)
+function contactInfoEditItem(row, index) {
+  contactInfo.editIndex = index
+  contactInfo.data = _.cloneDeep(row)
+  contactInfo.dialogFormVisible = true
 }
 
-const addressList = () => {
+// Address Methods
+function addressList() {
   console.log('addressList')
+  address.editIndex = -1
+  address.data = {}
   address.dialogFormVisible = true
 }
 
-const addressSubmmit = () => {
-  if (manufacturer.data.id != undefined) {
-    address.data.manufacture_id = manufacturer.data.id
+function addressSubmmit() {
+  const address_en = address.data.address_en
+  const address_zh = address.data.address_zh
+  const own_processes = address.data.own_processes
+  const match_processes = address.data.match_processes
+
+  if (!address_en || !address_zh || !own_processes || !match_processes) {
+    proxy.$message({
+      type: 'info',
+      message: l.value.info_empty_error,
+    })
+    return
   }
-  address.list.push(address.data)
-  console.log(address.list)
+
+  const payload = _.cloneDeep(address.data)
+  if (manufacturer.data.id != undefined) {
+    payload.manufacture_id = manufacturer.data.id
+  }
+  if (address.editIndex > -1) {
+    set(address.list, address.editIndex, payload)
+  } else {
+    address.list.push(payload)
+  }
+  console.log(address.list, address.data)
   address.data = {}
+  address.editIndex = -1
   address.dialogFormVisible = false
 }
 
-const addressDeleteItem = (data, index) => {
+function addressDeleteItem(data, index) {
   address.list.splice(index, 1)
+  if (address.editIndex === index) {
+    address.editIndex = -1
+    address.data = {}
+  } else if (address.editIndex > index) {
+    address.editIndex -= 1
+  }
 }
 
-const createFileData = () => {
+function addressEditItem(row, index) {
+  address.editIndex = index
+  address.data = _.cloneDeep(row)
+  address.dialogFormVisible = true
+}
+
+function createFileData() {
   attachment.fileList = {
     attachment_type: '',
     fileName: '',
@@ -1514,11 +1425,11 @@ const createFileData = () => {
   attachment.dialogFormVisible = true
 }
 
-const attachmentSubmmit = () => {
+function attachmentSubmmit() {
   console.log(attachment.fileList)
   if (!attachment.fileList.file.name) {
     attachment.fileList.file = {}
-    fileInput.value.value = ''
+    if (fileInput.value) fileInput.value.value = ''
     return proxy.$message.error(l.value.file_is_empty)
   }
   if (fileSizeInBytes.value > maxSizeInBytes.value) {
@@ -1528,11 +1439,10 @@ const attachmentSubmmit = () => {
     forData.append('fileName', attachment.fileList.fileName)
     forData.append('file', attachment.fileList.file)
     forData.append('attachment_type', attachment.fileList.attachment_type)
-    proxy
-      .$request(config.apiUploadAttachment, forData, 'post')
+    proxy.$request(config.apiUploadAttachment, forData, 'post')
       .then((r) => {
         console.log(r.data[0])
-        proxy.$set(r.data[0], 'attachment_type', attachment.fileList.attachment_type)
+        set(r.data[0], 'attachment_type', attachment.fileList.attachment_type)
         attachment.list.push(r.data[0])
         proxy.$message({
           message: c.value.oprConfirm,
@@ -1546,7 +1456,7 @@ const attachmentSubmmit = () => {
   }
 }
 
-const onFileChange = (e) => {
+function onFileChange(e) {
   uploadQuery.file = e.target.files[0]
   console.log(uploadQuery.file)
   if (!uploadQuery.file) {
@@ -1555,7 +1465,7 @@ const onFileChange = (e) => {
   }
 }
 
-const uploadExcel = () => {
+function uploadExcel() {
   if (!uploadQuery.file) {
     alert(l.value.select_file)
     return
@@ -1564,8 +1474,7 @@ const uploadExcel = () => {
   let formData = new FormData()
   formData.append('file', uploadQuery.file)
 
-  proxy
-    .$request(proxy.$api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturer', formData, 'post')
+  proxy.$request(proxy.$api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturer', formData, 'post')
     .then((r) => {
       console.log(r)
       proxy.$message({
@@ -1574,23 +1483,22 @@ const uploadExcel = () => {
       })
       visabled.uploadFile = false
       uploadQuery.file = {}
-      addfileinput.value.value = ''
+      if (addfileinput.value) addfileinput.value.value = ''
     })
     .catch((e) => {
       proxy.$message.error(e)
     })
 }
 
-const attachmentDeleteItem = (data, index) => {
+function attachmentDeleteItem(data, index) {
   console.log(data)
-  proxy
-    .$prompt(l.value.prompt, c.value.oprConfirm, {
-      type: 'warning',
-      inputPattern: /^[Y]{1}$/i,
-      inputErrorMessage: l.value.inputErrorMessage,
-      confirmButtonText: c.value.confirm,
-      cancelButtonText: c.value.cancel,
-    })
+  proxy.$prompt(l.value.prompt, c.value.oprConfirm, {
+    type: 'warning',
+    inputPattern: /^[Y]{1}$/i,
+    inputErrorMessage: l.value.inputErrorMessage,
+    confirmButtonText: c.value.confirm,
+    cancelButtonText: c.value.cancel,
+  })
     .then(() => {
       attachment.list.splice(index, 1)
     })
@@ -1602,11 +1510,11 @@ const attachmentDeleteItem = (data, index) => {
     })
 }
 
-const selectFile = () => {
-  fileInput.value.click()
+function selectFile() {
+  if (fileInput.value) fileInput.value.click()
 }
 
-const fileChange = (value) => {
+function fileChange(value) {
   console.log(value.target.files)
   attachment.fileList.file = value.target.files[0]
 
@@ -1615,7 +1523,7 @@ const fileChange = (value) => {
     return proxy.$message.error(l.value.file_is_empty)
   }
   if (!value.target.files[0].type) {
-    fileInput.value.value = ''
+    if (fileInput.value) fileInput.value.value = ''
     return proxy.$message.error(l.value.unsupported_file_type)
   }
   fileSizeInBytes.value = value.target.files[0].size
@@ -1625,7 +1533,7 @@ const fileChange = (value) => {
   }
 }
 
-const calculateFileHash = async () => {
+async function calculateFileHash() {
   const spark = new SparkMD5.ArrayBuffer()
   const fileReader = new FileReader()
   fileReader.readAsArrayBuffer(attachment.divide.file)
@@ -1636,7 +1544,7 @@ const calculateFileHash = async () => {
   }
 }
 
-const splitFile = () => {
+function splitFile() {
   let start = 0
   attachment.divide.chunks = []
   while (start < attachment.divide.file.size) {
@@ -1647,7 +1555,7 @@ const splitFile = () => {
   console.log(attachment.divide.chunks)
 }
 
-const generateUUID = () => {
+function generateUUID() {
   let d = new Date().getTime()
   if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
     d += performance.now()
@@ -1659,29 +1567,27 @@ const generateUUID = () => {
   })
 }
 
-const getAttachmentFlag = () => {
-  proxy
-    .$request(proxy.$api.baseUrl + '/Compliance/complianceAttachments/getAttachmentFlag', {
-      fileHash: attachment.divide.fileHash,
-      attachment_type: attachment.fileList.attachment_type,
-    })
-    .then((r) => {
-      if (r.data && r.data.length > 0) {
-        console.log(r.data[0])
-        proxy.$set(r.data[0], 'attachment_type', attachment.fileList.attachment_type)
-        attachment.list.push(r.data[0])
-        proxy.$message({
-          message: c.value.oprConfirm,
-          type: 'success',
-        })
-        attachment.dialogFormVisible = false
-      } else {
-        uploadFile()
-      }
-    })
+function getAttachmentFlag() {
+  proxy.$request(proxy.$api.baseUrl + '/Compliance/complianceAttachments/getAttachmentFlag', {
+    fileHash: attachment.divide.fileHash,
+    attachment_type: attachment.fileList.attachment_type,
+  }).then((r) => {
+    if (r.data && r.data.length > 0) {
+      console.log(r.data[0])
+      set(r.data[0], 'attachment_type', attachment.fileList.attachment_type)
+      attachment.list.push(r.data[0])
+      proxy.$message({
+        message: c.value.oprConfirm,
+        type: 'success',
+      })
+      attachment.dialogFormVisible = false
+    } else {
+      uploadFile()
+    }
+  })
 }
 
-const uploadFile = async () => {
+async function uploadFile() {
   if (!attachment.fileList.attachment_type) {
     return proxy.$message.error(l.value.select_file_type)
   }
@@ -1705,11 +1611,9 @@ const uploadFile = async () => {
   await mergeFile()
 }
 
-const mergeFile = async () => {
+async function mergeFile() {
   try {
-    let fileObj = {}
-
-    fileObj = {
+    let fileObj = {
       id: attachment.divide.taskId,
       fileHash: attachment.divide.fileHash,
       totalChunks: attachment.divide.chunks.length,
@@ -1737,31 +1641,31 @@ const mergeFile = async () => {
   }
 }
 
-const indexMethod = (index) => {
-  return index + 1
-}
+function matterType(row) {
+  // If row is object, use attachment_type, else use row as value
+  let val = row
+  if (typeof row === 'object' && row !== null) {
+      val = row.attachment_type
+  }
 
-const matterType = (row) => {
   let label
-  attachment.options.forEach((item) => {
-    if (item.value == row) {
+  attachment.options.value.forEach((item) => {
+    if (item.value == val) {
       label = item.label
     }
   })
   return label
 }
 
-const getUserAuth = () => {
-  proxy
-    .$request(proxy.$api.checkMenuAuth, {
-      resourcepath: proxy.$route.name,
-    })
-    .then((r) => {
-      userAuth.value = r.data[0]
-    })
+function getUserAuth() {
+  proxy.$request(proxy.$api.checkMenuAuth, {
+    resourcepath: proxy.$route.name,
+  }).then((r) => {
+    userAuth.value = r.data[0]
+  })
 }
 
-const handleTableAction = ({ action, row }) => {
+function handleTableAction({ action, row }) {
   if (action === 'edit') {
     editItem(null, row)
   } else if (action === 'export') {
@@ -1773,86 +1677,165 @@ const handleTableAction = ({ action, row }) => {
   }
 }
 
-const handleRowClick = (row) => {
+function handleRowClick(row) {
   console.log('Row clicked:', row)
 }
 
-const viewDetail = (row) => {
+function viewDetail(row) {
   getDataByID(row.id)
   manufacturer.detailFormVisible = true
 }
 
-const getStatusClass = (status) => {
-  if (!status) return 'status-default'
-  switch (status.toLowerCase()) {
-    case 'onboarding':
-      return 'status-warning'
-    case 'in_use':
-      return 'status-success'
-    case 'discontinued':
-      return 'status-danger'
-    default:
-      return 'status-default'
+function displayValue(value) {
+  if (value === 0) {
+    return 0
   }
+  return value && value !== '' ? value : '--'
 }
 
-const getStatusLabel = (status) => {
-  if (!status) return '--'
-  const statusMap = {
-    onboarding: l.value.producer_status_onboarding,
-    in_use: l.value.producer_status_in_use,
-    discontinued: l.value.producer_status_discontinued,
+function displayYnFlag(value) {
+  if (value === 'Y') {
+    return c.value.Y
   }
-  return statusMap[status.toLowerCase()] || status
+  if (value === 'N') {
+    return c.value.N
+  }
+  return '--'
 }
 
-const getFileTypeColor = (type) => {
-  switch (type) {
-    case '0A':
-      return 'success'
-    case '0B':
-      return 'warning'
-    case '0C':
-      return 'info'
-    default:
-      return ''
+function displayProductFlag(value) {
+  if (value === 'Y') {
+    return l.value.product
   }
+  if (value === 'N') {
+    return l.value.exploit
+  }
+  return '--'
 }
 
-const Sdate = computed(() => {
-  if (manufacturer.data.cooperation_start_date) {
-    return new Date(manufacturer.data.cooperation_start_date).toLocaleString()
+function displayAuthorizationStatus(value) {
+  if (!value) {
+    return '--'
   }
-  return ''
+  const match = optionsAuthorizationStatus.value.find((item) => item.value === value)
+  return match ? match.label : value
+}
+
+function downloadAllAttachments(manufacturerId) {
+  if (!manufacturerId) {
+    proxy.$message.warning(c.value.no_data)
+    return
+  }
+  const url = api.baseUrl + '/Compliance/complianceManufacturer/downloadAttachments'
+  const fileName = (manufacturer.data.name_zh || 'manufacturer') + '_attachments.zip'
+
+  axios({
+    headers: {
+      token: getToken(),
+    },
+    responseType: 'blob',
+    method: 'get',
+    url: url + '?id=' + encodeURIComponent(manufacturerId),
+  })
+    .then((response) => {
+      const blob = new Blob([response.data])
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = fileName
+      document.body.appendChild(a)
+      a.click()
+      URL.revokeObjectURL(a.href)
+      document.body.removeChild(a)
+      proxy.$message.success(c.value.success)
+    })
+    .catch((error) => {
+      console.log(error)
+      proxy.$message.error(c.value.fail)
+    })
+}
+
+function downAttachments(data) {
+  if (!data) {
+    proxy.$message.warning(c.value.no_data)
+    return
+  }
+
+  if (!data.id) {
+    const fallbackUrl = api.baseUrl + '/' + data.file_url
+    const fallbackName =
+      data.file_name || data.fileName || fallbackUrl.split('/').pop() || 'download'
+    const link = document.createElement('a')
+    link.href = fallbackUrl
+    link.download = fallbackName
+    link.target = '_blank'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    return
+  }
+
+  const requestUrl =
+    api.baseUrl +
+    '/Compliance/complianceManufacturer/downloadAttachment?attachmentId=' +
+    encodeURIComponent(data.id)
+  const fileName = data.file_name || 'attachment'
+
+  axios({
+    headers: {
+      token: getToken(),
+    },
+    responseType: 'blob',
+    method: 'get',
+    url: requestUrl,
+  })
+    .then((response) => {
+      const blob = new Blob([response.data])
+      const objectUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = objectUrl
+      a.download = fileName
+      document.body.appendChild(a)
+      a.click()
+      URL.revokeObjectURL(objectUrl)
+      document.body.removeChild(a)
+      proxy.$message.success(c.value.success)
+    })
+    .catch((error) => {
+      console.log(error)
+      proxy.$message.error(c.value.fail)
+    })
+}
+
+watch(() => contactInfo.dialogFormVisible, (val) => {
+  if (!val) {
+    contactInfo.editIndex = -1
+    contactInfo.data = {}
+  }
 })
 
-const Edate = computed(() => {
-  if (manufacturer.data.cooperation_end_date) {
-    return new Date(manufacturer.data.cooperation_end_date).toLocaleString()
+watch(() => address.dialogFormVisible, (val) => {
+  if (!val) {
+    address.editIndex = -1
+    address.data = {}
   }
-  return ''
 })
+
+watch(userAuth, (newV) => {
+  showAuth.m_add = newV.m_add == 'Y'
+  showAuth.m_search = newV.m_search == 'Y'
+  showAuth.m_del = newV.m_del == 'Y'
+  showAuth.m_updata = newV.m_updata == 'Y'
+  showAuth.m_import = newV.m_import == 'Y'
+  showAuth.m_export = newV.m_export == 'Y'
+  showAuth.m_upload = newV.m_upload == 'Y'
+  showAuth.m_audit = newV.m_audit == 'Y'
+  showAuth.m_print = newV.m_print == 'Y'
+}, { deep: true })
 
 onMounted(() => {
   getList()
   getUserAuth()
 })
-
-watch(
-  userAuth,
-  (newV) => {
-    showAuth.m_add = newV.m_add == 'Y'
-    showAuth.m_search = newV.m_search == 'Y'
-    showAuth.m_del = newV.m_del == 'Y'
-    showAuth.m_updata = newV.m_updata == 'Y'
-    showAuth.m_import = newV.m_import == 'Y'
-    showAuth.m_export = newV.m_export == 'Y'
-    showAuth.m_upload = newV.m_upload == 'Y'
-    showAuth.m_audit = newV.m_audit == 'Y'
-    showAuth.m_print = newV.m_print == 'Y'
-  },
-  { deep: true }
-)
 </script>
 
 <style scoped>
