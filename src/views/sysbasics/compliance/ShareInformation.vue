@@ -627,7 +627,7 @@ function deleteCisClick(row, index) {
   console.log(row)
   // row._index might not be available if zTable logic isn't exactly same, but let's assume index is passed or row is enough
   // original code: let i = index + 1
-  // this.$confirm(this.$l.deleteContactContent.replace('$1', i), ...
+  // proxy.$confirm(l.value.deleteContactContent.replace('$1', i), ...
 
   // If index is undefined, fallback to something or just don't replace?
   // We can try to find index in list if needed, but 'index' argument is passed from handleContactAction if available.

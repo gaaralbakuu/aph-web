@@ -116,7 +116,7 @@ const formInline = reactive({
   */
   // And template:
   /*
-          <el-form-item prop="manufacture_name" :label="$l.manufactureName">
+          <el-form-item prop="manufacture_name" :label="l.manufactureName">
             <el-input v-model="formInline.manufacture_name" ...>
   */
   // So `formInline.manufacture_name` is set, but `getTotal` uses `formInline.name`.

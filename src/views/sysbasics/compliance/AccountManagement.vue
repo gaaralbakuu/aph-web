@@ -215,7 +215,7 @@ const account = reactive({
   // I will define it as reactive and use it in add/edit.
   fields: [
     {
-      title: 'account', // keys for translation if needed, original code used `this.$l.account`
+      title: l.value.account,
       key: 'account',
       span: 24,
       required: true,
