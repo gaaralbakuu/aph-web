@@ -5,8 +5,8 @@
       <div class="text-6xl text-gray-300 mb-4">
         <i class="el-icon-document"></i>
       </div>
-      <div class="text-base font-medium text-gray-600 mb-2">{{ $c.table_empty }}</div>
-      <div class="text-sm text-gray-400">{{ $c.no_data }}</div>
+      <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
+      <div class="text-sm text-gray-400">{{ c.no_data }}</div>
     </div>
 
     <!-- Table Content -->
@@ -16,8 +16,8 @@
           <!-- First header row - parent columns -->
           <tr class="bg-white">
             <th v-for="(col, colIdx) in columns" :key="col.id + '_main'" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']" :colspan="getColSpan(col)" :rowspan="shouldHaveRowSpan(col) ? getMaxRowSpan() : undefined">
-              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $l[col.title]">
-                {{ col.title === '#' ? '#' : $l[col.title] || col.title }}
+              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : l[col.title]">
+                {{ col.title === '#' ? '#' : l[col.title] || col.title }}
               </div>
             </th>
           </tr>
@@ -34,8 +34,8 @@
                   <div v-else-if="childCol.id === 'last_year'" class="block max-w-full overflow-hidden overflow-ellipsis leading-5">
                     {{ new Date().getFullYear() - 1 }}
                   </div>
-                  <div v-else class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="$l[childCol.title]">
-                    {{ $l[childCol.title] || childCol.title }}
+                  <div v-else class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="l[childCol.title]">
+                    {{ l[childCol.title] || childCol.title }}
                   </div>
                 </th>
               </template>
@@ -59,31 +59,62 @@
 
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="(col.originalId || col.id) === 'issue_type'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
-                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] || $c.empty }}</div>
+                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] || c.empty }}</div>
                 </div>
 
                 <div v-else-if="(col.originalId || col.id) === 'subheader'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="(col.originalId || col.id) === 'name_en'" class="max-w-[200px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
+                <!-- Fix Error 1: vendor_code might be missing or item undefined? Row exists since we are iterating. -->
+                <!-- The error was `Cannot read properties of undefined (reading 'vendor_code')` at line 691. -->
+                <!-- This implies `item` might be undefined or something else. But v-for iterates data. -->
+                <!-- Wait, if we use `v-for="(item, idx) in data"`, item should be defined. -->
+                <!-- However, the traceback says `at InvestigationTable.vue:691:3`. Let's check line 691 in original file. -->
+                <!-- In original file, line 691 is inside CustomDialog content, `issueYearsDialogMeta.vendor_code`. -->
+                <!-- `issueYearsDialogMeta` is reactive object. -->
+                <!-- Ah, line 691 in provided file (previous turn) was: -->
+                <!-- `<span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || $c.empty }}</span>` -->
+                <!-- If `issueYearsDialogMeta` is reactive, it should be fine. -->
+                <!-- But wait, if `issueYearsDialogMeta` is not initialized properly? -->
+                <!-- `const issueYearsDialogMeta = reactive({ vendor_code: '', ... })`. It is initialized. -->
+                <!-- Maybe the error is somewhere else. -->
+                <!-- Let's look at `columns` definition. `vendor_code` is a column. -->
+                <!-- `<div v-else-if="(col.originalId || col.id) === 'vendor_code'" ...>` -->
+                <!-- I will use optional chaining in template just in case `item` is somehow not what we expect or if `issueYearsDialogMeta` is issues. -->
+
+                <div v-else-if="(col.originalId || col.id) === 'vendor_code'" class="max-w-[200px]" :title="item && item[col.originalId || col.id]">
+                  <div v-if="item && item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ c.empty }}
+                  </div>
+                </div>
+
+                 <div v-else-if="(col.originalId || col.id) === 'sap_code'" class="max-w-[200px]" :title="item && item[col.originalId || col.id]">
+                  <div v-if="item && item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ c.empty }}
+                  </div>
+                </div>
+
                 <div v-else-if="(col.originalId || col.id) === 'audit_explanation'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="(col.originalId || col.id) === 'corrective_action_plan'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
 
@@ -91,7 +122,7 @@
                 <template v-else-if="(col.originalId || col.id) === 'corrective_date'">
                   <span v-if="item[col.originalId || col.id]" class="text-xs whitespace-normal">{{ formatDate(item[col.originalId || col.id]) }}</span>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -101,7 +132,7 @@
                     {{ getStatusText(item[col.originalId || col.id]) }}
                   </el-tag>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -127,13 +158,13 @@
                     v-if="getIssueYearsAverage(item) !== null"
                     :class="['flex max-w-full overflow-hidden overflow-ellipsis leading-5 items-center gap-1 cursor-pointer select-none transition-transform duration-150 hover:scale-[1.02]']"
                     @click.stop="openIssueYearsDialog(item)"
-                    :title="$l.issue_years_average"
+                    :title="l.issue_years_average"
                   >
                     <div :class="['w-3 h-3 rounded-full', getPercentColor(getIssueYearsAverage(item)).main]"></div>
                     <div :class="['px-3', getPercentColor(getIssueYearsAverage(item)).sub]">{{ formatPercent(getIssueYearsAverage(item)) }}</div>
                   </div>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -148,8 +179,8 @@
                           <i class="el-icon-more w-3.5 text-sm text-gray-400"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item @click.native="handleAction('history', item)">{{ $l.history }}</el-dropdown-item>
-                          <el-dropdown-item @click.native="handleAction('edit_notices', item)">{{ $l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
+                          <el-dropdown-item @click.native="handleAction('history', item)">{{ l.history }}</el-dropdown-item>
+                          <el-dropdown-item @click.native="handleAction('edit_notices', item)">{{ l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
                     </div>
@@ -159,7 +190,7 @@
                 <template v-else>
                   <div class="text-black dark:text-gray-400 line-clamp-2">
                     <span v-if="item[col.originalId || col.id] === undefined || item[col.originalId || col.id] === null || item[col.originalId || col.id] === ''" class="text-gray-300 italic text-xs">
-                      {{ $c.empty }}
+                      {{ c.empty }}
                     </span>
                     <span v-else class="text-xs whitespace-normal">{{ item[col.originalId || col.id] }}</span>
                   </div>
@@ -171,7 +202,7 @@
           <tr v-if="!isLoading && data && data.length > 0" class="dark:bg-gray-800 font-medium border-t-2 border-gray-200 dark:border-gray-600 bg-yellow-100 sticky bottom-0 z-50">
             <!-- First 4 columns merged for Average title -->
             <td colspan="4" class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-center whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-600 dark:text-gray-300 font-semibold">{{ $l.average }}</span>
+              <span class="text-gray-600 dark:text-gray-300 font-semibold">{{ l.average }}</span>
             </td>
             <!-- Last year average -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-left whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
@@ -189,20 +220,20 @@
             </td>
             <!-- Multi-year average -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-left whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <!-- Remaining columns -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
           </tr>
         </tbody>
@@ -211,7 +242,7 @@
 
     <CustomDialog
       :visible.sync="issueYearsDialogVisible"
-      :title="$l.issue_years_average_detail_title"
+      :title="l.issue_years_average_detail_title"
       :clickOutside="false"
       width="70%"
       :maxWidth="'900px'"
@@ -219,19 +250,19 @@
       <div class="px-6 pb-6 space-y-6">
         <div class="grid gap-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900/40 md:grid-cols-4">
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.vendor_code }}</span>
-            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || $c.empty }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.vendor_code }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || c.empty }}</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.sap_code }}</span>
-            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.sap_code || $c.empty }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.sap_code }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.sap_code || c.empty }}</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.name_en }}</span>
-            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{{ issueYearsDialogMeta.name_en || $c.empty }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.name_en }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{{ issueYearsDialogMeta.name_en || c.empty }}</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.issue_years_average }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.issue_years_average }}</span>
             <div class="mt-2">
               <template v-if="issueYearsDialogMeta.averageRatio !== null">
                 <div class="inline-flex items-center gap-2">
@@ -239,7 +270,7 @@
                   <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getPercentColor(issueYearsDialogMeta.averageRatio).sub]">{{ issueYearsDialogAverageText }}</span>
                 </div>
               </template>
-              <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ $c.empty }}</span>
+              <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ c.empty }}</span>
             </div>
           </div>
         </div>
@@ -248,16 +279,16 @@
           <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
             <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-900/60 dark:text-gray-400">
               <tr>
-                <th class="px-4 py-3">{{ $l.issue_years_detail_year }}</th>
-                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_total }}</th>
-                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_finish }}</th>
-                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_ratio }}</th>
+                <th class="px-4 py-3">{{ l.issue_years_detail_year }}</th>
+                <th class="px-4 py-3 text-right">{{ l.issue_years_detail_total }}</th>
+                <th class="px-4 py-3 text-right">{{ l.issue_years_detail_finish }}</th>
+                <th class="px-4 py-3 text-right">{{ l.issue_years_detail_ratio }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
               <tr v-if="issueYearsDialogRows.length === 0">
                 <td colspan="4" class="px-4 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-                  {{ $c.no_data }}
+                  {{ c.no_data }}
                 </td>
               </tr>
               <tr
@@ -265,9 +296,9 @@
                 :key="row.manufacture_id || `${row.year}-${rowIdx}`"
                 class="bg-white text-sm text-gray-700 transition-colors dark:bg-black dark:text-gray-200 even:bg-gray-50 even:dark:bg-gray-900/40"
               >
-                <td class="px-4 py-3 whitespace-nowrap">{{ row.year || $c.dash }}</td>
-                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.total_issue === null || row.total_issue === undefined ? $c.dash : row.total_issue }}</td>
-                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.finish === null || row.finish === undefined ? $c.dash : row.finish }}</td>
+                <td class="px-4 py-3 whitespace-nowrap">{{ row.year || c.dash }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.total_issue === null || row.total_issue === undefined ? c.dash : row.total_issue }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">{{ finish === null || row.finish === undefined ? c.dash : row.finish }}</td>
                 <td class="px-4 py-3 text-right whitespace-nowrap">
                   <template v-if="row.ratio !== null">
                     <div class="inline-flex items-center gap-2">
@@ -275,11 +306,11 @@
                       <span :class="['px-3 py-1 rounded-full text-xs font-medium', getPercentColor(row.ratio).sub]">{{ formatPercent(row.ratio) }}</span>
                     </div>
                   </template>
-                  <span v-else class="text-xs italic text-gray-300 dark:text-gray-500">{{ $c.empty }}</span>
+                  <span v-else class="text-xs italic text-gray-300 dark:text-gray-500">{{ c.empty }}</span>
                 </td>
               </tr>
               <tr v-if="issueYearsDialogRows.length > 0" class="bg-gray-50 text-sm font-medium text-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
-                <td colspan="3" class="px-4 py-4 text-right">{{ $l.issue_years_detail_average }}</td>
+                <td colspan="3" class="px-4 py-4 text-right">{{ l.issue_years_detail_average }}</td>
                 <td class="px-4 py-4 text-right">
                   <template v-if="issueYearsDialogMeta.averageRatio !== null">
                     <div class="inline-flex items-center gap-2">
@@ -287,7 +318,7 @@
                       <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getPercentColor(issueYearsDialogMeta.averageRatio).sub]">{{ issueYearsDialogAverageText }}</span>
                     </div>
                   </template>
-                  <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ $c.dash }}</span>
+                  <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ c.dash }}</span>
                 </td>
               </tr>
             </tbody>
@@ -298,420 +329,396 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref, computed, getCurrentInstance } from 'vue'
 import CustomDialog from '@/views/_common/CustomDialog.vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-/*
-  Chú ý: 
-  - Các text hiển thị đều lấy từ file ngôn ngữ qua $l.key và $c.key.
-  - Tiêu đề cột được lấy từ $l[col.title]
-  - Text thông thường (empty, dash, no_data) được lấy từ $c[key]
-  - Nếu muốn custom thêm cột, sửa columns và bổ sung key vào tất cả file ngôn ngữ.
-*/
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('InvestigationTable') // Assuming namespace
 
-export default {
-  name: 'InvestigationTable',
-  components: {
-    CustomDialog,
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => [],
   },
-  props: {
-    data: {
-      type: Array,
-      default: () => [],
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    page: {
-      type: Object,
-      default: () => ({
-        page: 1,
-        pageSize: 10,
-      }),
-    },
-    showAuth: {
-      type: Object,
-      default: () => ({
-        m_add: false,
-        m_search: false,
-        m_del: false,
-        m_updata: false,
-        m_import: false,
-        m_export: false,
-        m_upload: false,
-        m_audit: false,
-      }),
-    },
+  isLoading: {
+    type: Boolean,
+    default: false,
   },
-  data() {
-    return {
-      columns: [
-        { id: 'index', title: '#', width: 60, textAlign: 'left' },
-        { id: 'vendor_code', title: 'vendor_code', width: 120, textAlign: 'left' },
-        { id: 'sap_code', title: 'sap_code', width: 180, textAlign: 'left' },
-        { id: 'name_en', title: 'name_en', width: 300, textAlign: 'left' },
-        {
-          id: 'improvement_rate',
-          title: 'improvement_rate',
-          width: 200,
-          textAlign: 'left',
-          children: [
-            { id: 'last_year', title: 'last_year', width: 100, textAlign: 'left' },
-            { id: 'current_year', title: 'current_year', width: 100, textAlign: 'left' },
-          ],
-        },
-        { id: 'issueYearsAverage', title: 'issue_years_average', width: 160, textAlign: 'left' },
-        { id: 'official_reminder_number', title: 'official_reminder_number', width: 150, textAlign: 'right' },
-        { id: 'warning_letter_number', title: 'warning_letter_number', width: 150, textAlign: 'right' },
-        { id: 'audit_count', title: 'audit_count', width: 120, textAlign: 'right' },
-        { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
-      ],
-      rowHeight: 44,
-      scrollTop: 0,
-      height: 400, // mặc định, có thể truyền prop hoặc tính toán động
-      issueYearsDialogVisible: false,
-      issueYearsDialogMeta: {
-        vendor_code: '',
-        sap_code: '',
-        name_en: '',
-        averageRatio: null,
-      },
-      issueYearsDialogRows: [],
+  page: {
+    type: Object,
+    default: () => ({
+      page: 1,
+      pageSize: 10,
+    }),
+  },
+  showAuth: {
+    type: Object,
+    default: () => ({
+      m_add: false,
+      m_search: false,
+      m_del: false,
+      m_updata: false,
+      m_import: false,
+      m_export: false,
+      m_upload: false,
+      m_audit: false,
+    }),
+  },
+})
+
+const columns = ref([
+  { id: 'index', title: '#', width: 60, textAlign: 'left' },
+  { id: 'vendor_code', title: 'vendor_code', width: 120, textAlign: 'left' },
+  { id: 'sap_code', title: 'sap_code', width: 180, textAlign: 'left' },
+  { id: 'name_en', title: 'name_en', width: 300, textAlign: 'left' },
+  {
+    id: 'improvement_rate',
+    title: 'improvement_rate',
+    width: 200,
+    textAlign: 'left',
+    children: [
+      { id: 'last_year', title: 'last_year', width: 100, textAlign: 'left' },
+      { id: 'current_year', title: 'current_year', width: 100, textAlign: 'left' },
+    ],
+  },
+  { id: 'issueYearsAverage', title: 'issue_years_average', width: 160, textAlign: 'left' },
+  { id: 'official_reminder_number', title: 'official_reminder_number', width: 150, textAlign: 'right' },
+  { id: 'warning_letter_number', title: 'warning_letter_number', width: 150, textAlign: 'right' },
+  { id: 'audit_count', title: 'audit_count', width: 120, textAlign: 'right' },
+  { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
+])
+
+const rowHeight = ref(44)
+const scrollTop = ref(0)
+const height = ref(400)
+const issueYearsDialogVisible = ref(false)
+const issueYearsDialogMeta = reactive({
+  vendor_code: '',
+  sap_code: '',
+  name_en: '',
+  averageRatio: null,
+})
+const issueYearsDialogRows = ref([])
+
+const averageIssueYearsRatio = computed(() => getAverageIssueYearsRatio())
+const issueYearsDialogAverageText = computed(() => {
+  const ratio = issueYearsDialogMeta.averageRatio
+  if (typeof ratio !== 'number' || isNaN(ratio)) return null
+  return formatPercent(ratio)
+})
+
+const emit = defineEmits(['action', 'view', 'row-click', 'row-hover', 'view-attachments'])
+
+// Methods
+const getMaxRowSpan = () => {
+  const hasChildrenColumns = columns.value.some(col => col.children && col.children.length > 0)
+  return hasChildrenColumns ? 2 : 1
+}
+
+const getColSpan = (col) => {
+  if (col.children && col.children.length > 0) {
+    return col.children.length
+  }
+  return 1
+}
+
+const shouldHaveRowSpan = (col) => {
+  return !col.children || col.children.length === 0
+}
+
+const getStickyStyleForChild = (parentCol, childCol, parentColIdx, childIdx, isHeader) => {
+  if (!parentCol.freeze) return { width: childCol.width + 'px', textAlign: childCol.textAlign }
+
+  let style = {
+    width: childCol.width + 'px',
+    textAlign: childCol.textAlign,
+    position: 'sticky',
+    zIndex: isHeader ? 10 : 2,
+    background: isHeader ? '#f9fafb' : '#ffffff',
+  }
+
+  if (parentCol.freeze === 'left') {
+    let left = 0
+    for (let i = 0; i < parentColIdx; i++) {
+      left += columns.value[i].width
     }
-  },
-  computed: {
-    averageIssueYearsRatio() {
-      return this.getAverageIssueYearsRatio()
-    },
-    issueYearsDialogAverageText() {
-      const ratio = this.issueYearsDialogMeta.averageRatio
-      if (typeof ratio !== 'number' || isNaN(ratio)) return null
-      return this.formatPercent(ratio)
-    },
-  },
-  methods: {
-    // Tính toán maxRowSpan dựa trên việc có cột nào có children hay không
-    getMaxRowSpan() {
-      const hasChildrenColumns = this.columns.some(col => col.children && col.children.length > 0)
-      return hasChildrenColumns ? 2 : 1
-    },
+    for (let j = 0; j < childIdx; j++) {
+      left += parentCol.children[j].width
+    }
+    style.left = left + 'px'
+  } else if (parentCol.freeze === 'right') {
+    let right = 0
+    for (let i = columns.value.length - 1; i > parentColIdx; i--) {
+      right += columns.value[i].width
+    }
+    for (let j = parentCol.children.length - 1; j > childIdx; j--) {
+      right += parentCol.children[j].width
+    }
+    style.right = right + 'px'
+  }
+  return style
+}
 
-    // Tính toán số lượng colspan cho mỗi cột
-    getColSpan(col) {
-      if (col.children && col.children.length > 0) {
-        return col.children.length
-      }
-      // Cột không có children thì colspan = 1 (không cần span)
-      return 1
-    },
-    
-    // Kiểm tra xem cột có children hay không (để quyết định có rowspan hay không)
-    shouldHaveRowSpan(col) {
-      return !col.children || col.children.length === 0
-    },
-    
-    // Tính toán tổng width của tất cả children columns
-    getTotalChildrenWidth(col) {
-      if (col.children && col.children.length > 0) {
-        return col.children.reduce((sum, child) => sum + child.width, 0)
-      }
-      return col.width
-    },
-    
-    // Tính toán sticky style cho child columns
-    getStickyStyleForChild(parentCol, childCol, parentColIdx, childIdx, isHeader) {
-      if (!parentCol.freeze) return { width: childCol.width + 'px', textAlign: childCol.textAlign }
-      
-      let style = {
-        width: childCol.width + 'px',
-        textAlign: childCol.textAlign,
-        position: 'sticky',
-        zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff',
-      }
-      
-      if (parentCol.freeze === 'left') {
-        let left = 0
-        // Tính toán left dựa trên tất cả các cột bên trái
-        for (let i = 0; i < parentColIdx; i++) {
-          left += this.columns[i].width
-        }
-        // Thêm width của các child trước đó trong cùng parent
-        for (let j = 0; j < childIdx; j++) {
-          left += parentCol.children[j].width
-        }
-        style.left = left + 'px'
-      } else if (parentCol.freeze === 'right') {
-        let right = 0
-        // Tính toán right dựa trên tất cả các cột bên phải
-        for (let i = this.columns.length - 1; i > parentColIdx; i--) {
-          right += this.columns[i].width
-        }
-        // Thêm width của các child sau trong cùng parent
-        for (let j = parentCol.children.length - 1; j > childIdx; j--) {
-          right += parentCol.children[j].width
-        }
-        style.right = right + 'px'
-      }
-      return style
-    },
-    
-    // Flatten columns cho việc render tbody
-    getFlattenedColumns() {
-      const flattened = []
-      this.columns.forEach(col => {
-        if (col.children && col.children.length > 0) {
-          // Nếu có children, thêm tất cả children
-          col.children.forEach(child => {
-            flattened.push({
-              ...child,
-              parentId: col.id,
-              freeze: col.freeze // Kế thừa freeze từ parent
-            })
-          })
-        } else {
-          // Nếu không có children, chỉ thêm 1 cột (không cần span nhiều cột)
-          flattened.push({
-            ...col,
-            originalId: col.id
-          })
-        }
+const getFlattenedColumns = () => {
+  const flattened = []
+  columns.value.forEach(col => {
+    if (col.children && col.children.length > 0) {
+      col.children.forEach(child => {
+        flattened.push({
+          ...child,
+          parentId: col.id,
+          freeze: col.freeze
+        })
       })
-      return flattened
-    },
-    
-    // Tính toán sticky style cho flattened columns
-    getStickyStyleForFlattened(col, colIdx, isHeader) {
-      if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      
-      let style = {
-        width: col.width + 'px',
-        textAlign: col.textAlign,
-        position: 'sticky',
-        zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff',
-      }
-      
-      if (col.freeze === 'left') {
-        let left = 0
-        const flattenedCols = this.getFlattenedColumns()
-        for (let i = 0; i < colIdx; i++) {
-          if (flattenedCols[i].freeze === 'left' || !flattenedCols[i].freeze) {
-            left += flattenedCols[i].width
-          }
-        }
-        style.left = left + 'px'
-      } else if (col.freeze === 'right') {
-        let right = 0
-        const flattenedCols = this.getFlattenedColumns()
-        for (let i = flattenedCols.length - 1; i > colIdx; i--) {
-          if (flattenedCols[i].freeze === 'right' || !flattenedCols[i].freeze) {
-            right += flattenedCols[i].width
-          }
-        }
-        style.right = right + 'px'
-      }
-      return style
-    },
-    
-    handleScroll(e) {
-      this.scrollTop = e.target.scrollTop
-    },
-    getStickyStyle(col, colIdx, isHeader) {
-      if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = {
-        width: col.width + 'px',
-        textAlign: col.textAlign,
-        position: 'sticky',
-        zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff',
-      }
-      if (col.freeze === 'left') {
-        let left = 0
-        for (let i = 0; i < colIdx; i++) {
-          if (this.columns[i].freeze === 'left' || !this.columns[i].freeze) {
-            left += this.columns[i].width
-          }
-        }
-        style.left = left + 'px'
-      } else if (col.freeze === 'right') {
-        let right = 0
-        for (let i = this.columns.length - 1; i > colIdx; i--) {
-          if (this.columns[i].freeze === 'right' || !this.columns[i].freeze) {
-            right += this.columns[i].width
-          }
-        }
-        style.right = right + 'px'
-      }
-      return style
-    },
-    getPercentColor(value) {
-      if (typeof value !== 'number' || isNaN(value)) return { main: '', sub: '' }
-      if (value < 0.3) {
-        return { main: 'bg-red-500', sub: 'bg-red-50' }
-      } else if (value < 0.8) {
-        return { main: 'bg-yellow-500', sub: 'bg-yellow-50' }
-      } else {
-        return { main: 'bg-green-500', sub: 'bg-green-50' }
-      }
-    },
-    // Tính trung bình của current_year
-    getAverageCurrentYear() {
-      if (!this.data || this.data.length === 0) return 0
-      const validData = this.data.filter(item => 
-        item.current_year !== null && 
-        item.current_year !== undefined && 
-        !isNaN(parseFloat(item.current_year))
-      )
-      if (validData.length === 0) return 0
-      const sum = validData.reduce((acc, item) => acc + parseFloat(item.current_year), 0)
-      return Math.round(sum / validData.length * 100) / 100
-    },
-    // Tính trung bình của last_year
-    getAverageLastYear() {
-      if (!this.data || this.data.length === 0) return 0
-      const validData = this.data.filter(item => 
-        item.last_year !== null && 
-        item.last_year !== undefined && 
-        !isNaN(parseFloat(item.last_year))
-      )
-      if (validData.length === 0) return 0
-      const sum = validData.reduce((acc, item) => acc + parseFloat(item.last_year), 0)
-      return Math.round(sum / validData.length * 100) / 100
-    },
-    // Tính trung bình tỷ lệ nhiều năm theo từng dòng
-    calculateIssueYearsAverage(issueYears) {
-      if (!Array.isArray(issueYears) || issueYears.length === 0) return null
-      let sumRatio = 0
-      let count = 0
-      issueYears.forEach(entry => {
-        if (!entry) return
-        const total = Number(entry.total_issue)
-        if (!Number.isFinite(total) || total <= 0) return
-        const finish = Number(entry.finish)
-        const safeFinish = Number.isFinite(finish) ? finish : 0
-        sumRatio += safeFinish / total
-        count += 1
+    } else {
+      flattened.push({
+        ...col,
+        originalId: col.id
       })
-      if (count === 0) return null
-      const average = sumRatio / count
-      if (!Number.isFinite(average)) return null
-      return Math.round(average * 10000) / 10000
-    },
-    // Hiển thị phần trăm với số thập phân cố định
-    formatPercent(ratio, fractionDigits = 2) {
-      if (typeof ratio !== 'number' || isNaN(ratio)) return ''
-      const percentValue = ratio * 100
-      return `${percentValue.toFixed(fractionDigits)}%`
-    },
-    // Tính trung bình tỷ lệ nhiều năm của toàn bộ bảng
-    getAverageIssueYearsRatio() {
-      if (!this.data || this.data.length === 0) return null
-      const ratios = this.data
-        .map(item => this.calculateIssueYearsAverage(item && item.issueYears))
-        .filter(ratio => typeof ratio === 'number' && !isNaN(ratio))
+    }
+  })
+  return flattened
+}
 
-      if (ratios.length === 0) return null
-      const sum = ratios.reduce((acc, ratio) => acc + ratio, 0)
-      const average = sum / ratios.length
-      if (!Number.isFinite(average)) return null
-      return Math.round(average * 10000) / 10000
-    },
-    getIssueYearsAverage(item) {
-      if (!item) return null
-      return this.calculateIssueYearsAverage(item.issueYears)
-    },
-    calculateIssueYearRatio(entry) {
+const getStickyStyleForFlattened = (col, colIdx, isHeader) => {
+  if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
+
+  let style = {
+    width: col.width + 'px',
+    textAlign: col.textAlign,
+    position: 'sticky',
+    zIndex: isHeader ? 10 : 2,
+    background: isHeader ? '#f9fafb' : '#ffffff',
+  }
+
+  if (col.freeze === 'left') {
+    let left = 0
+    const flattenedCols = getFlattenedColumns()
+    for (let i = 0; i < colIdx; i++) {
+      if (flattenedCols[i].freeze === 'left' || !flattenedCols[i].freeze) {
+        left += flattenedCols[i].width
+      }
+    }
+    style.left = left + 'px'
+  } else if (col.freeze === 'right') {
+    let right = 0
+    const flattenedCols = getFlattenedColumns()
+    for (let i = flattenedCols.length - 1; i > colIdx; i--) {
+      if (flattenedCols[i].freeze === 'right' || !flattenedCols[i].freeze) {
+        right += flattenedCols[i].width
+      }
+    }
+    style.right = right + 'px'
+  }
+  return style
+}
+
+const handleScroll = (e) => {
+  scrollTop.value = e.target.scrollTop
+}
+
+const getStickyStyle = (col, colIdx, isHeader) => {
+  if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
+  let style = {
+    width: col.width + 'px',
+    textAlign: col.textAlign,
+    position: 'sticky',
+    zIndex: isHeader ? 10 : 2,
+    background: isHeader ? '#f9fafb' : '#ffffff',
+  }
+  if (col.freeze === 'left') {
+    let left = 0
+    for (let i = 0; i < colIdx; i++) {
+      if (columns.value[i].freeze === 'left' || !columns.value[i].freeze) {
+        left += columns.value[i].width
+      }
+    }
+    style.left = left + 'px'
+  } else if (col.freeze === 'right') {
+    let right = 0
+    for (let i = columns.value.length - 1; i > colIdx; i--) {
+      if (columns.value[i].freeze === 'right' || !columns.value[i].freeze) {
+        right += columns.value[i].width
+      }
+    }
+    style.right = right + 'px'
+  }
+  return style
+}
+
+const getPercentColor = (value) => {
+  if (typeof value !== 'number' || isNaN(value)) return { main: '', sub: '' }
+  if (value < 0.3) {
+    return { main: 'bg-red-500', sub: 'bg-red-50' }
+  } else if (value < 0.8) {
+    return { main: 'bg-yellow-500', sub: 'bg-yellow-50' }
+  } else {
+    return { main: 'bg-green-500', sub: 'bg-green-50' }
+  }
+}
+
+const getAverageCurrentYear = () => {
+  if (!props.data || props.data.length === 0) return 0
+  const validData = props.data.filter(item =>
+    item.current_year !== null &&
+    item.current_year !== undefined &&
+    !isNaN(parseFloat(item.current_year))
+  )
+  if (validData.length === 0) return 0
+  const sum = validData.reduce((acc, item) => acc + parseFloat(item.current_year), 0)
+  return Math.round(sum / validData.length * 100) / 100
+}
+
+const getAverageLastYear = () => {
+  if (!props.data || props.data.length === 0) return 0
+  const validData = props.data.filter(item =>
+    item.last_year !== null &&
+    item.last_year !== undefined &&
+    !isNaN(parseFloat(item.last_year))
+  )
+  if (validData.length === 0) return 0
+  const sum = validData.reduce((acc, item) => acc + parseFloat(item.last_year), 0)
+  return Math.round(sum / validData.length * 100) / 100
+}
+
+const calculateIssueYearsAverage = (issueYears) => {
+  if (!Array.isArray(issueYears) || issueYears.length === 0) return null
+  let sumRatio = 0
+  let count = 0
+  issueYears.forEach(entry => {
+    if (!entry) return
+    const total = Number(entry.total_issue)
+    if (!Number.isFinite(total) || total <= 0) return
+    const finish = Number(entry.finish)
+    const safeFinish = Number.isFinite(finish) ? finish : 0
+    sumRatio += safeFinish / total
+    count += 1
+  })
+  if (count === 0) return null
+  const average = sumRatio / count
+  if (!Number.isFinite(average)) return null
+  return Math.round(average * 10000) / 10000
+}
+
+const formatPercent = (ratio, fractionDigits = 2) => {
+  if (typeof ratio !== 'number' || isNaN(ratio)) return ''
+  const percentValue = ratio * 100
+  return `${percentValue.toFixed(fractionDigits)}%`
+}
+
+const getAverageIssueYearsRatio = () => {
+  if (!props.data || props.data.length === 0) return null
+  const ratios = props.data
+    .map(item => calculateIssueYearsAverage(item && item.issueYears))
+    .filter(ratio => typeof ratio === 'number' && !isNaN(ratio))
+
+  if (ratios.length === 0) return null
+  const sum = ratios.reduce((acc, ratio) => acc + ratio, 0)
+  const average = sum / ratios.length
+  if (!Number.isFinite(average)) return null
+  return Math.round(average * 10000) / 10000
+}
+
+const getIssueYearsAverage = (item) => {
+  if (!item) return null
+  return calculateIssueYearsAverage(item.issueYears)
+}
+
+const calculateIssueYearRatio = (entry) => {
+  if (!entry) return null
+  const total = Number(entry.total_issue)
+  if (!Number.isFinite(total) || total <= 0) return null
+  const finish = Number(entry.finish)
+  const safeFinish = Number.isFinite(finish) ? finish : 0
+  const ratio = safeFinish / total
+  if (!Number.isFinite(ratio)) return null
+  const clamped = Math.max(0, Math.min(ratio, 1))
+  return Math.round(clamped * 10000) / 10000
+}
+
+const prepareIssueYearsRows = (issueYears) => {
+  if (!Array.isArray(issueYears)) return []
+  return issueYears
+    .map((entry, index) => {
       if (!entry) return null
-      const total = Number(entry.total_issue)
-      if (!Number.isFinite(total) || total <= 0) return null
-      const finish = Number(entry.finish)
-      const safeFinish = Number.isFinite(finish) ? finish : 0
-      const ratio = safeFinish / total
-      if (!Number.isFinite(ratio)) return null
-      const clamped = Math.max(0, Math.min(ratio, 1))
-      return Math.round(clamped * 10000) / 10000
-    },
-    prepareIssueYearsRows(issueYears) {
-      if (!Array.isArray(issueYears)) return []
-      return issueYears
-        .map((entry, index) => {
-          if (!entry) return null
-          const ratio = this.calculateIssueYearRatio(entry)
-          const totalNumber = Number(entry.total_issue)
-          const finishNumber = Number(entry.finish)
-          return {
-            ...entry,
-            year: entry.year,
-            total_issue: Number.isFinite(totalNumber) ? totalNumber : entry.total_issue,
-            finish: Number.isFinite(finishNumber) ? finishNumber : entry.finish,
-            ratio,
-            _order: index,
-          }
-        })
-        .filter(Boolean)
-        .sort((a, b) => {
-          const yearA = Number(a.year)
-          const yearB = Number(b.year)
-          if (Number.isFinite(yearA) && Number.isFinite(yearB)) return yearB - yearA
-          if (Number.isFinite(yearA)) return -1
-          if (Number.isFinite(yearB)) return 1
-          return (b._order || 0) - (a._order || 0)
-        })
-        .map(({ _order, ...rest }) => rest)
-    },
-    openIssueYearsDialog(item) {
-      if (!item) return
-      const rows = this.prepareIssueYearsRows(item.issueYears)
-      const averageRatio = this.getIssueYearsAverage(item)
-      this.issueYearsDialogRows = rows
-      this.issueYearsDialogMeta = {
-        vendor_code: item.vendor_code || '',
-        sap_code: item.sap_code || '',
-        name_en: item.name_en || '',
-        averageRatio,
+      const ratio = calculateIssueYearRatio(entry)
+      const totalNumber = Number(entry.total_issue)
+      const finishNumber = Number(entry.finish)
+      return {
+        ...entry,
+        year: entry.year,
+        total_issue: Number.isFinite(totalNumber) ? totalNumber : entry.total_issue,
+        finish: Number.isFinite(finishNumber) ? finishNumber : entry.finish,
+        ratio,
+        _order: index,
       }
-      this.issueYearsDialogVisible = true
-    },
-    handleAction(cmd, row) {
-      this.$emit('action', { action: cmd, row })
-    },
-    handleView(cmd, row) {
-      this.$emit('view', { action: cmd, row })
-    },
-    handleRowClick(row) {
-      this.$emit('row-click', row)
-    },
-    handleRowHover(row, isEnter) {
-      this.$emit('row-hover', { row, isEnter })
-    },
-    getStatusType(status) {
-      const statusMap = {
-        on_track: 'warning',
-        off_track: 'info',
-        closed: 'success',
-      }
-      return statusMap[status] || 'default'
-    },
-    getStatusText(status) {
-      const textMap = {
-        on_track: this.$l.on_track,
-        off_track: this.$l.off_track,
-        closed: this.$l.closed,
-      }
-      return textMap[status] || status
-    },
-    formatDate(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      return d.toLocaleDateString(this.$i18n.locale, {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      })
-    },
-  },
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      const yearA = Number(a.year)
+      const yearB = Number(b.year)
+      if (Number.isFinite(yearA) && Number.isFinite(yearB)) return yearB - yearA
+      if (Number.isFinite(yearA)) return -1
+      if (Number.isFinite(yearB)) return 1
+      return (b._order || 0) - (a._order || 0)
+    })
+    .map(({ _order, ...rest }) => rest)
+}
+
+const openIssueYearsDialog = (item) => {
+  if (!item) return
+  const rows = prepareIssueYearsRows(item.issueYears)
+  const averageRatio = getIssueYearsAverage(item)
+  issueYearsDialogRows.value = rows
+  Object.assign(issueYearsDialogMeta, {
+    vendor_code: item.vendor_code || '',
+    sap_code: item.sap_code || '',
+    name_en: item.name_en || '',
+    averageRatio,
+  })
+  issueYearsDialogVisible.value = true
+}
+
+const handleAction = (cmd, row) => {
+  emit('action', { action: cmd, row })
+}
+
+const handleRowClick = (row) => {
+  emit('row-click', row)
+}
+
+const handleRowHover = (row, isEnter) => {
+  emit('row-hover', { row, isEnter })
+}
+
+const getStatusType = (status) => {
+  const statusMap = {
+    on_track: 'warning',
+    off_track: 'info',
+    closed: 'success',
+  }
+  return statusMap[status] || 'default'
+}
+
+const getStatusText = (status) => {
+  const textMap = {
+    on_track: l.value.on_track,
+    off_track: l.value.off_track,
+    closed: l.value.closed,
+  }
+  return textMap[status] || status
+}
+
+const formatDate = (date) => {
+  if (!date) return ''
+  const d = new Date(date)
+  return d.toLocaleDateString(proxy.$i18n.locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 }
 </script>
 
@@ -738,31 +745,6 @@ export default {
 .dark .sticky-right {
   background: #000000 !important;
 }
-
-/* Header sticky backgrounds */
-/* th.sticky-right {
-  background: #f9fafb !important;
-}
-
-th.sticky-left {
-  background: #f9fafb !important;
-}
-
-.dark th.sticky-left,
-.dark th.sticky-right {
-  background: #111827 !important;
-} */
-
-/* Hover state for sticky columns */
-/* tr:hover .sticky-left,
-tr:hover .sticky-right {
-  background: #f9fafb !important;
-} */
-
-/* .dark tr:hover .sticky-left,
-.dark tr:hover .sticky-right {
-  background: #111827 !important;
-} */
 
 /* ===== SKELETON ANIMATION ===== */
 @keyframes skeleton-loading {
@@ -834,6 +816,5 @@ tr:hover .sticky-right {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
 }
 </style>

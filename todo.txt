@@ -1,0 +1,115 @@
+src/views/sysbasics/compliance/investigation copy.vue
+src/views/sysbasics/compliance/InvestigationInfo.vue
+src/views/sysbasics/compliance/workTable.vue
+src/views/sysbasics/compliance/Investigation.vue
+src/views/sysbasics/compliance/ImproveManagementInfo.vue
+src/views/sysbasics/compliance/ImproveManagement.vue
+src/views/sysbasics/compliance/improveManagement copy 2.vue
+src/views/sysbasics/compliance/manufacturer2 copy.vue
+src/views/sysbasics/compliance/demo3.vue
+src/views/sysbasics/compliance/ManufacturerTable.vue
+src/views/sysbasics/compliance/improveManagement copy.vue
+src/views/sysbasics/compliance/ImproveManagementTable2.vue
+src/views/sysbasics/compliance/Manufacturer2.vue
+src/views/sysbasics/compliance/Role.vue
+src/views/sysbasics/compliance/complianceManufacturer.vue
+src/views/sysbasics/compliance/manufacturer copy.vue
+src/views/sysbasics/compliance/ImproveManagementTable.vue
+src/views/sysbasics/compliance/InvestigationTable.vue
+src/views/sysbasics/compliance/ShareHelpManualTable.vue
+src/views/sysbasics/compliance/Banner.vue
+src/views/sysbasics/compliance/ShareInformation.vue
+src/views/sysbasics/compliance/components/FolderTree.vue
+src/views/sysbasics/compliance/issuesType.vue
+src/views/sysbasics/compliance/ImproveAnalysis.vue
+src/views/sysbasics/compliance/ImproveManagementDetailsTable.vue
+src/views/sysbasics/compliance/AccountManagement.vue
+src/views/sysbasics/compliance/improveAnalysis copy.vue
+src/views/sysbasics/compliance/InvestigationHistoryTable.vue
+src/views/sysbasics/compliance/Manufacturer.vue
+src/views/sysbasics/compliance/ShareContactTable.vue
+src/views/sysbasics/video/adminViews/component/lesson/Course.vue
+src/views/sysbasics/video/layout/videoUserLayout copy x.vue
+src/views/sysbasics/video/layout/VideoUserLayout copy.vue
+src/views/sysbasics/video/layout/VideoAdminLayout.vue
+src/views/sysbasics/video/userViews/Topic.vue
+src/views/sysbasics/video/userViews/ExamDetail.vue
+src/views/sysbasics/video/userViews/Course.vue
+src/views/sysbasics/video/userViews/Mine.vue
+src/views/sysbasics/video/userViews/component/Training.vue
+src/views/sysbasics/video/userViews/component/History.vue
+src/views/sysbasics/video/userViews/component/Favorite.vue
+src/views/sysbasics/video/userViews/TrainingDetail.vue
+src/views/sysbasics/video/userViews/home copy.vue
+src/views/sysbasics/video/userViews/TopicDetail.vue
+src/views/sysbasics/video/userViews/Play4.vue
+src/views/sysbasics/video/userViews/PlayOld_bak.vue
+src/views/sysbasics/SysMsg.vue
+src/views/sysbasics/compliance2/InvestigationInfo.vue
+src/views/sysbasics/compliance2/Investigation.vue
+src/views/sysbasics/compliance2/ComplianceManufacturer.vue
+src/views/sysbasics/compliance2/IssuesType.vue
+src/views/sysbasics/compliance2/ShareInformation.vue
+src/views/sysbasics/Epidemic.vue
+src/views/sysbasics/PublicCode.vue
+src/views/errorPage/401.vue
+src/views/errorPage/404.vue
+src/views/redirect/index.vue
+src/views/login/index copy.vue
+src/views/login/index copy 2.vue
+src/views/login/index copy 3.vue
+src/views/layout/SubLayout.vue
+src/views/layout/Layout.vue
+src/views/layout/components/Screenfull.vue
+src/views/layout/components/Breadcrumb.vue
+src/views/layout/components/Hamburger.vue
+src/views/layout/components/ErrorLog.vue
+src/views/layout/components/TagsView.vue
+src/views/layout/components/Navbar.vue
+src/views/layout/components/MenuItem.vue
+src/views/layout/components/SidebarItem.vue
+src/views/layout/components/ThemePicker.vue
+src/views/layout/components/NavbarCopy.vue
+src/views/layout/components/LangSelect.vue
+src/views/layout/components/SizeSelect.vue
+src/views/layout/components/Navbar copy.vue
+src/views/admin/WorkflowFields.vue
+src/views/admin/AppVersion.vue
+src/views/admin/Dictionary.vue
+src/views/admin/Param.vue
+src/views/admin/Role.vue
+src/views/admin/Banner.vue
+src/views/admin/UserFeedback.vue
+src/views/admin/Quartz.vue
+src/views/admin/AstrictAuth.vue
+src/views/admin/User.vue
+src/views/admin/TestUser.vue
+src/views/admin/Menu.vue
+src/views/example/svg-icons/index.vue
+src/views/home/welcome.vue
+src/views/demo/demo.vue
+src/views/_common/pagination.vue
+src/views/_common/formDialog.vue
+src/views/_common/FilePreviews.vue
+src/views/_common/DialogStackDemo.vue
+src/views/_common/dentify.vue
+src/views/_common/CustomDialog.vue
+src/views/_common/chooseUser.vue
+src/views/_common/form.vue
+src/views/_common/table.vue
+src/views/_common/ShadcnInput.vue
+src/App.vue
+src/components/UploadExcel/index.vue
+src/components/Img/Uploader.vue
+src/components/ScrollPane/index.vue
+src/components/videoPlayer/VideoPlayerPlyr.vue
+src/components/videoPlayer/videoPlayer.vue
+src/components/Pagination/index.vue
+src/components/SvgIcon/index.vue
+src/components/PanThumb/index.vue
+src/components/Video/VideoPlayer/index.vue
+src/components/Video/VideoCard.vue
+src/components/TestHotReload.vue
+src/components/TextHoverEffect/Mallki.vue
+src/components/Tag/Dynamictag.vue
+src/components/TipBox/index.vue

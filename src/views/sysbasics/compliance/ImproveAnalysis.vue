@@ -6,37 +6,19 @@
         <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
           <div style="display: flex; gap: 12px">
             <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.manufactureName }}</label>
-              <el-input :placeholder="$l.manufactureName" v-model="formInline.name" style="width: 100%" clearable />
+              <label>{{ l.manufactureName }}</label>
+              <el-input :placeholder="l.manufactureName" v-model="formInline.name" style="width: 100%" clearable />
             </div>
             <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.issueType }}</label>
-              <el-input :placeholder="$l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
+              <label>{{ l.issueType }}</label>
+              <el-input :placeholder="l.issueType" v-model="formInline.issues_type" style="width: 100%" clearable />
             </div>
-            <!-- <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.issueDesc }}</label>
-              <el-input :placeholder="$l.issueDesc" v-model="formInline.issues_desc" style="width: 100%" clearable />
-            </div> -->
           </div>
-          <!-- <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.suggest }}</label>
-              <el-input :placeholder="$l.suggest" v-model="formInline.suggest" style="width: 100%" clearable />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.correctiveDate }}</label>
-              <el-input :placeholder="$l.correctiveDate" v-model="formInline.corrective_date" style="width: 100%" clearable />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ $l.correctivePrincipal }}</label>
-              <el-input :placeholder="$l.correctivePrincipal" v-model="formInline.corrective_principal" style="width: 100%" clearable />
-            </div>
-          </div> -->
         </div>
         <!-- Right: buttons -->
         <div style="display: flex; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
-          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getTotal">{{ $l.search }}</el-button>
-          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ $l.reset }}</el-button>
+          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getTotal">{{ l.search }}</el-button>
+          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="resetForm">{{ l.reset }}</el-button>
         </div>
       </div>
     </div>
@@ -44,10 +26,10 @@
       <el-divider></el-divider>
     </div>
     <el-table :data="tableData1" border style="width: 100%; margin-top: 1%">
-      <el-table-column prop="total" :label="$l.T1Total" width="430"></el-table-column>
-      <el-table-column prop="totalIssues" :label="$l.issueTotal" width="430"></el-table-column>
-      <el-table-column prop="finshIssues" :label="$l.improveTotal" width="420"></el-table-column>
-      <el-table-column prop="updaterate" :label="$l.totalRate" width="430"></el-table-column>
+      <el-table-column prop="total" :label="l.T1Total" width="430"></el-table-column>
+      <el-table-column prop="totalIssues" :label="l.issueTotal" width="430"></el-table-column>
+      <el-table-column prop="finshIssues" :label="l.improveTotal" width="420"></el-table-column>
+      <el-table-column prop="updaterate" :label="l.totalRate" width="430"></el-table-column>
     </el-table>
 
     <div class="container">
@@ -55,16 +37,16 @@
         <table class="custom-table">
           <thead>
             <tr>
-              <th rowspan="2" class="main-header" width="80">{{ $l.ordinal }}</th>
-              <th rowspan="2" class="main-header">{{ $l.manufactureName }}</th>
-              <th colspan="5" class="main-header">{{ $l.thresholdIssueManagement }}</th>
+              <th rowspan="2" class="main-header" width="80">{{ l.ordinal }}</th>
+              <th rowspan="2" class="main-header">{{ l.manufactureName }}</th>
+              <th colspan="5" class="main-header">{{ l.thresholdIssueManagement }}</th>
             </tr>
             <tr>
-              <th>{{ $l.issueType }}</th>
-              <th>{{ $l.problemTotal }}</th>
-              <th>{{ $l.problemImprove }}</th>
-              <th>{{ $l.noImprove }}</th>
-              <th>{{ $l.problemRate }}</th>
+              <th>{{ l.issueType }}</th>
+              <th>{{ l.problemTotal }}</th>
+              <th>{{ l.problemImprove }}</th>
+              <th>{{ l.noImprove }}</th>
+              <th>{{ l.problemRate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -92,200 +74,192 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios'
+<script setup>
+import { ref, reactive, onMounted, getCurrentInstance, watch } from 'vue'
+import { _ } from '@/views/_common'
+import { api } from '@/views/_common'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-import { getToken } from '@/utils/auth'
-import { _, api } from '@/views/_common'
-export default {
-  name: 'issuesType',
-  data() {
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('issuesType') // Component name was 'issuesType' in original options API
+
+const pageLoading = ref(false)
+const progressPercentage = ref(0)
+const userAuth = ref({})
+const showAuth = reactive({
+    m_search: false,
+    m_add: false,
+    m_del: false,
+    m_updata: false,
+    m_import: false,
+    m_export: false,
+    m_upload: false,
+    m_audit: false,
+    m_print: false,
+})
+
+const formInline = reactive({
+  name: '',
+  issues_type: '',
+  issues_desc: '',
+  suggest: '',
+  corrective_date: '',
+  corrective_principal: '',
+})
+
+const forminit = reactive({}) // will be set via resetForm logic or initialized elsewhere if needed
+const tableData = ref([])
+// const list = ref([]) // unused
+const tableData1 = ref([])
+// const resetData = ref([]) // unused
+
+function spanMethod({ row, column, rowIndex, columnIndex }) {
+  if (column.property === 'name_zh') {
     return {
-      progressPercentage: 0,
-      userAuth: [], //保存用户权限
-      showAuth: {
-        //用于权限控制，搭配v-show控制界面上的操作按钮是否展示
-        m_search: false,
-        m_add: false,
-        m_del: false,
-        m_updata: false,
-        m_import: false,
-        m_export: false,
-        m_upload: false,
-        m_audit: false,
-        m_print: false,
-      },
-      formInline: {
-        name: '',
-        issues_type: '',
-        issues_desc: '',
-        suggest: '',
-        corrective_date: '',
-        corrective_principal: '',
-      },
-      forminit: {},
-      tableData: [{}],
-      list: [],
-      tableData1: [],
-      resetData: [],
+      rowspan: row._rowspan,
+      colspan: 1,
     }
-  },
-  created() {
-    this.getTotal() // 在组件创建时调用getList方法获取数据
-    this.getAnalyzeDetail()
-    this.getUserAuth()
-  },
-  methods: {
-    spanMethod({ row, column, rowIndex, columnIndex }) {
-      if (column.property === 'name_zh') {
-        return {
-          rowspan: row._rowspan,
-          colspan: 1,
-        }
-      }
-    },
-
-    getTotal() {
-      this.getAnalyzeDetail()
-      this.$request(api.baseUrl + '/Compliance/complianceIssues/getTotal', {
-        name: this.formInline.name,
-        issues_type: this.formInline.issues_type,
-        issues_desc: this.formInline.issues_desc,
-        suggest: this.formInline.issues_desc,
-        corrective_date: this.formInline.corrective_date,
-        corrective_principal: this.formInline.corrective_principal,
-      }).then((r) => {
-        const list = r.data
-        if (list.finshIssues == 0 && list.totalIssues == 0) {
-          const rate = 0
-          const newrate = rate.toFixed(2)
-          const updaterate = `${newrate}%`
-          const newlist = {
-            ...list,
-            updaterate,
-          }
-          const arr = []
-          arr.push(newlist)
-          this.tableData1 = arr
-          console.log(this.tableData1)
-        } else {
-          const rate = (list.finshIssues / list.totalIssues) * 100
-          const newrate = rate.toFixed(2)
-          const updaterate = `${newrate}%`
-          const newlist = {
-            ...list,
-            updaterate,
-          }
-          const arr = []
-          arr.push(newlist)
-          this.tableData1 = arr
-          //console.log(this.tableData1)
-        }
-      })
-    },
-    getAnalyzeDetail() {
-      this.$request(api.baseUrl + '/Compliance/complianceIssues/getManufacturerAnalyzeDetail', {
-        name: this.formInline.name,
-        issues_type: this.formInline.issues_type,
-        issues_desc: this.formInline.issues_desc,
-        suggest: this.formInline.issues_desc,
-        corrective_date: this.formInline.corrective_date,
-        corrective_principal: this.formInline.corrective_principal,
-      }).then((r) => {
-        const data = r.data
-        const updatedData = data.map((item) => {
-          const gsl = (item.is_finsh_total / item.total) * 100
-          item.gsl = gsl.toFixed(2)
-          const updategsl = `${item.gsl}%`
-          return {
-            ...item,
-            updategsl,
-          }
-        })
-        this.tableData = updatedData.reduce((acc, cur, currentIndex) => {
-          cur.issue_type.map((type, index) => {
-            acc.push({
-              ...cur,
-              issue_type: type,
-              _rowspan: index === 0 ? cur.issue_type.length : 0,
-              index: currentIndex,
-            })
-          })
-          return acc
-        }, [])
-        //console.log(this.tableData)
-      })
-    },
-    //重置
-    resetForm() {
-      this.getAnalyze()
-      this.formInline = _.cloneDeep(this.forminit)
-      this.$request(api.baseUrl + '/Compliance/complianceIssues/getTotal').then((r) => {
-        const resetData = r.data
-        const newarr = []
-        newarr.push(resetData)
-        this.tableData1 = newarr
-      })
-    },
-    getAnalyze() {
-      this.$request(api.baseUrl + '/Compliance/complianceIssues/getManufacturerAnalyzeDetail').then((r) => {
-        const data = r.data
-        const updatedData = data.map((item) => {
-          const gsl = (item.is_finsh_total / item.total) * 100
-          item.gsl = gsl.toFixed(2)
-          const updategsl = `${item.gsl}%`
-          return {
-            ...item,
-            updategsl,
-          }
-        })
-        this.tableData = updatedData.reduce((acc, cur, currentIndex) => {
-          cur.issue_type.map((type, index) => {
-            acc.push({
-              ...cur,
-              issue_type: type,
-              _rowspan: index === 0 ? cur.issue_type.length : 0, // 设置行合并
-              index: currentIndex,
-            })
-          })
-          return acc
-        }, [])
-      })
-    },
-
-    getIssueTypeName(row) {
-      const issueTypeMap = row.issue_type.join('<br/>')
-      return issueTypeMap
-    },
-
-    // 获取当前页面用户拥有的操作权限的函数
-    getUserAuth() {
-      //获取当前页面用户拥有的操作权限的函数
-      // this.userAuth = null
-      this.$request(this.$api.checkMenuAuth, {
-        resourcepath: this.$route.name,
-      }).then((r) => {
-        this.userAuth = r.data[0]
-      })
-    },
-  },
-  watch: {
-    userAuth: {
-      deep: true,
-      handler(newV) {
-        this.showAuth.m_add = newV.m_add == 'Y' ? true : false
-        this.showAuth.m_search = newV.m_search == 'Y' ? true : false
-        this.showAuth.m_del = newV.m_del == 'Y' ? true : false
-        this.showAuth.m_updata = newV.m_updata == 'Y' ? true : false
-        this.showAuth.m_import = newV.m_import == 'Y' ? true : false
-        this.showAuth.m_export = newV.m_export == 'Y' ? true : false
-        this.showAuth.m_upload = newV.m_upload == 'Y' ? true : false
-        this.showAuth.m_audit = newV.m_audit == 'Y' ? true : false
-        this.showAuth.m_print = newV.m_print == 'Y' ? true : false
-      },
-    },
-  },
+  }
 }
+
+function getTotal() {
+  getAnalyzeDetail()
+  proxy.$request(api.baseUrl + '/Compliance/complianceIssues/getTotal', {
+    name: formInline.name,
+    issues_type: formInline.issues_type,
+    issues_desc: formInline.issues_desc,
+    suggest: formInline.issues_desc,
+    corrective_date: formInline.corrective_date,
+    corrective_principal: formInline.corrective_principal,
+  }).then((r) => {
+    const list = r.data
+    if (list.finshIssues == 0 && list.totalIssues == 0) {
+      const rate = 0
+      const newrate = rate.toFixed(2)
+      const updaterate = `${newrate}%`
+      const newlist = {
+        ...list,
+        updaterate,
+      }
+      const arr = []
+      arr.push(newlist)
+      tableData1.value = arr
+      console.log(tableData1.value)
+    } else {
+      const rate = (list.finshIssues / list.totalIssues) * 100
+      const newrate = rate.toFixed(2)
+      const updaterate = `${newrate}%`
+      const newlist = {
+        ...list,
+        updaterate,
+      }
+      const arr = []
+      arr.push(newlist)
+      tableData1.value = arr
+    }
+  })
+}
+
+function getAnalyzeDetail() {
+  proxy.$request(api.baseUrl + '/Compliance/complianceIssues/getManufacturerAnalyzeDetail', {
+    name: formInline.name,
+    issues_type: formInline.issues_type,
+    issues_desc: formInline.issues_desc,
+    suggest: formInline.issues_desc,
+    corrective_date: formInline.corrective_date,
+    corrective_principal: formInline.corrective_principal,
+  }).then((r) => {
+    const data = r.data
+    const updatedData = data.map((item) => {
+      const gsl = (item.is_finsh_total / item.total) * 100
+      item.gsl = gsl.toFixed(2)
+      const updategsl = `${item.gsl}%`
+      return {
+        ...item,
+        updategsl,
+      }
+    })
+    tableData.value = updatedData.reduce((acc, cur, currentIndex) => {
+      cur.issue_type.map((type, index) => {
+        acc.push({
+          ...cur,
+          issue_type: type,
+          _rowspan: index === 0 ? cur.issue_type.length : 0,
+          index: currentIndex,
+        })
+      })
+      return acc
+    }, [])
+  })
+}
+
+function resetForm() {
+  getAnalyze()
+  Object.assign(formInline, _.cloneDeep(forminit))
+  proxy.$request(api.baseUrl + '/Compliance/complianceIssues/getTotal').then((r) => {
+    const resetData = r.data
+    const newarr = []
+    newarr.push(resetData)
+    tableData1.value = newarr
+  })
+}
+
+function getAnalyze() {
+  proxy.$request(api.baseUrl + '/Compliance/complianceIssues/getManufacturerAnalyzeDetail').then((r) => {
+    const data = r.data
+    const updatedData = data.map((item) => {
+      const gsl = (item.is_finsh_total / item.total) * 100
+      item.gsl = gsl.toFixed(2)
+      const updategsl = `${item.gsl}%`
+      return {
+        ...item,
+        updategsl,
+      }
+    })
+    tableData.value = updatedData.reduce((acc, cur, currentIndex) => {
+      cur.issue_type.map((type, index) => {
+        acc.push({
+          ...cur,
+          issue_type: type,
+          _rowspan: index === 0 ? cur.issue_type.length : 0,
+          index: currentIndex,
+        })
+      })
+      return acc
+    }, [])
+  })
+}
+
+function getIssueTypeName(row) {
+  const issueTypeMap = row.issue_type.join('<br/>')
+  return issueTypeMap
+}
+
+function getUserAuth() {
+  proxy.$request(proxy.$api.checkMenuAuth, {
+    resourcepath: proxy.$route.name,
+  }).then((r) => {
+    userAuth.value = r.data[0]
+  })
+}
+
+watch(userAuth, (newV) => {
+  showAuth.m_add = newV.m_add == 'Y'
+  showAuth.m_search = newV.m_search == 'Y'
+  showAuth.m_del = newV.m_del == 'Y'
+  showAuth.m_updata = newV.m_updata == 'Y'
+  showAuth.m_import = newV.m_import == 'Y'
+  showAuth.m_export = newV.m_export == 'Y'
+  showAuth.m_upload = newV.m_upload == 'Y'
+  showAuth.m_audit = newV.m_audit == 'Y'
+  showAuth.m_print = newV.m_print == 'Y'
+}, { deep: true })
+
+onMounted(() => {
+  getTotal()
+  getAnalyzeDetail()
+  getUserAuth()
+})
 </script>
 
 <style scoped>

@@ -5,7 +5,7 @@
       <div class="empty-icon">
         <i class="el-icon-document"></i>
       </div>
-      <div class="empty-text">{{ $c.table_empty }}</div>
+      <div class="empty-text">{{ c.table_empty }}</div>
       <div class="empty-description">Chưa có dữ liệu nhà sản xuất nào được tải</div>
     </div>
 
@@ -34,14 +34,14 @@
               <td v-for="col in columns" :key="col.id" :class="[col.className, col.freeze ? 'sticky-' + col.freeze : '', 'table-cell']">
                 <!-- Index Column -->
                 <span v-if="col.id === 'index'" class="index-cell">{{ idx + 1 + memory.firstSpace }}</span>
-                
+
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="name-cell">
                   <el-tooltip effect="dark" :content="item[col.id]" placement="top" :disabled="!item[col.id] || item[col.id].length < 30">
-                    <div class="text-truncate">{{ item[col.id] || $c.empty }}</div>
+                    <div class="text-truncate">{{ item[col.id] || c.empty }}</div>
                   </el-tooltip>
                 </div>
-                
+
                 <!-- Address Column -->
                 <template v-else-if="col.id === 'address'">
                   <div class="address-cell">
@@ -53,12 +53,12 @@
                             <span>{{ addr.address_en }}</span>
                           </div>
                         </div>
-                        <div v-else class="no-data">{{ $c.empty }}</div>
+                        <div v-else class="no-data">{{ c.empty }}</div>
                       </div>
                       <template slot="reference">
                         <el-button type="text" size="mini" class="view-link">
                           <i class="el-icon-view"></i>
-                          {{ $c.view_address }}
+                          {{ c.view_address }}
                         </el-button>
                       </template>
                     </el-popover>
@@ -67,7 +67,7 @@
                     </el-tag>
                   </div>
                 </template>
-                
+
                 <!-- Capabilities Column -->
                 <template v-else-if="col.id === 'capabilities'">
                   <div class="capabilities-cell">
@@ -79,12 +79,12 @@
                             <span>{{ capability.own_processes }}</span>
                           </div>
                         </div>
-                        <div v-else class="no-data">{{ $c.empty }}</div>
+                        <div v-else class="no-data">{{ c.empty }}</div>
                       </div>
                       <template slot="reference">
                         <el-button type="text" size="mini" class="view-link">
                           <i class="el-icon-view"></i>
-                          {{ $c.view_capabilities }}
+                          {{ c.view_capabilities }}
                         </el-button>
                       </template>
                     </el-popover>
@@ -93,20 +93,17 @@
                     </el-tag>
                   </div>
                 </template>
-                
+
                 <!-- Status Column -->
                 <template v-else-if="col.id === 'authorization_status'">
                   <div class="status-cell">
-                    <el-tag v-if="item[col.id]" 
-                            :type="getStatusType(item[col.id])" 
-                            size="small"
-                            class="status-tag">
+                    <el-tag v-if="item[col.id]" :type="getStatusType(item[col.id])" size="small" class="status-tag">
                       {{ getStatusText(item[col.id]) }}
                     </el-tag>
-                    <span v-else class="empty-cell">{{ $c.empty }}</span>
+                    <span v-else class="empty-cell">{{ c.empty }}</span>
                   </div>
                 </template>
-                
+
                 <!-- Action Column -->
                 <template v-else-if="col.id === 'action'">
                   <div class="action-cell">
@@ -135,12 +132,12 @@
                     </el-dropdown>
                   </div>
                 </template>
-                
+
                 <!-- Default Columns -->
                 <template v-else>
                   <div class="default-cell">
                     <span v-if="item[col.id] === undefined || item[col.id] === null || item[col.id] === ''" class="empty-cell">
-                      {{ $c.empty }}
+                      {{ c.empty }}
                     </span>
                     <span v-else class="cell-content">{{ item[col.id] }}</span>
                   </div>
@@ -154,112 +151,115 @@
   </div>
 </template>
 
-<script>
-/*
-  Chú ý: Các text hiển thị đều lấy từ file ngôn ngữ qua $l.key.
-  Nếu muốn custom thêm cột, sửa columns phía dưới và bổ sung key vào file ngôn ngữ.
-*/
+<script setup>
+import { reactive, ref, computed, onMounted, getCurrentInstance, watch } from 'vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'ImproveManagementTable2',
-  props: {
-    data: {
-      type: Array,
-      default: () => [],
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('ImproveManagementTable2') // Assuming namespace
+
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => [],
   },
-  data() {
-    return {
-      columns: [
-        { id: 'index', title: '#', width: 60, textAlign: 'left' },
-        { id: 'name_en', title: 'partner_english_name', width: 300, textAlign: 'left' },
-        { id: 'vendor_code', title: 'vendor_code', width: 140, textAlign: 'left' },
-        { id: 'sap_code', title: 'sap_code', width: 140, textAlign: 'left' },
-        { id: 'address', title: 'address', width: 220, textAlign: 'left' },
-        { id: 'types_of_orders', title: 'types_of_orders', width: 180, textAlign: 'left' },
-        { id: 'capabilities', title: 'overall_capabilities', width: 220, textAlign: 'left' },
-        { id: 'biz_license_number', title: 'business_registration_number', width: 180, textAlign: 'left' },
-        { id: 'authorization_status', title: 'authorization_status', width: 160, textAlign: 'left' },
-        { id: 'requestor_facility_code', title: 'leading_t1', width: 140, textAlign: 'left' },
-        { id: 'action', title: 'action', width: 80, textAlign: 'right', freeze: 'right' },
-      ],
-      rowHeight: 44,
-      scrollTop: 0,
-      height: 400, // mặc định, có thể truyền prop hoặc tính toán động
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['action', 'view', 'row-click', 'row-hover'])
+
+const columns = ref([
+  { id: 'index', title: '#', width: 60, textAlign: 'left' },
+  { id: 'name_en', title: 'partner_english_name', width: 300, textAlign: 'left' },
+  { id: 'vendor_code', title: 'vendor_code', width: 140, textAlign: 'left' },
+  { id: 'sap_code', title: 'sap_code', width: 140, textAlign: 'left' },
+  { id: 'address', title: 'address', width: 220, textAlign: 'left' },
+  { id: 'types_of_orders', title: 'types_of_orders', width: 180, textAlign: 'left' },
+  { id: 'capabilities', title: 'overall_capabilities', width: 220, textAlign: 'left' },
+  { id: 'biz_license_number', title: 'business_registration_number', width: 180, textAlign: 'left' },
+  { id: 'authorization_status', title: 'authorization_status', width: 160, textAlign: 'left' },
+  { id: 'requestor_facility_code', title: 'leading_t1', width: 140, textAlign: 'left' },
+  { id: 'action', title: 'action', width: 80, textAlign: 'right', freeze: 'right' },
+])
+
+const rowHeight = ref(44)
+const scrollTop = ref(0)
+const height = ref(400)
+
+const memory = computed(() => {
+  const total = props.data.length
+  const visibleRowCount = Math.ceil(height.value / rowHeight.value)
+  const index = Math.floor(scrollTop.value / rowHeight.value)
+  const firstSpace = Math.max(index - 2, 0)
+  const lastSpace = Math.min(index + visibleRowCount + 2, total)
+  return {
+    firstSpace,
+    lastSpace,
+  }
+})
+
+const visibleRows = computed(() => {
+  return props.data.slice(memory.value.firstSpace, memory.value.lastSpace)
+})
+
+const handleScroll = (e) => {
+  scrollTop.value = e.target.scrollTop
+}
+
+const getStickyStyle = (col, colIdx, isHeader) => {
+  if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
+  let style = { width: col.width + 'px', textAlign: col.textAlign, position: 'sticky', zIndex: isHeader ? 10 : 2 }
+  if (col.freeze === 'left') {
+    let left = 0
+    for (let i = 0; i < colIdx; i++) {
+      if (columns.value[i].freeze === 'left' || !columns.value[i].freeze) left += columns.value[i].width
     }
-  },
-  computed: {
-    memory() {
-      // Tính toán số dòng hiển thị dựa vào scrollTop và chiều cao
-      const total = this.data.length
-      const visibleRowCount = Math.ceil(this.height / this.rowHeight)
-      const index = Math.floor(this.scrollTop / this.rowHeight)
-      const firstSpace = Math.max(index - 2, 0)
-      const lastSpace = Math.min(index + visibleRowCount + 2, total)
-      return {
-        firstSpace,
-        lastSpace,
-      }
-    },
-    visibleRows() {
-      return this.data.slice(this.memory.firstSpace, this.memory.lastSpace)
-    },
-  },
-  methods: {
-    handleScroll(e) {
-      this.scrollTop = e.target.scrollTop
-    },
-    getStickyStyle(col, colIdx, isHeader) {
-      if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = { width: col.width + 'px', textAlign: col.textAlign, position: 'sticky', zIndex: isHeader ? 10 : 2 }
-      if (col.freeze === 'left') {
-        let left = 0
-        for (let i = 0; i < colIdx; i++) {
-          if (this.columns[i].freeze === 'left' || !this.columns[i].freeze) left += this.columns[i].width
-        }
-        style.left = left + 'px'
-      } else if (col.freeze === 'right') {
-        let right = 0
-        for (let i = this.columns.length - 1; i > colIdx; i--) {
-          if (this.columns[i].freeze === 'right' || !this.columns[i].freeze) right += this.columns[i].width
-        }
-        style.right = right + 'px'
-      }
-      return style
-    },
-    handleAction(cmd, row) {
-      this.$emit('action', { action: cmd, row })
-    },
-    handleView(cmd, row) {
-      this.$emit('view', { action: cmd, row })
-    },
-    handleRowClick(row) {
-      this.$emit('row-click', row)
-    },
-    handleRowHover(row, isEnter) {
-      this.$emit('row-hover', { row, isEnter })
-    },
-    getStatusType(status) {
-      const statusMap = {
-        'onboarding': 'warning',
-        'discontinued': 'info', 
-        'in_use': 'success'
-      }
-      return statusMap[status] || 'default'
-    },
-    getStatusText(status) {
-      const textMap = {
-        'onboarding': this.$t('manufacturer_table.onboarding'),
-        'discontinued': this.$t('manufacturer_table.discontinued'),
-        'in_use': this.$t('manufacturer_table.in_use')
-      }
-      return textMap[status] || status
-    },
-  },
+    style.left = left + 'px'
+  } else if (col.freeze === 'right') {
+    let right = 0
+    for (let i = columns.value.length - 1; i > colIdx; i--) {
+      if (columns.value[i].freeze === 'right' || !columns.value[i].freeze) right += columns.value[i].width
+    }
+    style.right = right + 'px'
+  }
+  return style
+}
+
+const handleAction = (cmd, row) => {
+  emit('action', { action: cmd, row })
+}
+
+const handleView = (cmd, row) => {
+  emit('view', { action: cmd, row })
+}
+
+const handleRowClick = (row) => {
+  emit('row-click', row)
+}
+
+const handleRowHover = (row, isEnter) => {
+  emit('row-hover', { row, isEnter })
+}
+
+const getStatusType = (status) => {
+  const statusMap = {
+    onboarding: 'warning',
+    discontinued: 'info',
+    in_use: 'success',
+  }
+  return statusMap[status] || 'default'
+}
+
+const getStatusText = (status) => {
+  const textMap = {
+    onboarding: proxy.$t('manufacturer_table.onboarding'),
+    discontinued: proxy.$t('manufacturer_table.discontinued'),
+    in_use: proxy.$t('manufacturer_table.in_use'),
+  }
+  return textMap[status] || status
 }
 </script>
 
@@ -625,7 +625,7 @@ export default {
   .manufacturer-table {
     font-size: 13px;
   }
-  
+
   .manufacturer-table th,
   .manufacturer-table td {
     padding: 8px;

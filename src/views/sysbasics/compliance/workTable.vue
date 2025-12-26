@@ -1,21 +1,12 @@
 <template>
-  <div class="app-container">
-
-  </div>
+  <div class="app-container"></div>
 </template>
 
-<script>
-export default {
-  name: '',
-  components: {
-  },
-  data() {
-    return {
-    }
-  }
-}
+<script setup>
+import { reactive, ref, computed, onMounted, getCurrentInstance } from 'vue'
+
+const { proxy } = getCurrentInstance()
+// const { l, c } = useLocalI18n('componentName')
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -5,7 +5,7 @@
       <div class="text-6xl text-gray-300 mb-4">
         <i class="el-icon-document"></i>
       </div>
-      <div class="text-base font-medium text-gray-600 mb-2">{{ $c.table_empty }}</div>
+      <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
       <div class="text-sm text-gray-400">{{ $t('no_data') }}</div>
     </div>
 
@@ -15,8 +15,8 @@
         <thead>
           <tr>
             <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']">
-              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $l[col.title]">
-                {{ col.title === '#' ? '#' : $l[col.title] }}
+              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : l[col.title]">
+                {{ col.title === '#' ? '#' : l[col.title] }}
               </div>
             </th>
           </tr>
@@ -37,31 +37,31 @@
 
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'issue_type'" class="max-w-[500px]" :title="item[col.id]">
-                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] || $c.empty }}</div>
+                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] || c.empty }}</div>
                 </div>
 
                 <div v-else-if="col.id === 'subheader'" class="max-w-[500px]" :title="item[col.id]">
                   <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="col.id === 'code_provision'" class="max-w-[500px]" :title="item[col.id]">
                   <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="col.id === 'audit_explanation'" class="max-w-[500px]" :title="item[col.id]">
                   <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="col.id === 'corrective_action_plan'" class="max-w-[500px]" :title="item[col.id]">
                   <div v-if="item[col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
 
@@ -69,7 +69,7 @@
                 <template v-else-if="col.id === 'corrective_date'">
                   <span v-if="item[col.id]" class="text-xs whitespace-normal">{{ formatDate(item[col.id]) }}</span>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
                 
@@ -77,7 +77,7 @@
                 <template v-else-if="col.id === 'short_year'">
                   <span v-if="item['survey_year']" class="text-xs whitespace-normal">{{ new Date(item['survey_year']).getFullYear() }}</span>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -85,7 +85,7 @@
                 <template v-else-if="col.id === 'survey_year'">
                   <span v-if="item[col.id]" class="text-xs whitespace-normal">{{ formatDate(item[col.id]) }}</span>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -95,7 +95,7 @@
                     {{ getStatusText(item[col.id]) }}
                   </el-tag>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -109,19 +109,19 @@
                       <el-dropdown-menu slot="dropdown" class="!rounded-xl !shadow-lg !p-1.5">
                       <el-dropdown-item command="edit">
                         <i class="el-icon-edit w-3.5 text-sm"></i>
-                        {{ $c.edit }}
+                        {{ c.edit }}
                       </el-dropdown-item>
                       <el-dropdown-item command="audit">
                         <i class="el-icon-view w-3.5 text-sm"></i>
-                        {{ $c.m_audit }}
+                        {{ c.m_audit }}
                       </el-dropdown-item>
                       <el-dropdown-item command="rectification">
                         <i class="el-icon-message w-3.5 text-sm"></i>
-                        {{ $c.rectification }}
+                        {{ c.rectification }}
                       </el-dropdown-item>
                       <el-dropdown-item command="delete" class="!text-red-500 hover:!bg-red-50">
                         <i class="el-icon-delete w-3.5 text-sm"></i>
-                        {{ $c.delete }}
+                        {{ c.delete }}
                       </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
@@ -132,7 +132,7 @@
                 <template v-else>
                   <div class="text-black dark:text-gray-400 line-clamp-2">
                     <span v-if="item[col.id] === undefined || item[col.id] === null || item[col.id] === ''" class="text-gray-300 italic text-xs">
-                      {{ $c.empty }}
+                      {{ c.empty }}
                     </span>
                     <span v-else class="text-xs whitespace-normal">{{ item[col.id] }}</span>
                   </div>
@@ -146,118 +146,134 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+
 /*
-  Chú ý: Các text hiển thị đều lấy từ file ngôn ngữ qua $l.key.
+  Chú ý: Các text hiển thị đều lấy từ file ngôn ngữ qua l.key.
   Nếu muốn custom thêm cột, sửa columns phía dưới và bổ sung key vào file ngôn ngữ.
 */
 
-export default {
-  name: 'ImproveManagementDetailsTable',
-  props: {
-    data: {
-      type: Array,
-      default: () => [],
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    page: {
-      type: Object,
-      default: () => ({
-        page: 1,
-        pageSize: 10,
-      }),
-    },
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => [],
   },
-  data() {
-    return {
-      columns: [
-        { id: 'index', title: '#', width: 60, textAlign: 'left' },
-        { id: 'status', title: 'status', width: 120, textAlign: 'left' },
-        { id: 'short_year', title: 'year', width: 120, textAlign: 'left' },
-        { id: 'survey_year', title: 'survey_year', width: 120, textAlign: 'left' },
-        { id: 'issue_type', title: 'issue_type', width: 180, textAlign: 'left' },
-        { id: 'subheader', title: 'subheader', width: 180, textAlign: 'left' },
-        { id: 'code_provision', title: 'code_provision', width: 300, textAlign: 'left' },
-        { id: 'audit_explanation', title: 'audit_explanation', width: 300, textAlign: 'left' },
-        { id: 'corrective_action_plan', title: 'corrective_action_plan', width: 300, textAlign: 'left' },
-        { id: 'corrective_principal', title: 'pic', width: 200, textAlign: 'left' },
-        { id: 'corrective_date', title: 'deadline_date', width: 120, textAlign: 'left' },
-        { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
-      ],
-      rowHeight: 44,
-      scrollTop: 0,
-      height: 400, // mặc định, có thể truyền prop hoặc tính toán động
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+  page: {
+    type: Object,
+    default: () => ({
+      page: 1,
+      pageSize: 10,
+    }),
+  },
+})
+
+const emit = defineEmits(['action', 'view', 'row-click', 'row-hover'])
+
+const { proxy } = getCurrentInstance()
+// Assuming default localization if not provided via some prop, or usage of global mixin
+// The component name is 'ImproveManagementDetailsTable'
+const { l, c } = useLocalI18n('improveManagementDetailsTable') // Assuming this key exists or is appropriate
+
+const columns = ref([
+  { id: 'index', title: '#', width: 60, textAlign: 'left' },
+  { id: 'status', title: 'status', width: 120, textAlign: 'left' },
+  { id: 'short_year', title: 'year', width: 120, textAlign: 'left' },
+  { id: 'survey_year', title: 'survey_year', width: 120, textAlign: 'left' },
+  { id: 'issue_type', title: 'issue_type', width: 180, textAlign: 'left' },
+  { id: 'subheader', title: 'subheader', width: 180, textAlign: 'left' },
+  { id: 'code_provision', title: 'code_provision', width: 300, textAlign: 'left' },
+  { id: 'audit_explanation', title: 'audit_explanation', width: 300, textAlign: 'left' },
+  { id: 'corrective_action_plan', title: 'corrective_action_plan', width: 300, textAlign: 'left' },
+  { id: 'corrective_principal', title: 'pic', width: 200, textAlign: 'left' },
+  { id: 'corrective_date', title: 'deadline_date', width: 120, textAlign: 'left' },
+  { id: 'action', title: 'action', width: 100, textAlign: 'right', freeze: 'right' },
+])
+
+const rowHeight = ref(44)
+const scrollTop = ref(0)
+const height = ref(400)
+const scrollArea = ref(null)
+
+function handleScroll(e) {
+  scrollTop.value = e.target.scrollTop
+}
+
+function getStickyStyle(col, colIdx, isHeader) {
+  if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
+  let style = {
+    width: col.width + 'px',
+    textAlign: col.textAlign,
+    position: 'sticky',
+    zIndex: isHeader ? 10 : 2,
+    background: isHeader ? '#f9fafb' : '#ffffff',
+  }
+  if (col.freeze === 'left') {
+    let left = 0
+    for (let i = 0; i < colIdx; i++) {
+      if (columns.value[i].freeze === 'left' || !columns.value[i].freeze) left += columns.value[i].width
     }
-  },
-  methods: {
-    handleScroll(e) {
-      this.scrollTop = e.target.scrollTop
-    },
-    getStickyStyle(col, colIdx, isHeader) {
-      if (!col.freeze) return { width: col.width + 'px', textAlign: col.textAlign }
-      let style = {
-        width: col.width + 'px',
-        textAlign: col.textAlign,
-        position: 'sticky',
-        zIndex: isHeader ? 10 : 2,
-        background: isHeader ? '#f9fafb' : '#ffffff',
-      }
-      if (col.freeze === 'left') {
-        let left = 0
-        for (let i = 0; i < colIdx; i++) {
-          if (this.columns[i].freeze === 'left' || !this.columns[i].freeze) left += this.columns[i].width
-        }
-        style.left = left + 'px'
-      } else if (col.freeze === 'right') {
-        let right = 0
-        for (let i = this.columns.length - 1; i > colIdx; i--) {
-          if (this.columns[i].freeze === 'right' || !this.columns[i].freeze) right += this.columns[i].width
-        }
-        style.right = right + 'px'
-      }
-      return style
-    },
-    handleAction(cmd, row) {
-      this.$emit('action', { action: cmd, row })
-    },
-    handleView(cmd, row) {
-      this.$emit('view', { action: cmd, row })
-    },
-    handleRowClick(row) {
-      this.$emit('row-click', row)
-    },
-    handleRowHover(row, isEnter) {
-      this.$emit('row-hover', { row, isEnter })
-    },
-    getStatusType(status) {
-      const statusMap = {
-        on_track: 'warning',
-        off_track: 'info',
-        closed: 'success',
-      }
-      return statusMap[status] || 'default'
-    },
-    getStatusText(status) {
-      const textMap = {
-        on_track: this.$l.on_track,
-        off_track: this.$l.off_track,
-        closed: this.$l.closed,
-      }
-      return textMap[status] || status
-    },
-    formatDate(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      return d.toLocaleDateString(this.$i18n.locale, {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      })
-    },
-  },
+    style.left = left + 'px'
+  } else if (col.freeze === 'right') {
+    let right = 0
+    for (let i = columns.value.length - 1; i > colIdx; i--) {
+      if (columns.value[i].freeze === 'right' || !columns.value[i].freeze) right += columns.value[i].width
+    }
+    style.right = right + 'px'
+  }
+  return style
+}
+
+function handleAction(cmd, row) {
+  emit('action', { action: cmd, row })
+}
+
+function handleView(cmd, row) {
+  emit('view', { action: cmd, row })
+}
+
+function handleRowClick(row) {
+  emit('row-click', row)
+}
+
+function handleRowHover(row, isEnter) {
+  emit('row-hover', { row, isEnter })
+}
+
+function getStatusType(status) {
+  const statusMap = {
+    on_track: 'warning',
+    off_track: 'info',
+    closed: 'success',
+  }
+  return statusMap[status] || 'default'
+}
+
+function getStatusText(status) {
+  // Use l.value for reactive localized strings if possible, but status keys might be static
+  const textMap = {
+    on_track: l.value.on_track,
+    off_track: l.value.off_track,
+    closed: l.value.closed,
+  }
+  return textMap[status] || status
+}
+
+function formatDate(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  // Use proxy.$i18n.locale if available, or default to current locale
+  const locale = proxy.$i18n ? proxy.$i18n.locale : 'en-US'
+  return d.toLocaleDateString(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 }
 </script>
 

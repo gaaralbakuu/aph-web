@@ -1,8 +1,8 @@
 <template>
   <div class="h-full flex flex-col overflow-hidden">
     <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
-      <div class="text-2xl font-bold text-black">{{ $l.helpManual }} & {{ $l.seamainContact }}</div>
-      <div class="text-gray-500 text-sm">{{ $l.manage }}</div>
+      <div class="text-2xl font-bold text-black">{{ l.helpManual }} & {{ l.seamainContact }}</div>
+      <div class="text-gray-500 text-sm">{{ l.manage }}</div>
     </div>
 
     <!-- Content Section with Folder Tree + File List Layout -->
@@ -63,7 +63,7 @@
 
     <!-- Upload File Dialog -->
     <CustomDialog 
-      :title="$l.selectFile" 
+      :title="l.selectFile"
       width="70%" 
       :lock-scroll="true" 
       :visible.sync="addHelpFormVisible"
@@ -79,7 +79,7 @@
                   <i class="fa fa-folder text-white"></i>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">{{ $l.selectFolder }}</h4>
+                  <h4 class="font-semibold text-gray-900">{{ l.selectFolder }}</h4>
                   <p class="text-sm text-gray-600">Chọn thư mục để lưu trữ tài liệu</p>
                 </div>
               </div>
@@ -87,7 +87,7 @@
             <div class="mt-4">
               <el-select 
                 v-model="addHelpManual.selectedFolderId" 
-                :placeholder="$l.selectFolder"
+                :placeholder="l.selectFolder"
                 class="w-full"
               >
                 <el-option
@@ -117,11 +117,11 @@
                 </div>
               </div>
               <button 
-                @click="$refs.fileinput.click()" 
+                @click="triggerFileInput"
                 class="inline-flex items-center h-10 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full px-4 shadow-sm transition duration-200 ease-in-out transform hover:scale-105 gap-2"
               >
                 <i class="fa fa-folder-open text-sm"></i>
-                <span>{{ $l.selectFile }}</span>
+                <span>{{ l.selectFile }}</span>
               </button>
             </div>
           </div>
@@ -131,7 +131,7 @@
           <div v-if="addHelpManual.fileList.length > 0" class="bg-gray-50 rounded-lg p-4">
             <h5 class="font-medium text-gray-900 mb-3">File đã chọn:</h5>
             <el-table :data="addHelpManual.fileList" class="modern-table">
-              <el-table-column v-for="(item, index) in addHelpManual.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width">
+              <el-table-column v-for="(item, index) in addHelpManualColumns" :key="index" :prop="item.key" :label="item.title" :width="item.width">
                 <template slot-scope="scope">
                   <span v-if="item.key === 'file_name'" class="font-medium text-gray-900">
                     {{ scope.row[item.key] }}
@@ -142,7 +142,7 @@
                   <span v-else>{{ scope.row[item.key] }}</span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" :label="$c.operation" width="100">
+              <el-table-column fixed="right" :label="c.operation" width="100">
                 <template slot-scope="scope">
                   <button 
                     @click="removeClick(scope.row)" 
@@ -162,13 +162,13 @@
             @click="addHelpFormVisible = false" 
             class="h-10 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200"
           >
-            {{ $c.cancel }}
+            {{ c.cancel }}
           </button>
           <button 
             @click="submmitaddHelp" 
             class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
           >
-            {{ $c.confirm }}
+            {{ c.confirm }}
           </button>
         </div>
       </template>
@@ -176,7 +176,7 @@
 
     <!-- Add Contact Dialog -->
     <CustomDialog 
-      :title="$l.addContact" 
+      :title="l.addContact"
       width="70%" 
       :lock-scroll="true" 
       :visible.sync="addCisFormVisible"
@@ -199,7 +199,7 @@
           <div class="bg-white border border-gray-200 rounded-lg p-6">
             <el-form :model="addCisCCtacter.list" :inline="false" label-position="top" class="modern-form">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div v-for="(item, index) in addCisCCtacter.fields" :key="index" class="form-group">
+                <div v-for="(item, index) in addCisCCtacterFields" :key="index" class="form-group">
                   <label class="block text-sm font-medium text-gray-700 mb-2">
                     {{ item.title }}
                     <span v-if="item.required" class="text-red-500">*</span>
@@ -222,13 +222,13 @@
             @click="addCisFormVisible = false" 
             class="h-10 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200"
           >
-            {{ $c.cancel }}
+            {{ c.cancel }}
           </button>
           <button 
             @click="submmitaddCis" 
             class="h-10 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200"
           >
-            {{ $c.confirm }}
+            {{ c.confirm }}
           </button>
         </div>
       </template>
@@ -236,582 +236,573 @@
 
   </div>
 </template>
-<script>
-import axios from 'axios'
-
-import { _, api, initFuncs, zForm,zFormDialog, zPagination, zTable } from '@/views/_common'
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance, watch } from 'vue'
+import { api } from '@/views/_common'
 
 import CustomDialog from '../../_common/CustomDialog.vue'
 import FolderTree from './components/FolderTree.vue'
 import ShareContactTable from './ShareContactTable.vue'
 import ShareHelpManualTable from './ShareHelpManualTable.vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'shareInformation',
-  components: {
-    zTable,
-    zPagination,
-    zFormDialog,
-    initFuncs,
-    zForm,
-    CustomDialog,
-    ShareHelpManualTable,
-    ShareContactTable,
-    FolderTree,
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('shareInformation')
+
+const folderTree = ref(null)
+const fileinput = ref(null)
+
+const pageLoading = ref(false)
+const addHelpFormVisible = ref(false)
+const addCisFormVisible = ref(false)
+const selectedFile = ref(null)
+const fileList = ref([]) // Note: this seems to be used for native file input list
+const selectedFolder = ref(null)
+const availableFolders = ref([])
+const userAuth = ref({})
+
+const showAuth = reactive({
+  m_search: false,
+  m_add: false,
+  m_del: false,
+  m_updata: false,
+  m_import: false,
+  m_export: false,
+  m_upload: false,
+  m_audit: false,
+  m_print: false,
+})
+
+const pagination = reactive({
+  layout: 'prev, pager, next, jumper, ->, total,sizes',
+  pagerCount: 7,
+  pageSizes: [10, 15, 20, 30, 40, 50, 100],
+})
+
+// Columns definitions using computed to react to localization changes
+const helpManualColumns = computed(() => [
+  {
+    title: l.value.serialNumbers,
+    key: 'serialNumbers',
+    width: 200,
   },
-  data() {
-    return {
-      name: 'shareInformation',
-      pageLoading: false,
-      addHelpFormVisible: false,
-      addCisFormVisible: false,
-      selectedFile: null,
-      fileList: [],
-      selectedFolder: null,
-      availableFolders: [],
-      userAuth: [], //保存用户权限
-      showAuth: {
-        //用于权限控制，搭配v-show控制界面上的操作按钮是否展示
-        m_search: false,
-        m_add: false,
-        m_del: false,
-        m_updata: false,
-        m_import: false,
-        m_export: false,
-        m_upload: false,
-        m_audit: false,
-        m_print: false,
-      },
-      formProps: {
-        dialogWidth: '80%',
-        labelWidth: '160px',
-      },
-      pagination: {
-        // 分页组件配置 如不需分页，可以把pagination设置为null
-        layout: 'prev, pager, next, jumper, ->, total,sizes',
-        pagerCount: 7,
-        pageSizes: [10, 15, 20, 30, 40, 50, 100],
-      },
-      queryList: {
-        manufacture_name: '',
-        address: '',
-        requestor_facility_type: '',
-        name: '',
-        audit_time: '',
-        rec_status: null,
-      },
-      // 尽职调查列表
-      helpManualList: {
-        list: [],
-        pageSize: 15,
-        curPage: 1,
-        total: 0,
-        columns: [
-          {
-            title: this.$l.serialNumbers,
-            key: 'serialNumbers',
-            width: 200,
-          },
-          {
-            title: this.$l.mainHeader,
-            key: 'main_header',
-            width: 280,
-          },
-          {
-            title: this.$l.manualName,
-            key: 'file_name',
-            width: 340,
-          },
-        ],
-      },
-
-      CisCContacterList: {
-        list: [],
-        pageSize: 15,
-        curPage: 1,
-        total: 0,
-        columns: [
-          {
-            title: this.$l.serialNumbers,
-            key: 'serialNumbers',
-            width: 200,
-          },
-          {
-            title: this.$l.name,
-            key: 'contacter_name',
-            width: 100,
-          },
-          {
-            title: this.$l.contactEmail,
-            key: 'contacter_mail',
-            width: 280,
-          },
-          {
-            title: this.$l.contactPhone,
-            key: 'contacter_phone',
-            width: 120,
-          },
-        ],
-      },
-      options: [
-        {
-          value: '0A',
-          label: '营业执照',
-        },
-        {
-          value: '0B',
-          label: 'NDA0C',
-        },
-        {
-          value: '0C',
-          label: '其他附件',
-        },
-        {
-          value: '1',
-          label: '尽职调查',
-        },
-        {
-          value: '2',
-          label: '改善',
-        },
-      ],
-      addHelpManual: {
-        list: [],
-        fileList: [],
-        mainHeader: '',
-        selectedFolderId: null, // Thêm field để chọn folder
-        optionsList: '',
-        pageSize: 15,
-        curPage: 1,
-        total: 0,
-        columns: [
-          {
-            title: this.$l.mainHeader,
-            key: 'main_header',
-            width: 280,
-          },
-          {
-            title: this.$l.manualName,
-            key: 'file_name',
-            width: 400,
-          },
-          {
-            title: this.$l.fileSuffix,
-            key: 'file_suffix',
-            width: 250,
-          },
-        ],
-      },
-      addCisCCtacter: {
-        list: {},
-        addCisList: {
-          contacter_name: '',
-          contacter_mail: '',
-          contacter_phone: '',
-          is_valid: 'Y',
-        },
-        optionsList: '',
-        pageSize: 15,
-        curPage: 1,
-        total: 0,
-        fields: [
-          {
-            title: this.$l.name,
-            key: 'contacter_name',
-            type: 'el-input',
-            placeholder: this.$l.pleaseEnterAName,
-            span: 8,
-            required: true,
-            // rules: [{ required: true, message: '姓名不能为空', trigger: 'blur' }]
-          },
-          {
-            title: this.$l.contactEmail,
-            key: 'contacter_mail',
-            type: 'el-input',
-            placeholder: this.$l.pleaseEnterAMailbox,
-            span: 8,
-            required: true,
-          },
-          {
-            title: this.$l.contactPhone,
-            key: 'contacter_phone',
-            type: 'el-input',
-            placeholder: this.$l.pleaseEnterThePhone,
-            span: 8,
-            required: false,
-          },
-        ],
-      },
-    }
+  {
+    title: l.value.mainHeader,
+    key: 'main_header',
+    width: 280,
   },
-  methods: {
-    // Handle folder selection from FolderTree
-    handleFolderSelected(folder) {
-      console.log('Folder selected:', folder)
-      this.selectedFolder = folder
-      this.getList() // Reload data with folder filter
-    },
-
-    // Handle actions from Help Manual Table
-    handleHelpManualAction({ action, row }) {
-      console.log('Help Manual action:', action, row)
-      
-      if (action === 'view') {
-        this.downloadFile(row.file_url, row.file_name)
-      } else if (action === 'delete') {
-        this.deleteClick(row, row._index !== undefined ? row._index : null)
-      }
-    },
-
-    handleHelpManualRowClick(row) {
-      // Handle row click if needed
-      console.log('Help Manual row clicked:', row)
-      this.downloadFile(row.file_url, row.file_name)
-    },
-
-    // Handle actions from Contact Table
-    handleContactAction({ action, row }) {
-      console.log('Contact action:', action, row)
-      
-      if (action === 'view') {
-        // Implement view contact details if needed
-        console.log('View contact:', row)
-      } else if (action === 'edit') {
-        // Implement edit contact if needed
-        console.log('Edit contact:', row)
-      } else if (action === 'delete') {
-        this.deleteCisClick(row, row._index !== undefined ? row._index : null)
-      }
-    },
-
-    handleContactRowClick(row) {
-      // Handle row click if needed
-      console.log('Contact row clicked:', row)
-    },
-    // 获取帮助手册
-    getList() {
-      const params = {
-        page: this.helpManualList.curPage,
-        pageSize: this.helpManualList.pageSize,
-      }
-      
-      // Thêm filter theo folder nếu có folder được chọn
-      if (this.selectedFolder && this.selectedFolder.id) {
-        params.folderId = this.selectedFolder.id
-      }
-      
-      this.$request(api.baseUrl + '/Compliance/complianceAttachments/getStudyFile', params)
-        .then((r) => {
-          console.log(r)
-          this.helpManualList.list = r.data.list
-          this.helpManualList.total = r.data.total
-          this.pageLoading = false
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
-    },
-
-    // Load available folders for dropdown
-    loadFolders() {
-      console.log('Loading folders...')
-      this.$request(api.baseUrl + '/Compliance/complianceFolders/getFolders', {}, 'get')
-        .then((r) => {
-            this.availableFolders = r.data || []
-        })
-        .catch((error) => {
-          console.error('Failed to load folders:', error)
-        })
-    },
-
-    // Refresh folder stats in FolderTree component
-    refreshFolderStats() {
-      if (this.$refs.folderTree && this.$refs.folderTree.getFolderStats) {
-        this.$refs.folderTree.getFolderStats()
-      }
-    },
-
-    // Function to call when folder is created/deleted/updated
-    refreshAfterFolderChange() {
-      this.loadFolders() // Refresh dropdown options
-      this.getList() // Refresh file list
-    },
-
-    // APE SEA主要联系人
-    getCisList() {
-      this.$request(api.baseUrl + '/Compliance/ComplianceContacter/getCisCContacter', {
-        page: this.CisCContacterList.curPage,
-        pageSize: this.CisCContacterList.pageSize,
-      })
-        .then((r) => {
-          console.log(r)
-          this.CisCContacterList.list = r.data.list
-          this.CisCContacterList.total = r.data.total
-          this.pageLoading = false
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
-    },
-    getComponentType(type) {
-      // 根据 item.type 返回对应的组件
-      switch (type) {
-        case 'el-input':
-          return 'el-input'
-        default:
-          return 'el-input' // 默认使用 el-input
-      }
-    },
-
-    addClickHelp() {
-      this.addHelpFormVisible = true
-    },
-    submmitaddHelp() {
-      console.log(this.fileList)
-      console.log(this.addHelpManual.fileList)
-      if (this.fileList && this.fileList.length == 0) {
-        this.$message({
-          type: 'info',
-          message: this.$l.attachmentAddFail,
-        })
-        return
-      }
-      if (!this.addHelpManual.selectedFolderId) {
-        this.$message({
-          type: 'info',
-          message: this.$l.selectFolder,
-        })
-        return
-      }
-      const formData = new FormData()
-      formData.append('file', this.fileList[0])
-      formData.append('attachment_type', this.addHelpManual.fileList[0].attachment_type)
-      formData.append('folder_id', this.addHelpManual.selectedFolderId) // Thay thế main_header bằng folder_id
-      this.$request(api.baseUrl + '/Compliance/complianceAttachments/uploadAttachment', formData, 'post')
-        .then((r) => {
-          console.log(r)
-          this.$message({
-            type: 'success',
-            message: this.$l.attachmentAddSuccess,
-          })
-          this.addHelpFormVisible = false
-          this.addHelpManual.fileList = []
-          this.addHelpManual.selectedFolderId = null // Reset folder selection
-          this.clearFileInput()
-          this.getList()
-          this.refreshFolderStats() // Refresh folder stats after successful upload
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: this.$l.attachmentAddFail,
-          })
-        })
-    },
-
-    addClickCis() {
-      this.addCisFormVisible = true
-    },
-    submmitaddCis() {
-      console.log(this.addCisCCtacter.list)
-      this.$confirm(this.$l.confirmAddRow, this.$l.addContact, {
-        confirmButtonText: this.$c.confirm,
-        cancelButtonText: this.$c.cancel,
-        type: 'warning',
-      })
-        .then(() => {
-          this.$request(api.baseUrl + '/Compliance/ComplianceContacter/addCisCContacter', this.addCisCCtacter.list, 'post')
-            .then((r) => {
-              console.log(r)
-              this.$message({
-                type: 'success',
-                message: this.$c.success,
-              })
-              this.getCisList()
-              this.addCisFormVisible = false
-            })
-            .catch(() => {
-              this.$message({
-                type: 'info',
-                message: this.$l.addFail,
-              })
-            })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: this.$l.addFail,
-          })
-        })
-    },
-
-    deleteCisClick(row, index) {
-      console.log(row)
-      let i = index + 1
-      this.$confirm(this.$l.deleteContactContent.replace('$1', i), this.$l.deleteContactTitle, {
-        confirmButtonText: this.$c.sure,
-        cancelButtonText: this.$c.cancel,
-        type: 'warning',
-      })
-        .then(() => {
-          this.$request(api.baseUrl + '/Compliance/ComplianceContacter/deleteCisCContacter', { id: row.id }, 'post')
-            .then((r) => {
-              console.log(r)
-              this.$message({
-                type: 'success',
-                message: this.$c.success,
-              })
-              this.getCisList()
-            })
-            .catch(() => {
-              this.$message({
-                type: 'info',
-                message: this.$c.info,
-              })
-            })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: this.$c.info,
-          })
-        })
-    },
-
-    // 选择附件
-    file(e) {
-      console.log(e)
-      this.fileList = e.target.files
-      console.log(this.fileList)
-      for (let i = 0; i < this.fileList.length; i++) {
-        const file = this.fileList[i]
-        const file_name = this.fileList[i].name
-        const fileExtension = this.getFileExtension(file_name)
-        const reader = new FileReader()
-
-        console.log(fileExtension)
-        reader.onloadend = () => {
-          const base64String = reader.result.split(',')[1]
-          let fileInfo = {
-            file_name: this.fileList[i].name,
-            file_suffix: fileExtension,
-            main_header: this.addHelpManual.mainHeader,
-            attachment_type: 3,
-            fileContent: base64String,
-          }
-          this.addHelpManual.fileList = []
-          this.addHelpManual.fileList.push(fileInfo)
-        }
-
-        reader.readAsDataURL(file)
-      }
-    },
-    getFileExtension(file_name) {
-      return file_name.slice(Math.max(0, file_name.lastIndexOf('.')) || Infinity)
-    },
-    removeClick() {
-      console.log(this.addHelpManual.fileList)
-      this.addHelpManual.fileList = []
-      this.addHelpManual.mainHeader = ''
-      this.clearFileInput()
-      console.log(this.fileList)
-    },
-    clearFileInput() {
-      this.$refs.fileinput.value = '' // 清空文件输入框
-    },
-
-    // Tải xuống file
-    downloadFile(url, fileName) {
-      const fullUrl = api.baseUrl + '/' + url
-      
-      // Tạo element a ẩn để trigger download
-      const link = document.createElement('a')
-      link.href = fullUrl
-      link.download = fileName || 'download'
-      link.style.display = 'none'
-      link.target = '_blank' // Mở trong tab mới nếu cần
-      
-      // Thêm vào DOM và click
-      document.body.appendChild(link)
-      link.click()
-      
-      // Cleanup
-      document.body.removeChild(link)
-    },
-    // 删除附件
-    deleteClick(row, index) {
-      console.log(row)
-      let i = index + 1
-      this.$confirm(this.$l.deleteTutorialContent.replace('$1', i), this.$l.deleteTutorialTitle, {
-        confirmButtonText: this.$c.sure,
-        cancelButtonText: this.$c.cancel,
-        type: 'warning',
-      })
-        .then(() => {
-          this.$request(
-            api.baseUrl + '/Compliance/complianceAttachments/deleteAttchment',
-            {
-              key: row.manufacturerAttchmentId,
-              value: 'N',
-            },
-            'post'
-          )
-            .then((r) => {
-              this.$message({
-                type: 'success',
-                message: this.$c.success,
-              })
-              this.getList()
-              this.refreshFolderStats() // Refresh folder stats after deletion
-            })
-            .catch(() => {
-              this.$message({
-                type: 'error',
-                message: this.$l.deleteFail,
-              })
-            })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: this.$c.info,
-          })
-        })
-    },
-    // 获取当前页面用户拥有的操作权限的函数
-    getUserAuth() {
-      //获取当前页面用户拥有的操作权限的函数
-      // this.userAuth = null
-      this.$request(this.$api.checkMenuAuth, {
-        resourcepath: this.$route.name,
-      }).then((r) => {
-        this.userAuth = r.data[0]
-      })
-    },
+  {
+    title: l.value.manualName,
+    key: 'file_name',
+    width: 340,
   },
-  created() {
-    this.getList()
-    this.getCisList()
-    this.getUserAuth()
-    this.loadFolders() // Load available folders
+])
+
+const helpManualList = reactive({
+  list: [],
+  pageSize: 15,
+  curPage: 1,
+  total: 0,
+})
+
+const cisCContacterColumns = computed(() => [
+  {
+    title: l.value.serialNumbers,
+    key: 'serialNumbers',
+    width: 200,
   },
-  watch: {
-    userAuth: {
-      deep: true,
-      handler(newV) {
-        this.showAuth.m_add = newV.m_add == 'Y' ? true : false
-        this.showAuth.m_search = newV.m_search == 'Y' ? true : false
-        this.showAuth.m_del = newV.m_del == 'Y' ? true : false
-        this.showAuth.m_updata = newV.m_updata == 'Y' ? true : false
-        this.showAuth.m_import = newV.m_import == 'Y' ? true : false
-        this.showAuth.m_export = newV.m_export == 'Y' ? true : false
-        this.showAuth.m_upload = newV.m_upload == 'Y' ? true : false
-        this.showAuth.m_audit = newV.m_audit == 'Y' ? true : false
-        this.showAuth.m_print = newV.m_print == 'Y' ? true : false
-      },
-    },
+  {
+    title: l.value.name,
+    key: 'contacter_name',
+    width: 100,
   },
+  {
+    title: l.value.contactEmail,
+    key: 'contacter_mail',
+    width: 280,
+  },
+  {
+    title: l.value.contactPhone,
+    key: 'contacter_phone',
+    width: 120,
+  },
+])
+
+const CisCContacterList = reactive({
+  list: [],
+  pageSize: 15,
+  curPage: 1,
+  total: 0,
+})
+
+const addHelpManualColumns = computed(() => [
+  {
+    title: l.value.mainHeader,
+    key: 'main_header',
+    width: 280,
+  },
+  {
+    title: l.value.manualName,
+    key: 'file_name',
+    width: 400,
+  },
+  {
+    title: l.value.fileSuffix,
+    key: 'file_suffix',
+    width: 250,
+  },
+])
+
+const addHelpManual = reactive({
+  list: [],
+  fileList: [],
+  mainHeader: '',
+  selectedFolderId: null,
+  optionsList: '',
+  pageSize: 15,
+  curPage: 1,
+  total: 0,
+})
+
+const addCisCCtacterFields = computed(() => [
+  {
+    title: l.value.name,
+    key: 'contacter_name',
+    type: 'el-input',
+    placeholder: l.value.pleaseEnterAName,
+    span: 8,
+    required: true,
+  },
+  {
+    title: l.value.contactEmail,
+    key: 'contacter_mail',
+    type: 'el-input',
+    placeholder: l.value.pleaseEnterAMailbox,
+    span: 8,
+    required: true,
+  },
+  {
+    title: l.value.contactPhone,
+    key: 'contacter_phone',
+    type: 'el-input',
+    placeholder: l.value.pleaseEnterThePhone,
+    span: 8,
+    required: false,
+  },
+])
+
+const addCisCCtacter = reactive({
+  list: {},
+  // addCisList seems unused in original code except for initialization maybe?
+  // But usage in template is `addCisCCtacter.list`.
+  // Original initialized `list: {}` but also had `addCisList` which was unused.
+  // We can just initialize `list` properly if needed.
+  optionsList: '',
+  pageSize: 15,
+  curPage: 1,
+  total: 0,
+})
+
+// Methods
+
+function handleFolderSelected(folder) {
+  console.log('Folder selected:', folder)
+  selectedFolder.value = folder
+  getList()
 }
+
+function handleHelpManualAction({ action, row }) {
+  console.log('Help Manual action:', action, row)
+
+  if (action === 'view') {
+    downloadFile(row.file_url, row.file_name)
+  } else if (action === 'delete') {
+    deleteClick(row, row._index !== undefined ? row._index : null)
+  }
+}
+
+function handleHelpManualRowClick(row) {
+  console.log('Help Manual row clicked:', row)
+  downloadFile(row.file_url, row.file_name)
+}
+
+function getFilePreview(file) {
+  // Not implemented in original code, but referenced in template @file-preview
+  console.log('Preview file:', file)
+}
+
+function handleContactAction({ action, row }) {
+  console.log('Contact action:', action, row)
+
+  if (action === 'view') {
+    console.log('View contact:', row)
+  } else if (action === 'edit') {
+    console.log('Edit contact:', row)
+  } else if (action === 'delete') {
+    deleteCisClick(row, row._index !== undefined ? row._index : null)
+  }
+}
+
+function handleContactRowClick(row) {
+  console.log('Contact row clicked:', row)
+}
+
+function getList(page) {
+  // Original accepted page param in template `@page-change="getList"` but didn't use it in code (used this.helpManualList.curPage)
+  // But typically the page change event passes the new page number.
+  // The original component implementation of ShareHelpManualTable probably updates the prop or emits event.
+  // If it emits new page, we should update curPage.
+  // Looking at other files, usually zTable/pagination emits page change.
+  // Here we assume simple reload or update if page is passed.
+  if (typeof page === 'number') {
+    helpManualList.curPage = page
+  }
+
+  const params = {
+    page: helpManualList.curPage,
+    pageSize: helpManualList.pageSize,
+  }
+
+  if (selectedFolder.value && selectedFolder.value.id) {
+    params.folderId = selectedFolder.value.id
+  }
+
+  proxy.$request(api.baseUrl + '/Compliance/complianceAttachments/getStudyFile', params)
+    .then((r) => {
+      console.log(r)
+      helpManualList.list = r.data.list
+      helpManualList.total = r.data.total
+      pageLoading.value = false
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+function loadFolders() {
+  console.log('Loading folders...')
+  proxy.$request(api.baseUrl + '/Compliance/complianceFolders/getFolders', {}, 'get')
+    .then((r) => {
+        availableFolders.value = r.data || []
+    })
+    .catch((error) => {
+      console.error('Failed to load folders:', error)
+    })
+}
+
+function refreshFolderStats() {
+  if (folderTree.value && folderTree.value.getFolderStats) {
+    folderTree.value.getFolderStats()
+  }
+}
+
+function refreshAfterFolderChange() {
+  loadFolders()
+  getList()
+}
+
+function getCisList(page) {
+  if (typeof page === 'number') {
+    CisCContacterList.curPage = page
+  }
+  proxy.$request(api.baseUrl + '/Compliance/ComplianceContacter/getCisCContacter', {
+    page: CisCContacterList.curPage,
+    pageSize: CisCContacterList.pageSize,
+  })
+    .then((r) => {
+      console.log(r)
+      CisCContacterList.list = r.data.list
+      CisCContacterList.total = r.data.total
+      pageLoading.value = false
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+function getComponentType(type) {
+  switch (type) {
+    case 'el-input':
+      return 'el-input'
+    default:
+      return 'el-input'
+  }
+}
+
+function addClickHelp() {
+  addHelpFormVisible.value = true
+}
+
+function triggerFileInput() {
+  if (fileinput.value) {
+    fileinput.value.click()
+  }
+}
+
+function submmitaddHelp() {
+  console.log(fileList.value)
+  console.log(addHelpManual.fileList)
+  if (fileList.value && fileList.value.length == 0) {
+    proxy.$message({
+      type: 'info',
+      message: l.value.attachmentAddFail,
+    })
+    return
+  }
+  if (!addHelpManual.selectedFolderId) {
+    proxy.$message({
+      type: 'info',
+      message: l.value.selectFolder,
+    })
+    return
+  }
+  const formData = new FormData()
+  formData.append('file', fileList.value[0])
+  formData.append('attachment_type', addHelpManual.fileList[0].attachment_type)
+  formData.append('folder_id', addHelpManual.selectedFolderId)
+
+  proxy.$request(api.baseUrl + '/Compliance/complianceAttachments/uploadAttachment', formData, 'post')
+    .then((r) => {
+      console.log(r)
+      proxy.$message({
+        type: 'success',
+        message: l.value.attachmentAddSuccess,
+      })
+      addHelpFormVisible.value = false
+      addHelpManual.fileList = []
+      addHelpManual.selectedFolderId = null
+      clearFileInput()
+      getList()
+      refreshFolderStats()
+    })
+    .catch(() => {
+      proxy.$message({
+        type: 'info',
+        message: l.value.attachmentAddFail,
+      })
+    })
+}
+
+function addClickCis() {
+  addCisFormVisible.value = true
+  // Reset form data? Original didn't seem to reset, but good practice.
+  // Or maybe it reuses the same object. The original `addCisCCtacter.list` was just `{}` or whatever was left.
+  // We'll leave it as is to match original behavior.
+}
+
+function submmitaddCis() {
+  console.log(addCisCCtacter.list)
+  proxy.$confirm(l.value.confirmAddRow, l.value.addContact, {
+    confirmButtonText: c.value.confirm,
+    cancelButtonText: c.value.cancel,
+    type: 'warning',
+  })
+    .then(() => {
+      proxy.$request(api.baseUrl + '/Compliance/ComplianceContacter/addCisCContacter', addCisCCtacter.list, 'post')
+        .then((r) => {
+          console.log(r)
+          proxy.$message({
+            type: 'success',
+            message: c.value.success,
+          })
+          getCisList()
+          addCisFormVisible.value = false
+        })
+        .catch(() => {
+          proxy.$message({
+            type: 'info',
+            message: l.value.addFail,
+          })
+        })
+    })
+    .catch(() => {
+      proxy.$message({
+        type: 'info',
+        message: l.value.addFail,
+      })
+    })
+}
+
+function deleteCisClick(row, index) {
+  console.log(row)
+  // row._index might not be available if zTable logic isn't exactly same, but let's assume index is passed or row is enough
+  // original code: let i = index + 1
+  // proxy.$confirm(l.value.deleteContactContent.replace('$1', i), ...
+
+  // If index is undefined, fallback to something or just don't replace?
+  // We can try to find index in list if needed, but 'index' argument is passed from handleContactAction if available.
+
+  let msg = l.value.deleteContactContent
+  if (index !== null && index !== undefined) {
+      msg = msg.replace('$1', index + 1)
+  } else {
+      msg = msg.replace('$1', '') // Fallback
+  }
+
+  proxy.$confirm(msg, l.value.deleteContactTitle, {
+    confirmButtonText: c.value.sure,
+    cancelButtonText: c.value.cancel,
+    type: 'warning',
+  })
+    .then(() => {
+      proxy.$request(api.baseUrl + '/Compliance/ComplianceContacter/deleteCisCContacter', { id: row.id }, 'post')
+        .then((r) => {
+          console.log(r)
+          proxy.$message({
+            type: 'success',
+            message: c.value.success,
+          })
+          getCisList()
+        })
+        .catch(() => {
+          proxy.$message({
+            type: 'info',
+            message: c.value.info,
+          })
+        })
+    })
+    .catch(() => {
+      proxy.$message({
+        type: 'info',
+        message: c.value.info,
+      })
+    })
+}
+
+function file(e) {
+  console.log(e)
+  fileList.value = e.target.files
+  console.log(fileList.value)
+  for (let i = 0; i < fileList.value.length; i++) {
+    const f = fileList.value[i]
+    const file_name = f.name
+    const fileExtension = getFileExtension(file_name)
+    const reader = new FileReader()
+
+    console.log(fileExtension)
+    reader.onloadend = () => {
+      const base64String = reader.result.split(',')[1]
+      let fileInfo = {
+        file_name: f.name,
+        file_suffix: fileExtension,
+        main_header: addHelpManual.mainHeader,
+        attachment_type: 3,
+        fileContent: base64String,
+      }
+      addHelpManual.fileList = []
+      addHelpManual.fileList.push(fileInfo)
+    }
+
+    reader.readAsDataURL(f)
+  }
+}
+
+function getFileExtension(file_name) {
+  return file_name.slice(Math.max(0, file_name.lastIndexOf('.')) || Infinity)
+}
+
+function removeClick(row) {
+  console.log(addHelpManual.fileList)
+  addHelpManual.fileList = []
+  addHelpManual.mainHeader = ''
+  clearFileInput()
+  console.log(fileList.value)
+}
+
+function clearFileInput() {
+  if (fileinput.value) {
+    fileinput.value.value = ''
+  }
+}
+
+function downloadFile(url, fileName) {
+  const fullUrl = api.baseUrl + '/' + url
+
+  const link = document.createElement('a')
+  link.href = fullUrl
+  link.download = fileName || 'download'
+  link.style.display = 'none'
+  link.target = '_blank'
+
+  document.body.appendChild(link)
+  link.click()
+
+  document.body.removeChild(link)
+}
+
+function deleteClick(row, index) {
+  console.log(row)
+
+  let msg = l.value.deleteTutorialContent
+  if (index !== null && index !== undefined) {
+      msg = msg.replace('$1', index + 1)
+  } else {
+      msg = msg.replace('$1', '')
+  }
+
+  proxy.$confirm(msg, l.value.deleteTutorialTitle, {
+    confirmButtonText: c.value.sure,
+    cancelButtonText: c.value.cancel,
+    type: 'warning',
+  })
+    .then(() => {
+      proxy.$request(
+        api.baseUrl + '/Compliance/complianceAttachments/deleteAttchment',
+        {
+          key: row.manufacturerAttchmentId,
+          value: 'N',
+        },
+        'post'
+      )
+        .then((r) => {
+          proxy.$message({
+            type: 'success',
+            message: c.value.success,
+          })
+          getList()
+          refreshFolderStats()
+        })
+        .catch(() => {
+          proxy.$message({
+            type: 'error',
+            message: l.value.deleteFail,
+          })
+        })
+    })
+    .catch(() => {
+      proxy.$message({
+        type: 'info',
+        message: c.value.info,
+      })
+    })
+}
+
+function getUserAuth() {
+  proxy.$request(proxy.$api.checkMenuAuth, {
+    resourcepath: proxy.$route.name,
+  }).then((r) => {
+    userAuth.value = r.data[0]
+  })
+}
+
+watch(userAuth, (newV) => {
+  showAuth.m_add = newV.m_add == 'Y'
+  showAuth.m_search = newV.m_search == 'Y'
+  showAuth.m_del = newV.m_del == 'Y'
+  showAuth.m_updata = newV.m_updata == 'Y'
+  showAuth.m_import = newV.m_import == 'Y'
+  showAuth.m_export = newV.m_export == 'Y'
+  showAuth.m_upload = newV.m_upload == 'Y'
+  showAuth.m_audit = newV.m_audit == 'Y'
+  showAuth.m_print = newV.m_print == 'Y'
+}, { deep: true })
+
+onMounted(() => {
+  getList()
+  getCisList()
+  getUserAuth()
+  loadFolders()
+})
 </script>
 <style scoped>
 .modern-table {

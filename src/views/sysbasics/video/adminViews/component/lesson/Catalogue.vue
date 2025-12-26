@@ -5,24 +5,24 @@
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
-            <el-form-item :label="$l.belongCollege" required>
+            <el-form-item :label="l.belongCollege" required>
               <el-select v-model="catalogObj.form.college_id" style="width: 100%" @change="collegeChange">
                 <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label" :value="i.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item :label="$l.parentCatalogue" v-if="catalogObj.form.college_id != ''">
-              <el-cascader v-model="catalogObj.form.pid" :options="catalogObj.list" clearable :placeholder="$l.emptyIsRootCatalogue" style="width: 100%" :props="catalogObj.cascaderProps"> </el-cascader>
+            <el-form-item :label="l.parentCatalogue" v-if="catalogObj.form.college_id != ''">
+              <el-cascader v-model="catalogObj.form.pid" :options="catalogObj.list" clearable :placeholder="l.emptyIsRootCatalogue" style="width: 100%" :props="catalogObj.cascaderProps"> </el-cascader>
             </el-form-item>
-            <el-form-item :label="$l.simplifiedChineseName" required>
+            <el-form-item :label="l.simplifiedChineseName" required>
               <el-input v-model="catalogObj.form.name_zh"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.traditionalChineseName">
+            <el-form-item :label="l.traditionalChineseName">
               <el-input v-model="catalogObj.form.name_tw"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.englishName">
+            <el-form-item :label="l.englishName">
               <el-input v-model="catalogObj.form.name_en"></el-input>
             </el-form-item>
-            <el-form-item :label="$l.vietnameseName">
+            <el-form-item :label="l.vietnameseName">
               <el-input v-model="catalogObj.form.name_vi"></el-input>
             </el-form-item>
           </el-form>
@@ -37,7 +37,7 @@
     <div style="display: flex; justify-content: space-around">
       <div style="width: 30%">
         <div class="org_filter" style="display: flex; height: 60px; padding: 14px 0px">
-          <el-input :placeholder="$l.inputKeywordFilter" v-model="filterOrgText"></el-input>
+          <el-input :placeholder="l.inputKeywordFilter" v-model="filterOrgText"></el-input>
           <el-button type="success" @click="getCollegeList" style="margin-left: 10px">{{ l.refresh }}</el-button>
         </div>
         <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true" :data="publicCodeObj.collegeList" :filter-node-method="filterOrg">
@@ -50,15 +50,15 @@
         <div v-show="catalogObj.query.college_id != ''">
           <div class="catalog_filter" style="display: flex; height: 60px; padding: 14px 0px">
             <el-select v-model="catalogObj.query.is_valid" @change="getCatalogList">
-              <el-option :label="$l.all" value=""></el-option>
-              <el-option :label="$l.enabled" value="Y"></el-option>
-              <el-option :label="$l.disabled" value="N"></el-option>
+              <el-option :label="l.all" value=""></el-option>
+              <el-option :label="l.enabled" value="Y"></el-option>
+              <el-option :label="l.disabled" value="N"></el-option>
             </el-select>
-            <el-input :placeholder="$l.inputKeywordFilter" v-model="filterCatalogText" style="margin-left: 10px"></el-input>
+            <el-input :placeholder="l.inputKeywordFilter" v-model="filterCatalogText" style="margin-left: 10px"></el-input>
             <el-button type="success" @click="getCatalogList" style="margin-left: 10px">{{ l.refresh }}</el-button>
             <el-button type="primary" @click="addCatalog()" style="margin-left: 10px">{{ l.addCatalogue }}</el-button>
           </div>
-          <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data" :filter-node-method="filterCatalog" :empty-text="$l.emptyCatalogue">
+          <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data" :filter-node-method="filterCatalog" :empty-text="l.emptyCatalogue">
             <div class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ data.name_label }}</span>
               <span>
@@ -83,80 +83,80 @@
       <div class="form-container">
         <el-button type="primary" @click="beforeOpenCourseDialog">{{ l.addCourse }}</el-button>
         <el-table :data="courseObj.list" style="width: 100%">
-          <el-table-column prop="thumbnail_path" :label="$l.cover">
+          <el-table-column prop="thumbnail_path" :label="l.cover">
             <template slot-scope="scope">
               <div class="img" v-if="scope.row.thumbnail_path">
                 <img class="auto-img" :src="$api.videoServer + '/' + scope.row.thumbnail_path" />
               </div>
               <div v-else style="text-align: center; width: 100%">
                 <i class="el-icon-picture-outline" style="font-size: 60px"></i>
-                <div>{{ $l.noCover }}</div>
+                <div>{{ l.noCover }}</div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="name_zh" :label="$l.title"></el-table-column>
-          <el-table-column prop="is_valid" :label="$l.status"></el-table-column>
-          <el-table-column :label="$l.operation">
+          <el-table-column prop="name_zh" :label="l.title"></el-table-column>
+          <el-table-column prop="is_valid" :label="l.status"></el-table-column>
+          <el-table-column :label="l.operation">
             <template slot-scope="scope">
-              <el-button type="text" style="color: red" @click="toggleCourseStatus(scope.row)">{{ $l.remove }}</el-button>
+              <el-button type="text" style="color: red" @click="toggleCourseStatus(scope.row)">{{ l.remove }}</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <div class="buttonBar">
-        <el-button type="danger" @click="showObj.course_show = false">{{ $l.close }}</el-button>
+        <el-button type="danger" @click="showObj.course_show = false">{{ l.close }}</el-button>
       </div>
     </el-drawer>
 
     <!-- 选择课程 -->
-    <el-dialog :visible.sync="showObj.selectCourse" :title="$l.addCourse" width="70%">
+    <el-dialog :visible.sync="showObj.selectCourse" :title="l.addCourse" width="70%">
       <div style="height: 500px; display: flex; justify-content: space-between">
         <div style="width: 48%; border: 1px solid #ddd; border-radius: 5px; padding: 5px">
           <div style="margin-bottom: 10px; display: flex; justify-content: space-between">
             <el-input v-model="courseObj.query.name" style="width: 200px" @keyup.native.enter="getCourseList"></el-input>
-            <el-button type="primary" @click="getCourseList">{{ $l.search }}</el-button>
-            <el-button type="success" @click="multipleAdd">{{ $l.batchAdd }}</el-button>
+            <el-button type="primary" @click="getCourseList">{{ l.search }}</el-button>
+            <el-button type="success" @click="multipleAdd">{{ l.batchAdd }}</el-button>
           </div>
           <el-table :data="courseObj.courseList" height="420" @selection-change="handleSelectionChangeToBeAdded">
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="thumbnail_path" :label="$l.cover">
+            <el-table-column prop="thumbnail_path" :label="l.cover">
               <template slot-scope="scope">
                 <div class="img" v-if="scope.row.thumbnail_path">
                   <img class="auto-img" :src="$api.videoServer + '/' + scope.row.thumbnail_path" />
                 </div>
                 <div v-else style="text-align: center; width: 100%">
                   <i class="el-icon-picture-outline" style="font-size: 30px"></i>
-                  <div style="font-size: 10px">{{ $l.noCover }}</div>
+                  <div style="font-size: 10px">{{ l.noCover }}</div>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="name_zh" :label="$l.title"></el-table-column>
-            <el-table-column :label="$l.operation">
+            <el-table-column prop="name_zh" :label="l.title"></el-table-column>
+            <el-table-column :label="l.operation">
               <template slot-scope="scope">
-                <el-button type="text" @click="addCourse(scope.row)">{{ $l.add }}</el-button>
+                <el-button type="text" @click="addCourse(scope.row)">{{ l.add }}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div style="width: 48%; border: 1px solid #ddd; border-radius: 5px; padding: 5px">
           <div style="margin-bottom: 10px; display: flex; justify-content: space-between">
-            <div>{{ $l.toBeAddedList }}</div>
-            <el-button type="danger" @click="multipleRemove">{{ $l.batchRemove }}</el-button>
+            <div>{{ l.toBeAddedList }}</div>
+            <el-button type="danger" @click="multipleRemove">{{ l.batchRemove }}</el-button>
           </div>
           <el-table :data="courseObj.form" height="420" @selection-change="handleSelectionChangeToBeRemoved">
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="name_zh" :label="$l.title"></el-table-column>
-            <el-table-column :label="$l.operation">
+            <el-table-column prop="name_zh" :label="l.title"></el-table-column>
+            <el-table-column :label="l.operation">
               <template slot-scope="scope">
-                <el-button type="text" style="color: red" @click="removeCourse(scope.$index)">{{ $l.remove }}</el-button>
+                <el-button type="text" style="color: red" @click="removeCourse(scope.$index)">{{ l.remove }}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="bindCourseToCatalog">{{ $l.confirm }}</el-button>
-        <el-button @click="showObj.selectCourse = false">{{ $l.cancel }}</el-button>
+        <el-button type="primary" @click="bindCourseToCatalog">{{ l.confirm }}</el-button>
+        <el-button @click="showObj.selectCourse = false">{{ l.cancel }}</el-button>
       </div>
     </el-dialog>
   </div>
