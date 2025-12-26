@@ -5,8 +5,8 @@
       <div class="text-6xl text-gray-300 mb-4">
         <i class="el-icon-document"></i>
       </div>
-      <div class="text-base font-medium text-gray-600 mb-2">{{ $c.table_empty }}</div>
-      <div class="text-sm text-gray-400">{{ $c.no_data }}</div>
+      <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
+      <div class="text-sm text-gray-400">{{ c.no_data }}</div>
     </div>
 
     <!-- Table Content -->
@@ -16,8 +16,8 @@
           <!-- First header row - parent columns -->
           <tr class="bg-white">
             <th v-for="(col, colIdx) in columns" :key="col.id + '_main'" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']" :colspan="getColSpan(col)" :rowspan="shouldHaveRowSpan(col) ? getMaxRowSpan() : undefined">
-              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $l[col.title]">
-                {{ col.title === '#' ? '#' : $l[col.title] || col.title }}
+              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : l[col.title]">
+                {{ col.title === '#' ? '#' : l[col.title] || col.title }}
               </div>
             </th>
           </tr>
@@ -34,8 +34,8 @@
                   <div v-else-if="childCol.id === 'last_year'" class="block max-w-full overflow-hidden overflow-ellipsis leading-5">
                     {{ new Date().getFullYear() - 1 }}
                   </div>
-                  <div v-else class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="$l[childCol.title]">
-                    {{ $l[childCol.title] || childCol.title }}
+                  <div v-else class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="l[childCol.title]">
+                    {{ l[childCol.title] || childCol.title }}
                   </div>
                 </th>
               </template>
@@ -59,31 +59,62 @@
 
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="(col.originalId || col.id) === 'issue_type'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
-                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] || $c.empty }}</div>
+                  <div class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] || c.empty }}</div>
                 </div>
 
                 <div v-else-if="(col.originalId || col.id) === 'subheader'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="(col.originalId || col.id) === 'name_en'" class="max-w-[200px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
+                <!-- Fix Error 1: vendor_code might be missing or item undefined? Row exists since we are iterating. -->
+                <!-- The error was `Cannot read properties of undefined (reading 'vendor_code')` at line 691. -->
+                <!-- This implies `item` might be undefined or something else. But v-for iterates data. -->
+                <!-- Wait, if we use `v-for="(item, idx) in data"`, item should be defined. -->
+                <!-- However, the traceback says `at InvestigationTable.vue:691:3`. Let's check line 691 in original file. -->
+                <!-- In original file, line 691 is inside CustomDialog content, `issueYearsDialogMeta.vendor_code`. -->
+                <!-- `issueYearsDialogMeta` is reactive object. -->
+                <!-- Ah, line 691 in provided file (previous turn) was: -->
+                <!-- `<span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || $c.empty }}</span>` -->
+                <!-- If `issueYearsDialogMeta` is reactive, it should be fine. -->
+                <!-- But wait, if `issueYearsDialogMeta` is not initialized properly? -->
+                <!-- `const issueYearsDialogMeta = reactive({ vendor_code: '', ... })`. It is initialized. -->
+                <!-- Maybe the error is somewhere else. -->
+                <!-- Let's look at `columns` definition. `vendor_code` is a column. -->
+                <!-- `<div v-else-if="(col.originalId || col.id) === 'vendor_code'" ...>` -->
+                <!-- I will use optional chaining in template just in case `item` is somehow not what we expect or if `issueYearsDialogMeta` is issues. -->
+
+                <div v-else-if="(col.originalId || col.id) === 'vendor_code'" class="max-w-[200px]" :title="item && item[col.originalId || col.id]">
+                  <div v-if="item && item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ c.empty }}
+                  </div>
+                </div>
+
+                 <div v-else-if="(col.originalId || col.id) === 'sap_code'" class="max-w-[200px]" :title="item && item[col.originalId || col.id]">
+                  <div v-if="item && item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
+                  <div v-else class="text-gray-300 italic text-xs">
+                    {{ c.empty }}
+                  </div>
+                </div>
+
                 <div v-else-if="(col.originalId || col.id) === 'audit_explanation'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
                 <div v-else-if="(col.originalId || col.id) === 'corrective_action_plan'" class="max-w-[500px]" :title="item[col.originalId || col.id]">
                   <div v-if="item[col.originalId || col.id]" class="text-black text-xs line-clamp-2 whitespace-normal h-8">{{ item[col.originalId || col.id] }}</div>
                   <div v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </div>
                 </div>
 
@@ -91,7 +122,7 @@
                 <template v-else-if="(col.originalId || col.id) === 'corrective_date'">
                   <span v-if="item[col.originalId || col.id]" class="text-xs whitespace-normal">{{ formatDate(item[col.originalId || col.id]) }}</span>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -101,7 +132,7 @@
                     {{ getStatusText(item[col.originalId || col.id]) }}
                   </el-tag>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -127,13 +158,13 @@
                     v-if="getIssueYearsAverage(item) !== null"
                     :class="['flex max-w-full overflow-hidden overflow-ellipsis leading-5 items-center gap-1 cursor-pointer select-none transition-transform duration-150 hover:scale-[1.02]']"
                     @click.stop="openIssueYearsDialog(item)"
-                    :title="$l.issue_years_average"
+                    :title="l.issue_years_average"
                   >
                     <div :class="['w-3 h-3 rounded-full', getPercentColor(getIssueYearsAverage(item)).main]"></div>
                     <div :class="['px-3', getPercentColor(getIssueYearsAverage(item)).sub]">{{ formatPercent(getIssueYearsAverage(item)) }}</div>
                   </div>
                   <span v-else class="text-gray-300 italic text-xs">
-                    {{ $c.empty }}
+                    {{ c.empty }}
                   </span>
                 </template>
 
@@ -148,8 +179,8 @@
                           <i class="el-icon-more w-3.5 text-sm text-gray-400"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item @click.native="handleAction('history', item)">{{ $l.history }}</el-dropdown-item>
-                          <el-dropdown-item @click.native="handleAction('edit_notices', item)">{{ $l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
+                          <el-dropdown-item @click.native="handleAction('history', item)">{{ l.history }}</el-dropdown-item>
+                          <el-dropdown-item @click.native="handleAction('edit_notices', item)">{{ l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
                     </div>
@@ -159,7 +190,7 @@
                 <template v-else>
                   <div class="text-black dark:text-gray-400 line-clamp-2">
                     <span v-if="item[col.originalId || col.id] === undefined || item[col.originalId || col.id] === null || item[col.originalId || col.id] === ''" class="text-gray-300 italic text-xs">
-                      {{ $c.empty }}
+                      {{ c.empty }}
                     </span>
                     <span v-else class="text-xs whitespace-normal">{{ item[col.originalId || col.id] }}</span>
                   </div>
@@ -171,7 +202,7 @@
           <tr v-if="!isLoading && data && data.length > 0" class="dark:bg-gray-800 font-medium border-t-2 border-gray-200 dark:border-gray-600 bg-yellow-100 sticky bottom-0 z-50">
             <!-- First 4 columns merged for Average title -->
             <td colspan="4" class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-center whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-600 dark:text-gray-300 font-semibold">{{ $l.average }}</span>
+              <span class="text-gray-600 dark:text-gray-300 font-semibold">{{ l.average }}</span>
             </td>
             <!-- Last year average -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-left whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
@@ -189,20 +220,20 @@
             </td>
             <!-- Multi-year average -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-left whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <!-- Remaining columns -->
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
             <td class="border-b border-gray-100 px-2 py-3 bg-yellow-100 text-right whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-gray-800 text-xs font-medium">
-              <span class="text-gray-500 dark:text-gray-400">{{ $c.dash }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ c.dash }}</span>
             </td>
           </tr>
         </tbody>
@@ -211,7 +242,7 @@
 
     <CustomDialog
       :visible.sync="issueYearsDialogVisible"
-      :title="$l.issue_years_average_detail_title"
+      :title="l.issue_years_average_detail_title"
       :clickOutside="false"
       width="70%"
       :maxWidth="'900px'"
@@ -219,19 +250,19 @@
       <div class="px-6 pb-6 space-y-6">
         <div class="grid gap-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900/40 md:grid-cols-4">
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.vendor_code }}</span>
-            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || $c.empty }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.vendor_code }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || c.empty }}</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.sap_code }}</span>
-            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.sap_code || $c.empty }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.sap_code }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.sap_code || c.empty }}</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.name_en }}</span>
-            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{{ issueYearsDialogMeta.name_en || $c.empty }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.name_en }}</span>
+            <span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{{ issueYearsDialogMeta.name_en || c.empty }}</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $l.issue_years_average }}</span>
+            <span class="text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ l.issue_years_average }}</span>
             <div class="mt-2">
               <template v-if="issueYearsDialogMeta.averageRatio !== null">
                 <div class="inline-flex items-center gap-2">
@@ -239,7 +270,7 @@
                   <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getPercentColor(issueYearsDialogMeta.averageRatio).sub]">{{ issueYearsDialogAverageText }}</span>
                 </div>
               </template>
-              <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ $c.empty }}</span>
+              <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ c.empty }}</span>
             </div>
           </div>
         </div>
@@ -248,16 +279,16 @@
           <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
             <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-900/60 dark:text-gray-400">
               <tr>
-                <th class="px-4 py-3">{{ $l.issue_years_detail_year }}</th>
-                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_total }}</th>
-                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_finish }}</th>
-                <th class="px-4 py-3 text-right">{{ $l.issue_years_detail_ratio }}</th>
+                <th class="px-4 py-3">{{ l.issue_years_detail_year }}</th>
+                <th class="px-4 py-3 text-right">{{ l.issue_years_detail_total }}</th>
+                <th class="px-4 py-3 text-right">{{ l.issue_years_detail_finish }}</th>
+                <th class="px-4 py-3 text-right">{{ l.issue_years_detail_ratio }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
               <tr v-if="issueYearsDialogRows.length === 0">
                 <td colspan="4" class="px-4 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-                  {{ $c.no_data }}
+                  {{ c.no_data }}
                 </td>
               </tr>
               <tr
@@ -265,9 +296,9 @@
                 :key="row.manufacture_id || `${row.year}-${rowIdx}`"
                 class="bg-white text-sm text-gray-700 transition-colors dark:bg-black dark:text-gray-200 even:bg-gray-50 even:dark:bg-gray-900/40"
               >
-                <td class="px-4 py-3 whitespace-nowrap">{{ row.year || $c.dash }}</td>
-                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.total_issue === null || row.total_issue === undefined ? $c.dash : row.total_issue }}</td>
-                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.finish === null || row.finish === undefined ? $c.dash : row.finish }}</td>
+                <td class="px-4 py-3 whitespace-nowrap">{{ row.year || c.dash }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">{{ row.total_issue === null || row.total_issue === undefined ? c.dash : row.total_issue }}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">{{ finish === null || row.finish === undefined ? c.dash : row.finish }}</td>
                 <td class="px-4 py-3 text-right whitespace-nowrap">
                   <template v-if="row.ratio !== null">
                     <div class="inline-flex items-center gap-2">
@@ -275,11 +306,11 @@
                       <span :class="['px-3 py-1 rounded-full text-xs font-medium', getPercentColor(row.ratio).sub]">{{ formatPercent(row.ratio) }}</span>
                     </div>
                   </template>
-                  <span v-else class="text-xs italic text-gray-300 dark:text-gray-500">{{ $c.empty }}</span>
+                  <span v-else class="text-xs italic text-gray-300 dark:text-gray-500">{{ c.empty }}</span>
                 </td>
               </tr>
               <tr v-if="issueYearsDialogRows.length > 0" class="bg-gray-50 text-sm font-medium text-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
-                <td colspan="3" class="px-4 py-4 text-right">{{ $l.issue_years_detail_average }}</td>
+                <td colspan="3" class="px-4 py-4 text-right">{{ l.issue_years_detail_average }}</td>
                 <td class="px-4 py-4 text-right">
                   <template v-if="issueYearsDialogMeta.averageRatio !== null">
                     <div class="inline-flex items-center gap-2">
@@ -287,7 +318,7 @@
                       <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getPercentColor(issueYearsDialogMeta.averageRatio).sub]">{{ issueYearsDialogAverageText }}</span>
                     </div>
                   </template>
-                  <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ $c.dash }}</span>
+                  <span v-else class="text-sm text-gray-400 dark:text-gray-500">{{ c.dash }}</span>
                 </td>
               </tr>
             </tbody>
@@ -785,6 +816,5 @@ const formatDate = (date) => {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
 }
 </style>
