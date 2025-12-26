@@ -563,11 +563,9 @@ import filePreviews from '../../_common/filePreviews.vue'
 import InvestigationHistoryTable from './InvestigationHistoryTable.vue'
 import InvestigationTable from './InvestigationTable.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
-import { useStore } from 'vuex'
 
 const { proxy } = getCurrentInstance()
 const { l, c } = useLocalI18n('investigation')
-const store = useStore()
 
 const pageLoading = ref(false)
 const formLabelWidth = ref('120px')

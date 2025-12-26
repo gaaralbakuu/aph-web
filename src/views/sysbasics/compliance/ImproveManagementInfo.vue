@@ -88,12 +88,11 @@ import { zPagination } from '@/views/_common'
 import { zTable } from '@/views/_common'
 import filePreviews from '../../_common/filePreviews.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
-import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router/composables'
 
 const { proxy } = getCurrentInstance()
 const { l, c } = useLocalI18n('improveManagementInfo') // Assuming correct namespace
-const store = useStore() || proxy.$store
+const store = proxy.$store
 const router = useRouter() || proxy.$router
 const route = useRoute() || proxy.$route
 
