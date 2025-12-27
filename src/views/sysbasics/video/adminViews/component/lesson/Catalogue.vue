@@ -62,7 +62,7 @@
             <div class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ data.name_label }}</span>
               <span>
-                <el-button type="text" @click.stop="addCatalog(data)">{{ l.addChildCatalogue }}</el-button>
+                <el-button type="text" @click.stop="addCatalog(data)">{{ l.addChildCatalog }}</el-button>
                 <el-button type="text" @click.stop="editCatalog(data)">{{ l.edit }}</el-button>
                 <el-button type="text" @click.stop="getCourseListById(data.id)">{{ l.manage }}</el-button>
                 <el-button v-if="data.is_valid == 'N'" type="text" style="color: seagreen" @click.stop="modifyCatalogStatus(data)">{{ l.enable }}</el-button>
