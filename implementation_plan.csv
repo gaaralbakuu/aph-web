@@ -1,0 +1,19 @@
+ID,Category,Feature_Name_VI,Feature_Name_EN,Status,Difficulty,Estimated_Duration,Suggested_Timeline,Notes
+1,System,Tên miền riêng,Custom Domain,Missing,Hard,10-14 days,Week 1-2,Requires backend infra changes and DNS config handling.
+2,System,Tùy chỉnh giao diện (Branding),Branding Customization,Missing,Medium,5-7 days,Week 3,DB schema update for company settings + dynamic CSS injection.
+3,System,Import User từ Excel,User Import (Excel),Missing,Medium,3-5 days,Week 4,Backend parsing logic + Frontend file upload & mapping UI.
+4,System,Chứng nhận & Huy hiệu,Certificates & Badges,Missing,Hard,10-14 days,Week 5-6,PDF generation library integration + Canvas drawing + Template management.
+5,System,Import/Export Ngân hàng câu hỏi,Question Bank Import/Export,Partial,Medium,5-7 days,Week 7,Excel library (xlsx) integration for bulk question processing.
+6,System,Quản lý kỳ thi bên ngoài,External Exam Management,Missing,Medium,5-7 days,Week 8,Data modeling for external links/scores + manual entry UI.
+7,System,Khung năng lực,Competency Framework,Missing,Hard,10-14 days,Week 9-10,"Complex relationship mapping (Course <-> Competency <-> User)."
+8,System,Hiển thị tiến độ upload video,Video Upload Progress,Missing,Easy,2-3 days,Week 11,Update Axios request config to capture progress event + UI Progress Bar.
+9,System,Dung lượng lưu trữ & CCU,Storage & CCU Monitoring,Missing,Medium,4-5 days,Week 11,Backend API for system stats + Dashboard widgets.
+10,Instructor,Hỗ trợ chuẩn SCORM,SCORM Support,Missing,Hard,14-21 days,Week 12-14,Requires a SCORM player/wrapper and specific XML parsing logic.
+11,Instructor,Lớp học trực tuyến (Zoom/Teams),Online Class Integration,Missing,Hard,10-14 days,Week 15-16,Integration with 3rd party APIs (Zoom/Teams/Meet) + OAuth.
+12,Instructor,Giao bài tập về nhà,Homework/Assignments,Missing,Medium,5-7 days,Week 17,Submission system (file upload) + Grading interface for instructors.
+13,Instructor,Xáo trộn đề thi,Exam Randomization,Missing,Medium,3-5 days,Week 18,Algorithm to select random questions from pool based on criteria.
+14,Instructor,Diễn đàn lớp học,Class Forum,Missing,Medium,5-7 days,Week 19,"Discussion board logic (Threads, Replies, Moderation)."
+15,Instructor,Chống gian lận (Tab switch),Anti-cheating (Blur check),Missing,Easy,2-3 days,Week 20,Implement 'visibilitychange' and 'blur' event listeners.
+16,Learner,Kế hoạch học tập cá nhân,Self-managed Learning Plan,Partial,Medium,4-6 days,Week 21,UI for users to add courses to their own plan/calendar.
+17,Learner,Upload chứng chỉ bên ngoài,Upload External Cert,Missing,Medium,3-5 days,Week 22,File upload + Approval workflow by Admin/Manager.
+18,Learner,Bình luận & Hỏi đáp,Comments & Q&A,Missing,Medium,5-7 days,Week 23,Comment section UI + Backend CRUD + Notifications.
