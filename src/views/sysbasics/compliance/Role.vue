@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col h-[calc(100vh-60px)] bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+  <div class="flex flex-col h-full bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
     <!-- Main Content Grid -->
-    <div class="flex-1 p-6 grid grid-cols-12 gap-6 overflow-hidden">
+    <div class="flex-1 grid grid-cols-12 overflow-hidden">
 
       <!-- Panel 1: Roles (Span 4) -->
-      <div class="col-span-4 bg-white border border-[#E5E5E5] flex flex-col rounded-sm shadow-sm h-full overflow-hidden">
+      <div class="col-span-4 bg-white border-r border-[#E5E5E5] flex flex-col h-full overflow-hidden">
          <!-- Header -->
          <div class="px-4 py-3 border-b border-[#E5E5E5] flex justify-between items-center bg-white sticky top-0 z-10">
             <h2 class="text-base font-medium mb-0!">{{ l.title || 'Roles' }}</h2>
-            <button v-show="showAuth.m_add" class="bg-[#CC0000] text-white! px-3 py-1.5 text-xs font-medium uppercase rounded shadow-sm hover:bg-[#990000] transition-colors flex items-center gap-1 cursor-pointer" @click="createItem">
+            <button v-show="showAuth.m_add" class="bg-[#CC0000] text-white! px-3 py-1.5 text-xs font-medium uppercase rounded hover:bg-[#990000] transition-colors flex items-center gap-1 cursor-pointer" @click="createItem">
                <i class="el-icon-plus font-bold"></i> {{ l.createItem }}
             </button>
          </div>
@@ -46,7 +46,7 @@
       </div>
 
       <!-- Panel 2: Users (Span 3) -->
-      <div class="col-span-3 bg-white border border-[#E5E5E5] flex flex-col rounded-sm shadow-sm h-full overflow-hidden">
+      <div class="col-span-3 bg-white flex flex-col h-full overflow-hidden">
          <div class="px-4 py-3 border-b border-[#E5E5E5] flex justify-between items-center bg-[#FAFAFA] h-[53px]">
              <h3 class="text-sm font-medium mb-0!">{{ l.allocatedAccount }}</h3>
              <button v-if="currentDataId && showAuth.m_add" class="text-[#065FD4] hover:bg-[#E6F7FF] p-1.5 rounded transition-colors cursor-pointer" :title="l.addUser" @click="addUserClick">
@@ -75,7 +75,7 @@
       </div>
 
       <!-- Panel 3: Permissions (Span 5) -->
-      <div class="col-span-5 bg-white border border-[#E5E5E5] flex flex-col rounded-sm shadow-sm h-full overflow-hidden">
+      <div class="col-span-5 bg-white border-l border-[#E5E5E5] flex flex-col h-full overflow-hidden">
          <div class="px-4 py-3 border-b border-[#E5E5E5] flex justify-between items-center bg-[#FAFAFA] h-[53px]">
              <h3 class="text-sm font-medium mb-0!">{{ l.selectedMemnu }}</h3>
              <button v-if="currentDataId && showAuth.m_updata" class="bg-[#069C56] text-white! px-3 py-1.5 text-xs font-medium uppercase rounded hover:bg-[#057A43] transition-colors disabled:opacity-50 flex items-center gap-1 cursor-pointer" :disabled="!menuCheckChange" @click="saveRoleMenu">
