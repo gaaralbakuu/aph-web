@@ -69,7 +69,7 @@
     <!-- 创建、编辑表单 -->
     <CustomDialog :title="l.account" :visible.sync="account.editFormVisible" :maxWidth="'500px'" :clickOutside="false">
       <template #notice>
-        <div class="text-sm text-gray-500 bg-gray-50 px-6 py-3">Tạo tài khoản mới dành cho đối tác sử dụng</div>
+        <div class="text-sm text-gray-500 bg-gray-50 px-6 py-3">{{ l.createAccountNotice }}</div>
       </template>
       <template #content>
         <div class="flex flex-col gap-4">
@@ -213,7 +213,7 @@ const account = reactive({
   // `this.account.fields[0].props.disabled = false`
   // We need to maintain this structure or refactor.
   // I will define it as reactive and use it in add/edit.
-  fields: [
+  fields: computed(() => [
     {
       title: l.value.account,
       key: 'account',
@@ -224,18 +224,18 @@ const account = reactive({
       },
     },
     {
-      title: 'password',
+      title: l.value.password,
       key: 'password',
       span: 24,
       required: true,
     },
     {
-      title: 'email',
+      title: l.value.email,
       key: 'email',
       span: 24,
     },
     {
-      title: 'phone',
+      title: l.value.phone,
       key: 'phone',
       span: 24,
       required: true,
@@ -244,13 +244,13 @@ const account = reactive({
       },
     },
     {
-      title: 'account_name',
+      title: l.value.account_name,
       key: 'account_name',
       span: 24,
       required: true,
     },
     {
-      title: 'manufacture_name',
+      title: l.value.manufacture_name,
       key: 'company_name',
       span: 24,
       required: true,
@@ -279,7 +279,7 @@ const account = reactive({
         style: 'visibility:hidden',
       },
     },
-  ]
+  ]),
 })
 
 const accountOptions = computed(() => [

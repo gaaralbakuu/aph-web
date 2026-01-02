@@ -80,7 +80,7 @@
                 </div>
                 <div>
                   <h4 class="font-semibold text-gray-900">{{ l.selectFolder }}</h4>
-                  <p class="text-sm text-gray-600">Chọn thư mục để lưu trữ tài liệu</p>
+                  <p class="text-sm text-gray-600">{{ l.selectFolderDescription }}</p>
                 </div>
               </div>
             </div>
@@ -112,8 +112,8 @@
                   <i class="fa fa-cloud-upload text-white"></i>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">Tải lên tài liệu hướng dẫn</h4>
-                  <p class="text-sm text-gray-600">Chọn file PDF, DOC, DOCX để tải lên</p>
+                  <h4 class="font-semibold text-gray-900">{{ l.uploadHelpManual }}</h4>
+                  <p class="text-sm text-gray-600">{{ l.uploadHelpManualDesc }}</p>
                 </div>
               </div>
               <button 
@@ -129,7 +129,7 @@
           <input type="file" @change="file" ref="fileinput" style="display: none" />
           
           <div v-if="addHelpManual.fileList.length > 0" class="bg-gray-50 rounded-lg p-4">
-            <h5 class="font-medium text-gray-900 mb-3">File đã chọn:</h5>
+            <h5 class="font-medium text-gray-900 mb-3">{{ l.selectedFiles }}</h5>
             <el-table :data="addHelpManual.fileList" class="modern-table">
               <el-table-column v-for="(item, index) in addHelpManualColumns" :key="index" :prop="item.key" :label="item.title" :width="item.width">
                 <template slot-scope="scope">
@@ -190,8 +190,8 @@
                 <i class="fa fa-user-plus text-white"></i>
               </div>
               <div>
-                <h4 class="font-semibold text-gray-900">Thêm người liên hệ mới</h4>
-                <p class="text-sm text-gray-600">Vui lòng điền đầy đủ thông tin liên hệ</p>
+                <h4 class="font-semibold text-gray-900">{{ l.addNewContact }}</h4>
+                <p class="text-sm text-gray-600">{{ l.contactInfoDesc }}</p>
               </div>
             </div>
           </div>

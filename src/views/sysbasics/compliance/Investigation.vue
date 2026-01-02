@@ -237,7 +237,7 @@
             <div class="text-xl font-black text-gray-900 dark:text-white mt-2">{{ l.auditFile }}</div>
 
             <div>
-              <el-button type="text" size="small" class="delete-action-button" v-if="checkSurvey.fileList.length > 0" @click="downloadAllFiles">{{ l.downloadAll || 'Tải xuống tất cả' }}</el-button>
+              <el-button type="text" size="small" class="delete-action-button" v-if="checkSurvey.fileList.length > 0" @click="downloadAllFiles">{{ l.downloadAll }}</el-button>
             </div>
           </div>
 
@@ -248,7 +248,7 @@
               <el-table-column fixed="right" :label="c.operation" width="145">
                 <template slot-scope="scope">
                   <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
-                  <el-button @click="downloadFile(scope.row)" type="text" size="small">{{ l.download || 'Tải xuống' }}</el-button>
+                  <el-button @click="downloadFile(scope.row)" type="text" size="small">{{ l.download }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -525,7 +525,7 @@
     </CustomDialog>
 
     <!-- 编辑提醒/警告函号 -->
-    <CustomDialog :title="l.edit_notices || 'Edit Notices'" :visible.sync="editNoticesVisible" :clickOutside="false" width="100%" :maxWidth="'500px'">
+    <CustomDialog :title="l.edit_notices" :visible.sync="editNoticesVisible" :clickOutside="false" width="100%" :maxWidth="'500px'">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
@@ -2287,7 +2287,7 @@ const getFilePreview = (url) => {
 
 const downloadAllFiles = () => {
   if (!checkSurvey.list || !checkSurvey.list.id) {
-    proxy.$message.error(l.value.pleaseSelectSurvey || 'Vui lòng chọn cuộc điều tra')
+    proxy.$message.error(l.value.pleaseSelectSurvey)
     return
   }
 
@@ -2313,11 +2313,11 @@ const downloadAllFiles = () => {
       a.click()
       URL.revokeObjectURL(objectUrl)
       document.body.removeChild(a)
-      proxy.$message.success(l.value.downloadStart || 'Bắt đầu tải xuống')
+      proxy.$message.success(l.value.downloadStart)
     })
     .catch((error) => {
       console.log(error)
-      proxy.$message.error(l.value.downloadFailed || 'Tải xuống thất bại')
+      proxy.$message.error(l.value.downloadFailed)
     })
 }
 

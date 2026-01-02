@@ -6,7 +6,7 @@
         <i class="el-icon-document"></i>
       </div>
       <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
-      <div class="text-sm text-gray-400">{{ $t('improveManagement_table.no_data') }}</div>
+      <div class="text-sm text-gray-400">{{ l.no_data }}</div>
     </div>
 
     <!-- Table Content -->
@@ -15,8 +15,8 @@
         <thead>
           <tr>
             <th v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, true)" :class="[col.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky top-0 z-10 transition-colors dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 border-b border-solid border-gray-200 tracking-wide bg-white', col.freeze ? 'sticky-' + col.freeze : '']">
-              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : $t('improveManagement_table.' + col.title)">
-                {{ col.title === '#' ? '#' : $t('improveManagement_table.' + col.title) }}
+              <div class="block max-w-full overflow-hidden overflow-ellipsis leading-5" :title="col.title === '#' ? '#' : l[col.title]">
+                {{ col.title === '#' ? '#' : l[col.title] }}
               </div>
             </th>
           </tr>
@@ -84,7 +84,7 @@ import { reactive, ref, computed, onMounted, getCurrentInstance } from 'vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 const { proxy } = getCurrentInstance()
-const { l, c } = useLocalI18n('ImproveManagementTable') // Assuming namespace
+const { l, c } = useLocalI18n('improveManagement_table') // Assuming namespace
 
 const props = defineProps({
   data: {
@@ -178,9 +178,9 @@ const getStatusType = (status) => {
 
 const getStatusText = (status) => {
   const textMap = {
-    onboarding: proxy.$t('improveManagement_table.onboarding'),
-    discontinued: proxy.$t('improveManagement_table.discontinued'),
-    in_use: proxy.$t('improveManagement_table.in_use'),
+    onboarding: l.value.onboarding,
+    discontinued: l.value.discontinued,
+    in_use: l.value.in_use,
   }
   return textMap[status] || status
 }

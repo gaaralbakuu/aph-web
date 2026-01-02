@@ -179,10 +179,10 @@
         <div class="flex flex-col overflow-hidden h-full gap-3">
           <div class="flex-1 overflow-auto border border-gray-200 rounded">
             <div v-if="manufacture.loading" class="flex items-center justify-center h-32">
-              <div class="text-gray-500">{{ l.loading || 'Loading...' }}</div>
+              <div class="text-gray-500">{{ l.loading }}</div>
             </div>
             <div v-else-if="manufacture.tableData.length === 0" class="flex items-center justify-center h-32">
-              <div class="text-gray-500">{{ l.noData || 'No data available' }}</div>
+              <div class="text-gray-500">{{ l.noData }}</div>
             </div>
             <table v-else class="w-full border-collapse">
               <thead class="bg-gray-50 sticky top-0">
@@ -190,7 +190,7 @@
                   <th v-for="(item, index) in manufacture.column" :key="index" class="px-4 py-3 text-left text-sm font-semibold text-gray-900 border-b border-gray-200">
                     {{ item.label }}
                   </th>
-                  <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900 border-b border-gray-200">{{ c.operation || 'Action' }}</th>
+                  <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900 border-b border-gray-200">{{ c.operation }}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
@@ -200,7 +200,7 @@
                   </td>
                   <td class="px-4 py-3 text-sm text-right border-b border-gray-100">
                     <button @click="selectManufacture(rowIndex, row)" class="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded transition-colors duration-150">
-                      {{ c.select || 'Select' }}
+                      {{ c.select }}
                     </button>
                   </td>
                 </tr>
@@ -952,9 +952,9 @@ const passsubmit = () => {
     )
     .then((response) => {
       if (response.httpCode == 200) {
-        proxy.$message.success('审核成功')
+        proxy.$message.success(l.value.auditSuccess)
       } else {
-        proxy.$message.error('审核失败')
+        proxy.$message.error(l.value.auditFailed)
       }
     })
 }
@@ -1350,8 +1350,8 @@ const exportExcel = () => {
     )
     .then((r) => {
       if (r.data.list.length == 0) {
-        proxy.$alert('暂无数据', '提示', {
-          confirmButtonText: '确定',
+        proxy.$alert(l.value.noData, c.value.prompt, {
+          confirmButtonText: c.value.confirm,
           callback: (action) => {},
         })
         return
@@ -1543,14 +1543,14 @@ const sendRoleEmail = () => {
 const onFileChange = (e) => {
   uploadQuery.file = e.target.files[0]
   if (!uploadQuery.file) {
-    alert('请选择一个文件')
+    alert(l.value.selectFileError)
     return
   }
 }
 
 const uploadExcel = () => {
   if (!uploadQuery.file) {
-    alert('请选择一个文件')
+    alert(l.value.selectFileError)
     return
   }
 
@@ -1583,7 +1583,7 @@ const addFile = (e) => {
     .catch((error) => {
       proxy.$message({
         type: 'info',
-        message: '添加失败',
+        message: l.value.addFailed,
       })
     })
 }
@@ -1613,9 +1613,9 @@ const submmitfile = (fileList) => {
     .catch(() => {
       proxy.$message({
         type: 'info',
-        message: '附件添加失败',
+        message: l.value.attachmentAddFailed,
       })
-      throw new Error('附件上传失败')
+      throw new Error(l.value.attachmentUploadFailed)
     })
 }
 
@@ -1672,7 +1672,7 @@ const exportTemplate = () => {
       URL.revokeObjectURL(elink.href)
       document.body.removeChild(elink)
     } catch (error) {
-      proxy.$message.error('文件导出失败')
+      proxy.$message.error(l.value.fileExportFailed)
     }
   })
 }

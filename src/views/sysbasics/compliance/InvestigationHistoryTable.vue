@@ -225,7 +225,7 @@ const props = defineProps({
 const emit = defineEmits(['action', 'row-click', 'row-hover', 'view-attachments'])
 
 const { proxy } = getCurrentInstance()
-const { l, c } = useLocalI18n('investigationHistoryTable')
+const { l, c } = useLocalI18n('investigation_history_table')
 
 const columns = ref([
   { id: 'index', title: '#', width: 60, textAlign: 'left' },

@@ -6,7 +6,7 @@
         <i class="el-icon-document"></i>
       </div>
       <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
-      <div class="text-sm text-gray-400">{{ $t('no_data') }}</div>
+      <div class="text-sm text-gray-400">{{ l.no_data }}</div>
     </div>
 
     <!-- Table Content -->
@@ -178,7 +178,7 @@ const emit = defineEmits(['action', 'view', 'row-click', 'row-hover'])
 const { proxy } = getCurrentInstance()
 // Assuming default localization if not provided via some prop, or usage of global mixin
 // The component name is 'ImproveManagementDetailsTable'
-const { l, c } = useLocalI18n('improveManagementDetailsTable') // Assuming this key exists or is appropriate
+const { l, c } = useLocalI18n('improveManagement_details_table') // Assuming this key exists or is appropriate
 
 const columns = ref([
   { id: 'index', title: '#', width: 60, textAlign: 'left' },
