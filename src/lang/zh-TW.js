@@ -40,6 +40,7 @@ export default {
     disabled: '已禁用',
     enabled: '已啟用',
     no_data: '尚未加載任何製造商數據',
+    no_permission: '您沒有權限執行此操作',
     all: '全部',
     remarks: '備註',
     modify_user: '修改人',

@@ -25,7 +25,7 @@
           <template v-if="isLoading">
             <tr v-for="i in 10" :key="'skeleton-' + i" class="animate-pulse">
               <td v-for="(col, colIdx) in columns" :key="col.id" :style="getStickyStyle(col, colIdx, false)" :class="['border-b border-gray-100 px-3 py-3 bg-white text-left whitespace-nowrap transition-colors dark:border-gray-700 dark:bg-black', col.freeze ? 'sticky-' + col.freeze : '']">
-                <div class="h-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 bg-[length:200%_100%] rounded animate-[skeleton-loading_1.5s_infinite] dark:from-gray-800 dark:via-gray-700 dark:to-gray-800"></div>
+                <div class="h-4 bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 bg-size-[200%_100%] rounded animate-[skeleton-loading_1.5s_infinite] dark:from-gray-800 dark:via-gray-700 dark:to-gray-800"></div>
               </td>
             </tr>
           </template>
@@ -38,7 +38,7 @@
                 <!-- Name Column with Tooltip -->
                 <div v-else-if="col.id === 'name_en'" class="max-w-[280px]">
                   <el-tooltip effect="dark" :content="item[col.id]" placement="top" :disabled="!item[col.id] || item[col.id].length < 30">
-                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap font-semibold text-black font-bold dark:text-gray-300">{{ item[col.id] || c.empty }}</div>
+                    <div class="overflow-hidden overflow-ellipsis whitespace-nowrap font-bold text-black dark:text-gray-300">{{ item[col.id] || c.empty }}</div>
                   </el-tooltip>
                 </div>
 
@@ -56,13 +56,13 @@
                         <div v-else class="text-center text-gray-300 italic py-4">{{ c.empty }}</div>
                       </div>
                       <template slot="reference">
-                        <el-button type="text" size="mini" class="!p-1 !px-2 !text-xs !text-blue-500 !border-0 hover:!text-blue-400 hover:!bg-blue-50 dark:hover:!bg-blue-900/20">
+                        <el-button type="text" size="mini" class="p-1! px-2! text-xs! text-blue-500! border-0! hover:text-blue-400! hover:bg-blue-50! dark:hover:bg-blue-900/20!">
                           <i class="el-icon-view mr-1 text-xs"></i>
                           {{ c.view_address }}
                         </el-button>
                       </template>
                     </el-popover>
-                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="!text-xs !h-4.5 !leading-4 !px-1.5 !rounded-full">
+                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="text-xs! h-4.5! leading-4! px-1.5! rounded-full!">
                       {{ item.address.length }}
                     </el-tag>
                   </div>
@@ -82,13 +82,13 @@
                         <div v-else class="text-center text-gray-300 italic py-4">{{ c.empty }}</div>
                       </div>
                       <template slot="reference">
-                        <el-button type="text" size="mini" class="!p-1 !px-2 !text-xs !text-blue-500 !border-0 hover:!text-blue-400 hover:!bg-blue-50 dark:hover:!bg-blue-900/20">
+                        <el-button type="text" size="mini" class="p-1! px-2! text-xs! text-blue-500! border-0! hover:text-blue-400! hover:bg-blue-50! dark:hover:bg-blue-900/20!">
                           <i class="el-icon-view mr-1 text-xs"></i>
                           {{ c.view_capabilities }}
                         </el-button>
                       </template>
                     </el-popover>
-                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="!text-xs !h-4.5 !leading-4 !px-1.5 !rounded-full">
+                    <el-tag v-if="item.address && item.address.length > 0" size="mini" type="info" class="text-xs! h-4.5! leading-4! px-1.5! rounded-full!">
                       {{ item.address.length }}
                     </el-tag>
                   </div>
@@ -97,7 +97,7 @@
                 <!-- Status Column -->
                 <template v-else-if="col.id === 'authorization_status'">
                   <div class="flex items-center">
-                    <el-tag v-if="item[col.id]" :type="getStatusType(item[col.id])" size="small" class="!text-xs !h-6 !leading-5 !px-2 !rounded !font-medium">
+                    <el-tag v-if="item[col.id]" :type="getStatusType(item[col.id])" size="small" class="text-xs! h-6! leading-5! px-2! rounded! font-medium!">
                       {{ getStatusText(item[col.id]) }}
                     </el-tag>
                     <span v-else class="text-gray-300 italic text-xs">{{ c.empty }}</span>
@@ -108,23 +108,23 @@
                 <template v-else-if="col.id === 'action'">
                   <div class="flex justify-end items-center">
                     <el-dropdown @command="(cmd) => handleAction(cmd, item)" trigger="click" size="small">
-                      <el-button type="text" class="!p-2 !text-gray-500 !border-0 !rounded hover:!text-blue-500 hover:!bg-blue-50 !transition-all dark:hover:!bg-blue-900/20">
+                      <el-button type="text" class="p-2! text-gray-500! border-0! rounded! hover:text-blue-500! hover:bg-blue-50! transition-all! dark:hover:bg-blue-900/20!">
                         <i class="el-icon-more"></i>
                       </el-button>
-                      <el-dropdown-menu slot="dropdown" class="!rounded-xl !shadow-lg !p-1.5">
+                      <el-dropdown-menu slot="dropdown" class="rounded-xl! shadow-lg! p-1.5!">
                         <el-dropdown-item command="detail">
                           <i class="el-icon-view w-3.5 text-sm"></i>
                           {{ $t('common.detail') }}
                         </el-dropdown-item>
-                        <el-dropdown-item command="edit">
+                        <el-dropdown-item command="edit" :disabled="!showAuth.m_updata" :class="{ 'text-gray-300! cursor-not-allowed!': !showAuth.m_updata }">
                           <i class="el-icon-edit w-3.5 text-sm"></i>
                           {{ $t('common.edit') }}
                         </el-dropdown-item>
-                        <el-dropdown-item command="export">
+                        <el-dropdown-item command="export" :disabled="!showAuth.m_export" :class="{ 'text-gray-300! cursor-not-allowed!': !showAuth.m_export }">
                           <i class="el-icon-download w-3.5 text-sm"></i>
                           {{ $t('common.export') }}
                         </el-dropdown-item>
-                        <el-dropdown-item command="delete" class="!text-red-500 hover:!bg-red-50">
+                        <el-dropdown-item command="delete" :disabled="!showAuth.m_del" class="hover:bg-red-50!" :class="{ 'text-gray-300! cursor-not-allowed!': !showAuth.m_del, 'text-red-600!': showAuth.m_del }">
                           <i class="el-icon-delete w-3.5 text-sm"></i>
                           {{ $t('common.delete') }}
                         </el-dropdown-item>
@@ -172,6 +172,20 @@ const props = defineProps({
     default: () => ({
       page: 1,
       pageSize: 10,
+    }),
+  },
+  showAuth: {
+    type: Object,
+    default: () => ({
+      m_search: false,
+      m_add: false,
+      m_del: false,
+      m_updata: false,
+      m_import: false,
+      m_export: false,
+      m_upload: false,
+      m_audit: false,
+      m_print: false,
     }),
   },
 })

@@ -67,6 +67,7 @@ export default {
     empty: 'Empty',
     dash: '-',
     no_data: 'No manufacturer data loaded',
+    no_permission: 'You do not have permission to perform this action',
     pending: 'Pending',
     completed: 'Completed',
     please_select: 'Please select',

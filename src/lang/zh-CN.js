@@ -82,6 +82,7 @@ export default {
     delete_error: '删除数据异常',
     email: '邮箱',
     info: '取消删除操作',
+    no_permission: '您没有权限执行此操作',
     inputErrorMessage: '请输入Y/y',
     input_accou: '请输入账号',
     input_account_type: '请输入账号类型',

@@ -518,6 +518,7 @@ export default {
     modify_time: 'Lần sửa đổi cuối',
     modify_user: 'Người sửa đổi',
     no_data: 'Chưa có dữ liệu nhà sản xuất nào được tải',
+    no_permission: 'Bạn không có quyền thực hiện thao tác này',
     operation: 'Thao tác',
     oprConfirm: 'Xác nhận thao tác',
     pending: 'Đang chờ xử lý',
