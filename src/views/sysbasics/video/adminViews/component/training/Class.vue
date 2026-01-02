@@ -481,6 +481,7 @@ const isAdmin = computed(() => proxy.$store.getters.isAdmin)
 // Data
 const class_id = ref('')
 const train_id = ref('')
+const train_primary_id = ref('')
 
 const showObj = reactive({
   selectUser: false,
@@ -895,7 +896,8 @@ const getExamRecord = (data) => {
   proxy.$request(proxy.$api.videoServer + '/Video/VideoExam/getAnswerList', {
     ...examObj.recordQuery,
     class_id: class_id.value,
-    train_id: train_id.value
+    train_id: train_id.value,
+    train_primary_id: train_primary_id.value,
   }).then(r => {
     examObj.record = r.data.list
     examObj.recordTotal = r.data.total
@@ -986,6 +988,7 @@ const modifyClass = (data) => {
 
   class_id.value = data.id
   train_id.value = data.train_id
+  train_primary_id.value = data.train_primary_id
   showObj.modifyClass = true
 
   if (showObj.activeTabName == 'student') {

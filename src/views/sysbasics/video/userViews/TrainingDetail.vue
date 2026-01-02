@@ -352,9 +352,10 @@ export default {
 
     //跳转课程查看课程
     goToCourse(x) {
+      console.log(x)
       if (x.type == 'video') {
         let routeUrl = this.$router.resolve({
-          name: 'play',
+          name: 'videoPlay',
           query: {
             train_primary_id: this.train_primary_id,
             no_primary_train_id: this.no_primary_train_id,
@@ -388,6 +389,7 @@ export default {
 
     //查看考试记录
     getReplyRecord(i) {
+      console.log(i)
       this.currentExam = i
       this.$request(this.$api.videoServer + '/Video/VideoExam/getAnswerList', {
         questionnaire_id: i.questionnaire_id,
@@ -475,7 +477,8 @@ export default {
 
   mounted() {
     this.class_id = this.$route.query.class_id
-    this.getTrainingDetail(this.$route.query.train_primary_id)
+    console.log(this.$route.query)
+    this.getTrainingDetail(this.$route.query.id)
     this.getLearningStatus(this.class_id)
   },
 }
