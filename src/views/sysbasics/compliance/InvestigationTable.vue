@@ -6,7 +6,7 @@
         <i class="el-icon-document"></i>
       </div>
       <div class="text-base font-medium text-gray-600 mb-2">{{ c.table_empty }}</div>
-      <div class="text-sm text-gray-400">{{ c.no_data }}</div>
+      <div class="text-sm text-gray-400">{{ l.noData }}</div>
     </div>
 
     <!-- Table Content -->
@@ -335,7 +335,7 @@ import CustomDialog from '@/views/_common/CustomDialog.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 const { proxy } = getCurrentInstance()
-const { l, c } = useLocalI18n('InvestigationTable') // Assuming namespace
+const { l, c } = useLocalI18n('investigation_table') // Assuming namespace
 
 const props = defineProps({
   data: {
