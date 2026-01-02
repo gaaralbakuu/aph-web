@@ -20,7 +20,7 @@
                   {{currentQuestion.name_label}}
                 </div>
                 <div class="q_type">
-                  {{returnPublicObjLabel(currentQuestion.question_type,'value','label','question_type')}}({{currentQuestion.score}}{{$l.point}})
+                  {{returnPublicObjLabel(currentQuestion.question_type,'value','label','question_type')}}({{currentQuestion.score}}{{l.point}})
                 </div>
                 <div class="q_options-box">
                   <div v-if="currentQuestion.question_type===0">
@@ -43,20 +43,20 @@
                   </el-radio-group>
                 </div>
                 <div class="q_anwser" v-show="params.mode=='review'||params.mode=='read'">
-                  <div class="score">{{$l.yourScore}}： <span
+                  <div class="score">{{l.yourScore}}： <span
                       style="color: #409fee;">{{replyObj.questions[flagObj.currentIndex].real_score}}</span></div>
-                  <div class="anwser">{{$l.yourAnswer}}： <span
+                  <div class="anwser">{{l.yourAnswer}}： <span
                       style="color: #409fee;">{{replyObj.questions[flagObj.currentIndex].answer}}</span></div>
-                  <div class="anwser">{{$l.realAnswer}}： <span
+                  <div class="anwser">{{l.realAnswer}}： <span
                       style="color: #409fee;">{{replyObj.questions[flagObj.currentIndex].realAnswer}}</span></div>
                 </div>
 
                 <div class="q_score" v-if="params.mode=='read'">
-                  <div class="anwser">{{$l.modifyScore}}：
+                  <div class="anwser">{{l.modifyScore}}：
                     <span style="color: #409fee;"><el-input
                         v-model.number="modifyScoreObj.detail[flagObj.currentIndex].score"></el-input></span>
                   </div>
-                  <div class="anwser">{{$l.modifyRemark}}：
+                  <div class="anwser">{{l.modifyRemark}}：
                     <span style="color: #409fee;"><el-input
                         v-model="modifyScoreObj.detail[flagObj.currentIndex].remark"></el-input></span>
                   </div>
@@ -66,9 +66,9 @@
           </div>
           <div class="next">
             <el-button type="primary" plain :disabled='flagObj.currentIndex==0'
-              @click="flagObj.currentIndex--">{{$l.previousQuestion}}</el-button>
+              @click="flagObj.currentIndex--">{{l.previousQuestion}}</el-button>
             <el-button type="primary" :disabled='flagObj.currentIndex==(exam.questions.length-1)'
-              @click="flagObj.currentIndex++">{{$l.nextQuestion}}</el-button>
+              @click="flagObj.currentIndex++">{{l.nextQuestion}}</el-button>
           </div>
         </div>
 
@@ -77,12 +77,12 @@
             <div class="item">
               <div style="font-size: 26px;">{{params.score}}</div>
               <div>
-                <el-button type="success" plain>{{$l.qualified}}</el-button>
+                <el-button type="success" plain>{{l.qualified}}</el-button>
               </div>
             </div>
             <div class="item">
-              <div>{{$l.answerSheet}}</div>
-              <div>{{$l.examinee }}{{$l.examinee }}：{{user.userName}}</div>
+              <div>{{l.answerSheet}}</div>
+              <div>{{l.examinee }}：{{user.userName}}</div>
             </div>
           </div>
 
@@ -95,19 +95,19 @@
               </div>
             </div> -->
             <div class="item">
-              <div>{{$l.answerSheet}}</div>
-              <div>{{$l.examinee }}：{{user.userName}}</div>
+              <div>{{l.answerSheet}}</div>
+              <div>{{l.examinee }}：{{user.userName}}</div>
             </div>
           </div>
 
 
           <div class="examcard">
-            <div class="desc">-{{$l.totalQuestions}} {{exam.questions.length}} {{$l.totalQuestionsLast}}，{{$l.totalScore}} {{exam.total_score}} 分-</div>
+            <div class="desc">-{{l.totalQuestions}} {{exam.questions.length}} {{l.totalQuestionsLast}}，{{l.totalScore}} {{exam.total_score}} 分-</div>
             <div v-show="params.mode=='review'||params.mode=='read'">
               <div class="num">
-                <div class="num-item"><span>{{examNum.correct}}</span>{{$l.correct}}</div>
-                <div class="num-item"><span>{{examNum.error}}</span>{{$l.error}}</div>
-                <div class="num-item"><span>{{examNum.half}}</span>{{$l.half}}</div>
+                <div class="num-item"><span>{{examNum.correct}}</span>{{l.correct}}</div>
+                <div class="num-item"><span>{{examNum.error}}</span>{{l.error}}</div>
+                <div class="num-item"><span>{{examNum.half}}</span>{{l.half}}</div>
               </div>
               <div class="card">
                 <div class="num" @click="flagObj.currentIndex = index" v-for="(i,index) in replyObj.questions"
@@ -121,8 +121,8 @@
             </div>
             <div v-show="params.mode=='preview'||params.mode=='exam'">
               <div class="num">
-                <div class="num-item"><span>{{examNum.done}}</span>{{$l.done}}</div>
-                <div class="num-item"><span>{{examNum.todo}}</span>{{$l.todo}}</div>
+                <div class="num-item"><span>{{examNum.done}}</span>{{l.done}}</div>
+                <div class="num-item"><span>{{examNum.todo}}</span>{{l.todo}}</div>
               </div>
               <div class="card">
                 <div class="num" @click="flagObj.currentIndex = index" v-for="(i,index) in replyObj.questions"
@@ -159,393 +159,395 @@
     <div class="bottom">
       <div class="btn">
         <el-button type="primary" v-show="params.mode=='review'||params.mode=='preview'"
-          @click="closeTab">{{$l.close}}</el-button>
-        <el-button type="danger" v-show="params.mode=='read'" @click="submitModifyScore">{{$l.modifyScore}}</el-button>
+          @click="closeTab">{{l.close}}</el-button>
+        <el-button type="danger" v-show="params.mode=='read'" @click="submitModifyScore">{{l.modifyScore}}</el-button>
         <el-button type="primary" v-show="params.mode=='exam'" @click="submitQuestionnaire"
-          :disabled="examNum.todo>0||flagObj.submitted">{{$l.submit}}</el-button>
+          :disabled="examNum.todo>0||flagObj.submitted">{{l.submit}}</el-button>
       </div>
     </div>
   </div>
 
 </template>
 
-<script>
-  import {
-    mapGetters
-  } from 'vuex'
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import api from "@/api/index.js"
 
-  import api from "@/api/index.js"
-  export default {
-    name: 'videoUserExamDetail',
-    data() {
-      return {
-        api: api,
-        modifyScoreObj: {
-          reply_id: "",
-          questionnaire_id: "",
-          detail: [{
-            score: ''
-          }]
-        },
-        params: {
-          class_id:'',
-          exam_id: '', //必要参数
-          train_id:"",
-          course_id:'',
-          questionnaire_id: '',
-          reply_id: '',
-          mode: '',
-          score: 0
-        },
-        flagObj: {
-          currentIndex: 0,
-          submitted:false
-        },
-        publicCodeObj: {
-          question_type: [{
-              label: this.$l.fillIn,
-              value: 0
-            },
-            {
-              label: this.$l.radio,
-              value: 1
-            },
-            {
-              label: this.$l.checkbox,
-              value: 2
-            },
-            {
-              label: this.$l.judge,
-              value: 3
-            }
-          ],
-          question_status: [{
-              label: this.$l.unpublished,
-              value: 0
-            },
-            {
-              label: this.$l.published,
-              value: 1
-            }
-          ]
-        },
-        activeNames: '',
-        exam: {
-          total_score: 0,
-          name_label: '',
-          questions: [{
-            name_label: '',
-          }]
-        },
-        replyObj: {
-          exam_id: "",
-          train_id:"",
-          course_id:"",
-          questionnaire_id: "",
-          class_id:"",
-          questions: [{
-            id: "",
-            question_id: "",
-            questionnaire_id: "",
-            score: "",
-            options: [{
-              id: '',
-              question_id: '',
-              value: ''
-            }],
-            check: '',
-            answer: '',
-            realAnswer: ''
-          }]
-        },
-        examNum: {
-          done: 0,
-          todo: 0,
-          correct: 0,
-          error: 0,
-          half: 0
-        }
-      }
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('videoUserExamDetail')
+
+const modifyScoreObj = reactive({
+  reply_id: "",
+  questionnaire_id: "",
+  detail: [{
+    score: ''
+  }]
+})
+
+const params = reactive({
+  class_id:'',
+  exam_id: '',
+  train_id:"",
+  course_id:'',
+  questionnaire_id: '',
+  reply_id: '',
+  mode: '',
+  score: 0
+})
+
+const flagObj = reactive({
+  currentIndex: 0,
+  submitted:false
+})
+
+const activeNames = ref('')
+
+const exam = reactive({
+  total_score: 0,
+  name_label: '',
+  questions: [{
+    name_label: '',
+  }]
+})
+
+const replyObj = reactive({
+  exam_id: "",
+  train_id:"",
+  course_id:"",
+  questionnaire_id: "",
+  class_id:"",
+  questions: [{
+    id: "",
+    question_id: "",
+    questionnaire_id: "",
+    score: "",
+    options: [{
+      id: '',
+      question_id: '',
+      value: ''
+    }],
+    check: '',
+    answer: '',
+    realAnswer: ''
+  }]
+})
+
+const examNum = reactive({
+  done: 0,
+  todo: 0,
+  correct: 0,
+  error: 0,
+  half: 0
+})
+
+const publicCodeObj = computed(() => ({
+  question_type: [{
+      label: l.value.fillIn,
+      value: 0
     },
-    computed: {
-      ...mapGetters(['user']),
-      currentQuestion() {
-        //计算出当前作答的题目，方便页面展示和方法操作
-        return this.exam.questions[this.flagObj.currentIndex]
-      },
+    {
+      label: l.value.radio,
+      value: 1
     },
-    methods: {
-      closeTab() {
-        this.$confirm(this.$l.closeTab, this.$l.prompt, {
-          confirmButtonText: this.$l.close,
-          cancelButtonText: this.$c.cancel,
-          type: 'warning'
-        }).then(() => {
-          window.close()
-        }).catch(() => {
-
-        });
-      },
-
-      fillinChange(text) {
-        if (text !== '') {
-          this.replyObj.questions[this.flagObj.currentIndex].options = [{
-            id: this.currentQuestion.options[0].id,
-            question_id: this.currentQuestion.question_id,
-            value: text
-          }]
-        } else {
-          this.replyObj.questions[this.flagObj.currentIndex].options = []
-        }
-        this.returnExamNum()
-      },
-
-      //将用户作答的选项根据结果回填replyObj的questions数组对应元素中
-      checkBoxChange(array) {
-        let options = []
-        array.forEach(v => {
-          let selectedOption = this.currentQuestion.options.find(i => i.id == v)
-          options.push({
-            id: selectedOption.id,
-            question_id: selectedOption.pid,
-            value: selectedOption.id
-          })
-        })
-        this.replyObj.questions[this.flagObj.currentIndex].options = options
-        this.returnExamNum()
-      },
-
-      //将用户作答的选项根据结果回填replyObj的questions数组对应元素中
-      radioChange(v) {
-        let selectedOption = this.currentQuestion.options.find(i => i.id == v)
-        this.replyObj.questions[this.flagObj.currentIndex].options = [{
-          id: selectedOption.id,
-          question_id: selectedOption.pid,
-          value: selectedOption.id
-        }]
-        this.returnExamNum()
-      },
-
-      returnExamNum() {
-        let done = 0
-        let todo = 0
-        this.replyObj.questions.forEach(i => {
-          if (i.check.length > 0) {
-            done++
-          } else {
-            todo++
-          }
-        })
-        this.examNum = {
-          done,
-          todo
-        }
-      },
-
-      //返回label
-      returnPublicObjLabel(inputValue, key, outputValue, filed) {
-        let item = this.publicCodeObj[filed].find(i => {
-          return i[key] == inputValue
-        })
-        if (item) {
-          return item[outputValue]
-        } else {
-          return inputValue
-        }
-      },
-
-      //获取试卷题目并设置回传后端的replyObj结构
-      getQuestionnaire(qid) {
-        this.$request(this.api.baseUrl + '/Video/VideoExam/getQuestionnaire', {
-            id: qid
-          }, 'post')
-          .then(r => {
-
-            let replyObj = {
-              exam_id: this.params.exam_id,
-              train_id:this.params.train_id,
-              course_primary_id:this.params.course_id,
-              questionnaire_id: qid,
-              class_id:this.params.class_id,
-              questions: []
-            }
-            let total_score = 0
-            r.data.questions.forEach(i => {
-              total_score += i.score
-
-              if (i.question_type == 2) {
-                replyObj.questions.push({
-                  id: i.id,
-                  question_id: i.question_id,
-                  questionnaire_id: i.questionnaire_id,
-                  score: i.score,
-                  options: [],
-                  check: []
-                })
-              } else {
-                replyObj.questions.push({
-                  id: i.id,
-                  question_id: i.question_id,
-                  questionnaire_id: i.questionnaire_id,
-                  score: i.score,
-                  options: [],
-                  check: ''
-                })
-              }
-            })
-            this.replyObj = replyObj
-            this.exam = r.data
-            this.exam.total_score = total_score
-            this.returnExamNum()
-          })
-      },
-
-      submitQuestionnaire() {
-        if (this.examNum.todo > 0) {
-          return this.$message.error(`${this.$l.stillHave}${this.examNum.todo}${this.$l.toSubmit}`)
-        }
-        this.$request(this.api.baseUrl + '/Video/VideoExam/ReplyQuestionnaire', this.replyObj, 'post')
-          .then(r => {
-            if (r.httpCode == 200) {
-              this.$message({
-                type: 'success',
-                message: this.$l.submissionSuccess
-              })
-              this.flagObj.submitted = true
-            }
-          })
-      },
-
-      submitModifyScore() {
-        let postData = {
-          reply_id: this.params.reply_id,
-          questionnaire_id: this.params.questionnaire_id,
-          detail: this.modifyScoreObj.detail.filter(i => i.score !== '')
-        }
-        if (postData.length == 0) {
-          return this.$message.error(this.$l.plsInputSCore)
-        }
-        this.$request(this.$api.videoServer + "/Video/VideoExam/modifyScore", postData, 'post')
-          .then(r => {
-            if (r.httpCode == 200) {
-              this.$message({
-                type: 'success',
-                message: this.$l.modifySucceess
-              })
-            }
-            console.log(r);
-          })
-
-      },
-
-      getAnswerDetail(reply_id) {
-        this.$request(this.$api.videoServer + '/Video/VideoExam/getAnswerDetail?reply_id=' + reply_id)
-          .then(r => {
-            let correct = 0
-            let error = 0
-            let half = 0
-            let total_score = 0
-            let totalRealScore = 0
-            let replyObj = {
-              questionnaire_id: this.params.questionnaire_id,
-              questions: []
-            }
-            let modifyScoreObj = {
-              reply_id: reply_id,
-              questionnaire_id: this.params.questionnaire_id,
-              detail: []
-            }
-            r.data.questions.forEach(i => {
-              total_score += i.score
-              totalRealScore += i.real_score
-
-
-              modifyScoreObj.detail.push({
-                question_id: i.question_id,
-                score: "",
-                remark: ""
-              })
-              if (i.real_score == i.score) {
-                correct++
-              } else if (i.real_score == 0) {
-                error++
-              } else {
-                half++
-              }
-              if (i.question_type == 0) {
-                let selected = i.options[0].value
-                let realAnswer = this.$l.noStandardAnswer
-                replyObj.questions.push({
-                  id: i.id,
-                  score: i.score,
-                  real_score: i.real_score,
-                  check: selected,
-                  answer: selected,
-                  realAnswer: realAnswer
-                })
-              } else if (i.question_type == 2) {
-                let selected = []
-                let answer = []
-                let realAnswer = []
-                i.options.forEach(o => {
-                  if (o.value == o.id) {
-                    selected.push(o.value)
-                    answer.push(o.name_label)
-                  }
-                  if (o.is_correct) {
-                    realAnswer.push(o.name_label)
-                  }
-                })
-                replyObj.questions.push({
-                  id: i.id,
-                  score: i.score,
-                  real_score: i.real_score,
-                  check: selected,
-                  answer: answer,
-                  realAnswer: realAnswer
-                })
-              } else if (i.question_type == 1 || i.question_type == 3) {
-                let selected = i.options.find(o => {
-                  return o.value == o.id
-                })
-                let realAnswer = i.options.find(o => {
-                  return o.is_correct == true
-                }).name_label
-                replyObj.questions.push({
-                  id: i.id,
-                  score: i.score,
-                  real_score: i.real_score,
-                  check: selected ? selected.value : '',
-                  answer: selected ? selected.name_label : '',
-                  realAnswer: realAnswer
-                })
-              }
-            })
-            this.params.score = totalRealScore
-            this.modifyScoreObj = modifyScoreObj
-            this.replyObj = replyObj
-            this.exam = r.data
-            this.exam.total_score = total_score
-            this.examNum.correct = correct
-            this.examNum.error = error
-            this.examNum.half = half
-          })
-      }
+    {
+      label: l.value.checkbox,
+      value: 2
     },
-    mounted() {
-      if (this.$route.params.questionnaire_id) {
-        this.params = Object.assign(this.params,this.$route.params)
-      } else {
-        this.params = Object.assign(this.params,this.$route.query)
-      }
-
-      if (this.params.mode == 'exam' || this.params.mode == 'preview') {
-        this.getQuestionnaire(this.params.questionnaire_id)
-      } else {
-        this.getAnswerDetail(this.params.reply_id)
-      }
+    {
+      label: l.value.judge,
+      value: 3
     }
+  ],
+  question_status: [{
+      label: l.value.unpublished,
+      value: 0
+    },
+    {
+      label: l.value.published,
+      value: 1
+    }
+  ]
+}))
+
+const user = computed(() => proxy.$store.getters['user'])
+
+const currentQuestion = computed(() => {
+  if (!exam.questions || exam.questions.length === 0) return {}
+  return exam.questions[flagObj.currentIndex] || {}
+})
+
+const closeTab = () => {
+  proxy.$confirm(l.value.closeTab, l.value.prompt, {
+    confirmButtonText: l.value.close,
+    cancelButtonText: c.value.cancel,
+    type: 'warning'
+  }).then(() => {
+    window.close()
+  }).catch(() => {
+
+  });
+}
+
+const returnExamNum = () => {
+  let done = 0
+  let todo = 0
+  replyObj.questions.forEach(i => {
+    if (i.check && i.check.length > 0) {
+      done++
+    } else {
+      todo++
+    }
+  })
+  examNum.done = done
+  examNum.todo = todo
+}
+
+const fillinChange = (text) => {
+  if (text !== '') {
+    replyObj.questions[flagObj.currentIndex].options = [{
+      id: currentQuestion.value.options[0].id,
+      question_id: currentQuestion.value.question_id,
+      value: text
+    }]
+  } else {
+    replyObj.questions[flagObj.currentIndex].options = []
   }
+  returnExamNum()
+}
+
+const checkBoxChange = (array) => {
+  let options = []
+  array.forEach(v => {
+    let selectedOption = currentQuestion.value.options.find(i => i.id == v)
+    if (selectedOption) {
+      options.push({
+        id: selectedOption.id,
+        question_id: selectedOption.pid,
+        value: selectedOption.id
+      })
+    }
+  })
+  replyObj.questions[flagObj.currentIndex].options = options
+  returnExamNum()
+}
+
+const radioChange = (v) => {
+  let selectedOption = currentQuestion.value.options.find(i => i.id == v)
+  if (selectedOption) {
+      replyObj.questions[flagObj.currentIndex].options = [{
+      id: selectedOption.id,
+      question_id: selectedOption.pid,
+      value: selectedOption.id
+    }]
+  }
+  returnExamNum()
+}
+
+const returnPublicObjLabel = (inputValue, key, outputValue, filed) => {
+  if (!publicCodeObj.value[filed]) return inputValue
+  let item = publicCodeObj.value[filed].find(i => {
+    return i[key] == inputValue
+  })
+  if (item) {
+    return item[outputValue]
+  } else {
+    return inputValue
+  }
+}
+
+const getQuestionnaire = (qid) => {
+  proxy.$request(api.baseUrl + '/Video/VideoExam/getQuestionnaire', {
+      id: qid
+    }, 'post')
+    .then(r => {
+
+      let newReplyObj = {
+        exam_id: params.exam_id,
+        train_id:params.train_id,
+        course_primary_id:params.course_id,
+        questionnaire_id: qid,
+        class_id:params.class_id,
+        questions: []
+      }
+      let total_score = 0
+      r.data.questions.forEach(i => {
+        total_score += i.score
+
+        if (i.question_type == 2) {
+          newReplyObj.questions.push({
+            id: i.id,
+            question_id: i.question_id,
+            questionnaire_id: i.questionnaire_id,
+            score: i.score,
+            options: [],
+            check: []
+          })
+        } else {
+          newReplyObj.questions.push({
+            id: i.id,
+            question_id: i.question_id,
+            questionnaire_id: i.questionnaire_id,
+            score: i.score,
+            options: [],
+            check: ''
+          })
+        }
+      })
+
+      Object.assign(replyObj, newReplyObj)
+      Object.assign(exam, r.data)
+      exam.total_score = total_score
+      returnExamNum()
+    })
+}
+
+const submitQuestionnaire = () => {
+  if (examNum.todo > 0) {
+    return proxy.$message.error(`${l.value.stillHave}${examNum.todo}${l.value.toSubmit}`)
+  }
+  proxy.$request(api.baseUrl + '/Video/VideoExam/ReplyQuestionnaire', replyObj, 'post')
+    .then(r => {
+      if (r.httpCode == 200) {
+        proxy.$message({
+          type: 'success',
+          message: l.value.submissionSuccess
+        })
+        flagObj.submitted = true
+      }
+    })
+}
+
+const submitModifyScore = () => {
+  let postData = {
+    reply_id: params.reply_id,
+    questionnaire_id: params.questionnaire_id,
+    detail: modifyScoreObj.detail.filter(i => i.score !== '')
+  }
+  if (postData.length == 0) {
+    return proxy.$message.error(l.value.plsInputSCore)
+  }
+  proxy.$request(proxy.$api.videoServer + "/Video/VideoExam/modifyScore", postData, 'post')
+    .then(r => {
+      if (r.httpCode == 200) {
+        proxy.$message({
+          type: 'success',
+          message: l.value.modifySucceess
+        })
+      }
+      console.log(r);
+    })
+}
+
+const getAnswerDetail = (reply_id) => {
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoExam/getAnswerDetail?reply_id=' + reply_id)
+    .then(r => {
+      let correct = 0
+      let error = 0
+      let half = 0
+      let total_score = 0
+      let totalRealScore = 0
+      let newReplyObj = {
+        questionnaire_id: params.questionnaire_id,
+        questions: []
+      }
+      let newModifyScoreObj = {
+        reply_id: reply_id,
+        questionnaire_id: params.questionnaire_id,
+        detail: []
+      }
+      r.data.questions.forEach(i => {
+        total_score += i.score
+        totalRealScore += i.real_score
+
+
+        newModifyScoreObj.detail.push({
+          question_id: i.question_id,
+          score: "",
+          remark: ""
+        })
+        if (i.real_score == i.score) {
+          correct++
+        } else if (i.real_score == 0) {
+          error++
+        } else {
+          half++
+        }
+        if (i.question_type == 0) {
+          let selected = i.options[0].value
+          let realAnswer = l.value.noStandardAnswer
+          newReplyObj.questions.push({
+            id: i.id,
+            score: i.score,
+            real_score: i.real_score,
+            check: selected,
+            answer: selected,
+            realAnswer: realAnswer
+          })
+        } else if (i.question_type == 2) {
+          let selected = []
+          let answer = []
+          let realAnswer = []
+          i.options.forEach(o => {
+            if (o.value == o.id) {
+              selected.push(o.value)
+              answer.push(o.name_label)
+            }
+            if (o.is_correct) {
+              realAnswer.push(o.name_label)
+            }
+          })
+          newReplyObj.questions.push({
+            id: i.id,
+            score: i.score,
+            real_score: i.real_score,
+            check: selected,
+            answer: answer,
+            realAnswer: realAnswer
+          })
+        } else if (i.question_type == 1 || i.question_type == 3) {
+          let selected = i.options.find(o => {
+            return o.value == o.id
+          })
+          let realAnswer = i.options.find(o => {
+            return o.is_correct == true
+          }).name_label
+          newReplyObj.questions.push({
+            id: i.id,
+            score: i.score,
+            real_score: i.real_score,
+            check: selected ? selected.value : '',
+            answer: selected ? selected.name_label : '',
+            realAnswer: realAnswer
+          })
+        }
+      })
+      params.score = totalRealScore
+
+      Object.assign(modifyScoreObj, newModifyScoreObj)
+      Object.assign(replyObj, newReplyObj)
+
+      Object.assign(exam, r.data)
+      exam.total_score = total_score
+      examNum.correct = correct
+      examNum.error = error
+      examNum.half = half
+    })
+}
+
+onMounted(() => {
+  if (proxy.$route.params.questionnaire_id) {
+    Object.assign(params, proxy.$route.params)
+  } else {
+    Object.assign(params, proxy.$route.query)
+  }
+
+  if (params.mode == 'exam' || params.mode == 'preview') {
+    getQuestionnaire(params.questionnaire_id)
+  } else {
+    getAnswerDetail(params.reply_id)
+  }
+})
 </script>
 
 <style scoped>
