@@ -149,7 +149,7 @@
 import { reactive, ref, computed, onMounted, getCurrentInstance, watch } from 'vue'
 import { arrayToObject, dateTools } from '@/utils'
 import { _, api, initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common'
-import chooseUser from '@/views/_common/ChooseUser.vue'
+import chooseUser from './components/UserDrawer.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 const { proxy } = getCurrentInstance()
@@ -543,6 +543,9 @@ const addUserClick = () => {
 const submmitAddUser = () => {
   if (addUsers.value.length == 0) return proxy.$message.error(l.value.addUserIsEmpty)
   submitAddUserLoading.value = true
+
+  // The new UserDrawer returns an array of user IDs directly in addUsers.value
+  // No need to split string
   proxy
     .$request(
       apiRole + 'batchadduser/',
