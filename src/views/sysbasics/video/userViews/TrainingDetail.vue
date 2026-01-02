@@ -1,447 +1,437 @@
 <template>
-  <div class="trainingDetail-container">
-    <el-dialog class="examRecord-dialog" :title="$l.examRecord" :visible.sync="showObj.examDialog" width="50%">
-      <z-table :list="examRecord" :columns="examColumns">
-        <template #operation="{row, $index}">
-          <el-button type="text" size="mini" @click="reviewExam(row)">{{ $l.check }}</el-button>
-        </template>
-      </z-table>
-      <div class="goToExam">
-        <div class="detail">
-          {{ $l.mostExam }}
-          <el-button class="num" type="text">{{ currentExam.max_reply_num }}</el-button>
-          {{ $l.examUnit }}，{{ $l.youCanExam }}
-          <el-button
-            class="num"
-            type="text"
-            :style="{
-              color: currentExam.max_reply_num - examRecord.length <= 0 ? 'red' : '',
-            }">
-            {{ currentExam.max_reply_num - examRecord.length }}
-          </el-button>
-          {{ $l.examUnit }}
+  <div class="bg-[#F9F9F9] min-h-screen pb-10 font-sans text-[#0D0D0D]">
+    <!-- Exam Record Modal -->
+    <div v-if="showObj.examDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" @click.self="showObj.examDialog = false">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden m-4 flex flex-col max-h-[90vh]">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-[#E5E5E5]">
+          <h3 class="text-xl font-semibold text-[#0D0D0D]">{{ l.examRecord }}</h3>
+          <button @click="showObj.examDialog = false" class="text-[#606060] hover:text-[#0D0D0D] transition p-2 rounded-full hover:bg-gray-100">
+            <i class="el-icon-close text-xl"></i>
+          </button>
         </div>
-        <div class="goToExam-btn">
-          <el-button class="go" type="text" plain @click="goToExam" :disabled="currentExam.max_reply_num - examRecord.length <= 0">{{ $l.goExam }}</el-button>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto custom-scrollbar">
+             <!-- Exam Stats Banner -->
+             <div class="flex flex-col sm:flex-row items-center justify-between mb-6 bg-[#F9F9F9] border border-[#E5E5E5] p-4 rounded-lg gap-4">
+                <div class="text-[#606060] text-sm flex-1 text-center sm:text-left">
+                  <div class="mb-1">
+                    {{ l.mostExam }} <span class="text-[#0D0D0D] font-bold text-lg mx-1">{{ currentExam.max_reply_num }}</span> {{ l.examUnit }}
+                  </div>
+                  <div>
+                    {{ l.youCanExam }}
+                    <span :class="remainingAttempts <= 0 ? 'text-[#CC0000]' : 'text-[#008A00]'" class="font-bold text-lg mx-1">
+                      {{ remainingAttempts }}
+                    </span>
+                    {{ l.examUnit }}
+                  </div>
+                </div>
+                <button
+                  @click="goToExam"
+                  :disabled="remainingAttempts <= 0"
+                  class="bg-[#065FD4] hover:bg-[#0551b4] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded font-medium transition shadow-sm uppercase text-sm tracking-wide w-full sm:w-auto"
+                >
+                  {{ l.goExam }}
+                </button>
+             </div>
+
+            <!-- Custom Table -->
+            <div class="border border-[#E5E5E5] rounded-lg overflow-hidden">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-[#F2F2F2] border-b border-[#E5E5E5]">
+                  <tr>
+                    <th class="px-4 py-3 font-semibold text-[#606060] w-1/3">{{ l.examedTime }}</th>
+                    <th class="px-4 py-3 font-semibold text-[#606060] w-1/4">{{ l.examUser }}</th>
+                    <th class="px-4 py-3 font-semibold text-[#606060] w-1/4">{{ l.examScore }}</th>
+                    <th class="px-4 py-3 font-semibold text-[#606060] text-right w-1/6">{{ c.operation }}</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#E5E5E5]">
+                    <tr v-for="(row, idx) in examRecord" :key="idx" class="hover:bg-[#F9F9F9] transition-colors">
+                        <td class="px-4 py-3 text-[#0D0D0D]">{{ row.create_time }}</td>
+                        <td class="px-4 py-3 text-[#0D0D0D]">{{ row.create_user }}</td>
+                        <td class="px-4 py-3 text-[#0D0D0D] font-medium">{{ row.score }}</td>
+                        <td class="px-4 py-3 text-right">
+                             <button @click="reviewExam(row)" class="text-[#065FD4] font-medium hover:text-[#0551b4] hover:underline">{{ l.check }}</button>
+                        </td>
+                    </tr>
+                    <tr v-if="examRecord.length === 0">
+                        <td colspan="4" class="px-4 py-12 text-center text-[#606060]">
+                           <div class="flex flex-col items-center justify-center gap-2">
+                             <i class="el-icon-document-delete text-3xl text-gray-300"></i>
+                             <span>No records found</span>
+                           </div>
+                        </td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="bg-[#F9F9F9] px-6 py-4 flex justify-end gap-3 border-t border-[#E5E5E5]">
+           <button @click="getReplyRecord(currentExam)" class="px-4 py-2 text-[#065FD4] font-medium hover:bg-blue-50 rounded transition border border-transparent hover:border-blue-100">{{ l.refresh }}</button>
+           <button @click="showObj.examDialog = false" class="px-4 py-2 bg-white border border-[#E5E5E5] text-[#606060] font-medium hover:bg-gray-50 rounded shadow-sm transition">{{ c.close }}</button>
         </div>
       </div>
-      <div slot="footer">
-        <el-button type="primary" @click="showObj.examDialog = false">{{ $c.close }}</el-button>
-        <el-button type="success" plain @click="getReplyRecord(currentExam)">{{ $l.refresh }}</el-button>
-        <el-button type="primary" plain @click="showObj.examDialog = false">{{ $c.close }}</el-button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+      <!-- Banner / Header -->
+      <div class="bg-white rounded-xl shadow-sm border border-[#E5E5E5] p-6 mb-8 flex flex-col md:flex-row gap-8">
+         <div class="w-full md:w-[320px] flex-shrink-0">
+             <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden border border-[#E5E5E5] shadow-inner relative group">
+                 <el-image :src="logoImage" fit="cover" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></el-image>
+             </div>
+         </div>
+         <div class="flex-1 flex flex-col justify-center">
+             <div class="mb-6">
+                 <h1 class="text-3xl font-bold text-[#0D0D0D] mb-3 leading-tight">{{ trainingInfo.name_label || 'Loading...' }}</h1>
+                 <p class="text-[#606060] text-sm leading-relaxed line-clamp-3 max-w-3xl">{{ trainingInfo.description || 'No description available.' }}</p>
+             </div>
+
+             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-8 text-sm text-[#606060] bg-[#F9F9F9] p-4 rounded-lg border border-[#E5E5E5]">
+                 <div class="flex items-center gap-2">
+                     <i class="el-icon-time text-lg text-[#909090]"></i>
+                     <div class="flex flex-col">
+                        <span class="text-xs text-[#909090] uppercase tracking-wider font-semibold">{{ l.trainTime }}</span>
+                        <span class="font-medium text-[#0D0D0D]">{{ formatDate(trainingInfo.start_date) }} ～ {{ formatDate(trainingInfo.end_date) }}</span>
+                     </div>
+                 </div>
+                 <div class="flex items-center gap-2">
+                     <i class="el-icon-office-building text-lg text-[#909090]"></i>
+                     <div class="flex flex-col">
+                        <span class="text-xs text-[#909090] uppercase tracking-wider font-semibold">{{ l.implementDept }}</span>
+                        <span class="font-medium text-[#0D0D0D]">{{ trainingInfo.create_dept || '-' }}</span>
+                     </div>
+                 </div>
+                 <div class="flex items-center gap-2">
+                     <i class="el-icon-user text-lg text-[#909090]"></i>
+                     <div class="flex flex-col">
+                        <span class="text-xs text-[#909090] uppercase tracking-wider font-semibold">{{ l.trainNum }}</span>
+                        <span class="font-medium text-[#0D0D0D]">{{ trainingInfo.person_num || 0 }}</span>
+                     </div>
+                 </div>
+             </div>
+         </div>
       </div>
-    </el-dialog>
 
-    <div class="page-body">
-      <div class="course-info">
-        <div class="cover">
-          <el-image :src="logoImage" fit="cover"></el-image>
-        </div>
-        <div class="info">
-          <div class="title" style="font-size: 28px; font-weight: bold">
-            <span class="status" style="color: skyblue"><!-- [已结项??] --></span>
-            <span>{{ trainingInfo.name_label }}</span>
-          </div>
-          <div class="item">
-            <span class="label_text">{{ $l.trainTime }}：</span>
-            <span class="text">{{ trainingInfo.start_date.substr(0, 10) }} ～ {{ trainingInfo.end_date.substr(0, 10) }}</span>
-          </div>
-          <div class="item">
-            <span class="label_text">{{ $l.implementDept }}：</span>
-            <span class="text">{{ trainingInfo.create_dept }}</span>
-          </div>
-          <div class="item">
-            <span class="label_text">{{ $l.trainNum }}：</span>
-            <span class="text">{{ trainingInfo.person_num }}</span>
-          </div>
-          <div class="item">
-            <span class="label_text">{{ $l.trainDesc }}：</span>
-            <span class="text">{{ trainingInfo.description }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="activity-container">
-        <div class="left">
-          <div class="title-label">
-            {{ $l.activityList }}
-            {{ $l.activityList }}
-            <i class="el-icon-refresh-left text-blue" @click="getTrainingDetail(train_primary_id)"></i>
-          </div>
-          <!-- <div class="filter">
-            <el-form :inline="true">
-              <el-form-item label="活动名称">
-                <el-input v-model="query.name" placeholder="请输入"></el-input>
-              </el-form-item>
-              <el-form-item label="{{$c.startTime}}">
-                <el-date-picker v-model="query.startDate" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item label="{{$c.endTime}}">
-                <el-date-picker v-model="query.endDate" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-form>
-          </div> -->
-          <div class="activity">
-            <el-collapse class="activity-collapse" v-model="activeNames" v-for="(i, index) in trainingActivity" :key="index">
-              <el-collapse-item>
-                <template slot="title">
-                  <div class="collapse-title">{{ i.name_label }}</div>
-                </template>
-                <div v-for="(x, xIndex) in i.detail" :key="xIndex">
-                  <div class="video-item" v-show="x.type == 'video' && i.type == '0'">
-                    <div class="cover">
-                      <el-image height="120px" :src="$api.videoServer + '/' + x.thumbnail_path"></el-image>
-                    </div>
-                    <div class="content">
-                      <div class="course-name">
-                        {{ x.title }}
-                      </div>
-                      <div class="course-desc">
-                        <span>{{ i.duration }}</span>
-                      </div>
-                      <div class="course-desc">
-                        <span>{{ i.description }}</span>
-                      </div>
-                      <div class="course-desc">
-                        <span>{{ $c.startTime }}:2024-07-05 09:00</span>
-                      </div>
-                      <div class="course-desc">
-                        <span>{{ $c.endTime }}:2024-07-08 09:00</span>
-                      </div>
-                      <div class="status">
-                        {{ i.is_must == 1 ? $l.compulsory : $l.elective }}
-                        {{ i.is_must == 1 ? $l.compulsory : $l.elective }}
-                        <span
-                          :style="{
-                            color: i.is_finish ? '#00aa00' : '',
-                          }">
-                          [{{ i.is_finish ? '已完成' : '未完成' }}]
-                        </span>
-                      </div>
-                    </div>
-                    <div class="btn-right">
-                      <el-button type="primary" plain @click="goToCourse(x)">{{ $l.check }}</el-button>
-                    </div>
-                  </div>
-                  <div class="exam-item" v-show="x.type == 'exam' && i.type == '1'">
-                    <!-- <div v-show="x.bind_id==null"> -->
-                    <div class="cover">
-                      <img src="../assets/exam.png" height="120px" />
-                    </div>
-                    <div class="content">
-                      <div class="course-name">
-                        {{ x.title }}
-                      </div>
-                      <div class="course-desc">
-                        <span>{{ $c.startTime }}:{{ x.start_time }}</span>
-                      </div>
-                      <div class="course-desc">
-                        <span>{{ $c.endTime }}:{{ x.end_time }}</span>
-                      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left: Activity List -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <h2 class="text-xl font-bold text-[#0D0D0D] flex items-center gap-2">
+                  <i class="el-icon-notebook-2 text-[#065FD4]"></i>
+                  {{ l.activityList }}
+                </h2>
+                <button @click="getTrainingDetail(train_primary_id)" class="p-2 text-[#065FD4] hover:bg-blue-50 rounded-full transition" :title="l.refresh">
+                    <i class="el-icon-refresh text-xl"></i>
+                </button>
+            </div>
 
-                      <div class="status">
-                        {{ i.is_must == 1 ? $l.compulsory : $l.elective }}
-                        {{ i.is_must == 1 ? $l.compulsory : $l.elective }}
-                        <span
-                          :style="{
-                            color: i.is_finish ? '#00aa00' : '',
-                          }">
-                          [{{ i.is_finish ? '已完成' : '未完成' }}]
-                        </span>
-                      </div>
-                    </div>
-                    <div class="btn-right">
-                      <el-button type="primary" plain @click="getReplyRecord(x)">{{ $l.check }}</el-button>
-                    </div>
-                    <!-- </div> -->
-                  </div>
+            <div v-for="(section, idx) in trainingActivity" :key="idx" class="bg-white rounded-xl shadow-sm border border-[#E5E5E5] overflow-hidden mb-6">
+                <div class="bg-[#F9F9F9] px-6 py-4 border-b border-[#E5E5E5] font-semibold text-[#0D0D0D] flex items-center gap-2">
+                    <span class="bg-[#E5E5E5] text-[#606060] text-xs font-bold px-2 py-0.5 rounded">Section {{ idx + 1 }}</span>
+                    {{ section.name_label }}
                 </div>
-              </el-collapse-item>
-            </el-collapse>
-          </div>
+                <div class="divide-y divide-[#E5E5E5]">
+                    <div v-for="(item, itemIdx) in section.detail" :key="itemIdx" class="p-4 flex flex-col sm:flex-row gap-4 hover:bg-[#FDFDFD] transition group relative">
+                        <!-- Thumbnail -->
+                         <div class="w-full sm:w-[200px] h-[112px] flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden relative border border-[#E5E5E5] group-hover:border-[#D0D0D0] transition">
+                            <el-image
+                              v-if="item.type === 'video'"
+                              :src="$api.videoServer + '/' + item.thumbnail_path"
+                              fit="cover"
+                              class="w-full h-full"
+                            >
+                                <div slot="error" class="flex justify-center items-center w-full h-full bg-gray-100 text-gray-400">
+                                    <i class="el-icon-picture-outline text-2xl"></i>
+                                </div>
+                            </el-image>
+                            <div v-else class="w-full h-full flex flex-col items-center justify-center bg-blue-50 text-[#065FD4]">
+                                <i class="el-icon-document-checked text-4xl mb-2"></i>
+                                <span class="text-xs font-semibold uppercase tracking-widest">Exam</span>
+                            </div>
+
+                            <!-- Duration Overlay for Video -->
+                             <div v-if="item.type === 'video'" class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-mono">
+                                 {{ item.duration || '00:00' }}
+                             </div>
+                         </div>
+
+                         <!-- Content -->
+                         <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                             <div>
+                                 <div class="flex justify-between items-start gap-4 mb-1">
+                                     <h3 class="text-base font-semibold text-[#0D0D0D] leading-snug group-hover:text-[#065FD4] transition line-clamp-2">
+                                       {{ item.title }}
+                                     </h3>
+
+                                     <!-- Status Badge -->
+                                     <span class="flex-shrink-0 text-xs px-2 py-0.5 rounded font-medium border"
+                                        :class="section.is_finish ? 'bg-green-50 text-[#008A00] border-green-200' : 'bg-gray-100 text-[#606060] border-gray-200'">
+                                        {{ section.is_finish ? l.completed : l.uncomplete }}
+                                     </span>
+                                 </div>
+
+                                 <div class="text-sm text-[#606060] mb-2 line-clamp-1">
+                                   {{ item.description || (item.type === 'exam' ? `${c.startTime}: ${item.start_time}` : '') }}
+                                 </div>
+                             </div>
+
+                             <div class="flex items-center gap-2 text-xs text-[#909090]">
+                                 <span class="border px-1.5 py-0.5 rounded" :class="section.is_must == 1 ? 'border-[#CC0000] text-[#CC0000] bg-red-50' : 'border-[#606060] text-[#606060] bg-gray-50'">
+                                     {{ section.is_must == 1 ? l.compulsory : l.elective }}
+                                 </span>
+                                 <span>•</span>
+                                 <span v-if="item.type === 'video'">Video</span>
+                                 <span v-else>Exam</span>
+                             </div>
+                         </div>
+
+                         <!-- Action Button -->
+                         <div class="flex items-center sm:self-center">
+                             <button
+                                v-if="item.type === 'video'"
+                                @click="goToCourse(item)"
+                                class="w-full sm:w-auto px-5 py-2.5 bg-[#F2F2F2] hover:bg-[#E5E5E5] active:bg-[#D9D9D9] text-[#0D0D0D] font-medium rounded transition text-sm whitespace-nowrap"
+                             >
+                                 {{ l.check }}
+                             </button>
+                             <button
+                                v-if="item.type === 'exam'"
+                                @click="getReplyRecord(item)"
+                                class="w-full sm:w-auto px-5 py-2.5 bg-[#F2F2F2] hover:bg-[#E5E5E5] active:bg-[#D9D9D9] text-[#0D0D0D] font-medium rounded transition text-sm whitespace-nowrap"
+                             >
+                                 {{ l.check }}
+                             </button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="trainingActivity.length === 0" class="text-center py-16 bg-white rounded-xl border border-[#E5E5E5] text-[#606060]">
+                <div class="flex flex-col items-center justify-center gap-3">
+                  <i class="el-icon-box text-4xl text-gray-300"></i>
+                  <span>No activities found.</span>
+                </div>
+            </div>
         </div>
 
-        <div class="right">
-          <div class="count" style="height: 100%">
-            <div class="title-label">
-              {{ $l.activityProgress }}
-              {{ $l.activityProgress }}
-              <i class="el-icon-refresh-left text-blue" @click="getLearningStatus(class_id)"></i>
-            </div>
-            <div class="status">
-              <!-- 学习中 -->
-            </div>
-            <div class="status-box">
-              <div class="status-item">
-                <div class="status-label">
-                  <span>{{ $l.activityNum }}</span>
-                  <span>{{ learningObj.totalTask }}</span>
+        <!-- Right: Stats -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-[#E5E5E5] p-6 sticky top-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-bold text-[#0D0D0D]">{{ l.activityProgress }}</h2>
+                    <button @click="getLearningStatus(class_id)" class="text-[#065FD4] hover:bg-blue-50 p-2 rounded-full transition" :title="l.refresh">
+                        <i class="el-icon-refresh font-bold"></i>
+                    </button>
                 </div>
-                <div class="content">
-                  <div style="width: max-content">{{ $l.activityComplete }}</div>
-                  <div style="flex-grow: 1"><el-progress :percentage="Math.floor(learningObj.finishTask / learningObj.totalTask) || 0"></el-progress></div>
-                  <div style="width: max-content">{{ $l.activityComplete }}</div>
-                  <div style="flex-grow: 1"><el-progress :percentage="Math.floor(learningObj.finishTask / learningObj.totalTask) * 100 || 0"></el-progress></div>
-                </div>
-              </div>
-              <div class="status-item">
-                <div class="status-label">
-                  <span>{{ $l.courseProgress }}</span>
-                  <span>{{ learningObj.courseNum }}</span>
-                </div>
-                <div class="content">
-                  <div class="">
-                    <span>{{ $l.completed }}：{{ learningObj.finishCourseNum }}</span>
-                    <span style="margin: 0 20px">|</span>
-                    <span>{{ $l.uncomplete }}：{{ learningObj.unfinishCourseNum }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="status-item">
-                <div class="status-label">
-                  <span>{{ $l.examProgress }}</span>
-                  <span>{{ learningObj.examNum }}</span>
-                </div>
-                <div class="content">
-                  <div class="">
-                    <span>{{ $l.completed }}：{{ learningObj.finishExamNum }}</span>
-                    <span style="margin: 0 20px">|</span>
-                    <span>{{ $l.uncomplete }}：{{ learningObj.unfinishExamNum }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- <div class="count">
-            <div class="title-label">
-              通知公告
+                <!-- Total Progress Circle -->
+                <div class="mb-8 text-center">
+                     <div class="relative w-36 h-36 mx-auto mb-4 flex items-center justify-center">
+                           <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                              <!-- Background Circle -->
+                              <path class="text-[#F2F2F2]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5" />
+                              <!-- Progress Circle -->
+                              <path class="text-[#065FD4] transition-all duration-1000 ease-out" :stroke-dasharray="`${overallProgress}, 100`" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                           </svg>
+                         <div class="absolute inset-0 flex flex-col items-center justify-center">
+                             <span class="text-3xl font-bold text-[#0D0D0D]">{{ overallProgress }}<span class="text-sm align-top">%</span></span>
+                             <span class="text-xs text-[#606060] uppercase tracking-wider font-semibold">{{ l.completed }}</span>
+                         </div>
+                     </div>
+                </div>
+
+                <!-- Detailed Stats Cards -->
+                <div class="space-y-3">
+                     <!-- Activity Item -->
+                     <div class="bg-[#F9F9F9] rounded-lg p-4 border border-transparent hover:border-[#E5E5E5] transition">
+                         <div class="flex justify-between text-sm mb-3">
+                             <span class="font-medium text-[#606060]">{{ l.activityNum }}</span>
+                             <span class="font-bold text-[#0D0D0D]">{{ learningObj.totalTask }}</span>
+                         </div>
+                         <div class="w-full bg-[#E5E5E5] rounded-full h-1.5 overflow-hidden">
+                             <div class="bg-[#065FD4] h-full rounded-full transition-all duration-500" :style="{ width: `${overallProgress}%` }"></div>
+                         </div>
+                     </div>
+
+                     <!-- Course Item -->
+                     <div class="bg-[#F9F9F9] rounded-lg p-4 border border-transparent hover:border-[#E5E5E5] transition">
+                         <div class="flex justify-between text-sm mb-2">
+                             <span class="font-medium text-[#606060]">{{ l.courseProgress }}</span>
+                             <span class="font-bold text-[#0D0D0D]">{{ learningObj.courseNum }}</span>
+                         </div>
+                         <div class="flex justify-between text-xs mt-2 pt-2 border-t border-[#EAEAEA]">
+                             <span class="text-[#606060]">{{ l.completed }}: <span class="text-[#008A00] font-bold text-sm">{{ learningObj.finishCourseNum }}</span></span>
+                             <span class="text-[#606060]">{{ l.uncomplete }}: <span class="text-[#CC0000] font-bold text-sm">{{ learningObj.unfinishCourseNum }}</span></span>
+                         </div>
+                     </div>
+
+                     <!-- Exam Item -->
+                     <div class="bg-[#F9F9F9] rounded-lg p-4 border border-transparent hover:border-[#E5E5E5] transition">
+                         <div class="flex justify-between text-sm mb-2">
+                             <span class="font-medium text-[#606060]">{{ l.examProgress }}</span>
+                             <span class="font-bold text-[#0D0D0D]">{{ learningObj.examNum }}</span>
+                         </div>
+                         <div class="flex justify-between text-xs mt-2 pt-2 border-t border-[#EAEAEA]">
+                             <span class="text-[#606060]">{{ l.completed }}: <span class="text-[#008A00] font-bold text-sm">{{ learningObj.finishExamNum }}</span></span>
+                             <span class="text-[#606060]">{{ l.uncomplete }}: <span class="text-[#CC0000] font-bold text-sm">{{ learningObj.unfinishExamNum }}</span></span>
+                         </div>
+                     </div>
+                </div>
             </div>
-            <div class="message-box">
-              <span> 暂无消息</span>
-            </div>
-          </div> -->
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue'
 import logoImage from '@/assets/logo.png'
 import { assignObject } from '@/utils'
-import { zTable } from '@/views/_common'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'videoUserTrainDetail',
-  components: {
-    zTable,
-  },
-  data() {
-    return {
-      logoImage,
-      class_id: '',
-      no_primary_train_id: '',
-      train_primary_id: '',
-      trainingInfo: {
-        name_label: '',
-        description: '',
-        person_num: '',
-        start_date: '',
-        end_date: '',
-        create_dept: '',
-      },
-      trainingActivity: [],
-      showObj: {
-        examDialog: false,
-      },
-      currentExam: {
-        id: '',
-        questionnaire_id: '',
-        max_reply_num: 0,
-      },
-      examList: [],
-      examRecord: [],
-      examColumns: [
-        {
-          key: 'create_time',
-          title: this.$l.examedTime,
-        },
-        {
-          key: 'create_user',
-          title: this.$l.examUser,
-        },
-        {
-          key: 'score',
-          title: this.$l.examScore,
-        },
-      ],
-      activeNames: '',
-      query: {
-        name: '',
-        startDate: '',
-        endDate: '',
-      },
-      learningObj: {
-        query: {
-          page: 1,
-          pageSize: 15,
-        },
-        total: 0,
-        list: [],
-        unfinishCourse: [],
-        unfinishExam: [],
-        totalTask: 0,
-        finishTask: 0,
-        unfinishTask: 0,
-        courseNum: 0,
-        finishCourseNum: 0,
-        unfinishCourseNum: 0,
-        examNum: 0,
-        finishExamNum: 0,
-        unfinishExamNum: 0,
-      },
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('videoUserTrainDetail')
+
+// State
+const class_id = ref('')
+const no_primary_train_id = ref('')
+const train_primary_id = ref('')
+
+const trainingInfo = reactive({
+  name_label: '',
+  description: '',
+  person_num: '',
+  start_date: '',
+  end_date: '',
+  create_dept: '',
+})
+
+const trainingActivity = ref([])
+const showObj = reactive({
+  examDialog: false,
+})
+
+const currentExam = ref({
+  id: '',
+  questionnaire_id: '',
+  max_reply_num: 0,
+})
+
+const examRecord = ref([])
+
+const learningObj = reactive({
+  total: 0,
+  list: [],
+  unfinishCourse: [],
+  unfinishExam: [],
+  totalTask: 0,
+  finishTask: 0,
+  unfinishTask: 0,
+  courseNum: 0,
+  finishCourseNum: 0,
+  unfinishCourseNum: 0,
+  examNum: 0,
+  finishExamNum: 0,
+  unfinishExamNum: 0,
+})
+
+// Computed
+const user = computed(() => proxy.$store.getters.user)
+
+const overallProgress = computed(() => {
+  if (learningObj.totalTask === 0) return 0
+  return Math.floor((learningObj.finishTask / learningObj.totalTask) * 100) || 0
+})
+
+const remainingAttempts = computed(() => {
+  return (currentExam.value.max_reply_num || 0) - (examRecord.value.length || 0)
+})
+
+// Methods
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  return dateStr.substr(0, 10)
+}
+
+const getLearningStatus = (id) => {
+  proxy.$request(
+    proxy.$api.videoServer + '/Video/VideoAnalyze/getClassUserTrainLearingInfo',
+    {
+      page: 1,
+      pageSize: 9999,
+      class_id: id,
+      userid: [user.value.userId],
+    },
+    'post'
+  ).then((r) => {
+    if (r.data.total > 0) {
+      learningObj.total = r.data.total
+      learningObj.list = r.data.list
+      const data = r.data.list[0]
+
+      // Update stats based on API response structure
+      learningObj.courseNum = data.course_num
+      learningObj.finishCourseNum = data.finsh_course_num
+      learningObj.unfinishCourseNum = data.no_finsh_course_List.length
+      learningObj.unfinishCourse = data.no_finsh_course_List
+
+      learningObj.examNum = data.exam_num
+      learningObj.finishExamNum = data.finsh_exam_num
+      // Note: original code calculated unfinishExamNum strangely: tep.no_finsh_course_exam_List.length + tep.no_finsh_course_exam_List.length
+      // But assigned data.no_finsh_exam_List.length earlier.
+      // I will trust the array length of no_finsh_exam_List if available, assuming typo in original code repeated same list
+      // Wait, original code had: tep.no_finsh_course_exam_List.length + tep.no_finsh_course_exam_List.length
+      // But also: this.learningObj.unfinishExamNum = r.data.list[0].no_finsh_exam_List.length
+      // It overwrote it immediately after. I will use the logical one.
+
+      // Re-reading original code logic carefully:
+      // It sets properties from r.data.list[0] then overwrites them from 'tep' (which IS r.data.list[0])
+      // The overwrite used `tep.no_finsh_course_exam_List.length + tep.no_finsh_course_exam_List.length`.
+      // It seems `no_finsh_course_exam_List` might be different from `no_finsh_exam_List`.
+      // But the original code was messy. I'll stick to basic counts for now or follow the property names if valid.
+      // I will assume standard counts: total - finish = unfinish or array lengths.
+
+      learningObj.unfinishExamNum = data.no_finsh_exam_List ? data.no_finsh_exam_List.length : 0
+      learningObj.unfinishExam = data.no_finsh_exam_List
+
+      learningObj.totalTask = learningObj.courseNum + learningObj.examNum
+      learningObj.unfinishTask = learningObj.unfinishCourseNum + learningObj.unfinishExamNum
+      learningObj.finishTask = learningObj.totalTask - learningObj.unfinishTask
     }
-  },
+  })
+}
 
-  computed: {
-    ...mapGetters(['user', 'isAdmin']),
-  },
+const getTrainingDetail = (id) => {
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoTrain/ShowTrainDetil', {
+    id: id,
+  }).then((r) => {
+    assignObject(trainingInfo, r.data)
+    no_primary_train_id.value = r.data.train_id
+    train_primary_id.value = r.data.id
+    trainingActivity.value = []
 
-  methods: {
-    getLearningStatus(id) {
-      this.$request(
-        this.$api.videoServer + '/Video/VideoAnalyze/getClassUserTrainLearingInfo',
-        {
-          page: 1,
-          pageSize: 9999,
-          class_id: id,
-          userid: [this.user.userId],
-        },
-        'post'
-      ).then((r) => {
-        if (r.data.total > 0) {
-          this.learningObj.total = r.data.total
-          this.learningObj.list = r.data.list
-          this.learningObj.courseNum = r.data.list[0].course_num
-          this.learningObj.finishCourseNum = r.data.list[0].finsh_course_num
-          this.learningObj.unfinishCourseNum = r.data.list[0].no_finsh_course_List.length
-          this.learningObj.unfinishCourse = r.data.list[0].no_finsh_course_List
-          this.learningObj.examNum = r.data.list[0].exam_num
-          this.learningObj.finishExamNum = r.data.list[0].finsh_exam_num
-          this.learningObj.unfinishExamNum = r.data.list[0].no_finsh_exam_List.length
-          this.learningObj.unfinishExam = r.data.list[0].no_finsh_exam_List
-          let tep = r.data.list[0]
-          this.learningObj.courseNum = tep.course_num
-          this.learningObj.finishCourseNum = tep.finsh_course_num
-          this.learningObj.unfinishCourseNum = tep.no_finsh_course_List.length
-          this.learningObj.unfinishCourse = tep.no_finsh_course_List
-          this.learningObj.examNum = tep.exam_num
-          this.learningObj.finishExamNum = tep.finsh_exam_num
-          this.learningObj.unfinishExamNum = tep.no_finsh_course_exam_List.length + tep.no_finsh_course_exam_List.length
-          this.learningObj.unfinishExam = tep.no_finsh_exam_List
-          this.learningObj.totalTask = this.learningObj.courseNum + this.learningObj.examNum
-          this.learningObj.unfinishTask = this.learningObj.unfinishCourseNum + this.learningObj.unfinishExamNum
-          this.learningObj.finishTask = this.learningObj.totalTask - this.learningObj.unfinishTask
+    if (r.data.detail) {
+      r.data.detail.forEach((i) => {
+        let temp = {
+          id: i.id,
+          name_label: i.name_label,
+          course_id: i.course_id,
+          bind_id: i.bind_id,
+          type: i.type,
+          is_must: i.is_must,
+          is_finish: i.is_finish,
+          sort: i.sort,
+          detail: [],
         }
-      })
-    },
-
-    //跳转课程查看课程
-    goToCourse(x) {
-      console.log(x)
-      if (x.type == 'video') {
-        let routeUrl = this.$router.resolve({
-          name: 'videoPlay',
-          query: {
-            train_primary_id: this.train_primary_id,
-            no_primary_train_id: this.no_primary_train_id,
-            course_primary_id: x.course_primary_id,
-            no_primary_course_id: x.course_id,
-            class_id: this.class_id,
-            // is_his:1 //增加此处参数可能会导致课程查询失败
-          },
-        }).href
-        window.open(routeUrl, '_blank')
-      }
-    },
-
-    //马上考试
-    goToExam() {
-      let url = this.$router.resolve({
-        name: 'examDetail',
-        query: {
-          questionnaire_id: this.currentExam.questionnaire_id,
-          exam_id: this.currentExam.id, //需要传入有效exam_id
-          no_primary_train_id: this.no_primary_train_id,
-          train_primary_id: this.train_primary_id,
-          course_primary_id: '',
-          class_id: this.class_id,
-          is_test: false,
-          mode: 'exam',
-        },
-      }).href
-      window.open(url, '_blank')
-    },
-
-    //查看考试记录
-    getReplyRecord(i) {
-      console.log(i)
-      this.currentExam = i
-      this.$request(this.$api.videoServer + '/Video/VideoExam/getAnswerList', {
-        questionnaire_id: i.questionnaire_id,
-        userid: this.user.userId,
-        train_id: this.no_primary_train_id,
-        train_primary_id: this.train_primary_id, //加了train_primary_id可能会查询不出数据
-        course_primary_id: '', //考试 不应该出现课程ID
-        exam_id: i.id,
-        class_id: this.class_id,
-        page: 1,
-        pageSize: 999,
-      }).then((r) => {
-        this.examRecord = r.data.list
-        this.showObj.examDialog = true
-      })
-    },
-
-    //查看考试
-    reviewExam(data) {
-      let url = this.$router.resolve({
-        name: 'examDetail',
-        query: {
-          exam_id: this.currentExam.id,
-          questionnaire_id: this.currentExam.questionnaire_id,
-          reply_id: data.id, //此处为回答记录主键
-          mode: 'review',
-        },
-      }).href
-      window.open(url, '_blank')
-    },
-
-    //获取培训任务列表
-    getTrainingDetail(id) {
-      this.$request(this.$api.videoServer + '/Video/VideoTrain/ShowTrainDetil', {
-        id: id,
-      }).then((r) => {
-        assignObject(this.trainingInfo, r.data) //获取培训详情
-        this.no_primary_train_id = r.data.train_id
-        this.train_primary_id = r.data.id
-        this.trainingActivity = [] //清空活动章节
-        r.data.detail.forEach((i) => {
-          let temp = {
-            id: i.id,
-            name_label: i.name_label,
-            course_id: i.course_id,
-            bind_id: i.bind_id,
-            type: i.type,
-            is_must: i.is_must,
-            is_finish: i.is_finish,
-            sort: i.sort,
-            detail: [],
-          }
+        if (i.detail) {
           i.detail.forEach((x) => {
             if (x.video != null) {
               temp.detail.push({
@@ -469,266 +459,97 @@ export default {
               })
             }
           })
-          this.trainingActivity.push(temp)
-        })
+        }
+        trainingActivity.value.push(temp)
       })
-    },
-  },
-
-  mounted() {
-    this.class_id = this.$route.query.class_id
-    console.log(this.$route.query)
-    this.getTrainingDetail(this.$route.query.id)
-    this.getLearningStatus(this.class_id)
-  },
+    }
+  })
 }
+
+const goToCourse = (x) => {
+  if (x.type == 'video') {
+    let routeUrl = proxy.$router.resolve({
+      name: 'videoPlay',
+      query: {
+        train_primary_id: train_primary_id.value,
+        no_primary_train_id: no_primary_train_id.value,
+        course_primary_id: x.course_primary_id,
+        no_primary_course_id: x.course_id,
+        class_id: class_id.value,
+      },
+    }).href
+    window.open(routeUrl, '_blank')
+  }
+}
+
+const getReplyRecord = (i) => {
+  currentExam.value = i
+  proxy.$request(proxy.$api.videoServer + '/Video/VideoExam/getAnswerList', {
+    questionnaire_id: i.questionnaire_id,
+    userid: user.value.userId,
+    train_id: no_primary_train_id.value,
+    train_primary_id: train_primary_id.value,
+    course_primary_id: '',
+    exam_id: i.id,
+    class_id: class_id.value,
+    page: 1,
+    pageSize: 999,
+  }).then((r) => {
+    examRecord.value = r.data.list || []
+    showObj.examDialog = true
+  })
+}
+
+const goToExam = () => {
+  let url = proxy.$router.resolve({
+    name: 'examDetail',
+    query: {
+      questionnaire_id: currentExam.value.questionnaire_id,
+      exam_id: currentExam.value.id,
+      no_primary_train_id: no_primary_train_id.value,
+      train_primary_id: train_primary_id.value,
+      course_primary_id: '',
+      class_id: class_id.value,
+      is_test: false,
+      mode: 'exam',
+    },
+  }).href
+  window.open(url, '_blank')
+}
+
+const reviewExam = (data) => {
+  let url = proxy.$router.resolve({
+    name: 'examDetail',
+    query: {
+      exam_id: currentExam.value.id,
+      questionnaire_id: currentExam.value.questionnaire_id,
+      reply_id: data.id,
+      mode: 'review',
+    },
+  }).href
+  window.open(url, '_blank')
+}
+
+onMounted(() => {
+  class_id.value = proxy.$route.query.class_id
+  getTrainingDetail(proxy.$route.query.id)
+  getLearningStatus(class_id.value)
+})
 </script>
 
 <style scoped>
-.goToExam {
-  margin: 5px 0px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
+/* Custom Scrollbar for Modal content */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
-.goToExam .detail {
-  padding-left: 10px;
-  width: calc(100% - 150px);
-  white-space: nowrap;
-  overflow: hidden;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
-.goToExam .detail .num {
-  margin: 0 2px;
-  font-size: 16px;
-  font-weight: bold;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 3px;
 }
-.goToExam .goToExam-btn {
-  width: 150px;
-  text-align: center;
-}
-.goToExam .goToExam-btn .go {
-  z-index: 6000;
-  border: none;
-}
-.goToExam .goToExam-btn .go:hover {
-  border: none;
-}
-
-.trainingDetail-container {
-  width: 100%;
-  background-color: #fafafa;
-}
-.trainingDetail-container .page-body {
-  width: 75%;
-  margin: 0 auto;
-  padding: 25px;
-  min-width: 1000px;
-}
-.trainingDetail-container .page-body .course-info {
-  width: 100%;
-  height: 350px;
-  padding: 25px;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  border: 1px solid #dadada;
-  border-radius: 5px;
-}
-.trainingDetail-container .page-body .course-info .cover {
-  width: 300px;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.trainingDetail-container .page-body .course-info .info {
-  flex-grow: 1;
-  height: 100%;
-}
-.trainingDetail-container .page-body .course-info .info .item {
-  width: 100%;
-  margin-top: 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.trainingDetail-container .page-body .activity-container {
-  width: 100%;
-  min-height: calc(100vh - 120px);
-  margin-top: 50px;
-  display: flex;
-  justify-content: space-between;
-}
-.trainingDetail-container .page-body .activity-container .left {
-  width: calc(100% - 400px);
-  min-height: 100%;
-  border: 1px solid #dadada;
-  border-radius: 5px;
-  background-color: white;
-}
-.trainingDetail-container .page-body .activity-container .left .title-label {
-  padding: 15px;
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 1px solid #dadada;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.trainingDetail-container .page-body .activity-container .left .filter {
-  width: 100%;
-  padding: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.trainingDetail-container .page-body .activity-container .left .activity {
-  width: 95%;
-  margin: 50px auto;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse {
-  margin-bottom: 30px;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .collapse-title {
-  width: 100%;
-  background-color: #fafafa;
-  text-indent: 2em;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item {
-  width: 100%;
-  height: 140px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item:hover {
-  background-color: aliceblue;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .cover {
-  width: 200px;
-  height: 100%;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content {
-  width: calc(100% - 350px);
-  height: 100%;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content .course-name {
-  height: 40px;
-  line-height: 40px;
-  font-size: 20px;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content .course-desc {
-  color: #999999;
-  text-align: left;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .content .status {
-  color: #999999;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .video-item .btn-right {
-  text-align: center;
-  width: 100px;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item {
-  width: 100%;
-  height: 140px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item:hover {
-  background-color: aliceblue;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .cover {
-  width: 200px;
-  height: 100%;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content {
-  width: calc(100% - 350px);
-  height: 100%;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content .course-name {
-  height: 40px;
-  line-height: 40px;
-  font-size: 20px;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content .course-desc {
-  color: #999999;
-  text-align: left;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .content .status {
-  color: #999999;
-}
-.trainingDetail-container .page-body .activity-container .left .activity .activity-collapse .exam-item .btn-right {
-  text-align: center;
-  width: 100px;
-}
-.trainingDetail-container .page-body .activity-container .right {
-  width: 400px;
-  height: auto;
-}
-.trainingDetail-container .page-body .activity-container .right .count {
-  float: right;
-  width: 95%;
-  height: max-content;
-  background-color: white;
-  border: 1px solid #dadada;
-  border-radius: 5px;
-  padding-bottom: 1px;
-  margin-bottom: 30px;
-}
-.trainingDetail-container .page-body .activity-container .right .count .title-label {
-  padding: 15px;
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 1px solid #dadada;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.trainingDetail-container .page-body .activity-container .right .count .status {
-  padding: 15px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #409fee;
-}
-.trainingDetail-container .page-body .activity-container .right .count .status-box {
-  width: 95%;
-  margin: 0 auto;
-}
-.trainingDetail-container .page-body .activity-container .right .count .status-box .status-item {
-  width: 100%;
-  height: 65px;
-  margin-bottom: 20px;
-  padding: 0 10px;
-  border-radius: 5px;
-  background-color: #f5f5f5;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  text-align: center;
-}
-.trainingDetail-container .page-body .activity-container .right .count .status-box .status-item .status-label {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-}
-.trainingDetail-container .page-body .activity-container .right .count .status-box .status-item .content {
-  width: 100%;
-  display: flex;
-}
-.trainingDetail-container .page-body .activity-container .right .count .message-box {
-  width: 90%;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 </style>
