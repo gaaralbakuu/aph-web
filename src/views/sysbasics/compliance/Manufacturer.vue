@@ -1,7 +1,5 @@
 <template>
   <div class="flex flex-col h-[calc(100vh-60px)] bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
-    <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
-
     <!-- Filter Bar -->
     <div class="px-6 py-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20 shadow-sm flex flex-col gap-4">
        <!-- Header & Actions -->
@@ -250,6 +248,29 @@
                    <div v-if="address.list.length === 0" class="p-4 text-center text-xs text-[#999999]">{{ c.empty }}</div>
                 </div>
              </div>
+
+             <!-- Contact Info List -->
+             <div>
+                <div class="flex justify-between items-center mb-4 border-b border-[#E5E5E5] pb-2">
+                   <h3 class="text-sm font-bold text-[#0D0D0D] uppercase mb-0!">{{ l.contact_info }}</h3>
+                   <button class="text-[#065FD4] text-xs font-medium uppercase hover:underline" @click="contactInfoList">
+                      + {{ c.addData || 'ADD' }}
+                   </button>
+                </div>
+                <div class="border border-[#E5E5E5] rounded overflow-hidden">
+                   <div v-for="(contact, idx) in contactInfo.list" :key="idx" class="flex justify-between items-center p-3 border-b border-[#E5E5E5] last:border-0 bg-[#FAFAFA]">
+                      <div class="text-xs text-[#606060]">
+                         <div class="font-medium text-[#0D0D0D]">{{ contact.contact_name }}</div>
+                         <div>{{ contact.contact_email }}</div>
+                      </div>
+                      <div class="flex gap-2">
+                         <i class="el-icon-edit text-[#065FD4] cursor-pointer" @click="contactInfoEditItem(contact, idx)"></i>
+                         <i class="el-icon-delete text-[#CC0000] cursor-pointer" @click="contactInfoDeleteItem(contact, idx)"></i>
+                      </div>
+                   </div>
+                   <div v-if="contactInfo.list.length === 0" class="p-4 text-center text-xs text-[#999999]">{{ c.empty }}</div>
+                </div>
+             </div>
           </div>
        </div>
 
@@ -259,7 +280,7 @@
        </div>
     </a-drawer>
 
-    <!-- Address Dialog (Keeping as CustomDialog for now, or could migrate to inner drawer) -->
+    <!-- Address Dialog -->
     <CustomDialog :title="l.addr_and_processes" :visible.sync="address.dialogFormVisible" :maxWidth="'600px'">
        <template #content>
           <div class="flex flex-col gap-4">
@@ -267,7 +288,10 @@
                 <label class="block text-xs text-[#606060] mb-1">{{ l.address_en }}</label>
                 <input v-model="address.data.address_en" class="w-full border border-[#CCCCCC] rounded px-3 py-2 text-sm outline-none focus:border-[#065FD4]">
              </div>
-             <!-- Add other fields similarly -->
+             <div class="form-item">
+                <label class="block text-xs text-[#606060] mb-1">{{ l.own_processes }}</label>
+                <input v-model="address.data.own_processes" class="w-full border border-[#CCCCCC] rounded px-3 py-2 text-sm outline-none focus:border-[#065FD4]">
+             </div>
           </div>
        </template>
        <template #footer>
@@ -276,11 +300,34 @@
        </template>
     </CustomDialog>
 
+    <!-- Contact Info Dialog -->
+    <CustomDialog :title="l.contact_info" :visible.sync="contactInfo.dialogFormVisible" :maxWidth="'600px'">
+       <template #content>
+          <div class="flex flex-col gap-4">
+             <div class="form-item">
+                <label class="block text-xs text-[#606060] mb-1">{{ l.contact_name }}</label>
+                <input v-model="contactInfo.data.contact_name" class="w-full border border-[#CCCCCC] rounded px-3 py-2 text-sm outline-none focus:border-[#065FD4]">
+             </div>
+             <div class="form-item">
+                <label class="block text-xs text-[#606060] mb-1">{{ l.contact_email }}</label>
+                <input v-model="contactInfo.data.contact_email" class="w-full border border-[#CCCCCC] rounded px-3 py-2 text-sm outline-none focus:border-[#065FD4]">
+             </div>
+             <div class="form-item">
+                <label class="block text-xs text-[#606060] mb-1">{{ l.contact_phone }}</label>
+                <input v-model="contactInfo.data.contact_phone" class="w-full border border-[#CCCCCC] rounded px-3 py-2 text-sm outline-none focus:border-[#065FD4]">
+             </div>
+          </div>
+       </template>
+       <template #footer>
+          <el-button @click="contactInfo.dialogFormVisible = false">{{ c.cancel }}</el-button>
+          <el-button type="primary" @click="contactInfoSubmmit">{{ c.confirm }}</el-button>
+       </template>
+    </CustomDialog>
+
     <!-- Confirm Dialog -->
     <CustomDialog :title="l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'800px'">
        <template #content>
           <div class="p-4 text-sm">
-             <!-- Confirmation details -->
              <p>{{ l.confirm_save }}</p>
           </div>
        </template>
@@ -337,13 +384,12 @@ const address = reactive({
 const contactInfo = reactive({
     list: [],
     data: {},
-    dialogFormVisible: false
+    dialogFormVisible: false,
+    editIndex: -1
 })
 
-const attachment = reactive({
-    list: [],
-    data: {}
-})
+// Attachments removed for now as requested to fix error
+// const attachment = reactive({ ... })
 
 const userAuth = ref({})
 const showAuth = reactive({
@@ -378,6 +424,7 @@ function reset() {
 function add() {
     manufacturer.data = {}
     address.list = []
+    contactInfo.list = []
     manufacturer.addOrEditFormVisible = true
 }
 
@@ -385,6 +432,7 @@ function editItem(data) {
     proxy.$request(config.apiID, { id: data.id }).then(r => {
         manufacturer.data = r.data
         address.list = r.data.addressList || []
+        contactInfo.list = r.data.contactInfoList || []
         manufacturer.addOrEditFormVisible = true
     })
 }
@@ -392,7 +440,7 @@ function editItem(data) {
 function handleAction(cmd, item) {
     if (cmd === 'edit') editItem(item)
     if (cmd === 'delete') deleteItem(item)
-    if (cmd === 'detail') editItem(item) // Reusing edit logic for detail view for now
+    if (cmd === 'detail') editItem(item) // Reusing edit logic for detail
 }
 
 function deleteItem(item) {
@@ -430,14 +478,44 @@ function addressSubmmit() {
     address.dialogFormVisible = false
 }
 
+// Contact Info logic
+function contactInfoList() {
+    contactInfo.data = {}
+    contactInfo.editIndex = -1
+    contactInfo.dialogFormVisible = true
+}
+
+function contactInfoEditItem(info, index) {
+    contactInfo.data = _.cloneDeep(info)
+    contactInfo.editIndex = index
+    contactInfo.dialogFormVisible = true
+}
+
+function contactInfoDeleteItem(info, index) {
+    contactInfo.list.splice(index, 1)
+}
+
+function contactInfoSubmmit() {
+    if (contactInfo.editIndex > -1) {
+        set(contactInfo.list, contactInfo.editIndex, contactInfo.data)
+    } else {
+        contactInfo.list.push(contactInfo.data)
+    }
+    contactInfo.dialogFormVisible = false
+}
+
 // Submit Main Form
 function OPenManufacturer() {
     manufacturer.inforFormVisible = true
 }
 
 function submmitManufacturer() {
-    const payload = { ...manufacturer.data, addressList: address.list }
-    const url = payload.id ? config.apiUpdate : api.ComplianceManufacturer + 'add' // assuming add endpoint
+    const payload = {
+        ...manufacturer.data,
+        addressList: address.list,
+        contactInfoList: contactInfo.list
+    }
+    const url = payload.id ? config.apiUpdate : api.ComplianceManufacturer + 'add'
     proxy.$request(url, payload, 'post').then(() => {
         proxy.$message.success(c.value.success)
         manufacturer.addOrEditFormVisible = false
@@ -455,7 +533,6 @@ function getStatusClass(status) {
 }
 
 function getStatusText(status) {
-    // Localization logic here or return status
     return status || '--'
 }
 

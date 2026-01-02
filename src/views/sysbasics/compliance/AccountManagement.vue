@@ -37,7 +37,14 @@
           <!-- Date -->
           <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
              <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.create_time }}</label>
-             <input v-model="account.query.create_time" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6" :placeholder="l.input_create_time || 'Create Time'" @keyup.enter="getUser">
+             <a-date-picker
+                v-model="account.query.create_time"
+                class="w-full !border-none !shadow-none !bg-transparent p-0 h-6"
+                :placeholder="l.input_create_time || 'Create Time'"
+                format="YYYY-MM-DD"
+                valueFormat="YYYY-MM-DD"
+                @change="getUser"
+             />
           </div>
           <!-- Status & Buttons -->
           <div class="flex gap-2 items-center">
@@ -397,5 +404,22 @@ onMounted(() => {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #CCCCCC;
+}
+
+/* Ant Design DatePicker Customization for Tailwind-like look */
+:deep(.ant-calendar-picker-input) {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    font-size: 0.875rem !important; /* text-sm */
+    color: #0D0D0D !important;
+}
+:deep(.ant-calendar-picker-input:focus),
+:deep(.ant-calendar-picker:hover .ant-calendar-picker-input) {
+    border: none !important;
+    box-shadow: none !important;
 }
 </style>
