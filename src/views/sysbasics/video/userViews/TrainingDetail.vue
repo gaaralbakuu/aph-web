@@ -14,7 +14,7 @@
         <!-- Modal Body -->
         <div class="p-6 overflow-y-auto custom-scrollbar">
              <!-- Exam Stats Banner -->
-             <div class="flex flex-col sm:flex-row items-center justify-between mb-6 bg-[#F9F9F9] border border-[#E5E5E5] p-4 rounded-lg gap-4">
+             <div class="flex flex-col sm:flex-row! items-center justify-between mb-6 bg-[#F9F9F9] border border-[#E5E5E5] p-4 rounded-lg gap-4">
                 <div class="text-[#606060] text-sm flex-1 text-center sm:text-left">
                   <div class="mb-1">
                     {{ l.mostExam }} <span class="text-[#0D0D0D] font-bold text-lg mx-1">{{ currentExam.max_reply_num }}</span> {{ l.examUnit }}
@@ -127,7 +127,7 @@
                   <i class="el-icon-notebook-2 text-[#065FD4]"></i>
                   {{ l.activityList }}
                 </h2>
-                <button @click="getTrainingDetail(train_primary_id)" class="p-2 text-[#065FD4] hover:bg-blue-50 rounded-full transition" :title="l.refresh">
+                <button @click="getTrainingDetail(train_primary_id)" class="p-2 text-[#065FD4] hover:bg-blue-200 rounded-full transition size-10 flex items-center justify-center" :title="l.refresh">
                     <i class="el-icon-refresh text-xl"></i>
                 </button>
             </div>
@@ -138,7 +138,7 @@
                     {{ section.name_label }}
                 </div>
                 <div class="divide-y divide-[#E5E5E5]">
-                    <div v-for="(item, itemIdx) in section.detail" :key="itemIdx" class="p-4 flex flex-col sm:flex-row gap-4 hover:bg-[#FDFDFD] transition group relative">
+                    <div v-for="(item, itemIdx) in section.detail" :key="itemIdx" class="p-4 flex flex-col sm:flex-row! gap-4 hover:bg-[#FDFDFD] transition group relative">
                         <!-- Thumbnail -->
                          <div class="w-full sm:w-[200px] h-[112px] flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden relative border border-[#E5E5E5] group-hover:border-[#D0D0D0] transition">
                             <el-image
@@ -226,7 +226,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-[#E5E5E5] p-6 sticky top-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-bold text-[#0D0D0D]">{{ l.activityProgress }}</h2>
-                    <button @click="getLearningStatus(class_id)" class="text-[#065FD4] hover:bg-blue-50 p-2 rounded-full transition" :title="l.refresh">
+                    <button @click="getLearningStatus(class_id)" class="text-[#065FD4] hover:bg-blue-200 p-2 rounded-full transition size-10 flex items-center justify-center" :title="l.refresh">
                         <i class="el-icon-refresh font-bold"></i>
                     </button>
                 </div>
