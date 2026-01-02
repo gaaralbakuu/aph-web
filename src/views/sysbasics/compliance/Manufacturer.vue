@@ -2,8 +2,8 @@
   <div class="h-full flex flex-col overflow-hidden">
     <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
     <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
-      <div class="text-2xl font-bold text-black">{{ l.title }}</div>
-      <div class="text-gray-500 text-sm">{{ l.description }}</div>
+      <div class="text-2xl font-bold text-black">{{ $l.title }}</div>
+      <div class="text-gray-500 text-sm">{{ $l.description }}</div>
     </div>
     <!-- Search Section -->
     <div class="flex gap-3 flex-wrap justify-between p-3">
@@ -11,13 +11,13 @@
         <div class="relative h-9 flex items-center gap-2 mr-5">
           <div class="flex bg-gray-100 p-0.5 rounded h-9">
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === '' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = ''">
-              {{ c.all }}
+              {{ $c.all }}
             </button>
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T1SC' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T1SC'">
-              {{ l.requestor_facility_type_T1SC }}
+              {{ $l.requestor_facility_type_T1SC }}
             </button>
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T2' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T2'">
-              {{ l.requestor_facility_type_T2 }}
+              {{ $l.requestor_facility_type_T2 }}
             </button>
           </div>
           <div class="h-full py-2">
@@ -32,7 +32,7 @@
               <path d="M9.1 11h5.7" />
             </svg>
           </div>
-          <input type="text" :placeholder="l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+          <input type="text" :placeholder="$l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div>
         <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -41,8 +41,16 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
             </svg>
           </div>
-          <input type="text" :placeholder="l.addr" v-model="manufacturer.query.addr" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+          <input type="text" :placeholder="$l.addr" v-model="manufacturer.query.addr" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div>
+        <!-- <div class="relative h-9">
+          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+          </div>
+          <input type="text" :placeholder="$l.legal_person" v-model="manufacturer.query.legal_person" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
+        </div> -->
         <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5">
@@ -53,16 +61,16 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
           </div>
-          <input type="text" :placeholder="l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+          <input type="text" :placeholder="$l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div>
       </div>
       <!-- Search buttons -->
       <div class="flex gap-3">
-        <button v-show="showAuth.m_search" @click="getList" class="h-9 rounded flex items-center bg-black text-white px-4 hover:bg-gray-800 transition-colors duration-150">
-          {{ c.queryButton }}
+        <button v-show="showAuth.m_search" @click="getList" class="h-9 rounded flex items-center bg-black text-white! px-4 hover:bg-gray-800 transition-colors duration-150">
+          {{ $c.queryButton }}
         </button>
         <button v-show="showAuth.m_search" @click="reset" class="h-9 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-150">
-          {{ c.reset }}
+          {{ $c.reset }}
         </button>
       </div>
     </div>
@@ -70,17 +78,38 @@
     <!-- Action Bar -->
     <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100">
       <div class="flex items-center gap-3">
-        <button v-show="showAuth.m_add" @click="add" class="inline-flex items-center h-8 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+        <button v-show="showAuth.m_add" @click="add" class="inline-flex items-center h-8 bg-blue-600 hover:bg-blue-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          {{ c.create }}
+          {{ $c.create }}
         </button>
+        <!-- 
+        <button v-show="showAuth.m_export" @click="exportExcel" class="inline-flex items-center h-8 bg-green-600 hover:bg-green-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          {{ $c.export }}
+        </button>
+
+        <button @click="visabled.uploadFile = true" class="inline-flex items-center h-8 bg-yellow-600 hover:bg-yellow-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          {{ $c.m_upload }}
+        </button>
+
+        <button @click="exportTemplate" class="inline-flex items-center h-8 bg-gray-600 hover:bg-gray-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          {{ $l.downloadTemplate }}
+        </button> -->
       </div>
     </div>
     <!-- Table Section -->
     <div class="flex-1 px-3 overflow-auto">
-      <manufacturer-table :data="manufacturer.list" :isLoading="manufacturer.loading" @action="handleTableAction" @row-click="handleRowClick" :page="manufacturer.query" class="main-table" />
+      <manufacturer-table :data="manufacturer.list" :isLoading="manufacturer.loading" @action="handleTableAction" @row-click="handleRowClick" :page="manufacturer.query" class="main-table" :showAuth="showAuth" />
     </div>
 
     <!-- Pagination -->
@@ -88,57 +117,57 @@
       <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
 
-
+    
     <!-- Create/Edit Dialog -->
-    <CustomDialog :title="manufacturer.data.id ? c.edit : c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+    <CustomDialog :title="manufacturer.data.id ? $c.edit : $c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-2">
-          <div class="text-xl font-black text-gray-900 dark:text-white">{{ l.basic }}</div>
+          <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.basic }}</div>
           <!-- Basic Information Section -->
           <div class="">
-            <div class="text-base font-semibold text-black">{{ l.partner_information }}</div>
+            <div class="text-base font-semibold text-black">{{ $l.partner_information }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.manufacture_name_CN }}</label>
-                <el-input :placeholder="l.input_manufacture_name_CN" v-model="manufacturer.data.name_zh" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.manufacture_name_CN }}</label>
+                <el-input :placeholder="$l.input_manufacture_name_CN" v-model="manufacturer.data.name_zh" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.manufacture_name_US }}</label>
-                <el-input :placeholder="l.input_manufacture_name_US" v-model="manufacturer.data.name_en" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.manufacture_name_US }}</label>
+                <el-input :placeholder="$l.input_manufacture_name_US" v-model="manufacturer.data.name_en" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.legal_person }}</label>
-                <el-input :placeholder="l.input_legal_person" v-model="manufacturer.data.legal_person" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.legal_person }}</label>
+                <el-input :placeholder="$l.input_legal_person" v-model="manufacturer.data.legal_person" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.partner_country }}</label>
-                <el-input :placeholder="l.input_partner_country" v-model="manufacturer.data.country" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.partner_country }}</label>
+                <el-input :placeholder="$l.input_partner_country" v-model="manufacturer.data.country" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.cooperation_group_name }}</label>
-                <el-input :placeholder="c.input" v-model="manufacturer.data.cooperation_group_name" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.cooperation_group_name }}</label>
+                <el-input :placeholder="$c.input" v-model="manufacturer.data.cooperation_group_name" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ l.registration_legal }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.registration_legal }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.customs_number }}</label>
-                <el-input :placeholder="c.input" v-model="manufacturer.data.customs_number" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.customs_number }}</label>
+                <el-input :placeholder="$c.input" v-model="manufacturer.data.customs_number" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.biz_license_number }}</label>
-                <el-input :placeholder="c.input" v-model="manufacturer.data.biz_license_number" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.biz_license_number }}</label>
+                <el-input :placeholder="$c.input" v-model="manufacturer.data.biz_license_number" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ l.cooperation_authorization }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.cooperation_authorization }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.requestor_facility_type }}</label>
+                <label class="text-sm font-light">{{ $l.requestor_facility_type }}</label>
                 <el-radio-group v-model="manufacturer.data.requestor_facility_type" class="flex gap-4 h-9 items-center">
                   <el-radio label="T1SC">T1SC</el-radio>
                   <el-radio label="T2">T2</el-radio>
@@ -146,105 +175,105 @@
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.is_involve_product }}</label>
+                <label class="text-sm font-light">{{ $l.is_involve_product }}</label>
 
                 <el-radio-group v-model="manufacturer.data.is_involve_product" class="flex gap-4 h-9 items-center">
-                  <el-radio label="Y">{{ l.product }}</el-radio>
-                  <el-radio label="N">{{ l.exploit }}</el-radio>
+                  <el-radio label="Y">{{ $l.product }}</el-radio>
+                  <el-radio label="N">{{ $l.exploit }}</el-radio>
                 </el-radio-group>
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.is_alidas_authorized }}</label>
+                <label class="text-sm font-light">{{ $l.is_alidas_authorized }}</label>
                 <el-radio-group v-model="manufacturer.data.is_alidas_authorized" class="flex gap-4 h-9 items-center">
-                  <el-radio label="Y">{{ c.Y }}</el-radio>
-                  <el-radio label="N">{{ c.N }}</el-radio>
+                  <el-radio label="Y">{{ $c.Y }}</el-radio>
+                  <el-radio label="N">{{ $c.N }}</el-radio>
                 </el-radio-group>
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.cooperation_start_date }}</label>
-                <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime" :placeholder="c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
+                <label class="text-sm font-light">{{ $l.cooperation_start_date }}</label>
+                <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.cooperation_end_date }}</label>
-                <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime" :placeholder="c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
+                <label class="text-sm font-light">{{ $l.cooperation_end_date }}</label>
+                <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.authorization_status }}</label>
+                <label class="text-sm font-light">{{ $l.authorization_status }}</label>
                 <el-select v-model="manufacturer.data.authorization_status" placeholder="Select" class="w-full rounded-md">
-                  <el-option v-for="item in optionsAuthorizationStatus" :key="item.value" :label="item.label" :value="item.value" />
+                  <el-option v-for="item in options_authorization_status" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ l.production_operations }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.production_operations }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.requestor_facility_code }}</label>
-                <el-input :placeholder="c.input" v-model="manufacturer.data.requestor_facility_code" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.requestor_facility_code }}</label>
+                <el-input :placeholder="$c.input" v-model="manufacturer.data.requestor_facility_code" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.requestor_contact_name }}</label>
-                <el-input :placeholder="c.input" v-model="manufacturer.data.requestor_contact_name" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.requestor_contact_name }}</label>
+                <el-input :placeholder="$c.input" v-model="manufacturer.data.requestor_contact_name" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.monthly_produce_quantity }}</label>
+                <label class="text-sm font-light">{{ $l.monthly_produce_quantity }}</label>
                 <el-input-number v-model="manufacturer.data.monthly_produce_quantity" :min="1" class="w-full rounded-md" controls-position="right" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.employee_num }}</label>
+                <label class="text-sm font-light">{{ $l.employee_num }}</label>
                 <el-input-number v-model="manufacturer.data.employee_num" :min="1" class="w-full rounded-md" controls-position="right" style="width: 100%" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ l.codes_identifiers }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.codes_identifiers }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.vendor_code }}</label>
-                <el-input :placeholder="l.input_vendor_code" v-model="manufacturer.data.vendor_code" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.vendor_code }}</label>
+                <el-input :placeholder="$l.input_vendor_code" v-model="manufacturer.data.vendor_code" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.unique_identifier }}</label>
-                <el-input :placeholder="l.input_unique_identifier" v-model="manufacturer.data.unique_identifier" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.unique_identifier }}</label>
+                <el-input :placeholder="$l.input_unique_identifier" v-model="manufacturer.data.unique_identifier" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.ffc_id }}</label>
-                <el-input :placeholder="l.input_ffc_id" v-model="manufacturer.data.ffc_id" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.ffc_id }}</label>
+                <el-input :placeholder="$l.input_ffc_id" v-model="manufacturer.data.ffc_id" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.sap_code }}</label>
-                <el-input :placeholder="l.input_sap_code" v-model="manufacturer.data.sap_code" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.sap_code }}</label>
+                <el-input :placeholder="$l.input_sap_code" v-model="manufacturer.data.sap_code" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ l.classification_orders }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.classification_orders }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.classification }}</label>
-                <el-input :placeholder="l.input_classification" v-model="manufacturer.data.classification" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.classification }}</label>
+                <el-input :placeholder="$l.input_classification" v-model="manufacturer.data.classification" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.types_of_orders }}</label>
-                <el-input :placeholder="l.input_types_of_orders" v-model="manufacturer.data.types_of_orders" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.types_of_orders }}</label>
+                <el-input :placeholder="$l.input_types_of_orders" v-model="manufacturer.data.types_of_orders" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ l.warnings_compliance }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ $l.warnings_compliance }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ l.compliance_warning_letter }}</label>
-                <el-input :placeholder="l.input_compliance_warning_letter" v-model="manufacturer.data.compliance_warning_letter" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ $l.compliance_warning_letter }}</label>
+                <el-input :placeholder="$l.input_compliance_warning_letter" v-model="manufacturer.data.compliance_warning_letter" clearable class="w-full rounded-md" />
               </div>
             </div>
           </div>
 
           <div class="mt-4 flex justify-between items-center">
-            <div class="text-xl font-black text-gray-900 dark:text-white">
-              {{ l.contact_info }}
+            <div class="text-xl font-black text-gray-900 dark:text-white!">
+              {{ $l.contact_info }}
             </div>
 
             <div>
@@ -253,28 +282,28 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
 
-                {{ c.addData || 'Add data' }}
+                {{ $c.addData || 'Add data' }}
               </button>
             </div>
           </div>
           <div>
-            <z-table :list="contactInfo.list" :tableProps="config.tableProps" :columns="contactInfoColumns" @deleteItem="contactInfoDeleteItem" class="w-full">
+            <z-table :list="contactInfo.list" :tableProps="tableProps" :columns="contactInfo.columns" @deleteItem="contactInfoDeleteItem" class="w-full">
               <template v-slot:operation="v">
                 <el-button type="text" size="small" class="text-blue-500 hover:underline mr-2" @click="contactInfoEditItem(v.row, v.$index)">
                   <i class="el-icon-edit"></i>
-                  {{ c.edit }}
+                  {{ $c.edit }}
                 </el-button>
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="contactInfoDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
-                  {{ c.delete }}
+                  {{ $c.delete }}
                 </el-button>
               </template>
             </z-table>
           </div>
 
           <div class="mt-4 flex justify-between items-center">
-            <div class="text-xl font-black text-gray-900 dark:text-white">
-              {{ l.addr_and_processes }}
+            <div class="text-xl font-black text-gray-900 dark:text-white!">
+              {{ $l.addr_and_processes }}
             </div>
 
             <div>
@@ -283,29 +312,29 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
 
-                {{ c.addData || 'Add data' }}
+                {{ $c.addData || 'Add data' }}
               </button>
             </div>
           </div>
 
           <div>
-            <z-table :list="address.list" :tableProps="config.tableProps" :columns="addressColumns" @deleteItem="addressDeleteItem" class="w-full">
+            <z-table :list="address.list" :tableProps="tableProps" :columns="address.columns" @deleteItem="addressDeleteItem" class="w-full">
               <template v-slot:operation="v">
                 <el-button type="text" size="small" class="text-blue-500 hover:underline mr-2" @click="addressEditItem(v.row, v.$index)">
                   <i class="el-icon-edit"></i>
-                  {{ c.edit }}
+                  {{ $c.edit }}
                 </el-button>
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="addressDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
-                  {{ c.delete }}
+                  {{ $c.delete }}
                 </el-button>
               </template>
             </z-table>
           </div>
 
           <div class="mt-4 flex justify-between items-center">
-            <div class="text-xl font-black text-gray-900 dark:text-white">
-              {{ l.compliance_evidence }}
+            <div class="text-xl font-black text-gray-900 dark:text-white!">
+              {{ $l.compliance_evidence }}
             </div>
 
             <div>
@@ -314,17 +343,17 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
 
-                {{ c.add_attachments || 'Add attachments' }}
+                {{ $c.add_attachments || 'Add attachments' }}
               </button>
             </div>
           </div>
 
           <div>
-            <z-table :list="attachment.list" :tableProps="config.tableProps" :columns="attachmentColumns" @deleteItem="attachmentDeleteItem" class="w-full">
+            <z-table :list="attachment.list" :tableProps="tableProps" :columns="attachment.columns" @deleteItem="attachmentDeleteItem" class="w-full">
               <template v-slot:operation="v">
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="attachmentDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
-                  {{ c.delete }}
+                  {{ $c.delete }}
                 </el-button>
               </template>
             </z-table>
@@ -333,46 +362,46 @@
       </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="manufacturer.addOrEditFormVisible = false" class="dialog-cancel-button">
-          {{ c.cancel }}
+          {{ $c.cancel }}
         </el-button>
         <el-button type="primary" @click="OPenManufacturer" class="dialog-confirm-button">
-          {{ c.confirm }}
+          {{ $c.confirm }}
         </el-button>
       </span>
     </CustomDialog>
     <!-- 确认信息窗口 -->
-    <CustomDialog :title="l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'1000px'" :width="'100%'">
+    <CustomDialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'1000px'" :width="'100%'">
       <template #content>
         <div class="flex flex-col gap-6 p-4">
           <!-- 基本信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-blue-50 to-blue-100 px-4 py-3 dark:from-blue-900 dark:to-blue-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ l.partner_information }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.partner_information }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.manufacture_name_CN }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.name_zh) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.manufacture_name_CN }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_zh) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.manufacture_name_US }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.name_en) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.manufacture_name_US }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_en) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.legal_person }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.legal_person) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.legal_person }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.legal_person) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.partner_country }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.country) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.partner_country }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.country) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.requestor_facility_name }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_facility_name }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.requestor_facility_code }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_facility_code }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
               </div>
             </div>
           </div>
@@ -380,32 +409,32 @@
           <!-- 商业信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-green-50 to-green-100 px-4 py-3 dark:from-green-900 dark:to-green-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ l.export_business }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.export_business }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.export_business }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_export_biz) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.export_business }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_export_biz) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.is_involve_product }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_involve_product }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.customs_number }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.customs_number) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.customs_number }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.customs_number) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.biz_license_number }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.biz_license_number }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.cooperation_start_date }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(Sdate) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.cooperation_start_date }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(Sdate) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.vendor_code }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.vendor_code) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.vendor_code }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.vendor_code) }}</span>
               </div>
             </div>
           </div>
@@ -413,32 +442,32 @@
           <!-- 授权信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-purple-50 to-purple-100 px-4 py-3 dark:from-purple-900 dark:to-purple-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ l.cooperation_authorization }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.cooperation_authorization }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.is_alidas_producer }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_alidas_producer) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_alidas_producer }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_alidas_producer) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.is_alidas_authorized }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_alidas_authorized }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.authorization_status }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.authorization_status }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.requestor_contact_name }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_contact_name }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.compliance_warning_letter }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.compliance_warning_letter }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.classification }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.classification) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.classification }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.classification) }}</span>
               </div>
             </div>
           </div>
@@ -446,20 +475,20 @@
           <!-- 生产信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-3 dark:from-orange-900 dark:to-orange-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ l.production_operations }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.production_operations }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.monthly_produce_quantity }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.monthly_produce_quantity }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.employee_num }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.employee_num) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.employee_num }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.employee_num) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.types_of_orders }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.types_of_orders }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
               </div>
             </div>
           </div>
@@ -467,20 +496,20 @@
           <!-- 标识信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 px-4 py-3 dark:from-indigo-900 dark:to-indigo-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ l.codes_identifiers }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.codes_identifiers }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.unique_identifier }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.unique_identifier }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.ffc_id }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.ffc_id) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.ffc_id }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.ffc_id) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.sap_code }}</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ displayValue(manufacturer.data.sap_code) }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.sap_code }}</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.sap_code) }}</span>
               </div>
             </div>
           </div>
@@ -488,68 +517,68 @@
       </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="manufacturer.inforFormVisible = false">
-          {{ c.cancel }}
+          {{ $c.cancel }}
         </el-button>
         <el-button type="primary" @click="submmitManufacturer">
-          {{ c.confirm }}
+          {{ $c.confirm }}
         </el-button>
       </span>
     </CustomDialog>
 
     <!-- 合规联系人信息 -->
-    <CustomDialog :title="l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" :maxWidth="'600px'">
+    <CustomDialog :title="$l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" :maxWidth="'600px'">
       <template #notice>
         <div class="text-sm text-gray-500 py-3 px-6 bg-gray-50 leading-4">
-          {{ l.contact_info_notice || 'contact_info_notice' }}
+          {{ $l.contact_info_notice || 'contact_info_notice' }}
         </div>
       </template>
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.contact_name }}
+              {{ $l.contact_name }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_name" clearable />
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_name" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.contact_job_title }}
+              {{ $l.contact_job_title }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_job_title" clearable />
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_job_title" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.contact_phone }}
+              {{ $l.contact_phone }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_phone" clearable />
-            <p class="text-xs text-gray-400">{{ l.contact_phone_note || 'contact_phone_note' }}</p>
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_phone" clearable />
+            <p class="text-xs text-gray-400">{{ $l.contact_phone_note || 'contact_phone_note' }}</p>
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.contact_email }}
+              {{ $l.contact_email }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_email" clearable />
-            <p class="text-xs text-gray-400">{{ l.contact_email_note || 'contact_email_note' }}</p>
+            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_email" clearable />
+            <p class="text-xs text-gray-400">{{ $l.contact_email_note || 'contact_email_note' }}</p>
           </div>
         </div>
       </template>
       <template #footer>
         <el-button @click="contactInfo.dialogFormVisible = false">
-          {{ c.cancel }}
+          {{ $c.cancel }}
         </el-button>
         <el-button type="primary" @click="contactInfoSubmmit">
-          {{ c.confirm }}
+          {{ $c.confirm }}
         </el-button>
         <slot name="operation"></slot>
       </template>
     </CustomDialog>
 
     <!-- Địa chỉ - CustomDialog -->
-    <CustomDialog :title="l.addr_and_processes" @submmit="addressSubmmit" :visible.sync="address.dialogFormVisible" :maxWidth="'600px'">
+    <CustomDialog :title="$l.addr_and_processes" @submmit="addressSubmmit" :visible.sync="address.dialogFormVisible" :maxWidth="'600px'">
       <template #notice>
         <div class="text-sm text-gray-500 py-3 px-6 bg-gray-50 leading-4">Thông tin địa chỉ và quy trình sản xuất là bắt buộc. Vui lòng điền đầy đủ thông tin.</div>
       </template>
@@ -557,99 +586,99 @@
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.address_zh }}
+              {{ $l.address_zh }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="address.data.address_zh" clearable />
+            <el-input :placeholder="$l.input" v-model="address.data.address_zh" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.address_en }}
+              {{ $l.address_en }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="address.data.address_en" clearable />
+            <el-input :placeholder="$l.input" v-model="address.data.address_en" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.own_processes }}
+              {{ $l.own_processes }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="address.data.own_processes" clearable />
+            <el-input :placeholder="$l.input" v-model="address.data.own_processes" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ l.match_processes }}
+              {{ $l.match_processes }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="l.input" v-model="address.data.match_processes" clearable />
+            <el-input :placeholder="$l.input" v-model="address.data.match_processes" clearable />
           </div>
         </div>
       </template>
       <template #footer>
         <el-button @click="address.dialogFormVisible = false">
-          {{ c.cancel }}
+          {{ $c.cancel }}
         </el-button>
         <el-button type="primary" @click="addressSubmmit">
-          {{ c.confirm }}
+          {{ $c.confirm }}
         </el-button>
       </template>
     </CustomDialog>
     <!-- 附件窗口 -->
-    <CustomDialog :title="l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
+    <CustomDialog :title="$l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
       <el-form ref="form">
         <el-form-item label="">
           <el-button type="primary" @click="selectFile">
-            {{ l.selectFile }}
+            {{ $l.selectFile }}
           </el-button>
           <div class="text item">
             {{ attachment.fileList.file.name }}
           </div>
           <div>
-            <progress v-if="attachment.uploadProgress > 0" :value="attachment.uploadProgress" max="100"></progress>
+            <progress v-if="this.attachment.uploadProgress > 0" :value="this.attachment.uploadProgress" max="100"></progress>
           </div>
         </el-form-item>
-        <el-form-item :label="l.fileName">
-          <el-input :placeholder="l.input_fileName" v-model="attachment.fileList.file.name" :disabled="true" style="width: 300px"></el-input>
+        <el-form-item :label="$l.fileName">
+          <el-input :placeholder="$l.input_fileName" v-model="attachment.fileList.file.name" :disabled="true" style="width: 300px"></el-input>
         </el-form-item>
-        <el-form-item :label="l.fileType">
-          <el-select :placeholder="l.choose" style="width: 300px" v-model="attachment.fileList.attachment_type">
+        <el-form-item :label="$l.fileType">
+          <el-select :placeholder="$l.choose" style="width: 300px" v-model="attachment.fileList.attachment_type">
             <el-option v-for="item in attachment.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <div style="float: right">
             <el-button @click="attachment.dialogFormVisible = false">
-              {{ c.cancel }}
+              {{ $c.cancel }}
             </el-button>
             <el-button type="primary" @click="attachmentSubmmit">
-              {{ c.confirm }}
+              {{ $c.confirm }}
             </el-button>
           </div>
         </el-form-item>
       </el-form>
     </CustomDialog>
     <!-- 地址信息 -->
-    <CustomDialog :title="l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
+    <CustomDialog :title="$l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
       <el-table :data="address.list">
-        <el-table-column property="address_zh" :label="l.address_zh"></el-table-column>
-        <el-table-column property="address_en" :label="l.address_en"></el-table-column>
-        <el-table-column property="own_processes" :label="l.own_processes"></el-table-column>
-        <el-table-column property="match_processes" :label="l.own_processes"></el-table-column>
+        <el-table-column property="address_zh" :label="$l.address_zh"></el-table-column>
+        <el-table-column property="address_en" :label="$l.address_en"></el-table-column>
+        <el-table-column property="own_processes" :label="$l.own_processes"></el-table-column>
+        <el-table-column property="match_processes" :label="$l.own_processes"></el-table-column>
       </el-table>
     </CustomDialog>
     <!-- 附件信息 -->
-    <CustomDialog :title="l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
+    <CustomDialog :title="$l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
       <el-table :data="attachment.list">
-        <el-table-column property="file_name" :label="l.fileName"></el-table-column>
-        <el-table-column property="create_user" :label="l.create_people"></el-table-column>
-        <el-table-column property="create_time" :label="l.create_date"></el-table-column>
-        <el-table-column fixed="right" :label="l.operation">
+        <el-table-column property="file_name" :label="$l.fileName"></el-table-column>
+        <el-table-column property="create_user" :label="$l.create_people"></el-table-column>
+        <el-table-column property="create_time" :label="$l.create_date"></el-table-column>
+        <el-table-column fixed="right" :label="$l.operation">
           <template slot-scope="scope">
             <el-button @click="checkAttachments(scope.row)" type="text" size="small">
-              {{ l.check }}
+              {{ $l.check }}
             </el-button>
             <el-button type="text" size="small" @click="downAttachments(scope.row)">
-              {{ l.down }}
+              {{ $l.down }}
             </el-button>
           </template>
         </el-table-column>
@@ -659,16 +688,16 @@
     <CustomDialog :visible.sync="visabled.uploadFile" width="30%">
       <div>
         <el-form style="margin-top: 20px">
-          <el-form-item :label="l.upload_file" required>
+          <el-form-item :label="$l.upload_file" required>
             <input type="file" accept=".xls,.xlsx" class="el-input" @change="onFileChange" ref="addfileinput" style="border: 1px solid #dcdcdc; border-radius: 5px; padding: 3px" />
           </el-form-item>
         </el-form>
         <div style="margin-top: 40px; text-align: right">
           <el-button type="primary" @click="visabled.uploadFile = false">
-            {{ c.cancel }}
+            {{ $c.cancel }}
           </el-button>
           <el-button type="success" @click="uploadExcel">
-            {{ c.m_upload }}
+            {{ $c.m_upload }}
           </el-button>
         </div>
       </div>
@@ -676,161 +705,202 @@
     <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3" @update:visible="attachment.dialogFormVisible3 = $event"></filePreviews>
 
     <!-- Chi tiết modal -->
-    <CustomDialog :title="c.detail" :visible.sync="manufacturer.detailFormVisible" :clickOutside="false" width="90%" :maxWidth="'1280px'" custom-class="scrollable-dialog manufacturer-detail-dialog">
+    <CustomDialog :title="$c.detail" :visible.sync="manufacturer.detailFormVisible" :clickOutside="false" width="90%" :maxWidth="'1280px'" custom-class="scrollable-dialog manufacturer-detail-dialog">
       <template #content>
-        <div class="form-container">
-          <!-- Basic Information Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-info"></i>
-                {{ l.basic }}
-              </h3>
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-4">
+            <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.basic }}</div>
+
+            <div>
+              <div class="text-base font-semibold text-black">{{ $l.partner_information }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.manufacture_name_CN }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_zh) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.manufacture_name_US }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_en) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.legal_person }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.legal_person) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.partner_country }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.country) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_group_name }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.cooperation_group_name) }}</span>
+                </div>
+              </div>
             </div>
-            <div class="form-content">
-              <div class="detail-descriptions">
-                <el-descriptions :column="3" border>
-                  <el-descriptions-item :label="l.manufacture_name_CN">
-                    {{ manufacturer.data.name_zh || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.manufacture_name_US">
-                    {{ manufacturer.data.name_en || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.legal_person">
-                    {{ manufacturer.data.legal_person || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.partner_country">
-                    {{ manufacturer.data.country || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.customs_number">
-                    {{ manufacturer.data.customs_number || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.biz_license_number">
-                    {{ manufacturer.data.biz_license_number || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.requestor_facility_type">
-                    {{ manufacturer.data.requestor_facility_type || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.export_business">
-                    {{ manufacturer.data.is_export_biz || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.is_involve_product">
-                    {{ manufacturer.data.is_involve_product || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.cooperation_start_date">
-                    {{ Sdate }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.is_alidas_producer">
-                    {{ manufacturer.data.is_alidas_producer || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.is_alidas_authorized">
-                    {{ manufacturer.data.is_alidas_authorized || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.requestor_facility_name">
-                    {{ manufacturer.data.requestor_facility_name || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.requestor_contact_name">
-                    {{ manufacturer.data.requestor_contact_name || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.monthly_produce_quantity">
-                    {{ manufacturer.data.monthly_produce_quantity || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.employee_num">
-                    {{ manufacturer.data.employee_num || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.requestor_facility_code">
-                    {{ manufacturer.data.requestor_facility_code || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.vendor_code">
-                    {{ manufacturer.data.vendor_code || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.unique_identifier">
-                    {{ manufacturer.data.unique_identifier || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.ffc_id">
-                    {{ manufacturer.data.ffc_id || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.sap_code">
-                    {{ manufacturer.data.sap_code || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.classification">
-                    {{ manufacturer.data.classification || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.authorization_status">
-                    {{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.compliance_warning_letter">
-                    {{ manufacturer.data.compliance_warning_letter || '--' }}
-                  </el-descriptions-item>
-                  <el-descriptions-item :label="l.types_of_orders">
-                    {{ manufacturer.data.types_of_orders || '--' }}
-                  </el-descriptions-item>
-                </el-descriptions>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.registration_legal }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.customs_number }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.customs_number) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.biz_license_number }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.cooperation_authorization }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_facility_type }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.is_involve_product }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.is_alidas_authorized }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_start_date }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.cooperation_start_date) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_end_date }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.cooperation_end_date) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.authorization_status }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.production_operations }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_facility_code }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_contact_name }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.monthly_produce_quantity }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.employee_num }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.employee_num) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.codes_identifiers }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.vendor_code }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.vendor_code) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.unique_identifier }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.ffc_id }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.ffc_id) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.sap_code }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.sap_code) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.classification_orders }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.classification }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.classification) }}</span>
+                </div>
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.types_of_orders }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="text-base font-semibold text-black">{{ $l.warnings_compliance }}</div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
+                <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 md:col-span-3">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.compliance_warning_letter }}</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Contact Information Section -->
-          <div class="form-section" v-if="contactInfo.list && contactInfo.list.length > 0">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-user"></i>
-                {{ l.contact_info }}
-              </h3>
+          <div class="flex flex-col gap-2" v-if="contactInfo.list && contactInfo.list.length > 0">
+            <div class="mt-4 flex items-center justify-between">
+              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.contact_info }}</div>
             </div>
-            <div class="table-container">
-              <el-table :data="contactInfo.list" class="form-table" border>
-                <el-table-column prop="contact_name" :label="l.contact_name" min-width="120"></el-table-column>
-                <el-table-column prop="contact_job_title" :label="l.contact_job_title" min-width="120"></el-table-column>
-                <el-table-column prop="contact_phone" :label="l.contact_phone" min-width="140"></el-table-column>
-                <el-table-column prop="contact_email" :label="l.contact_email" min-width="180"></el-table-column>
+            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
+              <el-table :data="contactInfo.list" border class="w-full">
+                <el-table-column prop="contact_name" :label="$l.contact_name" min-width="120"></el-table-column>
+                <el-table-column prop="contact_job_title" :label="$l.contact_job_title" min-width="120"></el-table-column>
+                <el-table-column prop="contact_phone" :label="$l.contact_phone" min-width="140"></el-table-column>
+                <el-table-column prop="contact_email" :label="$l.contact_email" min-width="180"></el-table-column>
               </el-table>
             </div>
           </div>
 
-          <!-- Address & Processes Section -->
-          <div class="form-section" v-if="address.list && address.list.length > 0">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-location-outline"></i>
-                {{ l.addr_and_processes }}
-              </h3>
+          <div class="flex flex-col gap-2" v-if="address.list && address.list.length > 0">
+            <div class="mt-4 flex items-center justify-between">
+              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.addr_and_processes }}</div>
             </div>
-            <div class="table-container">
-              <el-table :data="address.list" class="form-table" border>
-                <el-table-column prop="address_zh" :label="l.address_zh" min-width="200"></el-table-column>
-                <el-table-column prop="address_en" :label="l.address_en" min-width="200"></el-table-column>
-                <el-table-column prop="own_processes" :label="l.own_processes" min-width="150"></el-table-column>
-                <el-table-column prop="match_processes" :label="l.match_processes" min-width="150"></el-table-column>
+            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
+              <el-table :data="address.list" border class="w-full">
+                <el-table-column prop="address_zh" :label="$l.address_zh" min-width="200"></el-table-column>
+                <el-table-column prop="address_en" :label="$l.address_en" min-width="200"></el-table-column>
+                <el-table-column prop="own_processes" :label="$l.own_processes" min-width="150"></el-table-column>
+                <el-table-column prop="match_processes" :label="$l.match_processes" min-width="150"></el-table-column>
               </el-table>
             </div>
           </div>
 
-          <!-- Compliance Evidence Section -->
-          <div class="form-section" v-if="attachment.list && attachment.list.length > 0">
-            <div class="section-header">
-              <h3 class="section-title">
-                <i class="el-icon-folder"></i>
-                {{ l.compliance_evidence }}
-              </h3>
+          <div class="flex flex-col gap-2" v-if="attachment.list && attachment.list.length > 0">
+            <div class="mt-4 flex items-center justify-between">
+              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.compliance_evidence }}</div>
+              <div>
+                <el-button type="text" size="small" class="delete-action-button" @click="downloadAllAttachments(manufacturer.data.id)">Tải xuống tất cả</el-button>
+              </div>
             </div>
-            <div class="table-container">
-              <el-table :data="attachment.list" class="form-table" border>
-                <el-table-column prop="file_name" :label="l.fileName" min-width="200"></el-table-column>
-                <el-table-column prop="attachment_type" :label="l.fileType" min-width="120">
+            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
+              <el-table :data="attachment.list" border class="w-full">
+                <el-table-column prop="file_name" :label="$l.fileName" min-width="200"></el-table-column>
+                <el-table-column prop="attachment_type" :label="$l.fileType" min-width="120">
                   <template slot-scope="scope">
                     <span>{{ matterType(scope.row.attachment_type) }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="create_user" :label="l.create_people" min-width="120"></el-table-column>
-                <el-table-column prop="create_time" :label="l.create_date" min-width="150"></el-table-column>
-                <el-table-column :label="c.operation" width="150" fixed="right">
+                <el-table-column prop="create_user" :label="$l.create_people" min-width="120"></el-table-column>
+                <el-table-column prop="create_time" :label="$l.create_date" min-width="150"></el-table-column>
+                <el-table-column :label="$c.operation" width="150" fixed="right">
                   <template slot-scope="scope">
                     <el-button @click="checkAttachments(scope.row)" type="text" size="small" class="delete-action-button">
-                      {{ l.check }}
+                      {{ $l.check }}
                     </el-button>
                     <el-button type="text" size="small" @click="downAttachments(scope.row)" class="delete-action-button">
-                      {{ l.down }}
+                      {{ $l.down }}
                     </el-button>
                   </template>
                 </el-table-column>
@@ -841,26 +911,23 @@
       </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="manufacturer.detailFormVisible = false" class="dialog-cancel-button">
-          {{ c.cancel }}
+          {{ $c.cancel }}
         </el-button>
       </span>
     </CustomDialog>
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted, getCurrentInstance, watch, set } from 'vue'
+<script>
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
+
 import { getToken, localGet } from '@/utils/auth'
-import { _, api, defaultConfig, zFormDialog, zPagination, zTable } from '@/views/_common'
+import { _, api, defaultConfig,initFuncs,  zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+
 import CustomDialog from '../../_common/CustomDialog.vue'
 import filePreviews from '../../_common/filePreviews.vue'
 import ManufacturerTable from './ManufacturerTable.vue'
-import { useLocalI18n } from '@/composables/useLocalI18n'
-
-const { proxy } = getCurrentInstance()
-const { l, c } = useLocalI18n('manufacturer')
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.ComplianceManufacturer,
@@ -876,1071 +943,1253 @@ const config = Object.assign({}, _.cloneDeep(defaultConfig), {
     opsColWith: 150,
   },
 })
-
-const fileInput = ref(null)
-const addfileinput = ref(null)
-
-const optionsAuthorizationStatus = computed(() => [
-  { value: 'onboarding', label: l.value.producer_status_onboarding },
-  { value: 'discontinued', label: l.value.producer_status_discontinued },
-  { value: 'in_use', label: l.value.producer_status_in_use },
-])
-
-const maxSizeInBytes = 5 * 1024 * 1024
-const fileSizeInBytes = ref(0)
-
-const manufacturer = reactive({
-  list: [],
-  loading: false,
-  data: {
-    name_zh: '',
-    name_en: '',
-    legal_person: '',
-    contact_name: '',
-    contact_phone: '',
-    contact_email: '',
-    contact_job_title: '',
-    country: '',
-    customs_number: '',
-    biz_license_number: '',
-    cooperation_start_date: '',
-    cooperation_end_date: '',
-    cooperation_company_ownership: '',
-    cooperation_group_name: '',
-    requestor_facility_name: '',
-    requestor_facility_code: '',
-    requestor_contact_name: '',
-    employee_num: 0,
-    monthly_produce_quantity: 0,
-    is_export_biz: '',
-    requestor_facility_type: '',
-    is_involve_product: '',
-    is_alidas_producer: '',
-    is_alidas_authorized: '',
-    manual_input_id: '',
-    vendor_code: '',
-    unique_identifier: '',
-    ffc_id: '',
-    sap_code: '',
-    classification: '',
-    authorization_status: '',
-    compliance_warning_letter: '',
-    types_of_orders: '',
-    contactInfoList: [],
-    addressList: [],
-    attachment: [],
+export default {
+  name: 'manufacturer',
+  components: {
+    zTable,
+    zFormDialog,
+    zPagination,
+    filePreviews,
+    CustomDialog,
+    ManufacturerTable,
   },
-  query: {
-    manufacture_id: '', // 公司业务id
-    addr: '',
-    manufacture_name: '',
-    fileName: '',
-    legal_person: '',
-    produce_processes: '',
-    requestor_facility_type: '',
-    requestor_facility_name: '',
-    pageSize: 10,
-    page: 1,
-    total: 0,
-  },
-  addOrEditFormVisible: false,
-  inforFormVisible: false,
-  detailFormVisible: false,
-})
+  data() {
+    var checkPhone = (rule, value, callback) => {
+      const reg = /^(0|\+84)[1-9][0-9]{8}$/ // Số điện thoại Việt Nam
+      console.log(reg.test(this.contactInfo.data.contact_phone))
+      this.rulesRules.isPhone = false
+      if (this.contactInfo.data.contact_phone === '') {
+        callback(new Error(this.$l.input_phone))
+      } else if (!reg.test(this.contactInfo.data.contact_phone)) {
+        callback(new Error(this.$l.input_confirm_phone))
+      } else {
+        this.rulesRules.isPhone = true
+        callback()
+      }
+    }
+    var checkEmail = (rule, value, callback) => {
+      const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ // 邮箱正则表达式
+      this.rulesRules.isEmail = false
+      if (this.contactInfo.data.contact_email === '') {
+        callback(new Error(this.$l.input_email))
+      } else if (!reg.test(this.contactInfo.data.contact_email)) {
+        callback(new Error(this.$l.ininput_confirm_email))
+      } else {
+        this.rulesRules.isEmail = true
+        callback()
+      }
+    }
+    return {
+      ...config,
 
-const contactInfo = reactive({
-  list: [],
-  data: {},
-  editIndex: -1,
-  dialogFormVisible: false,
-  dialogTableVisible2: false,
-})
-
-const contactInfoColumns = computed(() => [
-  {
-    title: l.value.contact_name,
-    key: 'contact_name',
-  },
-  {
-    title: l.value.contact_job_title,
-    key: 'contact_job_title',
-  },
-  {
-    title: l.value.contact_phone,
-    key: 'contact_phone',
-  },
-  {
-    title: l.value.contact_email,
-    key: 'contact_email',
-  },
-])
-
-const address = reactive({
-  list: [],
-  data: {},
-  editIndex: -1,
-  dialogFormVisible: false,
-  dialogTableVisible2: false,
-})
-
-const addressColumns = computed(() => [
-  {
-    title: l.value.address_zh,
-    key: 'address_zh',
-  },
-  {
-    title: l.value.address_en,
-    key: 'address_en',
-  },
-  {
-    title: l.value.own_processes,
-    key: 'own_processes',
-  },
-  {
-    title: l.value.match_processes,
-    key: 'match_processes',
-  },
-])
-
-const attachment = reactive({
-  list: [],
-  data: {},
-  dialogFormVisible: false,
-  dialogFormVisible2: false,
-  dialogFormVisible3: false,
-  fileUrl: '',
-  fileList: {
-    attachment_type: '',
-    fileName: '',
-    file: {},
-  },
-  divide: {
-    file: null,
-    chunkSize: 3 * 1024 * 1024, // 5MB
-    chunks: [],
-    fileHash: '',
-    fileList: [],
-    taskId: '',
-    fileName: '',
-    attachment_type: '',
-  },
-  uploadProgress: 0,
-  options: computed(() => [
-    {
-      value: '0A',
-      label: l.value.business_license,
-    },
-    {
-      value: '0B',
-      label: 'NDA ',
-    },
-    {
-      value: '0C',
-      label: l.value.other_attachment,
-    },
-  ])
-})
-
-const attachmentColumns = computed(() => [
-  {
-    title: l.value.fileName,
-    key: 'file_name',
-  },
-  {
-    title: l.value.fileType,
-    key: 'attachment_type',
-    formatter: matterType,
-  },
-  {
-    title: l.value.create_people,
-    key: 'create_user',
-  },
-  {
-    title: l.value.create_date,
-    key: 'create_time',
-  },
-  {
-    title: l.value.modify_user,
-    key: 'modify_user',
-  },
-  {
-    title: l.value.modify_time,
-    key: 'modify_time',
-  },
-])
-
-const userAuth = ref({})
-const showAuth = reactive({
-  m_search: false,
-  m_add: false,
-  m_del: false,
-  m_updata: false,
-  m_import: false,
-  m_export: false,
-  m_upload: false,
-  m_audit: false,
-  m_print: false,
-})
-
-const visabled = reactive({
-  uploadFile: false,
-})
-
-const uploadQuery = reactive({})
-const pagination = ref(null) // z-pagination uses this? Not in data originally. Used in template.
-
-const Sdate = computed(() => {
-  return manufacturer.data.cooperation_start_date ? new Date(manufacturer.data.cooperation_start_date).toLocaleString() : ''
-})
-
-function getList() {
-  manufacturer.loading = true
-  proxy.$request(
-    config.apiManufacturer,
-    {
-      manufacture_id: manufacturer.query.manufacture_id,
-      addr: manufacturer.query.addr,
-      manufacture_name: manufacturer.query.manufacture_name,
-      fileName: manufacturer.query.fileName,
-      legal_person: manufacturer.query.legal_person,
-      produce_processes: manufacturer.query.produce_processes,
-      requestor_facility_type: manufacturer.query.requestor_facility_type,
-      requestor_facility_name: manufacturer.query.requestor_facility_name,
-      pageSize: manufacturer.query.pageSize,
-      page: manufacturer.query.page,
-    },
-    'get'
-  )
-    .then((r) => {
-      console.log(r)
-      manufacturer.list = r.data.list
-      manufacturer.query.total = r.data.total
-    })
-    .catch((e) => {
-      console.log(e)
-    })
-    .finally(() => {
-      manufacturer.loading = false
-    })
-}
-
-function getDataByID(id) {
-  console.log(id)
-  proxy.$request(config.apiID, {
-    id: id,
-  })
-    .then((r) => {
-      console.log(r)
-      manufacturer.data = r.data
-      attachment.list = r.data.attachment
-      address.list = r.data.addressList
-      contactInfo.list = r.data.contactInfoList
-    })
-    .catch((e) => {
-      console.log(e)
-    })
-}
-
-function getAddrsList(data) {
-  proxy.$request(
-    config.apiManufacturerAddrs,
-    {
-      id: data.id,
-    },
-    'get'
-  )
-    .then((r) => {
-      address.list = r.data
-    })
-    .catch((e) => {
-      console.log(e)
-    })
-}
-
-function getAttachments(id, file_type) {
-  proxy.$request(
-    config.apiAttachments,
-    {
-      id: id,
-      file_type: file_type,
-    },
-    'get'
-  )
-    .then((r) => {
-      attachment.list = r.data
-      console.log(attachment.list)
-    })
-    .catch((e) => {
-      console.log(e)
-    })
-}
-
-function reset() {
-  manufacturer.query = {
-    manufacture_id: '', // 公司业务id
-    addr: '',
-    manufacture_name: '',
-    fileName: '',
-    legal_person: '',
-    produce_processes: '',
-    requestor_facility_type: '',
-    requestor_facility_name: '',
-    pageSize: 15,
-    page: 1,
-    total: 0,
-  }
-  getList()
-}
-
-function add() {
-  manufacturer.data = {
-    name_zh: '',
-    name_en: '',
-    legal_person: '',
-    contact_name: '',
-    contact_phone: '',
-    contact_email: '',
-    contact_job_title: '',
-    country: '',
-    customs_number: '',
-    biz_license_number: '',
-    cooperation_start_date: '',
-    cooperation_end_date: '',
-    cooperation_company_ownership: '',
-    cooperation_group_name: '',
-    requestor_facility_name: '',
-    requestor_facility_code: '',
-    requestor_contact_name: '',
-    employee_num: 0,
-    monthly_produce_quantity: 0,
-    is_export_biz: '',
-    requestor_facility_type: '',
-    is_involve_product: '',
-    is_alidas_producer: '',
-    is_alidas_authorized: '',
-    vendor_code: '',
-    unique_identifier: '',
-    ffc_id: '',
-    sap_code: '',
-    classification: '',
-    authorization_status: '',
-    compliance_warning_letter: '',
-    types_of_orders: '',
-    contactInfoList: [],
-    addressList: [],
-    attachment: [],
-  }
-  contactInfo.data = {}
-  contactInfo.list = []
-  contactInfo.editIndex = -1
-  address.data = {}
-  address.list = []
-  address.editIndex = -1
-  attachment.data = {}
-  attachment.list = []
-  manufacturer.addOrEditFormVisible = true
-}
-
-function editItem(index, data) {
-  getDataByID(data.id)
-  manufacturer.addOrEditFormVisible = true
-}
-
-function OPenManufacturer() {
-  console.log(manufacturer.data)
-  // Logic same as original
-  manufacturer.inforFormVisible = true
-}
-
-function submmitManufacturer() {
-  manufacturer.data.contactInfoList = contactInfo.list
-  manufacturer.data.addressList = address.list
-  manufacturer.data.attachment = attachment.list
-  console.log(manufacturer.data)
-  proxy.$request(config.apiUpdate, manufacturer.data, 'post', false)
-    .then((r) => {
-      console.log(r)
-      proxy.$message({
-        message: c.value.success,
-        type: 'success',
-      })
-      getList()
-      manufacturer.addOrEditFormVisible = false
-      manufacturer.inforFormVisible = false
-    })
-    .catch((e) => {
-      console.log(e)
-    })
-}
-
-function deleteItem(index, data) {
-  console.log(data)
-  proxy.$prompt(l.value.delete_confirm, c.value.oprConfirm, {
-    type: 'warning',
-    inputPattern: /^[Y]{1}$/i,
-    inputErrorMessage: '请输入Y/y',
-    confirmButtonText: c.value.confirm,
-    cancelButtonText: c.value.cancel,
-  })
-    .then(() => {
-      proxy.$request(
-        config.apiDelete,
-        {
-          id: data.id,
+      // Trạng thái producer: onboarding, discontinued, in use
+      options_authorization_status: [
+        { value: 'onboarding', label: this.$l.producer_status_onboarding },
+        { value: 'discontinued', label: this.$l.producer_status_discontinued },
+        { value: 'in_use', label: this.$l.producer_status_in_use },
+      ],
+      maxSizeInBytes: 5 * 1024 * 1024,
+      fileSizeInBytes: 0,
+      manufacturer: {
+        list: [],
+        loading: false,
+        data: {
+          name_zh: '',
+          name_en: '',
+          legal_person: '',
+          contact_name: '',
+          contact_phone: '',
+          contact_email: '',
+          contact_job_title: '',
+          country: '',
+          customs_number: '',
+          biz_license_number: '',
+          cooperation_start_date: '',
+          cooperation_end_date: '',
+          cooperation_company_ownership: '',
+          cooperation_group_name: '',
+          requestor_facility_name: '',
+          requestor_facility_code: '',
+          requestor_contact_name: '',
+          employee_num: 0,
+          monthly_produce_quantity: 0,
+          is_export_biz: '',
+          requestor_facility_type: '',
+          is_involve_product: '',
+          is_alidas_producer: '',
+          is_alidas_authorized: '',
+          manual_input_id: '',
+          vendor_code: '',
+          unique_identifier: '',
+          ffc_id: '',
+          sap_code: '',
+          classification: '',
+          authorization_status: '',
+          compliance_warning_letter: '',
+          types_of_orders: '',
+          contactInfoList: [],
+          addressList: [],
+          attachment: [],
         },
-        'post'
+        query: {
+          manufacture_id: '', // 公司业务id
+          addr: '',
+          manufacture_name: '',
+          fileName: '',
+          legal_person: '',
+          produce_processes: '',
+          requestor_facility_type: '',
+          requestor_facility_name: '',
+          pageSize: 10,
+          page: 1,
+          total: 0,
+        },
+        addOrEditFormVisible: false,
+        inforFormVisible: false,
+        detailFormVisible: false,
+      },
+      contactInfo: {
+        list: [],
+        data: {},
+        editIndex: -1,
+        dialogFormVisible: false,
+        dialogTableVisible2: false,
+        columns: [
+          {
+            title: this.$l.contact_name,
+            key: 'contact_name',
+          },
+          {
+            title: this.$l.contact_job_title,
+            key: 'contact_job_title',
+          },
+          {
+            title: this.$l.contact_phone,
+            key: 'contact_phone',
+          },
+          {
+            title: this.$l.contact_email,
+            key: 'contact_email',
+          },
+        ],
+        fields: [
+          {
+            title: this.$l.contact_name,
+            key: 'contact_name',
+            span: 12,
+            required: true,
+          },
+          {
+            title: this.$l.contact_job_title,
+            key: 'contact_job_title',
+            span: 12,
+            required: true,
+          },
+          {
+            title: this.$l.contact_phone,
+            key: 'contact_phone',
+            span: 12,
+            required: true,
+          },
+          {
+            title: this.$l.contact_email,
+            key: 'contact_email',
+            span: 12,
+            required: true,
+          },
+        ],
+      },
+      address: {
+        list: [],
+        data: {},
+        editIndex: -1,
+        dialogFormVisible: false,
+        dialogTableVisible2: false,
+        columns: [
+          {
+            title: this.$l.address_zh,
+            key: 'address_zh',
+          },
+          {
+            title: this.$l.address_en,
+            key: 'address_en',
+          },
+          {
+            title: this.$l.own_processes,
+            key: 'own_processes',
+          },
+          {
+            title: this.$l.match_processes,
+            key: 'match_processes',
+          },
+        ],
+        fields: [
+          {
+            title: this.$l.address_zh,
+            key: 'address_zh',
+            span: 12,
+            required: true,
+          },
+          {
+            title: this.$l.address_en,
+            key: 'address_en',
+            span: 12,
+            required: true,
+          },
+          {
+            title: this.$l.own_processes,
+            key: 'own_processes',
+            span: 12,
+            required: true,
+          },
+          {
+            title: this.$l.match_processes,
+            key: 'match_processes',
+            span: 12,
+            required: true,
+          },
+        ],
+      },
+      attachment: {
+        list: [],
+        data: {},
+        dialogFormVisible: false,
+        dialogFormVisible2: false,
+        dialogFormVisible3: false,
+        fileUrl: '',
+        columns: [
+          {
+            title: this.$l.fileName,
+            key: 'file_name',
+          },
+          {
+            title: this.$l.fileType,
+            key: 'attachment_type',
+            formatter: this.matterType,
+          },
+          {
+            title: this.$l.create_people,
+            key: 'create_user',
+          },
+          {
+            title: this.$l.create_date,
+            key: 'create_time',
+          },
+          {
+            title: this.$l.modify_user,
+            key: 'modify_user',
+          },
+          {
+            title: this.$l.modify_time,
+            key: 'modify_time',
+          },
+        ],
+        options: [
+          {
+            value: '0A',
+            label: this.$l.business_license,
+          },
+          {
+            value: '0B',
+            label: 'NDA ',
+          },
+          {
+            value: '0C',
+            label: this.$l.other_attachment,
+          },
+        ],
+        fileList: {
+          attachment_type: '',
+          fileName: '',
+          file: {},
+        },
+        divide: {
+          file: null,
+          chunkSize: 3 * 1024 * 1024, // 5MB
+          chunks: [],
+          fileHash: '',
+          fileList: [],
+          taskId: '',
+          fileName: '',
+          attachment_type: '',
+        },
+        uploadProgress: 0, // 上传进度
+      },
+      rulesRules: {
+        contactPhone: [{ validator: checkPhone, trigger: 'blur' }],
+        contactEmail: [{ validator: checkEmail, trigger: 'blur' }],
+        isPhone: false,
+        isEmail: false,
+      },
+      userAuth: [], //保存用户权限
+      showAuth: {
+        //用于权限控制，搭配v-show控制界面上的操作按钮是否展示
+        m_search: false,
+        m_add: false,
+        m_del: false,
+        m_updata: false,
+        m_import: false,
+        m_export: false,
+        m_upload: false,
+        m_audit: false,
+        m_print: false,
+      },
+      visabled: {
+        uploadFile: false,
+      },
+      uploadQuery: {},
+    }
+  },
+  methods: {
+    getList() {
+      this.manufacturer.loading = true
+      this.$request(
+        this.apiManufacturer,
+        {
+          manufacture_id: this.manufacturer.query.manufacture_id,
+          addr: this.manufacturer.query.addr,
+          manufacture_name: this.manufacturer.query.manufacture_name,
+          fileName: this.manufacturer.query.fileName,
+          legal_person: this.manufacturer.query.legal_person,
+          produce_processes: this.manufacturer.query.produce_processes,
+          requestor_facility_type: this.manufacturer.query.requestor_facility_type,
+          requestor_facility_name: this.manufacturer.query.requestor_facility_name,
+          pageSize: this.manufacturer.query.pageSize,
+          page: this.manufacturer.query.page,
+        },
+        'get'
       )
         .then((r) => {
           console.log(r)
-          proxy.$message({
-            type: 'success',
-            message: c.value.success,
-          })
-          getList()
+          this.manufacturer.list = r.data.list
+          this.manufacturer.query.total = r.data.total
         })
         .catch((e) => {
           console.log(e)
-          proxy.$message.error(l.value.delete_error)
         })
-    })
-    .catch(() => {
-      proxy.$message({
-        type: 'info',
-        message: l.value.cancel_delete,
-      })
-    })
-}
-
-function exportExcel() {
-  let lang = localGet('lang')
-  let acceptLanguage = ''
-  if (lang) {
-    let array = lang.split('-')
-    acceptLanguage = lang + ',' + array[0] + ';q=0.9'
-  }
-  console.log(acceptLanguage)
-
-  axios({
-    headers: {
-      token: getToken(),
-      'Accept-Language': acceptLanguage,
+        .finally(() => {
+          this.manufacturer.loading = false
+        })
     },
-    responseType: 'blob',
-    method: 'post',
-    url: proxy.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
-    data: manufacturer.query, // used this.query in original, assumed manufacturer.query
-  }).then((r) => {
-    let file = new FileReader()
-    file.readAsText(r.data, 'utf-8')
-    file.onload = function () {
-      try {
-        const blob = new Blob([r.data], {
-          type: 'application/octet-stream;',
+    getDataByID(id) {
+      console.log(id)
+      this.$request(this.apiID, {
+        id: id,
+      })
+        .then((r) => {
+          console.log(r)
+          this.manufacturer.data = r.data
+          this.attachment.list = r.data.attachment
+          this.address.list = r.data.addressList
+          this.contactInfo.list = r.data.contactInfoList
         })
-        const elink = document.createElement('a')
-        elink.download = decodeURIComponent(l.value.fileBasic_download + '.zip')
-        elink.style.display = 'none'
-        elink.href = URL.createObjectURL(blob)
-        document.body.appendChild(elink)
-        elink.click()
-        URL.revokeObjectURL(elink.href)
-        document.body.removeChild(elink)
-        // this.loading = false // no loading var in original context for export
-      } catch {
-        proxy.$message.error(l.value.file_export_failed)
+        .catch((e) => {
+          console.log(e)
+        })
+    },
+    getAddrsList(data) {
+      this.$request(
+        this.apiManufacturerAddrs,
+        {
+          id: data.id,
+        },
+        'get'
+      )
+        .then((r) => {
+          this.address.list = r.data
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    },
+    getAttachments(id, file_type) {
+      this.$request(
+        this.apiAttachments,
+        {
+          id: id,
+          file_type: file_type,
+        },
+        'get'
+      )
+        .then((r) => {
+          this.attachment.list = r.data
+          console.log(this.attachment.list)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    },
+    reset() {
+      this.manufacturer.query = {
+        manufacture_id: '', // 公司业务id
+        addr: '',
+        manufacture_name: '',
+        fileName: '',
+        legal_person: '',
+        produce_processes: '',
+        requestor_facility_type: '',
+        requestor_facility_name: '',
+        pageSize: 15,
+        page: 1,
+        total: 0,
       }
-    }
-  })
-}
-
-function exportTemplate() {
-  let lang = localGet('lang')
-  let acceptLanguage = ''
-  if (lang) {
-    let array = lang.split('-')
-    acceptLanguage = lang + ',' + array[0] + ';q=0.9'
-  }
-
-  axios({
-    headers: {
-      token: getToken(),
-      'Accept-Language': acceptLanguage,
+      this.getList()
     },
-    responseType: 'blob',
-    method: 'post',
-    url: api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturerTemplate',
-  }).then((r) => {
-    try {
-      const blob = new Blob([r.data], {
-        type: 'application/octet-stream;',
-      })
-      const elink = document.createElement('a')
-      elink.download = l.value.file_download + '.xlsx'
-      elink.style.display = 'none'
-      elink.href = URL.createObjectURL(blob)
-      document.body.appendChild(elink)
-      elink.click()
-      URL.revokeObjectURL(elink.href)
-      document.body.removeChild(elink)
-    } catch (error) {
-      proxy.$message.error('文件导出失败')
-    }
-  })
-}
-
-function exportItem(row) {
-  // Original exportItem implementation
-  console.log('Export item:', row)
-}
-
-function checkArrdess(index, data) {
-  console.log(data.manufacture_id)
-  getAddrsList(data)
-  address.dialogTableVisible2 = true
-}
-
-function checkAttachments(data) {
-  attachment.fileUrl = api.baseUrl + '/' + data.file_url
-  console.log(attachment.fileUrl)
-  attachment.dialogFormVisible3 = true
-}
-
-// Contact Info Methods
-function contactInfoList() {
-  console.log('contactInfo')
-  contactInfo.editIndex = -1
-  contactInfo.data = {}
-  contactInfo.dialogFormVisible = true
-}
-
-function contactInfoSubmmit() {
-  console.log(contactInfo.data)
-  if (Object.keys(contactInfo.data).length === 0) {
-    proxy.$message({
-      type: 'info',
-      message: l.value.info_empty_error,
-    })
-    return
-  }
-  const phoneRegex = /^(0|\+84)[1-9][0-9]{8}$/
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-  if (!phoneRegex.test(contactInfo.data.contact_phone)) {
-    proxy.$message({
-      message: l.value.input_confirm_phone,
-      type: 'error',
-    })
-    return
-  }
-  if (!emailRegex.test(contactInfo.data.contact_email)) {
-    proxy.$message({
-      message: l.value.ininput_confirm_email,
-      type: 'error',
-    })
-    return
-  }
-  const payload = _.cloneDeep(contactInfo.data)
-  if (contactInfo.editIndex > -1) {
-    set(contactInfo.list, contactInfo.editIndex, payload)
-  } else {
-    contactInfo.list.push(payload)
-  }
-  contactInfo.data = {}
-  contactInfo.editIndex = -1
-  contactInfo.dialogFormVisible = false
-  console.log(contactInfo.list)
-}
-
-function contactInfoDeleteItem(row, index) {
-  console.log(row)
-  contactInfo.list.splice(index, 1)
-  if (contactInfo.editIndex === index) {
-    contactInfo.editIndex = -1
-    contactInfo.data = {}
-  } else if (contactInfo.editIndex > index) {
-    contactInfo.editIndex -= 1
-  }
-}
-
-function contactInfoEditItem(row, index) {
-  contactInfo.editIndex = index
-  contactInfo.data = _.cloneDeep(row)
-  contactInfo.dialogFormVisible = true
-}
-
-// Address Methods
-function addressList() {
-  console.log('addressList')
-  address.editIndex = -1
-  address.data = {}
-  address.dialogFormVisible = true
-}
-
-function addressSubmmit() {
-  const address_en = address.data.address_en
-  const address_zh = address.data.address_zh
-  const own_processes = address.data.own_processes
-  const match_processes = address.data.match_processes
-
-  if (!address_en || !address_zh || !own_processes || !match_processes) {
-    proxy.$message({
-      type: 'info',
-      message: l.value.info_empty_error,
-    })
-    return
-  }
-
-  const payload = _.cloneDeep(address.data)
-  if (manufacturer.data.id != undefined) {
-    payload.manufacture_id = manufacturer.data.id
-  }
-  if (address.editIndex > -1) {
-    set(address.list, address.editIndex, payload)
-  } else {
-    address.list.push(payload)
-  }
-  console.log(address.list, address.data)
-  address.data = {}
-  address.editIndex = -1
-  address.dialogFormVisible = false
-}
-
-function addressDeleteItem(data, index) {
-  address.list.splice(index, 1)
-  if (address.editIndex === index) {
-    address.editIndex = -1
-    address.data = {}
-  } else if (address.editIndex > index) {
-    address.editIndex -= 1
-  }
-}
-
-function addressEditItem(row, index) {
-  address.editIndex = index
-  address.data = _.cloneDeep(row)
-  address.dialogFormVisible = true
-}
-
-function createFileData() {
-  attachment.fileList = {
-    attachment_type: '',
-    fileName: '',
-    file: {},
-  }
-  attachment.dialogFormVisible = true
-}
-
-function attachmentSubmmit() {
-  console.log(attachment.fileList)
-  if (!attachment.fileList.file.name) {
-    attachment.fileList.file = {}
-    if (fileInput.value) fileInput.value.value = ''
-    return proxy.$message.error(l.value.file_is_empty)
-  }
-  if (fileSizeInBytes.value > maxSizeInBytes.value) {
-    getAttachmentFlag()
-  } else {
-    let forData = new FormData()
-    forData.append('fileName', attachment.fileList.fileName)
-    forData.append('file', attachment.fileList.file)
-    forData.append('attachment_type', attachment.fileList.attachment_type)
-    proxy.$request(config.apiUploadAttachment, forData, 'post')
-      .then((r) => {
-        console.log(r.data[0])
-        set(r.data[0], 'attachment_type', attachment.fileList.attachment_type)
-        attachment.list.push(r.data[0])
-        proxy.$message({
-          message: c.value.oprConfirm,
-          type: 'success',
+    add() {
+      this.manufacturer.data = {
+        name_zh: '',
+        name_en: '',
+        legal_person: '',
+        contact_name: '',
+        contact_phone: '',
+        contact_email: '',
+        contact_job_title: '',
+        country: '',
+        customs_number: '',
+        biz_license_number: '',
+        cooperation_start_date: '',
+        cooperation_end_date: '',
+        cooperation_company_ownership: '',
+        cooperation_group_name: '',
+        requestor_facility_name: '',
+        requestor_facility_code: '',
+        requestor_contact_name: '',
+        employee_num: 0,
+        monthly_produce_quantity: 0,
+        is_export_biz: '',
+        requestor_facility_type: '',
+        is_involve_product: '',
+        is_alidas_producer: '',
+        is_alidas_authorized: '',
+        vendor_code: '',
+        unique_identifier: '',
+        ffc_id: '',
+        sap_code: '',
+        classification: '',
+        authorization_status: '',
+        compliance_warning_letter: '',
+        types_of_orders: '',
+        contactInfoList: [],
+        addressList: [],
+        attachment: [],
+      }
+      this.contactInfo.data = {}
+      this.contactInfo.list = []
+      this.contactInfo.editIndex = -1
+      this.address.data = {}
+      this.address.list = []
+      this.address.editIndex = -1
+      this.attachment.data = {}
+      this.attachment.list = []
+      this.manufacturer.addOrEditFormVisible = true
+    },
+    editItem(index, data) {
+      this.getDataByID(data.id)
+      this.manufacturer.addOrEditFormVisible = true
+    },
+    OPenManufacturer() {
+      console.log(this.manufacturer.data)
+      if (this.manufacturer.data.id == undefined) {
+        this.manufacturer.inforFormVisible = true
+      } else {
+        this.manufacturer.inforFormVisible = true
+      }
+    },
+    submmitManufacturer() {
+      this.manufacturer.data.contactInfoList = this.contactInfo.list
+      this.manufacturer.data.addressList = this.address.list
+      this.manufacturer.data.attachment = this.attachment.list
+      console.log(this.manufacturer.data)
+      this.$request(this.apiUpdate, this.manufacturer.data, 'post', false)
+        .then((r) => {
+          console.log(r)
+          this.$message({
+            message: this.$c.success,
+            type: 'success',
+          })
+          this.getList()
+          this.manufacturer.addOrEditFormVisible = false
+          this.manufacturer.inforFormVisible = false
         })
-        attachment.dialogFormVisible = false
-      })
-      .catch((e) => {
-        console.log(e)
-      })
-  }
-}
-
-function onFileChange(e) {
-  uploadQuery.file = e.target.files[0]
-  console.log(uploadQuery.file)
-  if (!uploadQuery.file) {
-    alert(l.value.select_file)
-    return
-  }
-}
-
-function uploadExcel() {
-  if (!uploadQuery.file) {
-    alert(l.value.select_file)
-    return
-  }
-
-  let formData = new FormData()
-  formData.append('file', uploadQuery.file)
-
-  proxy.$request(proxy.$api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturer', formData, 'post')
-    .then((r) => {
-      console.log(r)
-      proxy.$message({
-        type: 'success',
-        message: l.value.upload_success,
-      })
-      visabled.uploadFile = false
-      uploadQuery.file = {}
-      if (addfileinput.value) addfileinput.value.value = ''
-    })
-    .catch((e) => {
-      proxy.$message.error(e)
-    })
-}
-
-function attachmentDeleteItem(data, index) {
-  console.log(data)
-  proxy.$prompt(l.value.prompt, c.value.oprConfirm, {
-    type: 'warning',
-    inputPattern: /^[Y]{1}$/i,
-    inputErrorMessage: l.value.inputErrorMessage,
-    confirmButtonText: c.value.confirm,
-    cancelButtonText: c.value.cancel,
-  })
-    .then(() => {
-      attachment.list.splice(index, 1)
-    })
-    .catch(() => {
-      proxy.$message({
-        type: 'info',
-        message: l.value.info,
-      })
-    })
-}
-
-function selectFile() {
-  if (fileInput.value) fileInput.value.click()
-}
-
-function fileChange(value) {
-  console.log(value.target.files)
-  attachment.fileList.file = value.target.files[0]
-
-  if (value.target.files.length == 0) {
-    attachment.fileList.file = {}
-    return proxy.$message.error(l.value.file_is_empty)
-  }
-  if (!value.target.files[0].type) {
-    if (fileInput.value) fileInput.value.value = ''
-    return proxy.$message.error(l.value.unsupported_file_type)
-  }
-  fileSizeInBytes.value = value.target.files[0].size
-  if (fileSizeInBytes.value > maxSizeInBytes.value) {
-    attachment.divide.file = value.target.files[0]
-    calculateFileHash()
-  }
-}
-
-async function calculateFileHash() {
-  const spark = new SparkMD5.ArrayBuffer()
-  const fileReader = new FileReader()
-  fileReader.readAsArrayBuffer(attachment.divide.file)
-  fileReader.onload = (e) => {
-    spark.append(e.target.result)
-    attachment.divide.fileHash = spark.end()
-    splitFile()
-  }
-}
-
-function splitFile() {
-  let start = 0
-  attachment.divide.chunks = []
-  while (start < attachment.divide.file.size) {
-    const chunk = attachment.divide.file.slice(start, start + attachment.divide.chunkSize)
-    attachment.divide.chunks.push(chunk)
-    start += attachment.divide.chunkSize
-  }
-  console.log(attachment.divide.chunks)
-}
-
-function generateUUID() {
-  let d = new Date().getTime()
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-    d += performance.now()
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = (d + Math.random() * 16) % 16 | 0
-    d = Math.floor(d / 16)
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
-  })
-}
-
-function getAttachmentFlag() {
-  proxy.$request(proxy.$api.baseUrl + '/Compliance/complianceAttachments/getAttachmentFlag', {
-    fileHash: attachment.divide.fileHash,
-    attachment_type: attachment.fileList.attachment_type,
-  }).then((r) => {
-    if (r.data && r.data.length > 0) {
-      console.log(r.data[0])
-      set(r.data[0], 'attachment_type', attachment.fileList.attachment_type)
-      attachment.list.push(r.data[0])
-      proxy.$message({
-        message: c.value.oprConfirm,
-        type: 'success',
-      })
-      attachment.dialogFormVisible = false
-    } else {
-      uploadFile()
-    }
-  })
-}
-
-async function uploadFile() {
-  if (!attachment.fileList.attachment_type) {
-    return proxy.$message.error(l.value.select_file_type)
-  }
-  attachment.divide.taskId = generateUUID()
-  let uploadedChunks = 0
-  for (let i = 0; i < attachment.divide.chunks.length; i++) {
-    const formData = new FormData()
-    formData.append('id', attachment.divide.taskId)
-    formData.append('file', attachment.divide.chunks[i])
-    formData.append('chunkIndex', i)
-    formData.append('fileHash', attachment.divide.fileHash)
-    formData.append('fileName', attachment.divide.file.name)
-    formData.append('fileType', attachment.divide.file.type)
-    formData.append('totalChunks', attachment.divide.chunks.length)
-    formData.append('attachment_type', attachment.fileList.attachment_type)
-    await proxy.$request(proxy.$api.baseUrl + '/Compliance/complianceAttachments/AddTaskToQueue', formData, 'post').then((r) => {
-      uploadedChunks++
-      attachment.uploadProgress = Math.round((uploadedChunks / attachment.divide.chunks.length) * 100)
-    })
-  }
-  await mergeFile()
-}
-
-async function mergeFile() {
-  try {
-    let fileObj = {
-      id: attachment.divide.taskId,
-      fileHash: attachment.divide.fileHash,
-      totalChunks: attachment.divide.chunks.length,
-      fileName: attachment.divide.file.name,
-      fileType: attachment.divide.file.type,
-      attachment_type: attachment.fileList.attachment_type,
-    }
-    console.log(fileObj)
-    await proxy.$request(proxy.$api.baseUrl + '/Compliance/complianceAttachments/getTaskStatus', fileObj, 'post').then((r) => {
-      proxy.$message({
-        type: 'success',
-        message: c.value.oprConfirm,
-      })
-      attachment.list.push(r.data[0])
-      if (fileInput.value) fileInput.value.value = ''
-      attachment.uploadProgress = 0
-      attachment.dialogFormVisible = false
-      console.log(r)
-    })
-  } catch (error) {
-    proxy.$message({
-      type: 'error',
-      message: l.value.upload_failed,
-    })
-  }
-}
-
-function matterType(row) {
-  // If row is object, use attachment_type, else use row as value
-  let val = row
-  if (typeof row === 'object' && row !== null) {
-      val = row.attachment_type
-  }
-
-  let label
-  attachment.options.value.forEach((item) => {
-    if (item.value == val) {
-      label = item.label
-    }
-  })
-  return label
-}
-
-function getUserAuth() {
-  proxy.$request(proxy.$api.checkMenuAuth, {
-    resourcepath: proxy.$route.name,
-  }).then((r) => {
-    userAuth.value = r.data[0]
-  })
-}
-
-function handleTableAction({ action, row }) {
-  if (action === 'edit') {
-    editItem(null, row)
-  } else if (action === 'export') {
-    exportItem(row)
-  } else if (action === 'delete') {
-    deleteItem(null, row)
-  } else if (action === 'detail') {
-    viewDetail(row)
-  }
-}
-
-function handleRowClick(row) {
-  console.log('Row clicked:', row)
-}
-
-function viewDetail(row) {
-  getDataByID(row.id)
-  manufacturer.detailFormVisible = true
-}
-
-function displayValue(value) {
-  if (value === 0) {
-    return 0
-  }
-  return value && value !== '' ? value : '--'
-}
-
-function displayYnFlag(value) {
-  if (value === 'Y') {
-    return c.value.Y
-  }
-  if (value === 'N') {
-    return c.value.N
-  }
-  return '--'
-}
-
-function displayProductFlag(value) {
-  if (value === 'Y') {
-    return l.value.product
-  }
-  if (value === 'N') {
-    return l.value.exploit
-  }
-  return '--'
-}
-
-function displayAuthorizationStatus(value) {
-  if (!value) {
-    return '--'
-  }
-  const match = optionsAuthorizationStatus.value.find((item) => item.value === value)
-  return match ? match.label : value
-}
-
-function downloadAllAttachments(manufacturerId) {
-  if (!manufacturerId) {
-    proxy.$message.warning(c.value.no_data)
-    return
-  }
-  const url = api.baseUrl + '/Compliance/complianceManufacturer/downloadAttachments'
-  const fileName = (manufacturer.data.name_zh || 'manufacturer') + '_attachments.zip'
-
-  axios({
-    headers: {
-      token: getToken(),
+        .catch((e) => {
+          console.log(e)
+          // this.$message({
+          //   message: e.message || this.$l.error,
+          //   type: 'error',
+          // })
+        })
     },
-    responseType: 'blob',
-    method: 'get',
-    url: url + '?id=' + encodeURIComponent(manufacturerId),
-  })
-    .then((response) => {
-      const blob = new Blob([response.data])
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(blob)
-      a.download = fileName
-      document.body.appendChild(a)
-      a.click()
-      URL.revokeObjectURL(a.href)
-      document.body.removeChild(a)
-      proxy.$message.success(c.value.success)
-    })
-    .catch((error) => {
-      console.log(error)
-      proxy.$message.error(c.value.fail)
-    })
-}
-
-function downAttachments(data) {
-  if (!data) {
-    proxy.$message.warning(c.value.no_data)
-    return
-  }
-
-  if (!data.id) {
-    const fallbackUrl = api.baseUrl + '/' + data.file_url
-    const fallbackName =
-      data.file_name || data.fileName || fallbackUrl.split('/').pop() || 'download'
-    const link = document.createElement('a')
-    link.href = fallbackUrl
-    link.download = fallbackName
-    link.target = '_blank'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    return
-  }
-
-  const requestUrl =
-    api.baseUrl +
-    '/Compliance/complianceManufacturer/downloadAttachment?attachmentId=' +
-    encodeURIComponent(data.id)
-  const fileName = data.file_name || 'attachment'
-
-  axios({
-    headers: {
-      token: getToken(),
+    deleteItem(index, data) {
+      console.log(data)
+      this.$prompt(this.$l.delete_confirm, this.$c.oprConfirm, {
+        type: 'warning',
+        inputPattern: /^[Y]{1}$/i,
+        inputErrorMessage: '请输入Y/y',
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
+      })
+        .then(() => {
+          this.$request(
+            this.apiDelete,
+            {
+              id: data.id,
+            },
+            'post'
+          )
+            .then((r) => {
+              console.log(r)
+              this.$message({
+                type: 'success',
+                message: this.$c.success,
+              })
+              this.getList()
+            })
+            .catch((e) => {
+              console.log(e)
+              this.$message.error(this.$l.delete_error)
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: this.$l.cancel_delete,
+          })
+        })
     },
-    responseType: 'blob',
-    method: 'get',
-    url: requestUrl,
-  })
-    .then((response) => {
-      const blob = new Blob([response.data])
-      const objectUrl = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = objectUrl
-      a.download = fileName
-      document.body.appendChild(a)
-      a.click()
-      URL.revokeObjectURL(objectUrl)
-      document.body.removeChild(a)
-      proxy.$message.success(c.value.success)
-    })
-    .catch((error) => {
-      console.log(error)
-      proxy.$message.error(c.value.fail)
-    })
+    exportExcel() {
+      let lang = localGet('lang')
+      let acceptLanguage = ''
+      if (lang) {
+        let array = lang.split('-')
+        acceptLanguage = lang + ',' + array[0] + ';q=0.9'
+      }
+      console.log(acceptLanguage)
+
+      axios({
+        headers: {
+          token: getToken(),
+          'Accept-Language': acceptLanguage,
+          // "Content-Type":"application/vnd.ms-excel"
+        },
+        responseType: 'blob',
+        method: 'post',
+        url: this.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
+        data: this.query,
+      }).then((r) => {
+        let file = new FileReader()
+        file.readAsText(r.data, 'utf-8')
+        file.onload = function () {
+          try {
+            const blob = new Blob([r.data], {
+              type: 'application/octet-stream;',
+            })
+            // 创建一个超链接，将文件流赋进去，然后实现这个超链接的单击事件
+            const elink = document.createElement('a')
+            elink.download = decodeURIComponent(this.$l.fileBasic_download + '.zip')
+            elink.style.display = 'none'
+            elink.href = URL.createObjectURL(blob)
+            document.body.appendChild(elink)
+            elink.click()
+            URL.revokeObjectURL(elink.href) // 释放URL 对象
+            document.body.removeChild(elink)
+            this.loading = false
+          } catch {
+            this.$message.error(this.$l.file_export_failed)
+          }
+        }
+      })
+    },
+    exportTemplate() {
+      let lang = localGet('lang')
+      let acceptLanguage = ''
+      if (lang) {
+        let array = lang.split('-')
+        acceptLanguage = lang + ',' + array[0] + ';q=0.9'
+      }
+
+      axios({
+        headers: {
+          token: getToken(),
+          'Accept-Language': acceptLanguage,
+          // "Content-Type":"application/vnd.ms-excel"
+        },
+        responseType: 'blob',
+        method: 'post',
+        url: api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturerTemplate',
+      }).then((r) => {
+        try {
+          const blob = new Blob([r.data], {
+            type: 'application/octet-stream;',
+          })
+          // 创建一个隐藏的 <a> 元素
+          const elink = document.createElement('a')
+          elink.download = this.$l.file_download + '.xlsx' // 确保包含文件扩展名
+          elink.style.display = 'none'
+          elink.href = URL.createObjectURL(blob)
+          // 添加到 DOM 并触发点击事件
+          document.body.appendChild(elink)
+          elink.click()
+          URL.revokeObjectURL(elink.href) // 释放URL 对象
+
+          // 清理工作：移除超链接
+          document.body.removeChild(elink)
+        } catch (error) {
+          this.$message.error('文件导出失败')
+        }
+      })
+    },
+
+    exportItem(row) {
+      axios({
+        headers: {
+          token: getToken(),
+          // "Content-Type":"application/vnd.ms-excel"
+        },
+        responseType: 'blob',
+        method: 'post',
+        url: this.$api.baseUrl + '/Compliance/complianceManufacturer/exportList',
+        data: {
+          id: row.id,
+        },
+      }).then((r) => {
+        let file = new FileReader()
+        file.readAsText(r.data, 'utf-8')
+        file.onload = function () {
+          try {
+            const blob = new Blob([r.data], {
+              type: 'application/octet-stream;',
+            })
+            // 创建一个超链接，将文件流赋进去，然后实现这个超链接的单击事件
+            const elink = document.createElement('a')
+            elink.download = decodeURIComponent('基础档案.zip')
+            elink.style.display = 'none'
+            elink.href = URL.createObjectURL(blob)
+            document.body.appendChild(elink)
+            elink.click()
+            URL.revokeObjectURL(elink.href) // 释放URL 对象
+            document.body.removeChild(elink)
+            this.loading = false
+          } catch {
+            this.$message.error('文件导出失败')
+          }
+        }
+      })
+    },
+    checkArrdess(index, data) {
+      console.log(data.manufacture_id)
+      this.getAddrsList(data)
+      this.address.dialogTableVisible2 = true
+    },
+    check0A(index, data) {
+      this.getAttachments(data.id, '0A')
+      this.attachment.dialogFormVisible2 = true
+    },
+    check0B(index, data) {
+      this.getAttachments(data.id, '0B')
+      this.attachment.dialogFormVisible2 = true
+    },
+    check0C(index, data) {
+      this.getAttachments(data.id, '0C')
+      this.attachment.dialogFormVisible2 = true
+    },
+    checkAttachments(data) {
+      this.attachment.fileUrl = api.baseUrl + '/' + data.file_url
+      console.log(this.attachment.fileUrl)
+      this.attachment.dialogFormVisible3 = true
+    },
+    // 新增合规联系人信息
+    contactInfoList() {
+      console.log('contactInfo')
+      this.contactInfo.editIndex = -1
+      this.contactInfo.data = {}
+      this.contactInfo.dialogFormVisible = true
+    },
+    contactInfoSubmmit() {
+      console.log(this.contactInfo.data)
+      if (Object.keys(this.contactInfo.data).length === 0) {
+        this.$message({
+          type: 'info',
+          message: this.$l.info_empty_error,
+        })
+        return
+      }
+      // Regex kiểm tra số điện thoại Việt Nam: bắt đầu bằng 0 hoặc +84, theo sau là 9 số (không bắt đầu bằng 0)
+      const phoneRegex = /^(0|\+84)[1-9][0-9]{8}$/
+      // Regex kiểm tra email chuẩn
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+      if (!phoneRegex.test(this.contactInfo.data.contact_phone)) {
+        this.$message({
+          message: this.$l.input_confirm_phone,
+          type: 'error',
+        })
+        return
+      }
+      if (!emailRegex.test(this.contactInfo.data.contact_email)) {
+        this.$message({
+          message: this.$l.ininput_confirm_email,
+          type: 'error',
+        })
+        return
+      }
+      const payload = _.cloneDeep(this.contactInfo.data)
+      if (this.contactInfo.editIndex > -1) {
+        this.$set(this.contactInfo.list, this.contactInfo.editIndex, payload)
+      } else {
+        this.contactInfo.list.push(payload)
+      }
+      this.contactInfo.data = {}
+      this.contactInfo.editIndex = -1
+      this.contactInfo.dialogFormVisible = false
+      console.log(this.contactInfo.list)
+    },
+    contactInfoDeleteItem(row, index) {
+      console.log(row)
+      this.contactInfo.list.splice(index, 1)
+      if (this.contactInfo.editIndex === index) {
+        this.contactInfo.editIndex = -1
+        this.contactInfo.data = {}
+      } else if (this.contactInfo.editIndex > index) {
+        this.contactInfo.editIndex -= 1
+      }
+    },
+
+    contactInfoEditItem(row, index) {
+      this.contactInfo.editIndex = index
+      this.contactInfo.data = _.cloneDeep(row)
+      this.contactInfo.dialogFormVisible = true
+    },
+
+    addressList() {
+      // 新增地址
+      console.log('addressList')
+      this.address.editIndex = -1
+      this.address.data = {}
+      this.address.dialogFormVisible = true
+    },
+    addressSubmmit() {
+      const address_en = this.address.data.address_en
+      const address_zh = this.address.data.address_zh
+      const own_processes = this.address.data.own_processes
+      const match_processes = this.address.data.match_processes
+
+      if (!address_en || !address_zh || !own_processes || !match_processes) {
+        this.$message({
+          type: 'info',
+          message: this.$l.info_empty_error,
+        })
+        return
+      }
+
+      const payload = _.cloneDeep(this.address.data)
+      if (this.manufacturer.data.id != undefined) {
+        payload.manufacture_id = this.manufacturer.data.id
+      }
+      if (this.address.editIndex > -1) {
+        this.$set(this.address.list, this.address.editIndex, payload)
+      } else {
+        this.address.list.push(payload)
+      }
+      console.log(this.address.list, this.address.data)
+      this.address.data = {}
+      this.address.editIndex = -1
+      this.address.dialogFormVisible = false
+    },
+    addressDeleteItem(data, index) {
+      this.address.list.splice(index, 1)
+      if (this.address.editIndex === index) {
+        this.address.editIndex = -1
+        this.address.data = {}
+      } else if (this.address.editIndex > index) {
+        this.address.editIndex -= 1
+      }
+    },
+
+    addressEditItem(row, index) {
+      this.address.editIndex = index
+      this.address.data = _.cloneDeep(row)
+      this.address.dialogFormVisible = true
+    },
+    createFileData() {
+      this.attachment.fileList = {
+        attachment_type: '',
+        fileName: '',
+        file: {},
+      }
+      this.attachment.dialogFormVisible = true
+    },
+    attachmentSubmmit() {
+      console.log(this.attachment.fileList)
+      if (!this.attachment.fileList.file.name) {
+        this.attachment.fileList.file = {}
+        this.$refs.fileInput.value = ''
+        return this.$message.error(this.$l.file_is_empty)
+      }
+      // 确定上传文件对话框
+      if (this.fileSizeInBytes > this.maxSizeInBytes) {
+        this.getAttachmentFlag()
+      } else {
+        let forData = new FormData()
+        forData.append('fileName', this.attachment.fileList.fileName)
+        forData.append('file', this.attachment.fileList.file)
+        forData.append('attachment_type', this.attachment.fileList.attachment_type)
+        this.$request(this.apiUploadAttachment, forData, 'post')
+          .then((r) => {
+            console.log(r.data[0])
+            this.$set(r.data[0], 'attachment_type', this.attachment.fileList.attachment_type)
+            this.attachment.list.push(r.data[0])
+            this.$message({
+              message: this.$c.oprConfirm,
+              type: 'success',
+            })
+            this.attachment.dialogFormVisible = false
+          })
+          .catch((e) => {
+            console.log(e)
+          })
+      }
+    },
+    /*************           用户行为  start        ****************/
+    //选择上传的文件
+    onFileChange(e) {
+      this.uploadQuery.file = e.target.files[0]
+      console.log(this.uploadQuery.file)
+      if (!this.uploadQuery.file) {
+        alert(this.$l.select_file)
+        return
+      }
+    },
+    //上传模板
+    uploadExcel() {
+      if (!this.uploadQuery.file) {
+        alert(this.$l.select_file)
+        return
+      }
+
+      let formData = new FormData()
+      formData.append('file', this.uploadQuery.file)
+
+      this.$request(this.$api.baseUrl + '/Compliance/complianceManufacturer/uploadManufacturer', formData, 'post')
+        .then((r) => {
+          console.log(r)
+          this.$message({
+            type: 'success',
+            message: this.$l.upload_success,
+          })
+          this.visabled.uploadFile = false
+          this.uploadQuery.file = {}
+          this.$refs.addfileinput.value = ''
+        })
+        .catch((e) => {
+          this.$message.error(e)
+        })
+    },
+    attachmentDeleteItem(data, index) {
+      console.log(data)
+      this.$prompt(this.$l.prompt, this.$c.oprConfirm, {
+        type: 'warning',
+        inputPattern: /^[Y]{1}$/i,
+        inputErrorMessage: this.$l.inputErrorMessage,
+        confirmButtonText: this.$c.confirm,
+        cancelButtonText: this.$c.cancel,
+      })
+        .then(() => {
+          this.attachment.list.splice(index, 1)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: this.$l.info,
+          })
+        })
+    },
+    selectFile() {
+      this.$refs.fileInput.click()
+    },
+    fileChange(value) {
+      console.log(value.target.files)
+      this.attachment.fileList.file = value.target.files[0]
+
+      if (value.target.files.length == 0) {
+        this.attachment.fileList.file = {}
+        return this.$message.error(this.$l.file_is_empty)
+      }
+      if (!value.target.files[0].type) {
+        this.$refs.fileInput.value = ''
+        return this.$message.error(this.$l.unsupported_file_type)
+      }
+      this.fileSizeInBytes = value.target.files[0].size
+      if (this.fileSizeInBytes > this.maxSizeInBytes) {
+        this.attachment.divide.file = value.target.files[0]
+        this.calculateFileHash()
+      }
+    },
+
+    /**
+     *分块上传功能
+     *   */
+
+    // 计算文件的MD5哈希值
+    async calculateFileHash() {
+      const spark = new SparkMD5.ArrayBuffer()
+      const fileReader = new FileReader()
+      fileReader.readAsArrayBuffer(this.attachment.divide.file)
+      fileReader.onload = (e) => {
+        spark.append(e.target.result)
+        this.attachment.divide.fileHash = spark.end()
+        this.splitFile()
+      }
+    },
+
+    splitFile() {
+      let start = 0
+      this.attachment.divide.chunks = []
+      while (start < this.attachment.divide.file.size) {
+        const chunk = this.attachment.divide.file.slice(start, start + this.attachment.divide.chunkSize)
+        this.attachment.divide.chunks.push(chunk)
+        start += this.attachment.divide.chunkSize
+      }
+      console.log(this.attachment.divide.chunks)
+    },
+
+    generateUUID() {
+      // Public Domain/MIT
+      let d = new Date().getTime()
+      if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+        d += performance.now() // use high-precision timer if available
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = (d + Math.random() * 16) % 16 | 0
+        d = Math.floor(d / 16)
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
+      })
+    },
+    getAttachmentFlag() {
+      /* let mergeFile = {
+        fileHash: this.attachment.divide.fileHash,
+        attachment_type: this.attachment.fileList.attachment_type
+      } */
+      this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/getAttachmentFlag', {
+        fileHash: this.attachment.divide.fileHash,
+        attachment_type: this.attachment.fileList.attachment_type,
+      }).then((r) => {
+        if (r.data && r.data.length > 0) {
+          console.log(r.data[0])
+          this.$set(r.data[0], 'attachment_type', this.attachment.fileList.attachment_type)
+          this.attachment.list.push(r.data[0])
+          this.$message({
+            message: this.$c.oprConfirm,
+            type: 'success',
+          })
+          this.attachment.dialogFormVisible = false
+        } else {
+          this.uploadFile()
+        }
+      })
+    },
+    async uploadFile() {
+      if (!this.attachment.fileList.attachment_type) {
+        return this.$message.error(this.$l.select_file_type)
+      }
+      this.attachment.divide.taskId = this.generateUUID()
+      let uploadedChunks = 0
+      for (let i = 0; i < this.attachment.divide.chunks.length; i++) {
+        const formData = new FormData()
+        formData.append('id', this.attachment.divide.taskId)
+        formData.append('file', this.attachment.divide.chunks[i])
+        formData.append('chunkIndex', i)
+        formData.append('fileHash', this.attachment.divide.fileHash)
+        formData.append('fileName', this.attachment.divide.file.name)
+        formData.append('fileType', this.attachment.divide.file.type)
+        formData.append('totalChunks', this.attachment.divide.chunks.length)
+        formData.append('attachment_type', this.attachment.fileList.attachment_type)
+        await this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/AddTaskToQueue', formData, 'post').then((r) => {
+          uploadedChunks++
+          this.attachment.uploadProgress = Math.round((uploadedChunks / this.attachment.divide.chunks.length) * 100)
+        })
+      }
+      await this.mergeFile()
+    },
+
+    async mergeFile() {
+      try {
+        let fileObj = {}
+
+        fileObj = {
+          id: this.attachment.divide.taskId,
+          fileHash: this.attachment.divide.fileHash,
+          totalChunks: this.attachment.divide.chunks.length,
+          fileName: this.attachment.divide.file.name,
+          fileType: this.attachment.divide.file.type,
+          attachment_type: this.attachment.fileList.attachment_type,
+        }
+        console.log(fileObj)
+        await this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/getTaskStatus', fileObj, 'post').then((r) => {
+          this.$message({
+            type: 'success',
+            message: this.$c.oprConfirm,
+          })
+          this.attachment.list.push(r.data[0])
+          this.$refs.fileInput.value = ''
+          this.attachment.uploadProgress = 0
+          this.attachment.dialogFormVisible = false
+          console.log(r)
+        })
+      } catch (error) {
+        this.$message({
+          type: 'error',
+          message: this.$l.upload_failed,
+        })
+      }
+    },
+
+    indexMethod(index) {
+      return index + 1
+    },
+    matterType(row) {
+      let label
+      this.attachment.options.forEach((item) => {
+        if (item.value == row) {
+          label = item.label
+        }
+      })
+      return label
+    },
+    // 获取当前页面用户拥有的操作权限的函数
+    getUserAuth() {
+      //获取当前页面用户拥有的操作权限的函数
+      // this.userAuth = null
+      this.$request(this.$api.checkMenuAuth, {
+        resourcepath: this.$route.name,
+      }).then((r) => {
+        this.userAuth = r.data[0]
+      })
+    },
+
+    handleTableAction({ action, row }) {
+      if (action === 'edit') {
+        this.editItem(null, row)
+      } else if (action === 'export') {
+        this.exportItem(row)
+      } else if (action === 'delete') {
+        this.deleteItem(null, row)
+      } else if (action === 'detail') {
+        this.viewDetail(row)
+      }
+    },
+
+    handleRowClick(row) {
+      // Handle row click if needed
+      console.log('Row clicked:', row)
+    },
+
+    viewDetail(row) {
+      this.getDataByID(row.id)
+      this.manufacturer.detailFormVisible = true
+    },
+
+    exportItem(row) {
+      // Handle single row export
+      console.log('Export item:', row)
+    },
+
+    // Helper methods for detail dialog
+    displayValue(value) {
+      if (value === 0) {
+        return 0
+      }
+      return value && value !== '' ? value : '--'
+    },
+    displayYnFlag(value) {
+      if (value === 'Y') {
+        return this.$c.Y
+      }
+      if (value === 'N') {
+        return this.$c.N
+      }
+      return '--'
+    },
+    displayProductFlag(value) {
+      if (value === 'Y') {
+        return this.$l.product
+      }
+      if (value === 'N') {
+        return this.$l.exploit
+      }
+      return '--'
+    },
+    displayAuthorizationStatus(value) {
+      if (!value) {
+        return '--'
+      }
+      const match = this.options_authorization_status.find((item) => item.value === value)
+      return match ? match.label : value
+    },
+    getStatusClass(status) {
+      if (!status) return 'status-default'
+      switch (status.toLowerCase()) {
+        case 'onboarding':
+          return 'status-warning'
+        case 'in_use':
+          return 'status-success'
+        case 'discontinued':
+          return 'status-danger'
+        default:
+          return 'status-default'
+      }
+    },
+
+    getStatusLabel(status) {
+      if (!status) return '--'
+      const statusMap = {
+        onboarding: this.$l.producer_status_onboarding,
+        in_use: this.$l.producer_status_in_use,
+        discontinued: this.$l.producer_status_discontinued,
+      }
+      return statusMap[status.toLowerCase()] || status
+    },
+
+    getFileTypeColor(type) {
+      switch (type) {
+        case '0A':
+          return 'success'
+        case '0B':
+          return 'warning'
+        case '0C':
+          return 'info'
+        default:
+          return ''
+      }
+    },
+
+    // 下载单个厂商的所有附件
+    downloadAllAttachments(manufacturerId) {
+      if (!manufacturerId) {
+        this.$message.warning(this.$c.no_data)
+        return
+      }
+      const url = api.baseUrl + '/Compliance/complianceManufacturer/downloadAttachments'
+      const fileName = (this.manufacturer.data.name_zh || 'manufacturer') + '_attachments.zip'
+      
+      axios({
+        headers: {
+          token: getToken(),
+        },
+        responseType: 'blob',
+        method: 'get',
+        url: url + '?id=' + encodeURIComponent(manufacturerId),
+      })
+        .then((response) => {
+          const blob = new Blob([response.data])
+          const a = document.createElement('a')
+          a.href = URL.createObjectURL(blob)
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          URL.revokeObjectURL(a.href)
+          document.body.removeChild(a)
+          this.$message.success(this.$c.success)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error(this.$c.fail)
+        })
+    },
+
+    downAttachments(data) {
+      if (!data) {
+        this.$message.warning(this.$c.no_data)
+        return
+      }
+
+      if (!data.id) {
+        // 回退到直接下载
+        const fallbackUrl = api.baseUrl + '/' + data.file_url
+        const fallbackName =
+          data.file_name || data.fileName || fallbackUrl.split('/').pop() || 'download'
+        const link = document.createElement('a')
+        link.href = fallbackUrl
+        link.download = fallbackName
+        link.target = '_blank'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+
+      const requestUrl =
+        api.baseUrl +
+        '/Compliance/complianceManufacturer/downloadAttachment?attachmentId=' +
+        encodeURIComponent(data.id)
+      const fileName = data.file_name || 'attachment'
+
+      axios({
+        headers: {
+          token: getToken(),
+        },
+        responseType: 'blob',
+        method: 'get',
+        url: requestUrl,
+      })
+        .then((response) => {
+          const blob = new Blob([response.data])
+          const objectUrl = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = objectUrl
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          URL.revokeObjectURL(objectUrl)
+          document.body.removeChild(a)
+          this.$message.success(this.$c.success)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error(this.$c.fail)
+        })
+    },
+  },
+  created() {
+    this.getList()
+    this.getUserAuth()
+  },
+  computed: {
+    Sdate() {
+      return this.manufacturer.data.cooperation_start_date.toLocaleString()
+    },
+    Edate() {
+      return this.manufacturer.data.cooperation_end_date.toLocaleString()
+    },
+  },
+  watch: {
+    'contactInfo.dialogFormVisible'(val) {
+      if (!val) {
+        this.contactInfo.editIndex = -1
+        this.contactInfo.data = {}
+      }
+    },
+    'address.dialogFormVisible'(val) {
+      if (!val) {
+        this.address.editIndex = -1
+        this.address.data = {}
+      }
+    },
+    userAuth: {
+      deep: true,
+      handler(newV) {
+        this.showAuth.m_add = newV.m_add == 'Y' ? true : false
+        this.showAuth.m_search = newV.m_search == 'Y' ? true : false
+        this.showAuth.m_del = newV.m_del == 'Y' ? true : false
+        this.showAuth.m_updata = newV.m_updata == 'Y' ? true : false
+        this.showAuth.m_import = newV.m_import == 'Y' ? true : false
+        this.showAuth.m_export = newV.m_export == 'Y' ? true : false
+        this.showAuth.m_upload = newV.m_upload == 'Y' ? true : false
+        this.showAuth.m_audit = newV.m_audit == 'Y' ? true : false
+        this.showAuth.m_print = newV.m_print == 'Y' ? true : false
+      },
+    },
+  },
 }
-
-watch(() => contactInfo.dialogFormVisible, (val) => {
-  if (!val) {
-    contactInfo.editIndex = -1
-    contactInfo.data = {}
-  }
-})
-
-watch(() => address.dialogFormVisible, (val) => {
-  if (!val) {
-    address.editIndex = -1
-    address.data = {}
-  }
-})
-
-watch(userAuth, (newV) => {
-  showAuth.m_add = newV.m_add == 'Y'
-  showAuth.m_search = newV.m_search == 'Y'
-  showAuth.m_del = newV.m_del == 'Y'
-  showAuth.m_updata = newV.m_updata == 'Y'
-  showAuth.m_import = newV.m_import == 'Y'
-  showAuth.m_export = newV.m_export == 'Y'
-  showAuth.m_upload = newV.m_upload == 'Y'
-  showAuth.m_audit = newV.m_audit == 'Y'
-  showAuth.m_print = newV.m_print == 'Y'
-}, { deep: true })
-
-onMounted(() => {
-  getList()
-  getUserAuth()
-})
 </script>
 
 <style scoped>
