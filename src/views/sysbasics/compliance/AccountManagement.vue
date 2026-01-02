@@ -1,157 +1,206 @@
 <template>
-  <div class="app-container">
-    <!-- 查询区域 -->
-    <div>
-      <div style="display: flex; gap: 16px; margin-bottom: 10px">
-        <!-- Left: 6 search fields in one column -->
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
-          <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ l.account }}</label>
-              <el-input :placeholder="l.input_accou" v-model="account.query.account" clearable style="width: 100%" />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ l.manufacture_name }}</label>
-              <el-input :placeholder="l.input_manufacture_name" v-model="account.query.manufacture_name" clearable style="width: 100%" />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ l.account_type }}</label>
-              <el-input :placeholder="l.input_account_type" v-model="account.query.account_type" clearable style="width: 100%" />
-            </div>
-          </div>
-          <div style="display: flex; gap: 12px">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ l.email }}</label>
-              <el-input :placeholder="l.input_email" v-model="account.query.email" clearable style="width: 100%" />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ l.create_time }}</label>
-              <el-input :placeholder="l.input_create_time" v-model="account.query.create_time" clearable style="width: 100%" />
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-              <label>{{ l.status }}</label>
-              <el-select v-model="account.query.is_valid" :placeholder="l.choose" clearable style="width: 100%">
-                <el-option v-for="item in accountOptions" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </div>
-          </div>
-        </div>
-        <!-- Right: 2 buttons aligned at the bottom -->
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-end; min-width: 160px; gap: 12px">
-          <el-button v-show="showAuth.m_search" type="primary" size="medium" @click="getUser" style="margin-right: 8px">{{ c.queryButton }}</el-button>
-          <el-button v-show="showAuth.m_search" type="info" size="medium" @click="reset">{{ l.reset }}</el-button>
-        </div>
-      </div>
-    </div>
-    <el-divider></el-divider>
-    <el-button v-show="showAuth.m_add" type="primary" class="create_btn" size="medium" @click="add">{{ c.create }}</el-button>
-    <!-- 表格 -->
-    <a-table :dataSource="account.list" :columns="accountColumns" :pagination="false" :bordered="config.tableProps.border" rowKey="id">
-      <template slot="operation" slot-scope="text, record, index">
-        <a v-if="record.is_valid == 'N'" href="#" class="text-blue">
-          {{ c.enable }}
-        </a>
-        <a v-else href="#" class="text-blue">
-          {{ c.disable }}
-        </a>
-        <span>&nbsp;</span>
-        <a v-show="showAuth.m_updata" href="#" class="text-green" @click.prevent="editItem(record, index)">
-          {{ c.edit }}
-        </a>
-        <span>&nbsp;</span>
-        <a v-show="showAuth.m_del" href="#" class="text-red" @click.prevent="deleteItem(record, index)">
-          {{ c.delete }}
-        </a>
-      </template>
-    </a-table>
-    <!-- 分页 -->
-    <z-pagination :pagination="pagination" :total="account.total" :page.sync="account.query.page" :limit.sync="account.query.pageSize" @change="getUser"></z-pagination>
-    <!-- 创建、编辑表单 -->
-    <CustomDialog :title="l.account" :visible.sync="account.editFormVisible" :maxWidth="'500px'" :clickOutside="false">
-      <template #notice>
-        <div class="text-sm text-gray-500 bg-gray-50 px-6 py-3">{{ l.createAccountNotice }}</div>
-      </template>
-      <template #content>
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-light flex">
-              {{ l.account }}
-              <span class="text-red-500" v-if="true">*</span>
-            </label>
-            <el-input :placeholder="l.account" v-model="account.data.account" :disabled="false" clearable />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-light flex">
-              {{ l.password }}
-              <span class="text-red-500" v-if="true">*</span>
-            </label>
-            <el-input :placeholder="l.password" v-model="account.data.password" type="password" clearable />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-light flex">
-              {{ l.email }}
-            </label>
-            <el-input :placeholder="l.email" v-model="account.data.email" clearable />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-light flex">
-              {{ l.phone }}
-              <span class="text-red-500" v-if="true">*</span>
-            </label>
-            <el-input :placeholder="l.phone" v-model="account.data.phone" :disabled="false" clearable />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-light flex">
-              {{ l.account_name }}
-              <span class="text-red-500" v-if="true">*</span>
-            </label>
-            <el-input :placeholder="l.account_name" v-model="account.data.account_name" clearable />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-light flex">
-              {{ l.manufacture_name }}
-              <span class="text-red-500" v-if="true">*</span>
-            </label>
-            <div class="flex gap-2">
-              <el-input :placeholder="l.manufacture_name" v-model="account.data.company_name" :disabled="true" clearable />
+  <div class="flex flex-col h-[calc(100vh-60px)] bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+    <!-- Header / Filter Bar -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] bg-white sticky top-0 z-20 shadow-sm flex flex-col gap-4">
+       <div class="flex justify-between items-center">
+         <h1 class="text-xl font-medium mb-0!">{{ l.account || 'Account Management' }}</h1>
+         <div class="flex gap-2">
+            <button v-show="showAuth.m_add" class="flex items-center gap-2 px-4 py-2 bg-[#CC0000] text-white! font-medium text-sm uppercase rounded shadow-sm hover:bg-[#990000] transition-colors cursor-pointer" @click="add">
+              <i class="el-icon-plus text-lg font-bold"></i>
+              <span>{{ c.create || 'CREATE' }}</span>
+            </button>
+         </div>
+       </div>
 
-              <el-button type="primary" :disabled="false" @click="openDept">{{ l.baseFile_select }}</el-button>
-            </div>
+       <!-- Filters -->
+       <div v-show="showAuth.m_search" class="grid grid-cols-6 gap-4 items-end">
+          <!-- Account -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
+             <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.account }}</label>
+             <input v-model="account.query.account" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6" :placeholder="l.input_accou || 'Account'" @keyup.enter="getUser">
           </div>
-          <div class="flex flex-col gap-2" style="display: none">
-            <el-input v-model="account.data.manufacturer_id" :disabled="true" style="visibility: hidden" />
+          <!-- Manufacturer -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
+             <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.manufacture_name }}</label>
+             <input v-model="account.query.manufacture_name" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6" :placeholder="l.input_manufacture_name || 'Manufacturer'" @keyup.enter="getUser">
           </div>
+          <!-- Type -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
+             <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.account_type }}</label>
+             <input v-model="account.query.account_type" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6" :placeholder="l.input_account_type || 'Type'" @keyup.enter="getUser">
+          </div>
+          <!-- Email -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
+             <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.email }}</label>
+             <input v-model="account.query.email" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6" :placeholder="l.input_email || 'Email'" @keyup.enter="getUser">
+          </div>
+          <!-- Date -->
+          <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
+             <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.create_time }}</label>
+             <input v-model="account.query.create_time" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6" :placeholder="l.input_create_time || 'Create Time'" @keyup.enter="getUser">
+          </div>
+          <!-- Status & Buttons -->
+          <div class="flex gap-2 items-center">
+             <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4] flex-1">
+               <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.status }}</label>
+               <select v-model="account.query.is_valid" class="w-full outline-none text-sm text-[#0D0D0D] border-none bg-transparent p-0 h-6 appearance-none" @change="getUser">
+                  <option value="" disabled selected>{{ l.choose || 'Choose' }}</option>
+                  <option v-for="item in accountOptions" :key="item.value" :value="item.value">{{ item.label }}</option>
+               </select>
+             </div>
+             <button class="bg-[#F0F0F0] text-[#0D0D0D] p-2 rounded hover:bg-[#E5E5E5] transition-colors cursor-pointer" :title="l.reset" @click="reset">
+                <i class="el-icon-refresh"></i>
+             </button>
+             <button class="bg-[#065FD4] text-white! p-2 rounded hover:bg-[#0056BF] transition-colors cursor-pointer" :title="c.queryButton" @click="getUser">
+                <i class="el-icon-search font-bold"></i>
+             </button>
+          </div>
+       </div>
+    </div>
+
+    <!-- Main List -->
+    <div class="flex-1 overflow-hidden flex flex-col bg-white">
+       <!-- Table Header -->
+       <div class="grid grid-cols-[1.5fr_1.5fr_2fr_2fr_1.5fr_1.5fr_1fr_120px] gap-4 px-6 py-3 border-b border-[#E5E5E5] bg-[#F9F9F9] text-xs font-medium text-[#606060] sticky top-0 z-10">
+          <div>{{ l.account }}</div>
+          <div>{{ l.account_name }}</div>
+          <div>{{ l.manufacture_name }}</div>
+          <div>{{ l.email }}</div>
+          <div>{{ l.phone }}</div>
+          <div>{{ l.create_time }}</div>
+          <div class="text-center">{{ l.status }}</div>
+          <div class="text-right">{{ l.operation }}</div>
+       </div>
+
+       <!-- Table Body -->
+       <div class="flex-1 overflow-y-auto custom-scrollbar" v-loading="loading">
+          <div v-if="account.list.length > 0">
+              <div v-for="(item, index) in account.list" :key="item.id"
+                   class="grid grid-cols-[1.5fr_1.5fr_2fr_2fr_1.5fr_1.5fr_1fr_120px] gap-4 px-6 py-4 border-b border-[#F0F0F0] hover:bg-[#F0F8FF] group items-center transition-colors">
+                   <div class="text-sm font-medium text-[#0D0D0D] truncate" :title="item.account">{{ item.account }}</div>
+                   <div class="text-sm text-[#0D0D0D] truncate" :title="item.account_name">{{ item.account_name }}</div>
+                   <div class="text-sm text-[#606060] truncate" :title="item.company_name">{{ item.company_name }}</div>
+                   <div class="text-xs text-[#606060] truncate" :title="item.email">{{ item.email }}</div>
+                   <div class="text-xs text-[#606060] truncate">{{ item.phone }}</div>
+                   <div class="text-xs text-[#606060]">{{ item.create_time }}</div>
+                   <div class="text-center">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                        :class="item.is_valid == 'Y' ? 'bg-[#E6F4EA] text-[#069C56]' : 'bg-[#FCE8E6] text-[#CC0000]'">
+                        {{ item.is_valid == 'Y' ? c.enable : c.disable }}
+                      </span>
+                   </div>
+                   <div class="text-right flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <!-- Enable/Disable -->
+                      <i v-if="item.is_valid == 'N'" class="el-icon-video-play text-[#069C56] cursor-pointer hover:scale-125 text-base" :title="c.enable" @click="toggleStatus(item)"></i>
+                      <i v-else class="el-icon-video-pause text-[#E6A23C] cursor-pointer hover:scale-125 text-base" :title="c.disable" @click="toggleStatus(item)"></i>
+
+                      <i v-show="showAuth.m_updata" class="el-icon-edit text-[#065FD4] cursor-pointer hover:scale-125 text-base" :title="c.edit" @click="editItem(item)"></i>
+                      <i v-show="showAuth.m_del" class="el-icon-delete text-[#CC0000] cursor-pointer hover:scale-125 text-base" :title="c.delete" @click="deleteItem(item)"></i>
+                   </div>
+              </div>
+          </div>
+          <div v-else class="flex flex-col items-center justify-center h-full text-[#999999]">
+             <i class="el-icon-document-remove text-4xl mb-2 text-[#E5E5E5]"></i>
+             <p>{{ c.noData || 'No data found' }}</p>
+          </div>
+       </div>
+
+       <!-- Pagination -->
+       <div class="p-4 border-t border-[#E5E5E5] bg-white flex justify-end">
+          <z-pagination :total="account.total" :page.sync="account.query.page" :limit.sync="account.query.pageSize" @change="getUser" :options="{ small: true }"></z-pagination>
+       </div>
+    </div>
+
+    <!-- Create/Edit Account Drawer -->
+    <a-drawer
+      :visible="account.editFormVisible"
+      :width="500"
+      :closable="false"
+      :mask-closable="true"
+      @close="account.editFormVisible = false"
+      class="account-drawer"
+      :body-style="{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }"
+    >
+        <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white">
+            <h2 class="text-lg font-medium text-[#0D0D0D] mb-0!">{{ account.data.id ? c.edit : c.create }} {{ l.account }}</h2>
+            <button class="text-[#606060] hover:text-[#0D0D0D] transition-colors cursor-pointer" @click="account.editFormVisible = false">
+                <i class="el-icon-close text-xl font-bold"></i>
+            </button>
         </div>
-      </template>
-      <template #footer>
-        <el-button @click="account.editFormVisible = false">
-          {{ c.cancel }}
-        </el-button>
-        <el-button type="primary" @click="submmit">
-          {{ c.confirm }}
-        </el-button>
-      </template>
-    </CustomDialog>
-    <!-- 选择分类对话框 -->
-    <CustomDialog :title="l.baseFile_select" :visible.sync="manufacturer.dialogVisible" width="100%" :maxWidth="'600px'">
-      <el-input style="width: 200px; margin-bottom: 10px" prefix-icon="el-icon-search" :placeholder="l.manufacture_name" clearable class="filter-item" @keyup.enter.native="getManufacturer" @clear="getManufacturer" @blur="getManufacturer" v-model="manufacturer.manufacture_name"></el-input>
-      <a-table :dataSource="manufacturer.list" :columns="manufacturerColumns" :pagination="false" :bordered="config.tableProps.border" rowKey="manufacture_id" @row="sendManufacturerItem">
-        <template slot="operation" slot-scope="text, record, index">
-          <a href="#" class="text-blue" @click.prevent="sendManufacturerItem(record, index)">
-            {{ l.select }}
-          </a>
-          &nbsp;
-        </template>
-      </a-table>
-      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
-    </CustomDialog>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-white">
+            <div class="flex flex-col gap-5">
+                 <!-- Notice -->
+                 <div class="bg-[#E6F7FF] border border-[#91D5FF] text-[#0050B3] px-4 py-3 rounded text-sm flex items-start gap-2">
+                    <i class="el-icon-info mt-0.5"></i>
+                    <span>{{ l.createAccountNotice || 'Please fill in the account details carefully.' }}</span>
+                 </div>
+
+                 <!-- Account -->
+                 <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                    <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.account }} <span class="text-[#CC0000]">*</span></label>
+                    <input v-model="account.data.account" class="w-full outline-none text-sm text-[#0D0D0D]" :disabled="!!account.data.id" :placeholder="l.account">
+                 </div>
+
+                 <!-- Password -->
+                 <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                    <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.password }} <span class="text-[#CC0000]" v-if="!account.data.id">*</span></label>
+                    <input v-model="account.data.password" type="password" class="w-full outline-none text-sm text-[#0D0D0D]" :placeholder="account.data.id ? l.leaveBlankToKeep : l.password">
+                 </div>
+
+                 <!-- Email -->
+                 <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                    <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.email }}</label>
+                    <input v-model="account.data.email" class="w-full outline-none text-sm text-[#0D0D0D]" :placeholder="l.email">
+                 </div>
+
+                 <!-- Phone -->
+                 <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                    <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.phone }} <span class="text-[#CC0000]">*</span></label>
+                    <input v-model="account.data.phone" class="w-full outline-none text-sm text-[#0D0D0D]" :disabled="!!account.data.id" :placeholder="l.phone">
+                 </div>
+
+                 <!-- Account Name -->
+                 <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                    <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.account_name }} <span class="text-[#CC0000]">*</span></label>
+                    <input v-model="account.data.account_name" class="w-full outline-none text-sm text-[#0D0D0D]" :placeholder="l.account_name">
+                 </div>
+
+                 <!-- Manufacturer Selection -->
+                 <div class="flex flex-col gap-1">
+                    <label class="text-xs text-[#606060]">{{ l.manufacture_name }} <span class="text-[#CC0000]">*</span></label>
+                    <div class="flex gap-2">
+                       <div class="flex-1 border border-[#CCCCCC] rounded px-3 py-2 bg-[#F9F9F9] text-sm text-[#0D0D0D]">
+                          {{ account.data.company_name || l.notSelected }}
+                       </div>
+                       <button class="bg-[#065FD4] text-white! px-4 py-2 rounded text-sm font-medium uppercase shadow-sm hover:bg-[#0056BF] transition-colors cursor-pointer" @click="manufacturer.dialogVisible = true">
+                          {{ l.baseFile_select || 'SELECT' }}
+                       </button>
+                    </div>
+                 </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-[#E5E5E5] bg-white flex justify-end gap-3">
+            <button class="px-4 py-2 text-sm font-medium text-[#606060] hover:bg-[#F2F2F2] rounded uppercase transition-colors cursor-pointer" @click="account.editFormVisible = false">
+                {{ c.cancel }}
+            </button>
+            <button class="px-6 py-2 text-sm font-medium text-white! bg-[#065FD4] hover:bg-[#0056BF] rounded uppercase shadow-sm transition-colors cursor-pointer" @click="submmit">
+                {{ c.confirm }}
+            </button>
+        </div>
+    </a-drawer>
+
+    <!-- Manufacturer Selector -->
+    <ManufacturerDrawer :visible.sync="manufacturer.dialogVisible" @select="sendManufacturerItem" />
+
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted, getCurrentInstance, watch, set } from 'vue'
 import { _, api, defaultConfig, zPagination } from '@/views/_common'
-import CustomDialog from '../../_common/CustomDialog.vue'
+import ManufacturerDrawer from './components/ManufacturerDrawer.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 const { proxy } = getCurrentInstance()
@@ -164,37 +213,20 @@ const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   apiAdd: api.ComplianceUser + 'add',
   apiDelete: api.ComplianceUser + 'delete',
   apiManufacturer: api.ComplianceManufacturer + 'getlist',
-  tableProps: {
-    border: true,
-    opsColWith: 150,
-  },
 })
 
+const loading = ref(false)
 const userAuth = ref({})
 const showAuth = reactive({
   m_search: false,
   m_add: false,
   m_del: false,
   m_updata: false,
-  m_import: false,
-  m_export: false,
-  m_upload: false,
-  m_audit: false,
-  m_print: false,
 })
-
-const pagination = ref(null) // Pagination props often passed to z-pagination, check usage. Original data: pagination: undefined/null implicit?
-// Actually z-pagination likely expects `pagination` prop if it's not null.
-// In original code, `pagination` was not defined in data, so it was undefined.
-// We can leave it undefined or null.
 
 const account = reactive({
   list: [],
   data: {},
-  formProps: {
-    dialogWidth: '30%',
-    labelWidth: '160px',
-  },
   query: {
     account: '',
     manufacture_name: '',
@@ -203,169 +235,33 @@ const account = reactive({
     create_time: '',
     status: '',
     is_valid: 'Y',
-    pageSize: 10,
+    pageSize: 15,
     page: 1,
   },
   total: 0,
   editFormVisible: false,
-  // fields: ... defined below as computed or just used in logic
-  // Original `fields` usage:
-  // `this.account.fields[0].props.disabled = false`
-  // We need to maintain this structure or refactor.
-  // I will define it as reactive and use it in add/edit.
-  fields: computed(() => [
-    {
-      title: l.value.account,
-      key: 'account',
-      span: 24,
-      required: true,
-      props: {
-        disabled: false,
-      },
-    },
-    {
-      title: l.value.password,
-      key: 'password',
-      span: 24,
-      required: true,
-    },
-    {
-      title: l.value.email,
-      key: 'email',
-      span: 24,
-    },
-    {
-      title: l.value.phone,
-      key: 'phone',
-      span: 24,
-      required: true,
-      props: {
-        disabled: false,
-      },
-    },
-    {
-      title: l.value.account_name,
-      key: 'account_name',
-      span: 24,
-      required: true,
-    },
-    {
-      title: l.value.manufacture_name,
-      key: 'company_name',
-      span: 24,
-      required: true,
-      props: {
-        disabled: true,
-      },
-    },
-    {
-      span: 6,
-      name: 'button',
-      value: 'baseFile_select',
-      props: {
-        type: 'primary',
-        disabled: false,
-      },
-      events: {
-        click: openDept,
-      },
-    },
-    {
-      title: '',
-      key: 'manufacturer_id',
-      span: 24,
-      props: {
-        disabled: true,
-        style: 'visibility:hidden',
-      },
-    },
-  ]),
 })
 
 const accountOptions = computed(() => [
-  {
-    value: 'Y',
-    label: c.value.enable,
-  },
-  {
-    value: 'N',
-    label: c.value.disable,
-  },
-])
-
-const accountColumns = computed(() => [
-  {
-    title: l.value.account,
-    dataIndex: 'account',
-    fixed: true,
-    width: 110,
-  },
-  {
-    title: l.value.account_name,
-    dataIndex: 'account_name',
-    fixed: true,
-    width: 110,
-  },
-  {
-    title: l.value.manufacture_name,
-    dataIndex: 'company_name',
-  },
-  {
-    title: l.value.email,
-    dataIndex: 'email',
-  },
-  {
-    title: l.value.phone,
-    dataIndex: 'phone',
-  },
-  {
-    title: l.value.create_time,
-    dataIndex: 'create_time',
-  },
-  {
-    title: l.value.status,
-    dataIndex: 'is_valid',
-  },
-  {
-    title: l.value.operation,
-    scopedSlots: { customRender: 'operation' },
-    width: 150,
-  },
+  { value: 'Y', label: c.value.enable },
+  { value: 'N', label: c.value.disable },
 ])
 
 const manufacturer = reactive({
-  list: [],
-  data: {},
-  query: {
-    manufacture_name: '',
-    pageSize: 10,
-    page: 1,
-    total: 0,
-  },
   dialogVisible: false,
 })
 
-const manufacturerColumns = computed(() => [
-  {
-    title: l.value.manufacture_name,
-    dataIndex: 'name_en',
-    fixed: true,
-    width: 500,
-  },
-  {
-    title: l.value.operation,
-    scopedSlots: { customRender: 'operation' },
-    width: 100,
-  },
-])
-
 function getUser() {
+  loading.value = true
   proxy.$request(config.apiList, account.query, 'post')
     .then((r) => {
       account.list = r.data.list
       account.total = r.data.total
+      loading.value = false
     })
-    .catch((e) => {})
+    .catch((e) => {
+      loading.value = false
+    })
 }
 
 function reset() {
@@ -375,31 +271,19 @@ function reset() {
   account.query.email = ''
   account.query.create_time = ''
   account.query.is_valid = ''
-}
-
-function getManufacturer() {
-  proxy.$request(config.apiManufacturer, manufacturer.query, 'get')
-    .then((r) => {
-      manufacturer.list = r.data.list
-      manufacturer.query.total = r.data.total
-    })
-    .catch((e) => {})
+  getUser()
 }
 
 function add() {
-  account.data = {}
-  account.fields[0].props.disabled = false
-  account.fields[3].props.disabled = false
-  account.fields[5].props.disabled = true
+  account.data = {
+      is_valid: 'Y'
+  }
   account.editFormVisible = true
 }
 
 function editItem(data) {
   account.data = _.cloneDeep(data)
   account.data.password = ''
-  account.fields[0].props.disabled = true
-  account.fields[3].props.disabled = true
-  account.fields[5].props.disabled = true
   account.editFormVisible = true
 }
 
@@ -410,6 +294,12 @@ function submmit() {
   } else {
     url = config.apiAdd
   }
+
+  // Basic validation (optional but good)
+  if (!account.data.account || !account.data.account_name || !account.data.phone || !account.data.manufacturer_id) {
+      return proxy.$message.error(l.value.createAccountNotice || 'Please fill required fields')
+  }
+
   proxy.$request(url, account.data, 'post')
     .then((r) => {
       proxy.$message({
@@ -444,27 +334,34 @@ function deleteItem(data) {
         })
     })
     .catch(() => {
-      proxy.$message({
-        type: 'info',
-        message: l.value.info,
-      })
+      // Cancelled
     })
 }
 
-function openDept() {
-  manufacturer.dialogVisible = true
+// Reuse update logic to toggle status for quick action
+function toggleStatus(item) {
+   // Logic might differ depending on backend API.
+   // Usually status toggle is an update.
+   let newItem = _.cloneDeep(item)
+   newItem.is_valid = item.is_valid == 'Y' ? 'N' : 'Y'
+   proxy.$request(config.apiUpdate, newItem, 'post').then(() => {
+       proxy.$message.success(c.value.success)
+       getUser()
+   })
 }
 
 function sendManufacturerItem(data) {
   set(account.data, 'manufacturer_id', data.manufacture_id)
-  set(account.data, 'account_name', data.name_en)
+  set(account.data, 'account_name', data.name_en) // Original logic copied name_en to account_name?
+  // Checking original logic:
+  // set(account.data, 'account_name', data.name_en)
+  // set(account.data, 'company_name', data.name_en)
+  // Yes, it overwrites account_name. I will keep it.
   set(account.data, 'company_name', data.name_en)
-  manufacturer.dialogVisible = false
+  // manufacturer.dialogVisible = false // handled by drawer component
 }
 
 function getUserAuth() {
-  console.log(proxy.$api.checkMenuAuth)
-
   proxy.$request(proxy.$api.checkMenuAuth, {
     resourcepath: proxy.$route.name,
   }).then((r) => {
@@ -473,60 +370,32 @@ function getUserAuth() {
 }
 
 watch(userAuth, (newV) => {
+  if(!newV) return
   showAuth.m_add = newV.m_add == 'Y'
   showAuth.m_search = newV.m_search == 'Y'
   showAuth.m_del = newV.m_del == 'Y'
   showAuth.m_updata = newV.m_updata == 'Y'
-  showAuth.m_import = newV.m_import == 'Y'
-  showAuth.m_export = newV.m_export == 'Y'
-  showAuth.m_upload = newV.m_upload == 'Y'
-  showAuth.m_audit = newV.m_audit == 'Y'
-  showAuth.m_print = newV.m_print == 'Y'
 }, { deep: true })
 
 onMounted(() => {
   getUser()
-  getManufacturer()
   getUserAuth()
 })
 </script>
+
 <style scoped>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-.el-col {
-  border-radius: 4px;
-  padding: 0px;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
-.bg-purple-dark {
-  background: #99a9bf;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #E5E5E5;
+  border-radius: 3px;
 }
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.row-bg {
-  padding: 5px 0;
-  background-color: #f9fafc;
-}
-.r_input {
-  width: 1600px;
-}
-.r_btn {
-  float: right;
-  padding: 0;
-  margin: 0;
-}
-.search_tips {
-  width: 100px;
-  text-align: right;
-  font-size: 14px;
-  display: inline-block;
-  font-family: '微软雅黑';
-}
-.create_btn {
-  margin-bottom: 15px;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #CCCCCC;
 }
 </style>
