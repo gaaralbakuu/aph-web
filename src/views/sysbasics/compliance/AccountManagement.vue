@@ -37,13 +37,15 @@
           <!-- Date -->
           <div class="relative group border border-[#CCCCCC] rounded px-3 py-1 bg-white focus-within:border-[#065FD4]">
              <label class="block text-[10px] text-[#606060] mb-0 group-focus-within:text-[#065FD4]">{{ l.create_time }}</label>
-             <a-date-picker
+             <el-date-picker
                 v-model="account.query.create_time"
-                class="w-full !border-none !shadow-none !bg-transparent p-0 h-6"
+                class="w-full !border-none !shadow-none !bg-transparent p-0 h-6 custom-date-picker"
                 :placeholder="l.input_create_time || 'Create Time'"
-                format="YYYY-MM-DD"
-                valueFormat="YYYY-MM-DD"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
                 @change="getUser"
+                :clearable="true"
              />
           </div>
           <!-- Status & Buttons -->
@@ -406,20 +408,24 @@ onMounted(() => {
   background-color: #CCCCCC;
 }
 
-/* Ant Design DatePicker Customization for Tailwind-like look */
-:deep(.ant-calendar-picker-input) {
+/* Element UI DatePicker Customization for Tailwind-like look */
+:deep(.custom-date-picker .el-input__inner) {
     border: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
-    height: auto !important;
+    height: 24px !important; /* h-6 */
+    line-height: 24px !important;
     box-shadow: none !important;
     background: transparent !important;
     font-size: 0.875rem !important; /* text-sm */
     color: #0D0D0D !important;
 }
-:deep(.ant-calendar-picker-input:focus),
-:deep(.ant-calendar-picker:hover .ant-calendar-picker-input) {
+:deep(.custom-date-picker .el-input__inner:focus) {
     border: none !important;
     box-shadow: none !important;
+}
+:deep(.custom-date-picker .el-input__prefix),
+:deep(.custom-date-picker .el-input__suffix) {
+    display: none; /* Hide default icons to keep it super clean or adjust top */
 }
 </style>

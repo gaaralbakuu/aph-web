@@ -204,12 +204,13 @@
                    <div class="form-item">
                       <label class="block text-xs text-[#606060] mb-1">{{ l.cooperation_start_date }}</label>
                       <!-- Custom Styled Date Picker Example -->
-                      <a-date-picker
+                      <el-date-picker
                         v-model="manufacturer.data.cooperation_start_date"
-                        class="w-full !border-[#CCCCCC] !rounded !text-sm"
+                        class="w-full !border-[#CCCCCC] !rounded !text-sm custom-el-date"
                         :placeholder="c.selectDate"
-                        format="YYYY-MM-DD"
-                        valueFormat="YYYY-MM-DD HH:mm:ss"
+                        type="date"
+                        format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                       />
                    </div>
                    <div class="form-item">
@@ -574,16 +575,16 @@ onMounted(() => {
   background-color: #CCCCCC;
 }
 
-/* Ant Design DatePicker Customization for Tailwind-like look */
-:deep(.ant-calendar-picker-input) {
+/* Element UI DatePicker Customization for Tailwind-like look */
+:deep(.custom-el-date .el-input__inner) {
     border: 1px solid #CCCCCC !important;
     border-radius: 0.25rem !important;
     padding: 0.5rem 0.75rem !important;
-    height: auto !important;
+    height: 38px !important;
+    line-height: 38px !important;
     box-shadow: none !important;
 }
-:deep(.ant-calendar-picker-input:focus),
-:deep(.ant-calendar-picker:hover .ant-calendar-picker-input) {
+:deep(.custom-el-date .el-input__inner:focus) {
     border-color: #065FD4 !important;
 }
 </style>
