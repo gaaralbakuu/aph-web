@@ -127,7 +127,7 @@
             </span>
           </div>
           <div class="flex items-center justify-end gap-3">
-            <button class="text-[#065FD4] hover:underline uppercase text-xs font-medium" @click="previewExam(item.questionnaire_id)">
+            <button class="text-[#065FD4] hover:underline uppercase text-xs font-medium" @click="previewExam(item.id, item.questionnaire_id)">
               <i class="el-icon-view text-lg"></i>
             </button>
             <button class="text-[#606060] hover:text-[#0D0D0D]" @click="editExam(item)">
@@ -482,14 +482,14 @@ const toggleExamStatus = (data) => {
     })
 }
 
-const previewExam = (id) => {
+const previewExam = (id, questionnaire_id) => {
   let url = router.resolve({
     name: 'examDetail',
     query: {
       train_id: '',
       course_id: '',
-      exam_id: '',
-      questionnaire_id: id,
+      exam_id: id,
+      questionnaire_id: questionnaire_id,
       mode: 'preview',
     },
   }).href
