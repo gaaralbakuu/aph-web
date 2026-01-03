@@ -6,71 +6,24 @@ Main API: http://localhost:65301
 Video API: http://localhost:65301
 Build mode: development
 Build command: serve
-5:42:48 AM [vite] (client) Forced re-optimization of dependencies
+3:10:54 AM [vite] (client) Forced re-optimization of dependencies
 
-  VITE v7.3.0  ready in 1764 ms
+  VITE v7.3.0  ready in 1743 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://192.168.0.2:5173/
   ➜  Inspect: http://localhost:5173/__inspect/
-(!) Failed to run dependency scan. Skipping dependency pre-bundling. Error:   Failed to scan for dependencies from entries:
-  /app/index.html
-/app/public/index.html
-/app/public/download/index.html
-/app/public/privacy/index.html
-
-  [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open '/app/src/views/_common/ChooseUser.vue'[0m [1m[35m[plugin vite:dep-scan][0m
-
-    node_modules/esbuild/lib/main.js:1267:21:
-[37m      1267 │         let result = [32m[37mawait callback({
-           ╵                      [32m^[0m
-
-    at async open (node:internal/fs/promises:641:25)
-    at async Object.readFile (node:internal/fs/promises:1245:14)
-    at async htmlTypeOnLoadCallback (file:///app/node_modules/vite/dist/node/chunks/config.js:31561:15)
-    at async requestCallbacks.on-load (/app/node_modules/esbuild/lib/main.js:1267:22)
-    at async handleRequest (/app/node_modules/esbuild/lib/main.js:628:11)
-
-  This error came from the "onLoad" callback registered here:
-
-    node_modules/esbuild/lib/main.js:1141:20:
-[37m      1141 │       let promise = [32m[37msetup({
-           ╵                     [32m^[0m
-
-    at setup (file:///app/node_modules/vite/dist/node/chunks/config.js:31618:12)
-    at handlePlugins (/app/node_modules/esbuild/lib/main.js:1141:21)
-    at buildOrContextImpl (/app/node_modules/esbuild/lib/main.js:854:5)
-    at Object.buildOrContext (/app/node_modules/esbuild/lib/main.js:680:5)
-    at /app/node_modules/esbuild/lib/main.js:2035:68
-    at new Promise (<anonymous>)
-    at Object.context (/app/node_modules/esbuild/lib/main.js:2035:27)
-    at Object.context (/app/node_modules/esbuild/lib/main.js:1877:58)
-    at prepareEsbuildScanner (file:///app/node_modules/vite/dist/node/chunks/config.js:31453:23)
-    at async scan (file:///app/node_modules/vite/dist/node/chunks/config.js:31379:14)
-    at async file:///app/node_modules/vite/dist/node/chunks/config.js:34110:15
-
-  The plugin "vite:dep-scan" was triggered by this import
-
-    script:/app/src/views/sysbasics/compliance/Role.vue?id=0:5:23:
-[37m      5 │ import chooseUser from [32m'@/views/_common/ChooseUser.vue'[37m
-        ╵                        [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-
-
-    at failureErrorWithLog (/app/node_modules/esbuild/lib/main.js:1467:15)
-    at /app/node_modules/esbuild/lib/main.js:926:25
-    at runOnEndCallbacks (/app/node_modules/esbuild/lib/main.js:1307:45)
-    at buildResponseToResult (/app/node_modules/esbuild/lib/main.js:924:7)
-    at /app/node_modules/esbuild/lib/main.js:936:9
-    at new Promise (<anonymous>)
-    at requestCallbacks.on-end (/app/node_modules/esbuild/lib/main.js:935:54)
-    at handleRequest (/app/node_modules/esbuild/lib/main.js:628:17)
-    at handleIncomingPacket (/app/node_modules/esbuild/lib/main.js:653:7)
-    at Socket.readFromStdout (/app/node_modules/esbuild/lib/main.js:581:7)
-    at Socket.emit (node:events:519:28)
-    at addChunk (node:internal/streams/readable:561:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
-    at Readable.push (node:internal/streams/readable:392:5)
-    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
-5:43:11 AM [vite] (client) ✨ new dependencies optimized: ant-design-vue, js-cookie, vue-i18n, @tanstack/vue-query, element-ui/lib/locale/lang/vi, nprogress, dayjs, element-ui/lib/locale/lang/en, element-ui/lib/locale/lang/zh-CN, axios, screenfull
-5:43:11 AM [vite] (client) ✨ optimized dependencies changed. reloading
-5:44:40 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:12:30 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:20:32 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:24:48 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:25:01 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:25:41 AM [vite] (client) page reload error_dump.html
+3:25:42 AM [vite] (client) page reload error_dump.html
+3:26:20 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:27:50 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:28:08 AM [vite] (client) page reload error_dump.html
+3:28:09 AM [vite] (client) page reload error_dump.html
+3:29:08 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:29:58 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:48:22 AM [vite] (client) hmr update /src/assets/css/tailwind.css?direct, /src/assets/css/tailwind.css
+3:48:22 AM [vite] (client) page reload error_dump.html
