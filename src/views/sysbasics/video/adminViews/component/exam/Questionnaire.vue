@@ -169,17 +169,22 @@
                    </div>
                 </div>
 
-                <div class="border border-[#E5E5E5] rounded bg-[#F9F9F9] p-2 space-y-2">
+                <div ref="questionListRef" class="border border-[#E5E5E5] rounded bg-[#F9F9F9] p-2 space-y-2">
                    <div v-if="templateObj.question.length === 0" class="text-center py-4 text-[#606060] text-sm">{{ c.noData || "Chưa có câu hỏi nào" }}</div>
-                   <div v-for="(i, index) in templateObj.question" :key="index" class="bg-white border border-[#E5E5E5] rounded p-2 shadow-sm">
+                   <div v-for="(i, index) in templateObj.question" :key="i._uid || index" class="bg-white border border-[#E5E5E5] rounded p-2 shadow-sm">
                       <div class="flex justify-between items-start mb-2">
-                         <div class="font-medium text-sm">#{{ index + 1 }}</div>
+                         <div class="flex items-center gap-2">
+                            <div class="cursor-move drag-handle text-[#CCCCCC] hover:text-[#606060]">
+                               <i class="el-icon-rank text-lg"></i>
+                            </div>
+                            <div class="font-medium text-sm">#{{ index + 1 }}</div>
+                         </div>
                          <button class="text-[#CC0000] hover:text-[#990000]" @click="deleteQuestionInFrom(index)">
                             <i class="el-icon-close"></i>
                          </button>
                       </div>
 
-                      <div class="flex gap-2 items-center mb-2">
+                      <div class="flex gap-2 items-center mb-2 pl-6">
                          <div class="bg-[#F2F2F2] px-2 py-1 text-xs text-[#606060] rounded border border-[#CCCCCC] min-w-[80px] text-center">
                             {{ returnPublicObjLabel(i.question_type,'value','label','question_type') }}
                          </div>
@@ -277,8 +282,9 @@
 </template>
 
 <script setup>
-import { reactive, computed, watch, onMounted, ref, getCurrentInstance } from 'vue'
+import { reactive, computed, watch, onMounted, ref, getCurrentInstance, nextTick } from 'vue'
 import { message } from 'ant-design-vue'
+import Sortable from 'sortablejs'
 import store from '@/store'
 import api from '@/api'
 import { useLocalI18n } from '@/composables/useLocalI18n'
@@ -294,6 +300,8 @@ const { $request, $prompt } = instance.proxy
 // State
 const isAdmin = computed(() => store.getters.isAdmin)
 const college_id = ref(null)
+const questionListRef = ref(null)
+let sortableInstance = null
 
 const showObj = reactive({
   questionDialog: false,
@@ -422,6 +430,10 @@ const addQuestionnaire = () => {
   showObj.questionnaireDrawer = true
 }
 
+const generateId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2)
+}
+
 const editQuestionnaire = (id) => {
   $request(api.baseUrl + '/Video/VideoExam/getQuestionnaire', {
       id: id,
@@ -429,6 +441,9 @@ const editQuestionnaire = (id) => {
     }, 'post')
     .then(r => {
       assignObject(questionnaireObj.form, r.data)
+      if (r.data.questions && r.data.questions.length > 0) {
+        r.data.questions.forEach(q => { q._uid = generateId() })
+      }
       templateObj.question = r.data.questions
       showObj.questionnaireDrawer = true
     })
@@ -553,6 +568,7 @@ const getQuestionList = () => {
 
 const selectQuestion = (data) => {
   let temp = {
+    _uid: generateId(),
     id: "",
     questioinnaire_id: "",
     question_id: data.id,
@@ -571,6 +587,22 @@ const deleteQuestionInFrom = (index) => {
   templateObj.question.splice(index, 1)
 }
 
+const initSortable = () => {
+  if (!questionListRef.value) return
+  if (sortableInstance) sortableInstance.destroy()
+
+  sortableInstance = new Sortable(questionListRef.value, {
+    animation: 150,
+    handle: '.drag-handle',
+    onEnd: (evt) => {
+      // If there are no items, evt.oldIndex/newIndex might be weird, but handle won't be there.
+      // If there is the empty message, it doesn't have drag-handle.
+      const item = templateObj.question.splice(evt.oldIndex, 1)[0]
+      templateObj.question.splice(evt.newIndex, 0, item)
+    }
+  })
+}
+
 onMounted(() => {
   getCollegeList()
 })
@@ -578,6 +610,19 @@ onMounted(() => {
 watch(college_id, (val) => {
   if (val) {
     questionnaireObj.query.college_id = val
+  }
+})
+
+watch(() => showObj.questionnaireDrawer, (val) => {
+  if (val) {
+    nextTick(() => {
+      initSortable()
+    })
+  } else {
+    if (sortableInstance) {
+      sortableInstance.destroy()
+      sortableInstance = null
+    }
   }
 })
 
