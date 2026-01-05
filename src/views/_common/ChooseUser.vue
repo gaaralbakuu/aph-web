@@ -130,7 +130,10 @@
 </template>
 
 <script>
-import { _, zPagination,zTable } from '@/views/_common'
+import _ from 'lodash'
+import zPagination from './pagination'
+import zTable from './table'
+
 export default {
   name: 'chooseUser',
   components: {

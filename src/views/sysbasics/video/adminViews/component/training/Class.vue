@@ -1,478 +1,511 @@
 <template>
-  <div class="trainingManage-container">
-    <div class="component">
-      <el-drawer class="drawer-container" :visible.sync="showObj.classShow" :wrapperClosable='false' size="40%">
-        <div slot='title' class="title">{{l.createClass}}</div>
-        <div class="form-container">
-          <div class="form">
-            <el-form label-width="80px" size="medium">
-              <el-form-item :label="l.college" required>
-                <el-select v-model="classObj.form.college_id" requird style="width: 100%;">
-                  <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                    :value="i.id"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item :label="l.simplifiedChineseTitle" required>
-                <el-input v-model="classObj.form.name_zh" requird></el-input>
-              </el-form-item>
-              <el-form-item :label="l.traditionalChineseTitle">
-                <el-input v-model="classObj.form.name_tw"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.englishTitle">
-                <el-input v-model="classObj.form.name_en"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.vietnameseTitle">
-                <el-input v-model="classObj.form.name_vi"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.trainingContent" required>
-                <el-input v-model="classObj.form.train_content"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.trainingObjective" required>
-                <el-input v-model="classObj.form.train_target"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.trainingTarget" required>
-                <el-input v-model="classObj.form.train_object"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.affiliatedPlan" required>
-                <el-input v-model="classObj.form.train_name_label" disabled>
-                  <template slot="append">
-                    <el-button @click="showObj.selectTraining=true"
-                      style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
-                  </template>
-                </el-input>
-              </el-form-item>
-              <el-form-item :label="l.classTeacher" required>
-                <el-input v-model="classObj.form.teacher_name" disabled>
-                  <template slot="append">
-                    <el-button @click="showObj.selectUser = true"
-                      style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
-                  </template>
-                </el-input>
-              </el-form-item>
-              <el-form-item :label="l.startTime" required>
-                <el-date-picker v-model="classObj.form.start_date" type="datetime" :placeholder="l.selectStartTime"
-                  style="width: 100%;">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item :label="l.endTime" required>
-                <el-date-picker v-model="classObj.form.end_date" type="datetime" :placeholder="l.selectEndTime"
-                  style="width: 100%;">
-                </el-date-picker>
-              </el-form-item>
-            </el-form>
-          </div>
-          <div class="buttonBar">
-            <el-button type="primary" @click="handleSubmit">{{l.submit}}</el-button>
-            <el-button type="danger" @click="showObj.classShow = false">{{l.close}}</el-button>
-          </div>
-        </div>
-      </el-drawer>
-
-      <el-dialog class="examRecord-dialog" :title="l.examRecord" :visible.sync="showObj.recordDialog" width="50%">
-        <el-form :inline="true">
-          <el-form-item :label="l.studentBarcode">
-            <el-input v-model="examObj.recordQuery.userid" :placeholder="l.pleaseInput"
-              @keyup.native.enter="getExamRecord" clearable></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" @click="getExamRecord">{{l.search}}</el-button>
-          </el-form-item>
-        </el-form>
-        <a-table :dataSource="examObj.record" :scroll="{ y: 350 }" style="width: 100%">
-          <a-table-column :title="l.serialNumber" type="index"></a-table-column>
-          <a-table-column :title="l.examTime" dataIndex="create_time">
-          </a-table-column>
-          <a-table-column :title="l.studentName" dataIndex="create_user">
-          </a-table-column>
-          <a-table-column :title="l.score" dataIndex="score">
-          </a-table-column>
-          <a-table-column :title="l.operation" :width="150" align="center" fixed="right">
-            <template slot-scope="text, record, index">
-              <a-button class="text-green" type="link" size="small" @click="reviewExam(record)">{{l.viewDetails}}</a-button>
-              <a-button type="link" size="small" @click="readExam(record)">{{l.correctPapers}}</a-button>
-            </template>
-          </a-table-column>
-        </a-table>
-        <a-pagination @showSizeChange="handleRecordSizeChange" @change="handleRecordPageChange"
-          :current="examObj.recordQuery.page" :pageSizeOptions="[5,10, 15, 30, 50,100]"
-          :pageSize="examObj.recordQuery.pageSize" :showSizeChanger="true" :showQuickJumper="true" :showTotal="(total, range) => `共 ${total} 条`"
-          :total="examObj.recordTotal" style="float: right;">
-        </a-pagination>
-        <div slot="footer">
-          <el-button type="primary" @click="showObj.recordDialog = false">{{l.close}}</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.courseDialog" width="70%">
-        <a-table :dataSource='learningObj.unfinishCourse' style="width: 100%">
-          <a-table-column :title='l.serialNumber' type="index" :width="50"></a-table-column>
-          <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
-          <a-table-column :title="l.description" dataIndex="description"></a-table-column>
-        </a-table>
-      </el-dialog>
-
-      <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.examDialog" width="70%">
-        <a-table :dataSource='learningObj.unfinishExam' style="width: 100%">
-          <a-table-column :title='l.serialNumber' type="index" :width="50"></a-table-column>
-          <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
-          <a-table-column :title="l.passScore" dataIndex="pass_score"></a-table-column>
-          <a-table-column :title="l.maxAttempts" dataIndex="max_reply_num"></a-table-column>
-          <a-table-column :title="l.examDuration" dataIndex="test_duration"></a-table-column>
-          <a-table-column :title="l.startTime" dataIndex="start_time"></a-table-column>
-          <a-table-column :title="l.endTime" dataIndex="end_time"></a-table-column>
-        </a-table>
-      </el-dialog>
-
-      <!-- 选择培训dialog -->
-      <el-dialog :visible.sync="showObj.selectTraining" @open='getTrainingList' :title="l.selectTraining" width="75%">
-        <div class="pageBody-filter">
-          <el-form inline>
-            <el-form-item :label="l.college">
-              <el-select v-model="trainingObj.query.college_id" @change="getTrainingList"
-                :placeholder="l.pleaseSelectCollege" :clearable="isAdmin">
-                <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                  :value="i.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="l.trainingName">
-              <el-input v-model="trainingObj.query.name" clearable @clear='getTrainingList'
-                @keyup.native.enter="getTrainingList"></el-input>
-            </el-form-item>
-            <el-form-item :label="l.status">
-              <el-select v-model="trainingObj.query.is_valid" @change="getTrainingList" style="width: 100px;">
-                <el-option :label="l.all" value=""></el-option>
-                <el-option :label="l.enabled" value="Y"></el-option>
-                <el-option :label="l.disabled" value="N"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item> <el-button type="success" @click="getTrainingList">{{l.search}}</el-button></el-form-item>
-          </el-form>
-        </div>
-
-        <div class="tableContainer" ref="tableContainer">
-          <a-table :dataSource='trainingObj.list' style="width: 100%">
-            <a-table-column :title='l.serialNumber' type="index" :width="50">
-            </a-table-column>
-            <a-table-column :title="l.simplifiedChinese" dataIndex="name_zh"></a-table-column>
-            <a-table-column :title="l.college" dataIndex="college_id">
-              <template slot-scope="text, record, index">
-                {{returnCollegeLabel(record.college_id)}}
-              </template>
-            </a-table-column>
-            <a-table-column :title="l.startTime" dataIndex="start_date"></a-table-column>
-            <a-table-column :title="l.endTime" dataIndex="end_date"></a-table-column>
-            <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
-            <a-table-column :title="l.operation" fixed="right">
-              <template slot-scope="text, record, index">
-                <a-button type='link' @click="selectTraining(record)">{{l.select}}</a-button>
-              </template>
-            </a-table-column>
-          </a-table>
-        </div>
-      </el-dialog>
-
-      <!-- 选择用户dialog -->
-      <el-dialog :visible="showObj.selectUser" @open="getUserList" width="75%" :show-close="false">
-        <el-form inline>
-          <el-form-item :label="l.userInfo">
-            <el-input v-model="userObj.query.queryString" clearable @clear='getUserList'
-              @keyup.native.enter="getUserList"></el-input>
-          </el-form-item>
-          <el-form-item :label="l.status">
-            <el-select v-model="userObj.query.status" @change="getUserList">
-              <el-option :label="l.all" value=""></el-option>
-              <el-option :label="l.enabled" value="0"></el-option>
-              <el-option :label="l.disabled" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item> <el-button type="success" @click="getUserList">{{l.search}}</el-button></el-form-item>
-        </el-form>
-        <div class="tableContainer" ref="tableContainer">
-          <a-table :dataSource='userObj.list' :scroll="{ y: 400 }" style="width: 100%">
-            <a-table-column :title='l.serialNumber' type="index" :width="50">
-            </a-table-column>
-            <a-table-column :title="l.jobNumber" dataIndex="userid"></a-table-column>
-            <a-table-column :title="l.name" dataIndex="username"></a-table-column>
-            <a-table-column :title="l.department" dataIndex="department_t"></a-table-column>
-            <a-table-column :title="l.position" dataIndex="work_name"></a-table-column>
-            <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
-            <a-table-column :title="l.operation" fixed="right">
-              <template slot-scope="text, record, index">
-                <a-button type='link' @click="selectUser(record)">{{l.select}}</a-button>
-              </template>
-            </a-table-column>
-          </a-table>
-        </div>
-        <div
-          style="width: 100%;display: flex;align-items: center;height: 50px;justify-content: flex-end;padding-right: 20px;">
-          <el-button type="danger" plain @click="showObj.selectUser = false">{{l.close}}</el-button>
-        </div>
-      </el-dialog>
-
-      <!-- 新增或修改课程以及配套资源 -->
-      <el-drawer class="drawer-container" direction='btt' :visible.sync="showObj.modifyClass" :wrapperClosable='false'
-        size="95%">
-        <div slot='title' class="title">{{l.manageClass}}</div>
-        <el-tabs type="border-card" class="form-container" @tab-click="tabClick" v-model="showObj.activeTabName">
-          <el-tab-pane :label="l.basicInfo" name="data">
-            <el-form label-width="80px" size="medium">
-              <el-form-item :label="l.college">
-                <el-select v-model="classObj.form.college_id" requird style="width: 100%;">
-                  <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                    :value="i.id"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item :label="l.simplifiedChineseTitle">
-                <el-input v-model="classObj.form.name_zh" requird></el-input>
-              </el-form-item>
-              <el-form-item :label="l.traditionalChineseTitle">
-                <el-input v-model="classObj.form.name_tw"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.englishTitle">
-                <el-input v-model="classObj.form.name_en"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.vietnameseTitle">
-                <el-input v-model="classObj.form.name_vi"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.trainingContent">
-                <el-input v-model="classObj.form.train_content"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.trainingObjective">
-                <el-input v-model="classObj.form.train_target"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.trainingTarget">
-                <el-input v-model="classObj.form.train_object"></el-input>
-              </el-form-item>
-              <el-form-item :label="l.affiliatedPlan">
-                <el-input v-model="classObj.form.train_name_label" disabled>
-                  <template slot="append">
-                    <el-button @click="showObj.selectTraining=true"
-                      style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
-                  </template>
-                </el-input>
-              </el-form-item>
-              <el-form-item :label="l.classTeacher">
-                <el-input v-model="classObj.form.teacher_name" disabled>
-                  <template slot="append">
-                    <el-button @click="showObj.selectUser = true"
-                      style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
-                  </template>
-                </el-input>
-              </el-form-item>
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item :label="l.startTime">
-                    <el-date-picker v-model="classObj.form.start_date" type="datetime" :placeholder="l.selectStartTime"
-                      style="width: 100%;">
-                    </el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item :label="l.endTime">
-                    <el-date-picker v-model="classObj.form.end_date" type="datetime" :placeholder="l.selectEndTime"
-                      style="width: 100%;">
-                    </el-date-picker>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-            <div style="display: flex;justify-content: center;">
-              <el-button type="primary" @click="handleSubmit" style="width: 100px;">{{l.update}}</el-button>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane :label="l.taskList" name='task'>
-            <a-table :dataSource="classObj.taskList" :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
-              <a-table-column :title="l.serialNumber" type="index" :width="55"></a-table-column>
-              <a-table-column :title="l.name" dataIndex="name_label"></a-table-column>
-              <a-table-column :title="l.type" dataIndex="type">
-                <template slot-scope="text, record, index">
-                  {{record.type==1?l.exam:l.course}}
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.required" dataIndex="is_must">
-                <template slot-scope="text, record, index">
-                  {{record.is_must==1?l.required:l.elective}}
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.operation" fixed="right">
-                <template slot-scope="text, record, index">
-                  <a-button class="text-green" type='link' @click="previewDetail(record)">{{l.preview}}</a-button>
-                  <a-button v-show="record.type==1" type='link' @click="getExamRecord(record)">{{l.statistics}}</a-button>
-                </template>
-              </a-table-column>
-            </a-table>
-          </el-tab-pane>
-          <el-tab-pane :label="l.classStudents" name="student">
-            <div style="margin-bottom: 10px;display: flex;justify-content: space-between;">
-              <div>
-                <el-form inline>
-                  <el-form-item :label="l.name">
-                    <el-input v-model="studentObj.query.user_name"></el-input>
-                  </el-form-item>
-                  <el-form-item :label="l.status">
-                    <el-select v-model="studentObj.query.is_valid">
-                      <el-option :label="l.all" value=""></el-option>
-                      <el-option :label="l.enabled" value="Y"></el-option>
-                      <el-option :label="l.disabled" value="N"></el-option>
-                    </el-select>
-                    <el-button type="primary" @click="getClassmate(class_id)">{{l.search}}</el-button>
-                  </el-form-item>
-                </el-form>
-              </div>
-              <div>
-                <el-button type="primary" plain @click="showObj.selectStudent = true">{{l.addStudents}}</el-button>
-              </div>
-            </div>
-            <a-table :dataSource="studentObj.classmateList" :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
-              <a-table-column :title="l.serialNumber" type="index" :width="55"></a-table-column>
-              <a-table-column :title="l.barcode" dataIndex="userId"></a-table-column>
-              <a-table-column :title="l.name" dataIndex="userName"></a-table-column>
-              <a-table-column :title="l.department" dataIndex="department"></a-table-column>
-              <a-table-column :title="l.position" dataIndex="workName"></a-table-column>
-              <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
-              <a-table-column :title="l.operation" fixed="right">
-                <template slot-scope="text, record, index">
-                  <a-button type='link' :class="record.is_valid=='Y'?'text-red':'text-green'" @click="toggleStudentStatus(record)">{{record.is_valid=='Y'?l.disable:l.enable}}</a-button>
-                </template>
-              </a-table-column>
-            </a-table>
-          </el-tab-pane>
-          <el-tab-pane :label="l.completionStatus" name="status" v-if='class_id!=""'>
-            <a-table :dataSource='learningObj.list' :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
-              <a-table-column :title='l.serialNumber' type="index" :width="50"></a-table-column>
-              <a-table-column :title="l.jobNumber" dataIndex="userid"></a-table-column>
-              <a-table-column :title="l.name" dataIndex="name_t"></a-table-column>
-              <a-table-column :title="l.department" dataIndex="dept_no"></a-table-column>
-              <a-table-column :title="l.departmentName" dataIndex="department_t"></a-table-column>
-              <a-table-column :title="l.courseCount" dataIndex="course_num">
-                <template slot-scope="text, record, index">
-                  <div class='total-num'>
-                    {{record.course_num}}
-                  </div>
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.completedCourses" dataIndex="finsh_course_num">
-                <template slot-scope="text, record, index">
-                  <div @click="checkCourse(record.finsh_course_List,l.completedCourses)" class='finish-num'>
-                    {{record.finsh_course_num}}
-                  </div>
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.unfinishedCourses" dataIndex="finsh_course_num">
-                <template slot-scope="text, record, index">
-                  <div @click="checkCourse(record.no_finsh_course_List,l.unfinishedCourses)" class='unfinish-num'>
-                    {{record.no_finsh_course_List.length}}
-                  </div>
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.examCount" dataIndex="exam_num">
-                <template slot-scope="text, record, index">
-                  <div class='total-num'>
-                    {{record.exam_num}}
-                  </div>
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.completedExams" dataIndex="finsh_exam_num">
-                <template slot-scope="text, record, index">
-                  <div @click="checkExam([...record.finsh_course_exam_List,...record.finsh_train_exam_List],l.completedExams)" class='finish-num'>
-                    {{record.finsh_exam_num}}
-                  </div>
-                </template>
-              </a-table-column>
-              <a-table-column :title="l.unfinishedExams" dataIndex="finsh_course_num">
-                <template slot-scope="text, record, index">
-                  <div @click="checkExam([...record.no_finsh_course_exam_List,...record.no_finsh_train_exam_List],l.unfinishedExams)" class='unfinish-num'>
-                    {{record.no_finsh_course_exam_List.length + record.no_finsh_train_exam_List.length}}
-                  </div>
-                </template>
-              </a-table-column>
-            </a-table>
-          </el-tab-pane>
-        </el-tabs>
-        <div class="buttonBar">
-          <el-button type="danger" @click="showObj.modifyClass = false">{{l.close}}</el-button>
-        </div>
-      </el-drawer>
-
-      <chooseUser :visible.sync="showObj.selectStudent" :useridList.sync="studentObj.setClassmateList"
-        @submmit="submmitClassmate"></chooseUser>
+  <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white h-[70px]">
+      <h1 class="text-xl font-medium mb-0!">{{ l.manageClass }}</h1>
+      <Button variant="primary" icon="el-icon-plus" @click="addClass">
+        {{ l.create }}
+      </Button>
     </div>
 
-    <div class="pageBody">
-      <div class="pageBody-filter">
-        <el-form inline>
-          <el-form-item :label="l.college">
-            <el-select v-model="classObj.query.college_id" @change="getClassList" :placeholder="l.pleaseSelectCollege"
-              :clearable="isAdmin">
-              <el-option v-for="i in publicCodeObj.collegeList" :key="i.id" :label="i.name_label"
-                :value="i.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item :label="l.className">
-            <el-input v-model="classObj.query.name" clearable @clear='getClassList'
-              @keyup.native.enter="getClassList"></el-input>
-          </el-form-item>
-          <el-form-item :label="l.status">
-            <el-select v-model="classObj.query.is_valid" @change="getClassList">
-              <el-option :label="l.all" value=""></el-option>
-              <el-option :label="l.enabled" value="Y"></el-option>
-              <el-option :label="l.disabled" value="N"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item> <el-button type="success" @click="getClassList">{{l.search}}</el-button></el-form-item>
-        </el-form>
-        <div>
-          <el-button type="primary" @click="addClass">{{l.create}}</el-button>
+    <!-- Filter Tabs & Toolbar -->
+    <div class="px-6 pt-6 pb-2 border-b border-[#E5E5E5] bg-white sticky top-0 z-20">
+      <div class="flex items-center gap-6 text-sm font-medium text-[#606060]">
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="classObj.query.is_valid === '' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            classObj.query.is_valid = ''
+            getClassList()
+          ">
+          {{ l.all }}
+        </button>
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="classObj.query.is_valid === 'Y' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            classObj.query.is_valid = 'Y'
+            getClassList()
+          ">
+          {{ l.enabled }}
+        </button>
+        <button
+          class="pb-3 border-b-2 transition-colors"
+          :class="classObj.query.is_valid === 'N' ? 'text-[#0D0D0D] border-[#0D0D0D]' : 'border-transparent hover:text-[#0D0D0D]'"
+          @click="
+            classObj.query.is_valid = 'N'
+            getClassList()
+          ">
+          {{ l.disabled }}
+        </button>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="mt-4 flex items-center gap-4 mb-2">
+        <Dropdown
+          v-if="isAdmin"
+          :modelValue="classObj.query.college_id"
+          :options="publicCodeObj.collegeList"
+          :placeholder="l.pleaseSelectCollege"
+          label-key="name_label"
+          icon-class="el-icon-office-building"
+          @update:modelValue="classObj.query.college_id = $event; getClassList()"
+        />
+
+        <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white border border-[#CCCCCC] rounded hover:border-[#606060] transition-colors focus-within:border-[#065FD4]">
+          <i class="el-icon-search text-[#606060] text-lg"></i>
+          <input
+            v-model="classObj.query.name"
+            type="text"
+            :placeholder="l.className"
+            class="bg-transparent border-none outline-none text-sm w-full placeholder-[#999999]"
+            @keyup.enter="getClassList"
+            @change="getClassList"
+          />
         </div>
       </div>
+    </div>
 
-      <div class="tableContainer" ref="tableContainer">
-        <a-table :dataSource='classObj.list' :scroll="{ y: cssObj.tableMaxHeight }" style="width: 100%">
-          <a-table-column :title='l.serialNumber' type="index" :width="50">
-          </a-table-column>
-          <a-table-column :title="l.simplifiedChinese" dataIndex="name_zh"></a-table-column>
-          <a-table-column :title="l.college" dataIndex="college_id">
-            <template slot-scope="text, record, index">
-              {{returnCollegeLabel(record.college_id)}}
-            </template>
-          </a-table-column>
-          <a-table-column :title="l.affiliatedPlan" dataIndex="train_name_label"></a-table-column>
-          <a-table-column :title="l.trainingContent" dataIndex="train_content"></a-table-column>
-          <a-table-column :title="l.trainingObjective" dataIndex="train_target"></a-table-column>
-          <a-table-column :title="l.trainingTarget" dataIndex="train_object"></a-table-column>
-          <a-table-column :title="l.classTeacher" dataIndex="class_teacher">
-            <template slot-scope="text, record, index">
-              <div v-if="record.class_teacher"> {{record.tearcher[0].name_t}}</div>
-            </template>
-          </a-table-column>
-          <a-table-column :title="l.startTime" dataIndex="start_date"></a-table-column>
-          <a-table-column :title="l.endTime" dataIndex="end_date"></a-table-column>
-          <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
-          <a-table-column :title="l.operation" fixed="right">
-            <template slot-scope="text, record, index">
-              <a-button type='link' @click="modifyClass(record)">{{l.manage}}</a-button>
-              <a-button v-if="record.is_valid=='N'" type='link' style="color: seagreen;" @click="modifyStatus(record)">{{l.enable}}</a-button>
-              <a-button v-else type='link' style="color: red;" @click="modifyStatus(record)">{{l.disable}}</a-button>
-            </template>
-          </a-table-column>
-        </a-table>
+    <!-- Content List -->
+    <div class="flex-1 overflow-y-scroll relative">
+      <!-- Grid Header -->
+      <div class="grid grid-cols-[50px_2fr_1.5fr_1.5fr_1.5fr_1fr_1.5fr_1.5fr_100px_150px] gap-4 px-6 py-2 border-b border-[#E5E5E5] text-xs font-medium text-[#606060] bg-white sticky top-0 z-10 min-w-[1400px]">
+        <div>#</div>
+        <div>{{ l.simplifiedChinese }}</div>
+        <div>{{ l.college }}</div>
+        <div>{{ l.affiliatedPlan }}</div>
+        <div>{{ l.trainingContent }}</div>
+        <div>{{ l.classTeacher }}</div>
+        <div>{{ l.startTime }}</div>
+        <div>{{ l.endTime }}</div>
+        <div>{{ l.status }}</div>
+        <div class="text-right">{{ l.operation }}</div>
       </div>
 
-      <div class="trainingManage-pagenation">
-        <a-pagination @showSizeChange="handleSizeChange" @change="handlePageChange"
-          :current="classObj.query.page" :pageSizeOptions="[5,10, 15, 30, 50,100]" :pageSize="classObj.query.pageSize"
-          :showSizeChanger="true" :showQuickJumper="true" :showTotal="(total, range) => `共 ${total} 条`"
-          :total="classObj.total" style="float: right;">
-        </a-pagination>
+      <!-- Grid Body -->
+      <div class="flex-1 overflow-hidden bg-white flex flex-col min-w-[1400px]">
+         <div v-if="classObj.list.length === 0" class="flex flex-col items-center justify-center py-20">
+            <div class="w-24 h-24 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-4">
+              <i class="el-icon-document-delete text-4xl text-[#CCCCCC]"></i>
+            </div>
+            <p class="text-[#0D0D0D]">{{ l.tempNoData }}</p>
+         </div>
+         <div v-else class="divide-y divide-[#E5E5E5]">
+            <div v-for="(item, index) in classObj.list" :key="item.id" class="grid grid-cols-[50px_2fr_1.5fr_1.5fr_1.5fr_1fr_1.5fr_1.5fr_100px_150px] gap-4 px-6 py-3 hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D] transition-colors">
+              <div class="text-[#606060]">{{ index + 1 }}</div>
+              <div class="font-medium truncate" :title="item.name_zh">{{ item.name_zh }}</div>
+              <div class="truncate text-[#606060]">{{ returnCollegeLabel(item.college_id) }}</div>
+              <div class="truncate text-[#606060]">{{ item.train_name_label }}</div>
+              <div class="truncate text-[#606060]" :title="item.train_content">{{ item.train_content }}</div>
+              <div class="truncate">
+                <div v-if="item.tearcher && item.tearcher.length > 0">{{ item.tearcher[0].name_t }}</div>
+              </div>
+              <div class="text-[#606060] text-xs">{{ item.start_date }}</div>
+              <div class="text-[#606060] text-xs">{{ item.end_date }}</div>
+              <div>
+                <span v-if="item.is_valid === 'Y'" class="px-2 py-1 rounded bg-[#E6F4EA] text-[#137333] text-xs font-medium">{{ l.enabled }}</span>
+                <span v-else class="px-2 py-1 rounded bg-[#FCE8E6] text-[#C5221F] text-xs font-medium">{{ l.disabled }}</span>
+              </div>
+              <div class="flex justify-end gap-3 text-[#606060]">
+                <i class="el-icon-edit text-lg cursor-pointer hover:text-[#065FD4]" :title="l.manage" @click="modifyClass(item)"></i>
+                <i v-if="item.is_valid === 'N'" class="el-icon-video-play text-lg cursor-pointer hover:text-[#137333]" :title="l.enable" @click="modifyStatus(item)"></i>
+                <i v-else class="el-icon-video-pause text-lg cursor-pointer hover:text-[#C5221F]" :title="l.disable" @click="modifyStatus(item)"></i>
+              </div>
+            </div>
+         </div>
       </div>
     </div>
+
+    <!-- Pagination Footer -->
+    <div class="flex justify-end p-4 border-t border-[#E5E5E5] bg-white text-xs text-[#606060]">
+      <Pagination
+        :page="classObj.query.page"
+        :pageSize="classObj.query.pageSize"
+        :total="classObj.total"
+        :l="l"
+        @update:page="classObj.query.page = $event"
+        @update:pageSize="classObj.query.pageSize = $event"
+        @change="getClassList"
+      />
+    </div>
+
+    <!-- Drawer: Create/Modify Class -->
+    <a-drawer
+      :visible="showObj.modifyClass || showObj.classShow"
+      :title="showObj.classShow ? l.createClass : l.manageClass"
+      :width="960"
+      @close="closeDrawer"
+      :body-style="{ padding: 0 }"
+      class="youtube-drawer"
+    >
+      <div class="flex flex-col h-full bg-white relative">
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+           <!-- Tabs (only for Modify) -->
+           <div v-if="showObj.modifyClass" class="px-6 border-b border-[#E5E5E5] bg-white sticky top-0 z-10 flex gap-6 text-sm font-medium text-[#606060]">
+             <button class="py-3 border-b-2 transition-colors" :class="showObj.activeTabName === 'data' ? 'border-[#065FD4] text-[#065FD4]' : 'border-transparent hover:text-[#0D0D0D]'" @click="showObj.activeTabName = 'data'">{{ l.basicInfo }}</button>
+             <button class="py-3 border-b-2 transition-colors" :class="showObj.activeTabName === 'task' ? 'border-[#065FD4] text-[#065FD4]' : 'border-transparent hover:text-[#0D0D0D]'" @click="tabClick({name: 'task'})">{{ l.taskList }}</button>
+             <button class="py-3 border-b-2 transition-colors" :class="showObj.activeTabName === 'student' ? 'border-[#065FD4] text-[#065FD4]' : 'border-transparent hover:text-[#0D0D0D]'" @click="tabClick({name: 'student'})">{{ l.classStudents }}</button>
+             <button class="py-3 border-b-2 transition-colors" :class="showObj.activeTabName === 'status' ? 'border-[#065FD4] text-[#065FD4]' : 'border-transparent hover:text-[#0D0D0D]'" @click="tabClick({name: 'status'})">{{ l.completionStatus }}</button>
+           </div>
+
+           <div class="p-8">
+             <!-- Basic Info Tab -->
+             <div v-show="showObj.activeTabName === 'data' || showObj.classShow">
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                   <!-- Column 1 -->
+                   <div class="space-y-6">
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                        <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.college }} ({{ c.required }})</label>
+                        <select v-model="classObj.form.college_id" class="w-full bg-transparent outline-none text-[#0D0D0D] text-sm h-6">
+                          <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+                        </select>
+                      </div>
+
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                        <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.simplifiedChineseTitle }} ({{ c.required }})</label>
+                        <input v-model="classObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.traditionalChineseTitle }}</label>
+                         <input v-model="classObj.form.name_tw" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.englishTitle }}</label>
+                         <input v-model="classObj.form.name_en" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.vietnameseTitle }}</label>
+                         <input v-model="classObj.form.name_vi" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+                   </div>
+
+                   <!-- Column 2 -->
+                   <div class="space-y-6">
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.trainingContent }} ({{ c.required }})</label>
+                         <input v-model="classObj.form.train_content" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.trainingObjective }} ({{ c.required }})</label>
+                         <input v-model="classObj.form.train_target" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                         <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.trainingTarget }} ({{ c.required }})</label>
+                         <input v-model="classObj.form.train_object" class="w-full outline-none text-[#0D0D0D] text-sm" />
+                      </div>
+
+                      <!-- Select Training -->
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4] flex items-center">
+                         <div class="flex-1">
+                            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.affiliatedPlan }} ({{ c.required }})</label>
+                            <input v-model="classObj.form.train_name_label" readonly class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent cursor-default" />
+                         </div>
+                         <Button variant="ghost" size="sm" @click="showObj.selectTraining=true">{{ l.select }}</Button>
+                      </div>
+
+                      <!-- Select Teacher -->
+                      <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4] flex items-center">
+                         <div class="flex-1">
+                            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.classTeacher }} ({{ c.required }})</label>
+                            <input v-model="classObj.form.teacher_name" readonly class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent cursor-default" />
+                         </div>
+                         <Button variant="ghost" size="sm" @click="showObj.selectUser = true">{{ l.select }}</Button>
+                      </div>
+
+                      <div class="grid grid-cols-2 gap-4">
+                         <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.startTime }}</label>
+                            <el-date-picker v-model="classObj.form.start_date" type="datetime" :placeholder="l.selectStartTime" class="w-full !border-none !p-0 !h-6" value-format="yyyy-MM-dd HH:mm:ss" :clearable="false"></el-date-picker>
+                         </div>
+                         <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                            <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.endTime }}</label>
+                            <el-date-picker v-model="classObj.form.end_date" type="datetime" :placeholder="l.selectEndTime" class="w-full !border-none !p-0 !h-6" value-format="yyyy-MM-dd HH:mm:ss" :clearable="false"></el-date-picker>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             <!-- Task List Tab -->
+             <div v-show="showObj.activeTabName === 'task' && !showObj.classShow">
+               <div class="border border-[#E5E5E5] rounded overflow-hidden">
+                 <div class="grid grid-cols-[50px_1fr_100px_100px_150px] bg-[#F9F9F9] border-b border-[#E5E5E5] px-4 py-2 text-xs font-medium text-[#606060]">
+                   <div>#</div>
+                   <div>{{ l.name }}</div>
+                   <div>{{ l.type }}</div>
+                   <div>{{ l.required }}</div>
+                   <div class="text-right">{{ l.operation }}</div>
+                 </div>
+                 <div class="divide-y divide-[#E5E5E5]">
+                   <div v-for="(task, idx) in classObj.taskList" :key="idx" class="grid grid-cols-[50px_1fr_100px_100px_150px] px-4 py-3 text-sm text-[#0D0D0D] items-center">
+                     <div>{{ idx + 1 }}</div>
+                     <div>{{ task.name_label }}</div>
+                     <div>{{ task.type == 1 ? l.exam : l.course }}</div>
+                     <div>{{ task.is_must == 1 ? l.required : l.elective }}</div>
+                     <div class="text-right flex justify-end gap-3">
+                       <span class="text-[#065FD4] cursor-pointer hover:underline text-xs uppercase font-medium" @click="previewDetail(task)">{{ l.preview }}</span>
+                       <span v-show="task.type == 1" class="text-[#065FD4] cursor-pointer hover:underline text-xs uppercase font-medium" @click="getExamRecord(task)">{{ l.statistics }}</span>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+
+             <!-- Students Tab -->
+             <div v-show="showObj.activeTabName === 'student' && !showObj.classShow">
+                <div class="flex justify-between items-center mb-4">
+                  <div class="flex gap-2">
+                     <div class="relative border border-[#CCCCCC] rounded px-2 py-1 bg-white focus-within:border-[#065FD4]">
+                       <input v-model="studentObj.query.user_name" :placeholder="l.name" class="outline-none text-sm w-40" />
+                     </div>
+                     <select v-model="studentObj.query.is_valid" class="border border-[#CCCCCC] rounded px-2 py-1 text-sm outline-none focus:border-[#065FD4]">
+                        <option value="">{{ l.all }}</option>
+                        <option value="Y">{{ l.enabled }}</option>
+                        <option value="N">{{ l.disabled }}</option>
+                     </select>
+                     <Button variant="secondary" size="sm" @click="getClassmate(class_id)">{{ l.search }}</Button>
+                  </div>
+                  <Button variant="primary" size="sm" icon="el-icon-plus" @click="showObj.selectStudent = true">{{ l.addStudents }}</Button>
+                </div>
+
+                <div class="border border-[#E5E5E5] rounded overflow-hidden">
+                   <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_100px_100px] bg-[#F9F9F9] border-b border-[#E5E5E5] px-4 py-2 text-xs font-medium text-[#606060]">
+                     <div>#</div>
+                     <div>{{ l.barcode }}</div>
+                     <div>{{ l.name }}</div>
+                     <div>{{ l.department }}</div>
+                     <div>{{ l.position }}</div>
+                     <div>{{ l.status }}</div>
+                     <div class="text-right">{{ l.operation }}</div>
+                   </div>
+                   <div class="max-h-[500px] overflow-y-auto divide-y divide-[#E5E5E5]">
+                      <div v-for="(stu, idx) in studentObj.classmateList" :key="idx" class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_100px_100px] px-4 py-2 text-sm text-[#0D0D0D] items-center">
+                        <div>{{ idx + 1 }}</div>
+                        <div>{{ stu.userId }}</div>
+                        <div>{{ stu.userName }}</div>
+                        <div>{{ stu.department }}</div>
+                        <div>{{ stu.workName }}</div>
+                        <div>{{ stu.is_valid }}</div>
+                        <div class="text-right">
+                           <span class="cursor-pointer text-xs font-medium uppercase" :class="stu.is_valid=='Y' ? 'text-[#CC0000]' : 'text-[#137333]'" @click="toggleStudentStatus(stu)">
+                             {{ stu.is_valid=='Y' ? l.disable : l.enable }}
+                           </span>
+                        </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             <!-- Completion Status Tab -->
+             <div v-show="showObj.activeTabName === 'status' && !showObj.classShow">
+               <div class="border border-[#E5E5E5] rounded overflow-hidden">
+                  <div class="grid grid-cols-[50px_100px_120px_100px_1fr_100px_100px_100px_100px_100px_100px] bg-[#F9F9F9] border-b border-[#E5E5E5] px-4 py-2 text-xs font-medium text-[#606060] gap-2">
+                    <div>#</div>
+                    <div>{{ l.jobNumber }}</div>
+                    <div>{{ l.name }}</div>
+                    <div>{{ l.department }}</div>
+                    <div>{{ l.departmentName }}</div>
+                    <div class="text-center">{{ l.courseCount }}</div>
+                    <div class="text-center">{{ l.completedCourses }}</div>
+                    <div class="text-center">{{ l.unfinishedCourses }}</div>
+                    <div class="text-center">{{ l.examCount }}</div>
+                    <div class="text-center">{{ l.completedExams }}</div>
+                    <div class="text-center">{{ l.unfinishedExams }}</div>
+                  </div>
+                  <div class="max-h-[500px] overflow-y-auto divide-y divide-[#E5E5E5]">
+                    <div v-for="(stat, idx) in learningObj.list" :key="idx" class="grid grid-cols-[50px_100px_120px_100px_1fr_100px_100px_100px_100px_100px_100px] px-4 py-2 text-sm text-[#0D0D0D] items-center gap-2 hover:bg-[#F9F9F9]">
+                      <div>{{ idx + 1 }}</div>
+                      <div>{{ stat.userid }}</div>
+                      <div>{{ stat.name_t }}</div>
+                      <div>{{ stat.dept_no }}</div>
+                      <div class="truncate" :title="stat.department_t">{{ stat.department_t }}</div>
+                      <div class="text-center font-bold">{{ stat.course_num }}</div>
+                      <div class="text-center font-bold text-[#137333] cursor-pointer hover:underline" @click="checkCourse(stat.finsh_course_List, l.completedCourses)">{{ stat.finsh_course_num }}</div>
+                      <div class="text-center font-bold text-[#065FD4] cursor-pointer hover:underline" @click="checkCourse(stat.no_finsh_course_List, l.unfinishedCourses)">{{ stat.no_finsh_course_List.length }}</div>
+                      <div class="text-center font-bold">{{ stat.exam_num }}</div>
+                      <div class="text-center font-bold text-[#137333] cursor-pointer hover:underline" @click="checkExam([...stat.finsh_course_exam_List, ...stat.finsh_train_exam_List], l.completedExams)">{{ stat.finsh_exam_num }}</div>
+                      <div class="text-center font-bold text-[#065FD4] cursor-pointer hover:underline" @click="checkExam([...stat.no_finsh_course_exam_List, ...stat.no_finsh_train_exam_List], l.unfinishedExams)">{{ stat.no_finsh_course_exam_List.length + stat.no_finsh_train_exam_List.length }}</div>
+                    </div>
+                  </div>
+               </div>
+             </div>
+           </div>
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="p-4 border-t border-[#E5E5E5] flex justify-end gap-2 bg-white z-10">
+           <Button variant="ghost" @click="closeDrawer">{{ c.cancel || 'CANCEL' }}</Button>
+           <Button variant="primary" @click="handleSubmit">{{ l.submit || 'SAVE' }}</Button>
+        </div>
+      </div>
+    </a-drawer>
+
+    <!-- Dialogs -->
+    <a-modal v-model="showObj.selectTraining" :title="l.selectTraining" :width="1000" :footer="null">
+      <div class="mb-4 flex gap-4">
+        <select v-model="trainingObj.query.college_id" @change="getTrainingList" class="border border-[#CCCCCC] rounded px-2 py-1 text-sm outline-none focus:border-[#065FD4]">
+           <option v-for="i in publicCodeObj.collegeList" :key="i.id" :value="i.id">{{ i.name_label }}</option>
+        </select>
+        <input v-model="trainingObj.query.name" class="border border-[#CCCCCC] rounded px-2 py-1 text-sm outline-none w-64" :placeholder="l.trainingName" @keyup.enter="getTrainingList" />
+        <Button variant="secondary" size="sm" @click="getTrainingList">{{ l.search }}</Button>
+      </div>
+      <div class="max-h-[500px] overflow-y-auto border border-[#E5E5E5]">
+         <div class="grid grid-cols-[50px_1fr_1fr_150px_150px_80px_100px] bg-[#F9F9F9] border-b border-[#E5E5E5] px-4 py-2 text-xs font-medium text-[#606060]">
+            <div>#</div>
+            <div>{{ l.simplifiedChinese }}</div>
+            <div>{{ l.college }}</div>
+            <div>{{ l.startTime }}</div>
+            <div>{{ l.endTime }}</div>
+            <div>{{ l.status }}</div>
+            <div class="text-right">{{ l.operation }}</div>
+         </div>
+         <div v-for="(t, idx) in trainingObj.list" :key="t.id" class="grid grid-cols-[50px_1fr_1fr_150px_150px_80px_100px] px-4 py-2 text-sm border-b border-[#E5E5E5] last:border-0 hover:bg-[#F9F9F9] items-center">
+            <div>{{ idx + 1 }}</div>
+            <div>{{ t.name_zh }}</div>
+            <div>{{ returnCollegeLabel(t.college_id) }}</div>
+            <div class="text-xs text-[#606060]">{{ t.start_date }}</div>
+            <div class="text-xs text-[#606060]">{{ t.end_date }}</div>
+            <div>{{ t.is_valid }}</div>
+            <div class="text-right">
+              <span class="text-[#065FD4] cursor-pointer hover:underline text-xs uppercase font-medium" @click="selectTraining(t)">{{ l.select }}</span>
+            </div>
+         </div>
+      </div>
+    </a-modal>
+
+    <!-- Select User Dialog (Using existing component but hidden wrapper if possible) -->
+    <chooseUser
+      :visible.sync="showObj.selectUser"
+      @submmit="selectUser"
+      v-if="!showObj.classShow && !showObj.modifyClass"
+    />
+    <!-- Note: Original Logic uses selectUser for single teacher selection. But chooseUser component usually emits list. Original code: @submmit="submmitClassmate" for students, but for teacher?
+         Looking at original code:
+         Teacher selection: <el-dialog :visible="showObj.selectUser" ...> custom implementation.
+         Student selection: <chooseUser :visible.sync="showObj.selectStudent" ...>
+
+         My refactor:
+         Teacher: I need a user selection dialog. I will reuse the one from `Training/Class.vue` original which was a custom dialog inside. I should probably copy that logic or make a reusable one.
+         Original `Class.vue` had a custom `el-dialog` for `showObj.selectUser`.
+         I will implement a simple user selector modal here for Teacher.
+    -->
+    <a-modal v-model="showObj.selectUser" :title="l.selectUser" :width="1000" :footer="null">
+       <div class="flex gap-4 mb-4">
+          <input v-model="userObj.query.queryString" :placeholder="l.userInfo" class="border border-[#CCCCCC] rounded px-2 py-1 text-sm outline-none flex-1" @keyup.enter="getUserList" />
+          <Button variant="secondary" size="sm" @click="getUserList">{{ l.search }}</Button>
+       </div>
+       <div class="max-h-[400px] overflow-y-auto border border-[#E5E5E5]">
+          <div class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_100px_100px] bg-[#F9F9F9] px-4 py-2 text-xs font-medium text-[#606060]">
+             <div>#</div>
+             <div>{{ l.jobNumber }}</div>
+             <div>{{ l.name }}</div>
+             <div>{{ l.department }}</div>
+             <div>{{ l.position }}</div>
+             <div>{{ l.status }}</div>
+             <div class="text-right">{{ l.operation }}</div>
+          </div>
+          <div v-for="(u, idx) in userObj.list" :key="u.userid" class="grid grid-cols-[50px_1fr_1fr_1fr_1fr_100px_100px] px-4 py-2 text-sm border-b border-[#E5E5E5] hover:bg-[#F9F9F9] items-center">
+             <div>{{ idx + 1 }}</div>
+             <div>{{ u.userid }}</div>
+             <div>{{ u.username }}</div>
+             <div>{{ u.department_t }}</div>
+             <div>{{ u.work_name }}</div>
+             <div>{{ u.is_valid }}</div>
+             <div class="text-right">
+                <span class="text-[#065FD4] cursor-pointer hover:underline text-xs uppercase font-medium" @click="selectUser(u)">{{ l.select }}</span>
+             </div>
+          </div>
+       </div>
+    </a-modal>
+
+    <!-- Student Selection: Reuse existing ChooseUser component -->
+    <chooseUser :visible.sync="showObj.selectStudent" :useridList.sync="studentObj.setClassmateList" @submmit="submmitClassmate"></chooseUser>
+
+    <!-- Exam Record Dialog -->
+    <a-modal v-model="showObj.recordDialog" :title="l.examRecord" :width="1000" :footer="null">
+       <!-- Re-implement exam record table/search -->
+       <div class="flex gap-4 mb-4">
+          <input v-model="examObj.recordQuery.userid" :placeholder="l.studentBarcode" class="border border-[#CCCCCC] rounded px-2 py-1 text-sm outline-none flex-1" @keyup.enter="getExamRecord(null)" />
+          <Button variant="secondary" size="sm" @click="getExamRecord(null)">{{ l.search }}</Button>
+       </div>
+       <div class="max-h-[400px] overflow-y-auto border border-[#E5E5E5]">
+          <div class="grid grid-cols-[50px_1fr_1fr_1fr_150px] bg-[#F9F9F9] px-4 py-2 text-xs font-medium text-[#606060]">
+             <div>#</div>
+             <div>{{ l.examTime }}</div>
+             <div>{{ l.studentName }}</div>
+             <div>{{ l.score }}</div>
+             <div class="text-right">{{ l.operation }}</div>
+          </div>
+          <div v-for="(rec, idx) in examObj.record" :key="idx" class="grid grid-cols-[50px_1fr_1fr_1fr_150px] px-4 py-2 text-sm border-b border-[#E5E5E5] hover:bg-[#F9F9F9] items-center">
+             <div>{{ idx + 1 }}</div>
+             <div>{{ rec.create_time }}</div>
+             <div>{{ rec.create_user }}</div>
+             <div>{{ rec.score }}</div>
+             <div class="text-right flex justify-end gap-2">
+                <span class="text-[#137333] cursor-pointer hover:underline text-xs uppercase font-medium" @click="reviewExam(rec)">{{ l.viewDetails }}</span>
+                <span class="text-[#065FD4] cursor-pointer hover:underline text-xs uppercase font-medium" @click="readExam(rec)">{{ l.correctPapers }}</span>
+             </div>
+          </div>
+       </div>
+       <div class="mt-4 flex justify-end">
+          <Pagination :page="examObj.recordQuery.page" :pageSize="examObj.recordQuery.pageSize" :total="examObj.recordTotal" :l="l" @update:page="examObj.recordQuery.page=$event" @update:pageSize="examObj.recordQuery.pageSize=$event; getExamRecord(null)" @change="getExamRecord(null)" />
+       </div>
+    </a-modal>
+
+    <!-- Course Dialog (Status Check) -->
+    <a-modal v-model="showObj.courseDialog" :title="showObj.courseAndExamDialogTitle" :width="800" :footer="null">
+       <div class="max-h-[400px] overflow-y-auto">
+          <div class="grid grid-cols-[50px_1fr_1fr] bg-[#F9F9F9] px-4 py-2 text-xs font-medium text-[#606060]">
+             <div>#</div>
+             <div>{{ l.name }}</div>
+             <div>{{ l.description }}</div>
+          </div>
+          <div v-for="(c, i) in learningObj.unfinishCourse" :key="i" class="grid grid-cols-[50px_1fr_1fr] px-4 py-2 text-sm border-b border-[#E5E5E5]">
+             <div>{{ i + 1 }}</div>
+             <div>{{ c.name_zh }}</div>
+             <div>{{ c.description }}</div>
+          </div>
+       </div>
+    </a-modal>
+
+    <!-- Exam Dialog (Status Check) -->
+    <a-modal v-model="showObj.examDialog" :title="showObj.courseAndExamDialogTitle" :width="1000" :footer="null">
+       <div class="max-h-[400px] overflow-y-auto">
+          <div class="grid grid-cols-[50px_1fr_100px_100px_100px_150px_150px] bg-[#F9F9F9] px-4 py-2 text-xs font-medium text-[#606060]">
+             <div>#</div>
+             <div>{{ l.name }}</div>
+             <div>{{ l.passScore }}</div>
+             <div>{{ l.maxAttempts }}</div>
+             <div>{{ l.examDuration }}</div>
+             <div>{{ l.startTime }}</div>
+             <div>{{ l.endTime }}</div>
+          </div>
+          <div v-for="(e, i) in learningObj.unfinishExam" :key="i" class="grid grid-cols-[50px_1fr_100px_100px_100px_150px_150px] px-4 py-2 text-sm border-b border-[#E5E5E5]">
+             <div>{{ i + 1 }}</div>
+             <div>{{ e.name_zh }}</div>
+             <div>{{ e.pass_score }}</div>
+             <div>{{ e.max_reply_num }}</div>
+             <div>{{ e.test_duration }}</div>
+             <div>{{ e.start_time }}</div>
+             <div>{{ e.end_time }}</div>
+          </div>
+       </div>
+    </a-modal>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount, getCurrentInstance, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, getCurrentInstance, watch } from 'vue'
 import chooseUser from '@/views/_common/ChooseUser.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
+import Button from '../common/Button.vue'
+import Pagination from '../common/Pagination.vue'
+import Dropdown from '../common/Dropdown.vue'
 
 const { l, c } = useLocalI18n('videoAdminClass')
 const { proxy } = getCurrentInstance()
@@ -489,25 +522,12 @@ const showObj = reactive({
   selectCourse: false,
   selectTraining: false,
   classShow: false,
-  coverDialog: false,
-  initSortable: false,
   modifyClass: false,
   selectStudent: false,
-  chooseUser: false,
   courseDialog: false,
   examDialog: false,
   recordDialog: false,
   courseAndExamDialogTitle: ''
-})
-
-const cssObj = reactive({
-  tableMaxHeight: '500px',
-  headerRowStyle: {
-    background: '#f2f4f9',
-    color: '#505050',
-    fontSize: '14px',
-    height: '50px'
-  }
 })
 
 const trainingObj = reactive({
@@ -609,31 +629,16 @@ const examObj = reactive({
     page: 1,
     pageSize: 15,
   },
-  form: {
-    id: "",
-    questionnaire_id: "",
-    exam_name_zh: "",
-    name_zh: "",
-    name_tw: "",
-    name_vi: "",
-    name_en: "",
-    start_time: "",
-    end_time: "",
-    max_reply_num: "",
-    pass_score: "",
-    test_duration: ""
-  },
+  form: {},
   list: [],
   record: [],
   total: 0,
   recordTotal: 0
 })
 
-// Refs
-const tableContainer = ref(null)
-
 // Methods
 const tabClick = (v) => {
+  showObj.activeTabName = v.name
   if (v.name == 'status') {
     getLearningStatus(class_id.value)
   } else if (v.name == 'student') {
@@ -645,21 +650,21 @@ const tabClick = (v) => {
 
 const checkCourse = (v, label) => {
   showObj.courseAndExamDialogTitle = label
-  if (v.length > 0) {
+  if (v && v.length > 0) {
     learningObj.unfinishCourse = v
     showObj.courseDialog = true
   } else {
-    proxy.$message.info(l.tempNoData)
+    proxy.$message.info(l.value.tempNoData)
   }
 }
 
 const checkExam = (v, label) => {
   showObj.courseAndExamDialogTitle = label
-  if (v.length > 0) {
+  if (v && v.length > 0) {
     learningObj.unfinishExam = v
     showObj.examDialog = true
   } else {
-    proxy.$message.info(l.tempNoData)
+    proxy.$message.info(l.value.tempNoData)
   }
 }
 
@@ -677,7 +682,7 @@ const getLearningStatus = (id) => {
 const previewDetail = async (i) => {
   if (i.type === '0' || i.type === 0) {
     let routeUrl = proxy.$router.resolve({
-      name: 'play',
+      name: 'videoPlay',
       query: {
         course_id: i.bind_id,
       }
@@ -695,7 +700,7 @@ const previewDetail = async (i) => {
     }
 
     let url = proxy.$router.resolve({
-      name: 'examDetail',
+      name: 'videoUserExamDetail',
       query: {
         train_id: "",
         course_id: '',
@@ -713,10 +718,10 @@ const getCollegeList = () => {
       resource_path: proxy.$route.path
     })
     .then((r) => {
-      publicCodeObj.collegeList = r.data
-      if (!isAdmin.value) {
-        classObj.query.college_id = publicCodeObj.collegeList[0].id
-        trainingObj.query.college_id = publicCodeObj.collegeList[0].id
+      publicCodeObj.collegeList = [{ id: '', name_label: l.value.allChannels || 'All Colleges' }, ...r.data]
+      if (!isAdmin.value && r.data.length > 0) {
+        classObj.query.college_id = r.data[0].id
+        trainingObj.query.college_id = r.data[0].id
       }
       getClassList()
     })
@@ -728,7 +733,7 @@ const getCollegeList = () => {
 const submmitClassmate = () => {
   let postData = []
   if (studentObj.setClassmateList.length == 0) {
-    return proxy.$message.error(l.addUserCannotBeEmpty)
+    return proxy.$message.error(l.value.addUserCannotBeEmpty)
   }
 
   studentObj.setClassmateList.forEach(e => {
@@ -752,12 +757,8 @@ const submmitClassmate = () => {
 }
 
 const toggleStudentStatus = (user) => {
-  proxy.$confirm(user.is_valid === 'Y' ? l.confirmDisable : l.confirmEnable, l.tip, {
-    confirmButtonText: l.confirm,
-    cancelButtonText: l.cancel,
-    type: 'warning',
-    center: true
-  }).then(() => {
+  const confirmMsg = user.is_valid === 'Y' ? l.value.confirmDisable : l.value.confirmEnable
+  if (window.confirm(confirmMsg)) {
     let j = {
       id: user.id,
       userid: user.userId,
@@ -769,20 +770,12 @@ const toggleStudentStatus = (user) => {
     proxy.$request(proxy.$api.videoServer + '/Video/VideoTrain/setUserIntoTrain', [j], 'post')
       .then(r => {
         getClassmate(class_id.value)
-        proxy.$message({
-          type: 'success',
-          message: user.is_valid === 'Y' ? l.disableSuccess : l.enableSuccess
-        });
+        proxy.$message.success(user.is_valid === 'Y' ? l.value.disableSuccess : l.value.enableSuccess)
       })
       .catch(e => {
         console.log(e);
       })
-  }).catch(() => {
-    proxy.$message({
-      type: 'info',
-      message: l.operationCanceled
-    });
-  });
+  }
 }
 
 const returnCollegeLabel = (college_id) => {
@@ -812,7 +805,7 @@ const getClassmate = (cid) => {
 const selectTraining = (data) => {
   classObj.form.college_id = data.college_id
   classObj.form.train_name_label = data.name_label
-  classObj.form.train_id = data.train_id
+  classObj.form.train_id = data.id // Ensure we use the correct ID for training plan
   showObj.selectTraining = false
 }
 
@@ -824,19 +817,9 @@ const getTaskList = (id) => {
   })
 }
 
-const handleRecordSizeChange = (i) => {
-  examObj.recordQuery.pageSize = i
-  getExamRecord()
-}
-
-const handleRecordPageChange = (i) => {
-  examObj.recordQuery.page = i
-  getExamRecord()
-}
-
 const reviewExam = (data) => {
   let url = proxy.$router.resolve({
-    name: 'examDetail',
+    name: 'videoUserExamDetail',
     query: {
       train_id: train_id.value,
       class_id: class_id.value,
@@ -850,24 +833,9 @@ const reviewExam = (data) => {
   window.open(url, '_blank');
 }
 
-const previewExam = (id) => {
-  let url = proxy.$router.resolve({
-    name: 'examDetail',
-    query: {
-      train_id: train_id.value,
-      class_id: class_id.value,
-      course_id: '',
-      exam_id: '',
-      questionnaire_id: id,
-      mode: 'preview'
-    }
-  }).href;
-  window.open(url, '_blank');
-}
-
 const readExam = (data) => {
   let url = proxy.$router.resolve({
-    name: 'examDetail',
+    name: 'videoUserExamDetail',
     query: {
       train_id: train_id.value,
       class_id: class_id.value,
@@ -883,13 +851,12 @@ const readExam = (data) => {
 
 const getExamRecord = (data) => {
   if (data) {
-     let exam = data.detail.find(i => {
+     let exam = data.detail?.find(i => {
       return i.exam != null
     })?.exam
 
-    if (exam) {
-      examObj.recordQuery.exam_id = exam.id
-      examObj.recordQuery.questionnaire_id = exam.questionnaire_id
+    if (data.questionnaire_id) {
+       examObj.recordQuery.questionnaire_id = data.questionnaire_id
     }
   }
 
@@ -911,12 +878,6 @@ const getTrainingList = () => {
       if (r.httpCode == 200) {
         trainingObj.list = r.data.list
         trainingObj.total = r.data.total
-        if (r.data.total == 0) {
-          proxy.$message({
-            type: 'info',
-            message: l.tempNoData
-          })
-        }
       }
     })
     .catch(e => {
@@ -930,12 +891,6 @@ const getUserList = () => {
       if (r.httpCode == 200) {
         userObj.list = r.data.list
         userObj.total = r.data.total
-        if (r.data.total == 0) {
-          proxy.$message({
-            type: 'info',
-            message: l.tempNoData
-          })
-        }
       }
     })
     .catch(e => {
@@ -949,24 +904,9 @@ const selectUser = (data) => {
   showObj.selectUser = false
 }
 
-const updateTableMaxHeight = () => {
-  const container = tableContainer.value;
-  if (container) {
-    cssObj.tableMaxHeight = container.clientHeight + 'px';
-  }
-}
-
-const handleSizeChange = () => {
-  // 分页大小变化处理
-}
-
-const handlePageChange = () => {
-  // 页码变化处理
-}
-
 const addClass = () => {
   classObj.form = {
-    college_id:'',
+    college_id: isAdmin.value ? '' : publicCodeObj.collegeList[0]?.id,
     id: "",
     name_zh: "",
     name_en: "",
@@ -979,118 +919,63 @@ const addClass = () => {
     rec_status: 1
   }
   showObj.classShow = true
+  showObj.modifyClass = false
+  showObj.activeTabName = 'data'
 }
 
 const modifyClass = (data) => {
-  classObj.form = Object.assign(classObj.form, data)
-  classObj.form.teacher_name = data.tearcher[0].name_t
-  classObj.form.class_teachers = [data.tearcher[0].userid]
+  classObj.form = { ...data }
+  if (data.tearcher && data.tearcher.length > 0) {
+     classObj.form.teacher_name = data.tearcher[0].name_t
+     classObj.form.class_teachers = [data.tearcher[0].userid]
+  }
 
   class_id.value = data.id
   train_id.value = data.train_id
   train_primary_id.value = data.train_primary_id
   showObj.modifyClass = true
-
-  if (showObj.activeTabName == 'student') {
-    getClassmate(class_id.value)
-  } else if (showObj.activeTabName == 'status') {
-    getLearningStatus(class_id.value)
-  }
+  showObj.classShow = false
+  showObj.activeTabName = 'data'
 }
 
 const modifyStatus = (i) => {
-  let currentStatus = i.is_valid
-  let value
-  let oprate
-  if (currentStatus == 'N') {
-    value = 'Y'
-    oprate = l.enable
-  } else {
-    value = 'N'
-    oprate = l.disable
-  }
+  let value = i.is_valid == 'N' ? 'Y' : 'N'
+  let oprate = i.is_valid == 'N' ? l.value.enable : l.value.disable
 
-  proxy.$prompt(
-    `${l.confirmOperation}${oprate}《${i.name_zh||i.name_tw||i.name_en||i.name_vi}》？${l.inputYToConfirm}`, {
-      type: 'warning',
-      inputPattern: /^[Y]{1}$/i,
-      inputErrorMessage: l.inputValidationFailed,
-      confirmButtonText: l.confirm,
-      cancelButtonText: l.cancel
-    }).then(() => {
+  if(window.confirm(`${l.value.confirmOperation}${oprate}《${i.name_zh||i.name_tw||i.name_en||i.name_vi}》？`)) {
     proxy.$request(proxy.$api.videoServer + '/Video/VideoTrain/ModifyClassStatus', {
       key: i.id,
       value: value
     }, 'post').then(r => {
-      proxy.$message({
-        type: 'success',
-        message: l.operationSuccess
-      })
+      proxy.$message.success(l.value.operationSuccess)
       getClassList()
     })
-  }).catch(() => {
-    console.log(l.operationCanceled);
-  })
+  }
 }
 
 const handleSubmit = () => {
   const validationErrors = []
 
-  if (!classObj.form.college_id) {
-    validationErrors.push(l.collegeRequired)
-  }
-
-  if (!classObj.form.name_zh || classObj.form.name_zh.trim() === '') {
-    validationErrors.push(l.simplifiedChineseTitleRequired)
-  }
-
-  if (!classObj.form.train_content || classObj.form.train_content.trim() === '') {
-    validationErrors.push(l.trainingContentRequired)
-  }
-
-  if (!classObj.form.train_target || classObj.form.train_target.trim() === '') {
-    validationErrors.push(l.trainingObjectiveRequired)
-  }
-
-  if (!classObj.form.train_object || classObj.form.train_object.trim() === '') {
-    validationErrors.push(l.trainingTargetRequired)
-  }
-
-  if (!classObj.form.train_id || !classObj.form.train_name_label) {
-    validationErrors.push(l.affiliatedPlanRequired)
-  }
-
-  if (!classObj.form.class_teachers || !classObj.form.class_teachers[0] || !classObj.form.teacher_name) {
-    validationErrors.push(l.classTeacherRequired)
-  }
-
-  if (!classObj.form.start_date) {
-    validationErrors.push(l.startTimeRequired)
-  }
-
-  if (!classObj.form.end_date) {
-    validationErrors.push(l.endTimeRequired)
-  }
+  if (!classObj.form.college_id) validationErrors.push(l.value.collegeRequired)
+  if (!classObj.form.name_zh?.trim()) validationErrors.push(l.value.simplifiedChineseTitleRequired)
+  if (!classObj.form.train_content?.trim()) validationErrors.push(l.value.trainingContentRequired)
+  if (!classObj.form.train_target?.trim()) validationErrors.push(l.value.trainingObjectiveRequired)
+  if (!classObj.form.train_object?.trim()) validationErrors.push(l.value.trainingTargetRequired)
+  if (!classObj.form.train_id || !classObj.form.train_name_label) validationErrors.push(l.value.affiliatedPlanRequired)
+  if (!classObj.form.class_teachers?.[0] || !classObj.form.teacher_name) validationErrors.push(l.value.classTeacherRequired)
+  if (!classObj.form.start_date) validationErrors.push(l.value.startTimeRequired)
+  if (!classObj.form.end_date) validationErrors.push(l.value.endTimeRequired)
 
   if (validationErrors.length > 0) {
-    const errorMessage = validationErrors.join('<br>')
-    proxy.$message({
-      type: 'error',
-      dangerouslyUseHTMLString: true,
-      message: errorMessage,
-      duration: 5000
-    })
+    proxy.$message.error(validationErrors.join(', '))
     return
   }
 
   proxy.$request(proxy.$api.videoServer + '/Video/VideoTrain/addOrModifyClass', classObj.form, 'post')
     .then(r => {
       if (r.httpCode == 200) {
-        proxy.$message({
-          type: 'success',
-          message: l.submitSuccess
-        })
-        showObj.classShow = false
+        proxy.$message.success(l.value.submitSuccess)
+        closeDrawer()
         getClassList()
       }
     })
@@ -1099,18 +984,17 @@ const handleSubmit = () => {
     })
 }
 
+const closeDrawer = () => {
+   showObj.classShow = false
+   showObj.modifyClass = false
+}
+
 const getClassList = () => {
   proxy.$request(proxy.$api.videoServer + '/Video/VideoTrain/getClass', classObj.query)
     .then(r => {
       if (r.httpCode == 200) {
         classObj.list = r.data.list
         classObj.total = r.data.total
-        if (r.data.total == 0) {
-          proxy.$message({
-            type: 'info',
-            message: l.tempNoData
-          })
-        }
       }
     })
     .catch(e => {
@@ -1120,106 +1004,25 @@ const getClassList = () => {
 
 onMounted(() => {
   getCollegeList()
-  window.addEventListener('resize', updateTableMaxHeight);
-  nextTick(() => {
-    updateTableMaxHeight();
+  // Add Teacher selection listener to handle return
+  watch(() => showObj.selectUser, (val) => {
+     if (val) getUserList()
   })
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateTableMaxHeight);
 })
 </script>
 
-
-<style>
-.trainingManage-container {
-  width: 100%;
-  height: 100%;
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
 }
-.trainingManage-container .total-num {
-  font-weight: 600;
-  font-size: 18px;
-  cursor: pointer;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
-.trainingManage-container .unfinish-num {
-  color: #0055ff;
-  font-weight: 600;
-  font-size: 18px;
-  cursor: pointer;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 4px;
 }
-.trainingManage-container .finish-num {
-  color: #00aa00;
-  font-weight: 600;
-  font-size: 18px;
-  cursor: pointer;
-}
-.trainingManage-container .lessonList-dialog .img {
-  width: 100%;
-  height: 80px;
-}
-.trainingManage-container .lessonList-dialog .img .auto-img {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-  cursor: pointer;
-}
-.trainingManage-container .lessonList-dialog .lessonList-pagenation {
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.trainingManage-container .drawer-container .title {
-  padding: 20px 0px;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid #ccc;
-}
-.trainingManage-container .drawer-container .form-container {
-  width: 95%;
-  height: 90%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.trainingManage-container .drawer-container .buttonBar {
-  width: 100%;
-  height: 60px;
-  margin: 0 auto;
-  padding: 0 25px;
-  position: absolute;
-  bottom: 0px;
-  border-top: 1px solid #ccc;
-  float: right;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-.trainingManage-container .pageBody {
-  width: 100%;
-  min-width: 1000px;
-  height: 100%;
-  margin: 0 auto;
-  background-color: #fff;
-}
-.trainingManage-container .pageBody .pageBody-filter {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ddd;
-  height: 60px;
-  padding: 15px;
-}
-.trainingManage-container .pageBody .tableContainer {
-  width: 100%;
-  height: calc(100% - 110px);
-}
-.trainingManage-container .pageBody .trainingManage-pagenation {
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #999999;
 }
 </style>

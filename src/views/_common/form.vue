@@ -71,7 +71,7 @@
 
 <script>
 	import ImgUploader from '@/components/Img/Uploader'
-	import DynamicTag from '@/components/Tag/DynamicTag'
+	import DynamicTag from '@/components/Tag/Dynamictag'
 
 	export default {
 		name: 'z-form',
