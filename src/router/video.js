@@ -1,14 +1,6 @@
 const isDevelopMode = import.meta.env.DEV
 
 export default [
-  // Exam detail route
-  {
-    path: '/examDetail',
-    component: () => import('@/views/sysbasics/video/userViews/ExamDetail'),
-    name: 'examDetail',
-    meta: { noCache: isDevelopMode }
-  },
-
   // Admin Video Layout
   {
     path: '/videoAdminLayout',

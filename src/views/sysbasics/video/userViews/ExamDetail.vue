@@ -3,15 +3,15 @@
     <!-- Header -->
     <header class="h-[64px] bg-white border-b border-[#E5E5E5] flex items-center justify-between px-6 shrink-0 z-50">
       <div class="flex items-center gap-4">
-        <div class="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white font-bold text-xs">EXAM</div>
-        <h1 class="text-lg font-medium text-[#0D0D0D] truncate max-w-[400px]" :title="exam.name_label">
+        <div class="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white font-bold text-xs">{{ l.examTag }}</div>
+        <h1 class="text-lg font-medium text-[#0D0D0D] truncate max-w-[400px] mb-0!" :title="exam.name_label">
           {{ exam.name_label }}
         </h1>
       </div>
 
       <div class="flex items-center gap-6">
         <!-- Timer -->
-        <div class="flex items-center gap-2 px-4 py-1.5 bg-[#F2F2F2] rounded text-[#0D0D0D] font-mono text-lg font-medium" :class="{ 'text-[#CC0000]! bg-[#FFE6E6]': remainingTime < 300 }">
+        <div v-show="timerInitialized || remainingTime > 0" class="flex items-center gap-2 px-4 py-1.5 bg-[#F2F2F2] rounded text-[#0D0D0D] font-mono text-lg font-medium" :class="{ 'text-[#CC0000]! bg-[#FFE6E6]': remainingTime < 300 }">
           <i class="el-icon-timer text-xl"></i>
           <span>{{ formattedTime }}</span>
         </div>
@@ -37,8 +37,8 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex overflow-hidden relative">
-      <!-- Fullscreen Overlay (if not fullscreen) -->
-      <div v-if="!isFullscreen && !isSubmitted && params.mode == 'exam'" class="absolute inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center">
+      <!-- Overlay: Fullscreen Required (if require_fullscreen = true) -->
+      <div v-if="!isFullscreen && !isSubmitted && params.mode == 'exam' && antiCheatSettings.require_fullscreen" class="absolute inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center">
         <div class="w-20 h-20 bg-[#F2F2F2] rounded-full flex items-center justify-center mb-6">
           <i class="el-icon-full-screen text-4xl text-[#065FD4]"></i>
         </div>
@@ -46,6 +46,18 @@
         <p class="text-[#606060] mb-8 max-w-md">{{ l.fullscreenDescription }}</p>
         <button @click="enterFullscreen" class="px-8 py-3 bg-[#065FD4] text-white! font-medium uppercase text-sm rounded shadow hover:bg-[#0551B4] transition-colors">
           {{ l.enterFullscreen }}
+        </button>
+      </div>
+
+      <!-- Overlay: Start Exam (if require_fullscreen = false) -->
+      <div v-if="!isFullscreen && !isSubmitted && params.mode == 'exam' && !antiCheatSettings.require_fullscreen" class="absolute inset-0 z-100 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-20 h-20 bg-[#F2F2F2] rounded-full flex items-center justify-center mb-6">
+          <i class="el-icon-document text-4xl text-[#065FD4]"></i>
+        </div>
+        <h2 class="text-2xl font-medium text-[#0D0D0D] mb-2">{{ l.readyToStart }}</h2>
+        <p class="text-[#606060] mb-8 max-w-md">{{ l.readyToStartDesc }}</p>
+        <button @click="startExam" class="px-8 py-3 bg-[#065FD4] text-white! font-medium uppercase text-sm rounded shadow hover:bg-[#0551B4] transition-colors">
+          {{ l.startButton }}
         </button>
       </div>
       <!-- Left: Question List (Sidebar) -->
@@ -352,8 +364,17 @@ const isSubmitted = ref(false)
 const isBlur = ref(false)
 const warningCount = ref(0)
 const remainingTime = ref(0) // seconds
+const timerInitialized = ref(false) // Track if timer has been started
+
+// Anti-cheating settings from API
+const antiCheatSettings = reactive({
+  forbid_copy: false,
+  detect_tab_switch: false,
+  require_fullscreen: false
+})
+
 let timerInterval = null
-let isDueToFraud = false // Flag để bypass kiểm tra todo khi gian lận
+let isPassSubmit = false // Flag để bypass kiểm tra todo khi gian lận
 
 const formattedTime = computed(() => {
   const h = Math.floor(remainingTime.value / 3600)
@@ -484,7 +505,7 @@ const radioChange = () => {
 
 const getQuestionTypeName = (type) => {
   const map = { 0: l.value.fillIn, 1: l.value.radio, 2: l.value.checkbox, 3: l.value.judge }
-  return map[type] || 'Unknown'
+  return map[type] || l.value.unknown
 }
 
 const isSelected = (index, value) => {
@@ -524,6 +545,14 @@ const getQuestionnaire = (qid) => {
     },
     'post'
   ).then((r) => {
+
+    remainingTime.value = r.data.test_duration * 60 // Convert minutes to seconds
+
+    // Load anti-cheating settings từ API
+    antiCheatSettings.forbid_copy = r.data.forbid_copy === 'Y' || r.data.forbid_copy === 1
+    antiCheatSettings.detect_tab_switch = r.data.detect_tab_switch === 'Y' || r.data.detect_tab_switch === 1
+    antiCheatSettings.require_fullscreen = r.data.require_fullscreen === 'Y' || r.data.require_fullscreen === 1
+
     let newReplyObj = {
       exam_id: params.exam_id,
       train_id: params.train_id,
@@ -566,7 +595,7 @@ const getQuestionnaire = (qid) => {
 
 const submitQuestionnaire = () => {
   // Nếu do gian lận, bỏ qua kiểm tra todo
-  if (examNum.todo > 0 && !isDueToFraud) {
+  if (examNum.todo > 0 && !isPassSubmit) {
     return $message.error(`${l.value.stillHave}${examNum.todo}${l.value.toSubmit}`)
   }
   $request(api.baseUrl + '/Video/VideoExam/ReplyQuestionnaire', replyObj, 'post').then((r) => {
@@ -594,7 +623,7 @@ const submitModifyScore = () => {
     if (r.httpCode == 200) {
       $message({
         type: 'success',
-        message: l.value.modifySucceess,
+        message: l.value.modifySuccess,
       })
     }
     console.log(r)
@@ -718,19 +747,39 @@ const enterFullscreen = async () => {
       await elem.msRequestFullscreen()
     }
     isFullscreen.value = true
-    startTimer()
+    // Chỉ start timer nếu còn thời gian
+    if (remainingTime.value > 0) {
+      timerInitialized.value = true // Mark timer as initialized
+      startTimer()
+    }
   } catch (err) {
     console.error('Fullscreen failed', err)
     $message.error(l.value.fullscreenRequired)
   }
 }
 
+const startExam = () => {
+  // Không yêu cầu fullscreen, chỉ bắt đầu timer
+  isFullscreen.value = true
+  // Chỉ start timer nếu còn thời gian
+  if (remainingTime.value > 0) {
+    timerInitialized.value = true // Mark timer as initialized
+    startTimer()
+  }
+}
+
 const startTimer = () => {
+  // Tắt timer nếu không có thời gian còn lại
+  if (remainingTime.value <= 0) {
+    return
+  }
+  
   if (timerInterval) clearInterval(timerInterval)
   timerInterval = setInterval(() => {
     if (remainingTime.value > 0) {
       remainingTime.value--
     } else {
+      clearInterval(timerInterval)
       autoSubmit('time_up')
     }
   }, 1000)
@@ -738,7 +787,7 @@ const startTimer = () => {
 
 // Anti-Cheating Logic
 const handleVisibilityChange = () => {
-  if (document.hidden && !isSubmitted.value && isFullscreen.value) {
+  if (document.hidden && !isSubmitted.value && isFullscreen.value && antiCheatSettings.detect_tab_switch) {
     recordViolation()
   }
 }
@@ -753,10 +802,19 @@ const handleFullscreenChange = () => {
 }
 
 const handleBlur = () => {
-  if (!isSubmitted.value && isFullscreen.value) {
-    if (document.hidden) {
-      recordViolation()
-    }
+  // Phát hiện khi click ra ngoài window hoặc mở DevTools
+  if (!isSubmitted.value && isFullscreen.value && antiCheatSettings.detect_tab_switch) {
+    recordViolation()
+  }
+}
+
+const handleFocus = () => {
+  // Bắt sự kiện khi trở lại trang
+  if (!isSubmitted.value && isFullscreen.value && antiCheatSettings.detect_tab_switch) {
+    $message.warning({
+      content: `${l.value.tabSwitchDetected}`,
+      duration: 3,
+    })
   }
 }
 
@@ -766,7 +824,7 @@ const recordViolation = () => {
     autoSubmit('violation_limit')
   } else {
     $message.error({
-      content: `${l.value.violationTitle} (${warningCount.value}/3)`,
+      content: `${l.value.violationText} (${warningCount.value}/3)`,
       duration: 5,
     })
     isBlur.value = true
@@ -783,9 +841,7 @@ const autoSubmit = (reason) => {
   $message.warning({ content: title, duration: 5 })
   
   // Đánh dấu là submit do gian lận để bypass kiểm tra todo
-  if (reason !== 'time_up') {
-    isDueToFraud = true
-  }
+  isPassSubmit = true
   submitQuestionnaire()
 }
 
@@ -815,7 +871,7 @@ onMounted(() => {
     getQuestionnaire(params.questionnaire_id)
     // Set timer for exam mode
     remainingTime.value = 3600 // 60 minutes default, replace with actual from API
-    if (params.mode == 'exam') {
+    if (params.mode == 'exam' && antiCheatSettings.require_fullscreen) {
       enterFullscreen()
     }
   } else {
@@ -826,9 +882,22 @@ onMounted(() => {
   document.addEventListener('visibilitychange', handleVisibilityChange)
   document.addEventListener('fullscreenchange', handleFullscreenChange)
   window.addEventListener('blur', handleBlur)
+  window.addEventListener('focus', handleFocus)
 
-  // Prevent right click
-  document.addEventListener('contextmenu', (event) => event.preventDefault())
+  // Prevent right click / copy based on forbid_copy setting
+  document.addEventListener('contextmenu', (event) => {
+    if (antiCheatSettings.forbid_copy) {
+      event.preventDefault()
+    }
+  })
+
+  // Prevent copy if forbid_copy is enabled
+  document.addEventListener('copy', (event) => {
+    if (antiCheatSettings.forbid_copy) {
+      event.preventDefault()
+      $message.warning(l.value.copyForbidden)
+    }
+  })
 
   console.log(params)
 })
@@ -838,6 +907,17 @@ onUnmounted(() => {
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   document.removeEventListener('fullscreenchange', handleFullscreenChange)
   window.removeEventListener('blur', handleBlur)
+  window.removeEventListener('focus', handleFocus)
+  document.removeEventListener('contextmenu', (event) => {
+    if (antiCheatSettings.forbid_copy) {
+      event.preventDefault()
+    }
+  })
+  document.removeEventListener('copy', (event) => {
+    if (antiCheatSettings.forbid_copy) {
+      event.preventDefault()
+    }
+  })
 })
 </script>
 

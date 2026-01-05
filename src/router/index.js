@@ -62,11 +62,19 @@ const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-      component: () => import('@/views/home/welcome.vue'),
+      component: () => import('@/views/home/Welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },
     ],
+  },
+
+  
+  {
+    path: '/examDetail',
+    component: () => import('@/views/sysbasics/video/userViews/ExamDetail'),
+    name: 'examDetail',
+    meta: { noCache: isDevelopMode }
   },
 
   // User Video Layout

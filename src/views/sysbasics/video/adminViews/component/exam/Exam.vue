@@ -177,7 +177,7 @@
           </div>
 
           <!-- Names -->
-          <div class="mb-4 space-y-4">
+          <div class="mb-4 gap-4 grid-cols-2 grid">
             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
               <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.chineseName }}</label>
               <input v-model="examObj.form.name_zh" class="w-full outline-none text-[#0D0D0D] text-sm" />
@@ -233,6 +233,37 @@
             <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
               <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.examDuration }} (min)</label>
               <input v-model="examObj.form.test_duration" type="number" class="w-full outline-none text-[#0D0D0D] text-sm" />
+            </div>
+          </div>
+
+          <!-- Anti-Cheating Settings -->
+          <div class="mt-6 pt-6 border-t border-[#E5E5E5]">
+            <h3 class="text-sm font-medium text-[#0D0D0D] mb-4">{{ l.antiCheatingSettings }}</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] rounded">
+                <input v-model="examObj.form.forbid_copy" type="checkbox" id="forbid_copy" class="w-4 h-4 cursor-pointer" />
+                <label for="forbid_copy" class="flex-1 text-sm text-[#0D0D0D] cursor-pointer">{{ l.forbidCopy }}</label>
+              </div>
+              <!-- <div class="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] rounded">
+                <input v-model="examObj.form.forbid_screenshot" type="checkbox" id="forbid_screenshot" class="w-4 h-4 cursor-pointer" />
+                <label for="forbid_screenshot" class="flex-1 text-sm text-[#0D0D0D] cursor-pointer">{{ l.forbidScreenshot }}</label>
+              </div> -->
+              <div class="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] rounded">
+                <input v-model="examObj.form.require_fullscreen" type="checkbox" id="require_fullscreen" class="w-4 h-4 cursor-pointer" />
+                <label for="require_fullscreen" class="flex-1 text-sm text-[#0D0D0D] cursor-pointer">{{ l.requireFullscreen }}</label>
+              </div>
+              <div class="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] rounded">
+                <input v-model="examObj.form.detect_tab_switch" type="checkbox" id="detect_tab_switch" class="w-4 h-4 cursor-pointer" />
+                <label for="detect_tab_switch" class="flex-1 text-sm text-[#0D0D0D] cursor-pointer">{{ l.detectTabSwitch }}</label>
+              </div>
+              <!-- <div class="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] rounded">
+                <input v-model="examObj.form.allow_camera_access" type="checkbox" id="allow_camera_access" class="w-4 h-4 cursor-pointer" />
+                <label for="allow_camera_access" class="flex-1 text-sm text-[#0D0D0D] cursor-pointer">{{ l.allowCameraAccess }}</label>
+              </div>
+              <div class="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] rounded">
+                <input v-model="examObj.form.allow_microphone_access" type="checkbox" id="allow_microphone_access" class="w-4 h-4 cursor-pointer" />
+                <label for="allow_microphone_access" class="flex-1 text-sm text-[#0D0D0D] cursor-pointer">{{ l.allowMicrophoneAccess }}</label>
+              </div> -->
             </div>
           </div>
         </div>
@@ -362,6 +393,12 @@ const examObj = reactive({
     max_reply_num: '',
     pass_score: '',
     test_duration: '',
+    forbid_copy: false,
+    // forbid_screenshot: false,
+    require_fullscreen: false,
+    detect_tab_switch: false,
+    // allow_camera_access: false,
+    // allow_microphone_access: false,
   },
   list: [],
   total: 0,
@@ -422,6 +459,9 @@ const addExam = () => {
 }
 
 const editExam = (data) => {
+  data.forbid_copy = data.forbid_copy == 'Y' ? true : false
+  data.require_fullscreen = data.require_fullscreen == 'Y' ? true : false
+  data.detect_tab_switch = data.detect_tab_switch == 'Y' ? true : false
   assignObject(examObj.form, data)
   showObj.examDrawer = true
 }
