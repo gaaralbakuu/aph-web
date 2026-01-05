@@ -1,35 +1,35 @@
 <template>
   <div class="h-screen w-screen bg-[#F9F9F9] flex flex-col font-roboto overflow-hidden" :class="{ 'blur-sm': isBlur }" v-show="exam.questions.length">
     <!-- Header -->
-    <header class="h-[64px] bg-white border-b border-[#E5E5E5] flex items-center justify-between px-6 shrink-0 z-50">
-      <div class="flex items-center gap-4">
-        <div class="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white font-bold text-xs">{{ l.examTag }}</div>
-        <h1 class="text-lg font-medium text-[#0D0D0D] truncate max-w-[400px] mb-0!" :title="exam.name_label">
+    <header class="h-[64px] bg-white border-b border-[#E5E5E5] flex items-center justify-between px-3 md:px-6 shrink-0 z-50">
+      <div class="flex items-center gap-2 md:gap-4">
+        <div class="hidden md:flex w-8 h-8 rounded-full bg-[#FF0000] items-center justify-center text-white font-bold text-xs">{{ l.examTag }}</div>
+        <h1 class="text-sm md:text-lg font-medium text-[#0D0D0D] truncate max-w-[150px] md:max-w-[400px] mb-0!" :title="exam.name_label">
           {{ exam.name_label }}
         </h1>
       </div>
 
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2 md:gap-6">
         <!-- Timer -->
-        <div v-show="timerInitialized || remainingTime > 0" class="flex items-center gap-2 px-4 py-1.5 bg-[#F2F2F2] rounded text-[#0D0D0D] font-mono text-lg font-medium" :class="{ 'text-[#CC0000]! bg-[#FFE6E6]': remainingTime < 300 }">
-          <i class="el-icon-timer text-xl"></i>
+        <div v-show="timerInitialized || remainingTime > 0" class="flex items-center gap-1 md:gap-2 px-2 py-1 md:px-4 md:py-1.5 bg-[#F2F2F2] rounded text-[#0D0D0D] font-mono text-sm md:text-lg font-medium" :class="{ 'text-[#CC0000]! bg-[#FFE6E6]': remainingTime < 300 }">
+          <i class="el-icon-timer text-lg"></i>
           <span>{{ formattedTime }}</span>
         </div>
 
         <!-- Warning Counter -->
-        <div v-if="warningCount > 0" class="flex items-center gap-2 text-[#CC0000] font-medium animate-pulse">
+        <div v-if="warningCount > 0" class="hidden md:flex items-center gap-2 text-[#CC0000] font-medium animate-pulse">
           <i class="el-icon-warning text-lg"></i>
           <span>{{ l.warnings }}: {{ warningCount }}/3</span>
         </div>
 
         <!-- Submit Button -->
-        <button v-show="params.mode == 'exam'" @click="confirmSubmit" class="px-6 py-2 bg-[#065FD4] text-white! font-medium uppercase text-sm rounded shadow-sm hover:bg-[#0551B4] transition-colors">
+        <button v-show="params.mode == 'exam'" @click="confirmSubmit" class="px-3 py-1.5 md:px-6 md:py-2 bg-[#065FD4] text-white! font-medium uppercase text-xs md:text-sm rounded shadow-sm hover:bg-[#0551B4] transition-colors">
           {{ l.submit }}
         </button>
-        <button v-show="params.mode == 'review' || params.mode == 'preview'" @click="closeTab" class="px-6 py-2 bg-[#065FD4] text-white! font-medium uppercase text-sm rounded shadow-sm hover:bg-[#0551B4] transition-colors">
+        <button v-show="params.mode == 'review' || params.mode == 'preview'" @click="closeTab" class="px-3 py-1.5 md:px-6 md:py-2 bg-[#065FD4] text-white! font-medium uppercase text-xs md:text-sm rounded shadow-sm hover:bg-[#0551B4] transition-colors">
           {{ l.close }}
         </button>
-        <button v-show="params.mode == 'read'" @click="submitModifyScore" class="px-6 py-2 bg-[#FF6B6B] text-white! font-medium uppercase text-sm rounded shadow-sm hover:bg-[#E63946] transition-colors">
+        <button v-show="params.mode == 'read'" @click="submitModifyScore" class="px-3 py-1.5 md:px-6 md:py-2 bg-[#FF6B6B] text-white! font-medium uppercase text-xs md:text-sm rounded shadow-sm hover:bg-[#E63946] transition-colors">
           {{ l.modifyScore }}
         </button>
       </div>
@@ -61,7 +61,7 @@
         </button>
       </div>
       <!-- Left: Question List (Sidebar) -->
-      <div class="w-[300px] bg-white border-r border-[#E5E5E5] flex flex-col shrink-0 overflow-hidden transition-all duration-300" :class="{ '-ml-[300px]': !showSidebar }">
+      <div class="w-[300px] bg-white border-r border-[#E5E5E5] flex flex-col shrink-0 overflow-hidden transition-all duration-300 absolute md:relative h-full z-40" :class="{ '-ml-[300px]': !showSidebar, 'shadow-2xl md:shadow-none': showSidebar }">
         <div class="p-4 border-b border-[#E5E5E5] flex items-center justify-between">
           <span class="font-medium text-[#0D0D0D]">{{ l.questionList }}</span>
           <span class="text-xs text-[#606060]">{{ answeredCount }}/{{ totalQuestions }}</span>
@@ -86,19 +86,19 @@
       </div>
 
       <!-- Toggle Sidebar Button -->
-      <button @click="showSidebar = !showSidebar" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-12 bg-white border border-l-0 border-[#E5E5E5] rounded-r flex items-center justify-center shadow-sm text-[#606060] hover:text-[#065FD4]" :style="{ left: showSidebar ? '300px' : '0' }">
+      <button @click="showSidebar = !showSidebar" class="absolute left-0 top-1/2 -translate-y-1/2 z-50 w-6 h-12 bg-white border border-l-0 border-[#E5E5E5] rounded-r flex items-center justify-center shadow-sm text-[#606060] hover:text-[#065FD4] transition-all duration-300" :style="{ left: showSidebar ? '300px' : '0' }">
         <i :class="showSidebar ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
       </button>
 
       <!-- Center: Question Area -->
-      <div class="flex-1 overflow-y-auto bg-[#F9F9F9] p-8 scroll-smooth" id="questions-container">
-        <div class="max-w-4xl mx-auto space-y-6">
-          <div v-for="(q, index) in exam.questions" :key="q.id" :id="'q-' + index" class="bg-white rounded border border-[#E5E5E5] p-6 shadow-sm scroll-mt-24 group transition-shadow hover:shadow-md" :class="{ 'ring-2 ring-[#065FD4] ring-opacity-50': flagObj.currentIndex === index }" @click="flagObj.currentIndex = index">
+      <div class="flex-1 overflow-y-auto bg-[#F9F9F9] p-2 md:p-8 scroll-smooth" id="questions-container">
+        <div class="max-w-4xl mx-auto space-y-3 md:space-y-6">
+          <div v-for="(q, index) in exam.questions" :key="q.id" :id="'q-' + index" class="bg-white rounded border border-[#E5E5E5] p-3 md:p-6 shadow-sm scroll-mt-24 group transition-shadow hover:shadow-md" :class="{ 'ring-2 ring-[#065FD4] ring-opacity-50': flagObj.currentIndex === index }" @click="flagObj.currentIndex = index">
             <!-- Question Header -->
-            <div class="flex items-start gap-4 mb-4">
-              <div class="text-[#065FD4] font-medium text-lg min-w-[30px]">{{ index + 1 }}.</div>
+            <div class="flex items-start gap-2 md:gap-4 mb-2 md:mb-4">
+              <div class="text-[#065FD4] font-medium text-base md:text-lg min-w-[24px] md:min-w-[30px]">{{ index + 1 }}.</div>
               <div class="flex-1">
-                <div class="text-[#0D0D0D] text-lg leading-relaxed mb-2 select-none">
+                <div class="text-[#0D0D0D] text-base md:text-lg leading-relaxed mb-1 md:mb-2 select-none">
                   {{ q.name_label }}
                 </div>
                 <div class="flex items-center gap-2">
@@ -111,26 +111,26 @@
             </div>
 
             <!-- Options / Input -->
-            <div class="pl-[46px]">
+            <div class="pl-0 md:pl-[46px]">
               <!-- Single Choice -->
-              <div v-if="q.question_type === 1 || q.question_type === 3" class="space-y-3">
-                <label v-for="(opt, optIndex) in q.options" :key="optIndex" class="flex items-center gap-3 p-3 rounded border border-transparent hover:bg-[#F9F9F9] cursor-pointer transition-colors group/opt" :class="{ 'bg-[#E5F2FF]! border-[#065FD4]!': isSelected(index, opt.id) }">
-                  <div class="relative flex items-center justify-center w-5 h-5">
+              <div v-if="q.question_type === 1 || q.question_type === 3" class="space-y-2 md:space-y-3">
+                <label v-for="(opt, optIndex) in q.options" :key="optIndex" class="flex items-center gap-3 p-2 md:p-3 rounded border border-transparent hover:bg-[#F9F9F9] cursor-pointer transition-colors group/opt" :class="{ 'bg-[#E5F2FF]! border-[#065FD4]!': isSelected(index, opt.id) }">
+                  <div class="relative flex items-center justify-center w-5 h-5 shrink-0">
                     <input type="radio" :name="'q-' + q.id" :value="opt.id" v-model="replyObj.questions[index].check" :disabled="params.mode == 'read' || params.mode == 'review'" @change="radioChange" class="appearance-none w-5 h-5 border-2 border-[#606060] rounded-full checked:bg-[#065FD4] checked:border-[#065FD4] transition-colors" />
                     <div class="w-2 h-2 bg-white rounded-full absolute opacity-0" :class="{ 'opacity-100': isSelected(index, opt.id) }"></div>
                   </div>
-                  <span class="text-[#0D0D0D] select-none">{{ opt.name_label }}</span>
+                  <span class="text-[#0D0D0D] select-none text-sm md:text-base">{{ opt.name_label }}</span>
                 </label>
               </div>
 
               <!-- Multiple Choice -->
-              <div v-else-if="q.question_type === 2" class="space-y-3">
-                <label v-for="(opt, optIndex) in q.options" :key="optIndex" class="flex items-center gap-3 p-3 rounded border border-transparent hover:bg-[#F9F9F9] cursor-pointer transition-colors group/opt" :class="{ 'bg-[#E5F2FF]! border-[#065FD4]!': isSelected(index, opt.id) }">
-                  <div class="relative flex items-center justify-center w-5 h-5">
+              <div v-else-if="q.question_type === 2" class="space-y-2 md:space-y-3">
+                <label v-for="(opt, optIndex) in q.options" :key="optIndex" class="flex items-center gap-3 p-2 md:p-3 rounded border border-transparent hover:bg-[#F9F9F9] cursor-pointer transition-colors group/opt" :class="{ 'bg-[#E5F2FF]! border-[#065FD4]!': isSelected(index, opt.id) }">
+                  <div class="relative flex items-center justify-center w-5 h-5 shrink-0">
                     <input type="checkbox" :value="opt.id" :checked="isSelected(index, opt.id)" :disabled="params.mode == 'read' || params.mode == 'review'" @change="checkBoxChange(index)" class="appearance-none w-5 h-5 border-2 border-[#606060] rounded-sm checked:bg-[#065FD4] checked:border-[#065FD4] transition-colors" />
                     <i v-if="isSelected(index, opt.id)" class="el-icon-check absolute text-white text-xs"></i>
                   </div>
-                  <span class="text-[#0D0D0D] select-none">{{ opt.name_label }}</span>
+                  <span class="text-[#0D0D0D] select-none text-sm md:text-base">{{ opt.name_label }}</span>
                 </label>
               </div>
 
@@ -180,7 +180,7 @@
       </div>
 
       <!-- Right Sidebar for Review/Preview Mode -->
-      <div v-if="params.mode == 'review' || params.mode == 'read' || params.mode == 'preview'" class="w-[280px] bg-white border-l border-[#E5E5E5] flex flex-col shrink-0 p-4 overflow-y-auto">
+      <div v-if="params.mode == 'review' || params.mode == 'read' || params.mode == 'preview'" class="w-[280px] bg-white border-l border-[#E5E5E5] flex flex-col shrink-0 p-4 overflow-y-auto transition-all duration-300 absolute right-0 h-full z-40 md:relative" :class="{ '-mr-[280px]': !showRightSidebar, 'shadow-2xl md:shadow-none': showRightSidebar }">
         <div class="result mb-4" v-show="params.mode == 'review' || params.mode == 'read'">
           <div class="item mb-4">
             <div style="font-size: 26px; font-weight: bold">{{ params.score }}</div>
@@ -275,6 +275,14 @@
           </div>
         </div>
       </div>
+       <!-- Toggle Right Sidebar Button -->
+      <button v-if="params.mode == 'review' || params.mode == 'read' || params.mode == 'preview'"
+              @click="showRightSidebar = !showRightSidebar"
+              class="absolute right-0 top-1/2 -translate-y-1/2 z-50 w-6 h-12 bg-white border border-r-0 border-[#E5E5E5] rounded-l flex items-center justify-center shadow-sm text-[#606060] hover:text-[#065FD4] transition-all duration-300"
+              :style="{ right: showRightSidebar ? '280px' : '0' }">
+        <i :class="showRightSidebar ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
+      </button>
+
     </div>
   </div>
 </template>
@@ -359,6 +367,7 @@ const examNum = reactive({
 })
 
 const showSidebar = ref(true)
+const showRightSidebar = ref(true)
 const isFullscreen = ref(false)
 const isSubmitted = ref(false)
 const isBlur = ref(false)
@@ -861,6 +870,10 @@ const submitExam = () => {
 }
 
 onMounted(() => {
+  if (window.innerWidth < 768) {
+    showSidebar.value = false
+    showRightSidebar.value = false
+  }
   if ($route.params.questionnaire_id) {
     Object.assign(params, $route.params)
   } else {

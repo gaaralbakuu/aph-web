@@ -1,0 +1,167 @@
+
+> apache-uniapp-web@0.1.0 dev
+> vite
+
+Main API: http://localhost:65301
+Video API: http://localhost:65301
+Build mode: development
+Build command: serve
+7:20:45 AM [vite] (client) Forced re-optimization of dependencies
+
+  VITE v7.3.0  ready in 1673 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+  ➜  Inspect: http://localhost:5173/__inspect/
+(!) Failed to run dependency scan. Skipping dependency pre-bundling. Error:   Failed to scan for dependencies from entries:
+  /app/index.html
+/app/public/index.html
+/app/public/download/index.html
+/app/public/privacy/index.html
+
+  [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mENOENT: no such file or directory, open '/app/src/views/home/Welcome.vue'[0m [1m[35m[plugin vite:dep-scan][0m
+
+    node_modules/esbuild/lib/main.js:1267:21:
+[37m      1267 │         let result = [32m[37mawait callback({
+           ╵                      [32m^[0m
+
+    at async open (node:internal/fs/promises:641:25)
+    at async Object.readFile (node:internal/fs/promises:1245:14)
+    at async htmlTypeOnLoadCallback (file:///app/node_modules/vite/dist/node/chunks/config.js:31561:15)
+    at async requestCallbacks.on-load (/app/node_modules/esbuild/lib/main.js:1267:22)
+    at async handleRequest (/app/node_modules/esbuild/lib/main.js:628:11)
+
+  This error came from the "onLoad" callback registered here:
+
+    node_modules/esbuild/lib/main.js:1141:20:
+[37m      1141 │       let promise = [32m[37msetup({
+           ╵                     [32m^[0m
+
+    at setup (file:///app/node_modules/vite/dist/node/chunks/config.js:31618:12)
+    at handlePlugins (/app/node_modules/esbuild/lib/main.js:1141:21)
+    at buildOrContextImpl (/app/node_modules/esbuild/lib/main.js:854:5)
+    at Object.buildOrContext (/app/node_modules/esbuild/lib/main.js:680:5)
+    at /app/node_modules/esbuild/lib/main.js:2035:68
+    at new Promise (<anonymous>)
+    at Object.context (/app/node_modules/esbuild/lib/main.js:2035:27)
+    at Object.context (/app/node_modules/esbuild/lib/main.js:1877:58)
+    at prepareEsbuildScanner (file:///app/node_modules/vite/dist/node/chunks/config.js:31453:23)
+    at async scan (file:///app/node_modules/vite/dist/node/chunks/config.js:31379:14)
+    at async file:///app/node_modules/vite/dist/node/chunks/config.js:34110:15
+
+  The plugin "vite:dep-scan" was triggered by this import
+
+    src/router/index.js:65:30:
+[37m      65 │       component: () => import([32m'@/views/home/Welcome.vue'[37m),
+         ╵                               [32m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+    at failureErrorWithLog (/app/node_modules/esbuild/lib/main.js:1467:15)
+    at /app/node_modules/esbuild/lib/main.js:926:25
+    at runOnEndCallbacks (/app/node_modules/esbuild/lib/main.js:1307:45)
+    at buildResponseToResult (/app/node_modules/esbuild/lib/main.js:924:7)
+    at /app/node_modules/esbuild/lib/main.js:936:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (/app/node_modules/esbuild/lib/main.js:935:54)
+    at handleRequest (/app/node_modules/esbuild/lib/main.js:628:17)
+    at handleIncomingPacket (/app/node_modules/esbuild/lib/main.js:653:7)
+    at Socket.readFromStdout (/app/node_modules/esbuild/lib/main.js:581:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+7:20:52 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+7:20:52 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+7:20:55 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+7:20:55 AM [vite] Internal server error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 14)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
+7:20:58 AM [vite] (client) ✨ new dependencies optimized: ant-design-vue, js-cookie, vue-i18n, @tanstack/vue-query, element-ui/lib/locale/lang/vi, nprogress, dayjs, element-ui/lib/locale/lang/en, element-ui/lib/locale/lang/zh-CN, axios, screenfull
+7:20:58 AM [vite] (client) ✨ optimized dependencies changed. reloading
+7:20:58 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+7:20:58 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+7:21:00 AM [vite] (client) Pre-transform error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+7:21:00 AM [vite] Internal server error: Failed to resolve import "@/views/home/Welcome.vue" from "src/router/index.js". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /app/src/router/index.js:65:30
+  63 |        {
+  64 |          path: 'welcome',
+  65 |        component: () => import('@/views/home/Welcome.vue'),
+     |                                ^
+  66 |          name: 'welcome',
+  67 |          meta: { title: 'Welcome Page' },
+      at TransformPluginContext._formatLog (file:///app/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (file:///app/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (file:///app/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at async file:///app/node_modules/vite/dist/node/chunks/config.js:27176:32
+      at async Promise.all (index 14)
+      at async TransformPluginContext.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async file:///app/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.BzUKaD4x.mjs:403:17
+      at async EnvironmentPluginContainer.transform (file:///app/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (file:///app/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (file:///app/node_modules/vite/dist/node/chunks/config.js:24541:20)
