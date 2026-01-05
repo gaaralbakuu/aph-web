@@ -105,7 +105,7 @@
                   <span class="px-2 py-0.5 bg-[#F2F2F2] text-[#606060] text-xs rounded uppercase font-medium">
                     {{ getQuestionTypeName(q.question_type) }}
                   </span>
-                  <span class="px-2 py-0.5 bg-[#F2F2F2] text-[#606060] text-xs rounded font-medium">{{ q.score }} {{ l.point }}</span>
+                  <span class="px-2 py-0.5 bg-[#F2F2F2] text-[#606060] text-xs rounded font-medium" v-if="q.score">{{ q.score }} {{ l.point }}</span>
                 </div>
               </div>
             </div>
@@ -275,14 +275,10 @@
           </div>
         </div>
       </div>
-       <!-- Toggle Right Sidebar Button -->
-      <button v-if="params.mode == 'review' || params.mode == 'read' || params.mode == 'preview'"
-              @click="showRightSidebar = !showRightSidebar"
-              class="absolute right-0 top-1/2 -translate-y-1/2 z-50 w-6 h-12 bg-white border border-r-0 border-[#E5E5E5] rounded-l flex items-center justify-center shadow-sm text-[#606060] hover:text-[#065FD4] transition-all duration-300"
-              :style="{ right: showRightSidebar ? '280px' : '0' }">
+      <!-- Toggle Right Sidebar Button -->
+      <button v-if="params.mode == 'review' || params.mode == 'read' || params.mode == 'preview'" @click="showRightSidebar = !showRightSidebar" class="absolute right-0 top-1/2 -translate-y-1/2 z-50 w-6 h-12 bg-white border border-r-0 border-[#E5E5E5] rounded-l flex items-center justify-center shadow-sm text-[#606060] hover:text-[#065FD4] transition-all duration-300" :style="{ right: showRightSidebar ? '280px' : '0' }">
         <i :class="showRightSidebar ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
       </button>
-
     </div>
   </div>
 </template>
@@ -379,7 +375,7 @@ const timerInitialized = ref(false) // Track if timer has been started
 const antiCheatSettings = reactive({
   forbid_copy: false,
   detect_tab_switch: false,
-  require_fullscreen: false
+  require_fullscreen: false,
 })
 
 let timerInterval = null
@@ -467,13 +463,20 @@ const returnExamNum = () => {
 
 const fillinChange = (text) => {
   if (text !== '') {
+    let value = ''
+
+    if (text instanceof InputEvent) {
+      value = text.target.value
+    }
+
     replyObj.questions[flagObj.currentIndex].options = [
       {
         id: currentQuestion.value.options[0].id,
         question_id: currentQuestion.value.question_id,
-        value: text,
+        value: value,
       },
     ]
+    console.log(text, 'line 477')
   } else {
     replyObj.questions[flagObj.currentIndex].options = []
   }
@@ -554,7 +557,6 @@ const getQuestionnaire = (qid) => {
     },
     'post'
   ).then((r) => {
-
     remainingTime.value = r.data.test_duration * 60 // Convert minutes to seconds
 
     // Load anti-cheating settings từ API
@@ -782,7 +784,7 @@ const startTimer = () => {
   if (remainingTime.value <= 0) {
     return
   }
-  
+
   if (timerInterval) clearInterval(timerInterval)
   timerInterval = setInterval(() => {
     if (remainingTime.value > 0) {
@@ -848,7 +850,7 @@ const autoSubmit = (reason) => {
   let text = reason === 'time_up' ? l.value.timeUpText : l.value.violationLimitText
 
   $message.warning({ content: title, duration: 5 })
-  
+
   // Đánh dấu là submit do gian lận để bypass kiểm tra todo
   isPassSubmit = true
   submitQuestionnaire()
@@ -879,6 +881,8 @@ onMounted(() => {
   } else {
     Object.assign(params, $route.query)
   }
+
+  params.mode = params.mode || 'exam'
 
   if (params.mode == 'exam' || params.mode == 'preview') {
     getQuestionnaire(params.questionnaire_id)
