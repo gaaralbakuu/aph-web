@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 /* Layout */
 import Layout from '@/views/layout/Layout.vue'
@@ -9,15 +8,6 @@ import compliance from './compliance'
 import compliance2 from './compliance2'
 import sysbasics from './sysbasics'
 import video from './video' // Thêm import video routes
-// import compliance from './compliance'
-
-Vue.use(Router)
-
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-  return originalPush.call(this, location).catch((err) => err)
-}
 
 const isDevelopMode = import.meta.env.DEV
 
@@ -153,14 +143,15 @@ const constantRouterMap = [
 export { constantRouterMap }
 
 export const asyncRouterMap = [admin, sysbasics, compliance, compliance2] // Thêm video vào asyncRouterMap
-//export const asyncRouterMap = [sysbasics]
 
-export const routerVideo = video // Xuất khẩu riêng lẻ cho các tuyến video
+export const routerVideo = video
 
-export const noPageRoute = { path: '*', redirect: { name: '404' } }
+export const noPageRoute = { path: '/:pathMatch(.*)*', redirect: { name: '404' } }
 
-export default new Router({
-  routes: constantRouterMap, // Thêm routerVideo vào routes mặc định
-  mode: 'hash',
-  scrollBehavior: () => ({ y: 0 }),
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes: constantRouterMap,
+  scrollBehavior: () => ({ top: 0 }),
 })
+
+export default router

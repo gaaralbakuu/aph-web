@@ -26,137 +26,124 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex'
+<script setup>
+import { computed, watch, onMounted, onBeforeUnmount, ref, useSlots } from 'vue'
+import { useStore } from 'vuex'
 
-export default {
-  name: 'CustomDialog',
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    width: {
-      type: String,
-      default: '50%',
-    },
-    height: {
-      type: String,
-      default: 'auto',
-    },
-    maxWidth: {
-      type: String,
-      default: '80vw',
-    },
-    customClass: {
-      type: String,
-      default: '',
-    },
-    closeOnClickModal: {
-      type: Boolean,
-      default: true,
-    },
-    clickOutside: {
-      type: Boolean,
-      default: true,
-    },
-    // ID duy nhất cho dialog, nếu không cung cấp sẽ tự động tạo
-    dialogId: {
-      type: String,
-      default: null,
-    },
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false,
   },
-  data() {
-    return {
-      internalDialogId: null,
-    }
+  title: {
+    type: String,
+    default: '',
   },
-  computed: {
-    ...mapGetters('dialogStack', ['getDialogZIndex', 'topDialog']),
-    dialogStyle() {
-      return {
-        width: this.width,
-        height: this.height || 'auto',
-        maxWidth: this.maxWidth,
-        maxHeight: '90vh',
-      }
-    },
-    currentZIndex() {
-      return this.getDialogZIndex(this.internalDialogId)
-    },
-    isTopDialog() {
-      return this.topDialog && this.topDialog.id === this.internalDialogId
-    },
+  width: {
+    type: String,
+    default: '50%',
   },
-  watch: {
-    visible(newVal) {
-      if (newVal) {
-        this.openDialog()
-      } else {
-        this.closeDialog()
-      }
-    },
+  height: {
+    type: String,
+    default: 'auto',
   },
-  created() {
-    // Tạo ID duy nhất cho dialog nếu không được cung cấp
-    this.internalDialogId = this.dialogId || `dialog-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    
-    // Lắng nghe sự kiện đóng dialog từ ESC key
-    this.$root.$on('close-top-dialog', this.handleEscClose)
+  maxWidth: {
+    type: String,
+    default: '80vw',
   },
-  beforeDestroy() {
-    // Xóa dialog khỏi stack khi component bị destroy
-    this.removeDialog(this.internalDialogId)
-    
-    // Xóa event listener
-    this.$root.$off('close-top-dialog', this.handleEscClose)
-    
-    // Khôi phục scroll của body
-    document.body.style.overflow = ''
+  customClass: {
+    type: String,
+    default: '',
   },
-  methods: {
-    ...mapActions('dialogStack', ['pushDialog', 'removeDialog']),
-    openDialog() {
-      // Thêm dialog vào stack
-      this.pushDialog({
-        id: this.internalDialogId,
-        component: this.$options.name,
-      })
-      
-      // Khóa scroll của body
-      document.body.style.overflow = 'hidden'
-    },
-    closeDialog() {
-      // Xóa dialog khỏi stack
-      this.removeDialog(this.internalDialogId)
-      
-      // Khôi phục scroll của body nếu không còn dialog nào
-      const dialogCount = this.$store.getters['dialogStack/dialogCount']
-      if (dialogCount === 0) {
-        document.body.style.overflow = ''
-      }
-    },
-    handleClose() {
-      this.$emit('update:visible', false)
-      this.$emit('close')
-    },
-    handleOverlayClick() {
-      if (this.closeOnClickModal && this.clickOutside && this.isTopDialog) {
-        this.handleClose()
-      }
-    },
-    handleEscClose(dialogId) {
-      // Chỉ đóng nếu đây là dialog được yêu cầu đóng
-      if (dialogId === this.internalDialogId) {
-        this.handleClose()
-      }
-    },
+  closeOnClickModal: {
+    type: Boolean,
+    default: true,
   },
+  clickOutside: {
+    type: Boolean,
+    default: true,
+  },
+  // ID duy nhất cho dialog, nếu không cung cấp sẽ tự động tạo
+  dialogId: {
+    type: String,
+    default: null,
+  },
+})
+
+const emit = defineEmits(['update:visible', 'close'])
+const store = useStore()
+const slots = useSlots()
+
+const internalDialogId = ref(props.dialogId || `dialog-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`)
+
+const dialogStyle = computed(() => ({
+  width: props.width,
+  height: props.height || 'auto',
+  maxWidth: props.maxWidth,
+  maxHeight: '90vh',
+}))
+
+const currentZIndex = computed(() => store.getters['dialogStack/getDialogZIndex'](internalDialogId.value))
+const isTopDialog = computed(() => {
+  const top = store.getters['dialogStack/topDialog']
+  return top && top.id === internalDialogId.value
+})
+
+const openDialog = () => {
+  store.dispatch('dialogStack/pushDialog', {
+    id: internalDialogId.value,
+    component: 'CustomDialog', // In setup, we might need a better name or passed prop
+  })
+  document.body.style.overflow = 'hidden'
 }
+
+const closeDialog = () => {
+  store.dispatch('dialogStack/removeDialog', internalDialogId.value)
+  const dialogCount = store.getters['dialogStack/dialogCount']
+  if (dialogCount === 0) {
+    document.body.style.overflow = ''
+  }
+}
+
+const handleClose = () => {
+  emit('update:visible', false)
+  emit('close')
+}
+
+const handleOverlayClick = () => {
+  if (props.closeOnClickModal && props.clickOutside && isTopDialog.value) {
+    handleClose()
+  }
+}
+
+const handleEscClose = (event) => {
+  const dialogId = event.detail
+  if (dialogId === internalDialogId.value) {
+    handleClose()
+  }
+}
+
+watch(() => props.visible, (newVal) => {
+  if (newVal) {
+    openDialog()
+  } else {
+    closeDialog()
+  }
+})
+
+onMounted(() => {
+  // If visible initially
+  if (props.visible) {
+    openDialog()
+  }
+  document.addEventListener('close-top-dialog', handleEscClose)
+})
+
+onBeforeUnmount(() => {
+  closeDialog()
+  document.removeEventListener('close-top-dialog', handleEscClose)
+  document.body.style.overflow = ''
+})
 </script>
 
 <style scoped>

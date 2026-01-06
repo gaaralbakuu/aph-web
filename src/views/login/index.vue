@@ -74,7 +74,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-          <el-button :loading="loading" type="primary" round class="button-login" @click.native.prevent="validateCode">
+          <el-button :loading="loading" type="primary" round class="button-login" @click.prevent="validateCode">
             {{ l.login }}
           </el-button>
         </div>
@@ -94,7 +94,7 @@
 <script setup>
 import dayjs from 'dayjs'
 import { ref, reactive, computed, watch, onMounted, nextTick, getCurrentInstance } from 'vue'
-import { Message as ElMessage } from 'element-ui'
+import { ElMessage } from 'element-plus'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 import bg from '@/assets/bg.jpg'
