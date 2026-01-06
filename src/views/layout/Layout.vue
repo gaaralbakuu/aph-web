@@ -42,83 +42,72 @@
         <!-- <tags-view v-if="showTagBar"></tags-view> -->
       </header>
       <main class="flex-1 overflow-y-auto" v-if="showTagBar">
-        <keep-alive :include="cachedViews">
-          <router-view :key="key" />
-        </keep-alive>
+        <router-view v-slot="{ Component, route }">
+          <keep-alive :include="cachedViews">
+            <component :is="Component" :key="route.fullPath" />
+          </keep-alive>
+        </router-view>
       </main>
       <main class="flex-1 overflow-y-auto" v-else>
-        <router-view :key="key" />
+        <router-view v-slot="{ Component, route }">
+          <component :is="Component" :key="route.fullPath" />
+        </router-view>
       </main>
     </div>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 
-import scuLogo from '@/assets/apache.png'
+import scuLogoImg from '@/assets/apache.png'
 import con from '@/config'
 
-import { Navbar, SidebarItem, TagsView } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
+import Navbar from './components/Navbar.vue'
+import SidebarItem from './components/SidebarItem.vue'
+import TagsView from './components/TagsView.vue'
 
-// 主页布局配置项
+import { useResizeHandler } from '@/composables/useResizeHandler'
+
+const store = useStore()
+const route = useRoute()
+
+// Initialize Resize Handler
+useResizeHandler()
+
+// Config
 const config = {
   menuWidth: '320',
   menuCollapseWidth: '50',
   menuBackgroundColor: '#2C3B41',
   textColor: '#B8C7CE',
   textActiveColor: '#FFFFFF',
-  showTagBar: true, // 是否显示TagBar
+  showTagBar: true,
 }
 
-export default {
-  name: 'Lay',
-  components: {
-    Navbar,
-    TagsView,
-    SidebarItem,
-  },
-  mixins: [ResizeMixin],
-  data: function () {
-    return {
-      ...config,
-      scuLogo: scuLogo,
-      description: '',
-      sysname: con.system.name,
-    }
-  },
-  methods: {
-    handleClickOutside() {
-      this.$store.dispatch('closeSideBar', { withoutAnimation: false })
-    },
-  },
-  computed: {
-    ...mapGetters(['permission_routers', 'sidebar', 'user']),
-    isCollapse() {
-      return !this.sidebar.opened
-    },
-    device() {
-      return this.$store.state.app.device
-    },
-    cachedViews() {
-      return this.$store.state.tagsView.cachedViews
-    },
-    key() {
-      return this.$route.fullPath
-    },
-    menuWidthStyle() {
-      const width = this.isCollapse ? (this.device === 'mobile' ? 0 : config.menuCollapseWidth) : config.menuWidth
-      const widthValue = width + 'px'
-      return { width: widthValue, minWidth: widthValue }
-    },
-  },
-  created: function () {},
-  mounted: function () {},
+const sysname = con.system.name
+const scuLogo = scuLogoImg
+
+const { menuBackgroundColor, textColor, textActiveColor, showTagBar } = config
+
+const sidebar = computed(() => store.getters.sidebar)
+const user = computed(() => store.getters.user)
+const isCollapse = computed(() => !sidebar.value.opened)
+const device = computed(() => store.state.app.device)
+const cachedViews = computed(() => store.state.tagsView.cachedViews)
+
+const menuWidthStyle = computed(() => {
+  const width = isCollapse.value ? (device.value === 'mobile' ? 0 : config.menuCollapseWidth) : config.menuWidth
+  const widthValue = width + 'px'
+  return { width: widthValue, minWidth: widthValue }
+})
+
+const handleClickOutside = () => {
+  store.dispatch('closeSideBar', { withoutAnimation: false })
 }
 </script>
-
-<style scoped></style>
 
 <style>
 .sidebar-fade-enter-active,
@@ -126,7 +115,7 @@ export default {
   transition: all 0.2s ease;
 }
 
-.sidebar-fade-enter,
+.sidebar-fade-enter-from,
 .sidebar-fade-leave-to {
   opacity: 0;
   transform: translateY(-4px);
