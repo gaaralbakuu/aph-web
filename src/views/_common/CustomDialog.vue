@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted, onBeforeUnmount, ref, useSlots } from 'vue'
+import { computed, watch, onMounted, onBeforeUnmount, ref } from 'vue'
 import { useStore } from 'vuex'
 
 const props = defineProps({
@@ -72,7 +72,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:visible', 'close'])
 const store = useStore()
-const slots = useSlots()
 
 const internalDialogId = ref(props.dialogId || `dialog-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`)
 
