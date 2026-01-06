@@ -1,665 +1,640 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-button type="primary" class="fr" @click="createItem">{{
-          $c.create
-        }}</el-button>
-        <div class="filter-container">
-          <el-input
-            style="width: 300px"
-            :placeholder="$l.search"
-            clearable
-            prefix-icon="el-icon-search"
-            class="filter-item"
-            v-model="query.queryString.str"
-          ></el-input>
-          <el-button
-            class="filter-item"
-            type="success"
-            @click="researchMain"
-            plain
-            >{{ $c.queryButton }}</el-button
-          >
-        </div>
-      </el-col>
-      <el-col :span="11">
-        <z-table
-          :list="list"
-          :tableProps="tableProps"
-          @current-change="clickDetail"
-          :columns="columns"
-        >
-          <template v-slot:content="v">
-            <span
-              v-if="v.key === 'status'"
-              class="label"
-              :class="statusClass[v.row['status']]"
-            >
-              {{ status[v.row['status']] }}
-            </span>
-            <span v-else>{{ v.row[v.key] }}</span>
-          </template>
-          <template v-slot:operation="v">
-            <!-- <a href="#" class="text-green">复制</a> -->
-            <a
-              href="#"
-              :class="statusButtonClass[v.row.status]"
-              :dta="v"
-              @click.prevent="disOrEnable(v.row)"
-              >{{ statusButton[v.row.status] }}</a
-            >
-            <a href="#" class="text-blue" @click.prevent="editItem(v.row)">{{
-              $c.edit
-            }}</a>
-            <a href="#" class="text-red" @click.prevent="deleteItem(v.row)">{{
-              $c.delete
-            }}</a>
-          </template>
-        </z-table>
-        <z-pagination
-          :list="list"
-          :pagination="pagination"
-          :total="total"
-          :page.sync="query.page"
-          :limit.sync="query.size"
-          @change="getList"
-        ></z-pagination>
-      </el-col>
-      <z-form-dialog
-        :name="name"
-        :data="data"
-        :formProps="formProps"
-        :fields="fields"
-        @submmit="submmit"
-        :submmitLoading="submmitLoading"
-        :visible.sync="editFormVisible"
-      >
-      </z-form-dialog>
+  <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white h-[70px]">
+      <h1 class="text-xl font-medium mb-0!">{{ l.title || 'Workflow Fields' }}</h1>
 
-      <el-col :span="13" v-show="detailFlag">
-        <div
-          style="
-            padding: 10px 0;
-            min-height: 40px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-          "
-        >
-          <div style="display: flex; align-items: center; gap: 4px">
-            <div style="white-space: pre">Số phiên bản</div>
-            <el-select
-              @change="changeVersionProcess"
-              style="width: 100%"
-              v-model="versionProcessSelected"
-              :placeholder="$l.typePd"
-            >
-              <el-option
-                v-for="item in versionProcess"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <div style="display: flex; flex-direction: row-reverse; gap: 4px">
-            <el-button @click="openDetail" type="primary" plain>{{
-              $l.addDetail
-            }}</el-button>
-            <el-button
-              :loading="sortLoading"
-              v-if="indexFlag"
-              @click="updateDetailSort"
-              style="margin-left: 0"
-              type="success"
-              plain
-              >{{ $c.saveIndex }}</el-button
-            >
-          </div>
-          <!-- <el-input
-            style="width: 300px"
-            placeholder="输入名称查询按回车"
-            clearable
-            prefix-icon="el-icon-search"
-            class="filter-item"
-            @keyup.enter.native="research"
-            @clear="research"
-            v-model="queryDetail.queryString.str"
-          ></el-input>
-          <el-button class="filter-item" type="success" plain @click="getDetailList"
-            >查询</el-button
-          > -->
-        </div>
-        <z-table
-          ref="dragTable"
-          :list="listDetail"
-          row-key="id"
-          :tableProps="tableProps"
-          :columns="columnsDetail"
-        >
-          <template v-slot:content="v">
-            <span
-              v-if="v.key === 'status'"
-              class="label"
-              :class="statusClass[v.row['status']]"
-            >
-              {{ status[v.row['status']] }}
-            </span>
-            <span v-else>{{ v.row[v.key] }}</span>
-          </template>
-          <template v-slot:operation="v">
-            <a
-              href="#"
-              :class="statusButtonClass[v.row.status]"
-              :dta="v"
-              @click.prevent="disOrEnable(v.row)"
-              >{{ statusButton[v.row.status] }}</a
-            >
-            <a href="#" class="text-blue" @click.prevent="editDetail(v.row)">{{
-              $c.edit
-            }}</a>
-            <a href="#" class="text-red" @click.prevent="deleteDetail(v.row)">{{
-              $c.delete
-            }}</a>
-          </template>
-        </z-table>
-        <!-- <z-pagination
-          :pagination="pagination"
-          :total="totalDetail"
-          :page.sync="queryDetail.page"
-          :limit.sync="queryDetail.size"
-          @change="getDetailList"
-        ></z-pagination> -->
-      </el-col>
-    </el-row>
+      <div class="flex gap-2">
+        <Button variant="primary" @click="createItem">
+          <i class="el-icon-plus mr-2"></i>
+          {{ c.create }}
+        </Button>
+      </div>
+    </div>
 
-    <!-- detail -->
-    <el-dialog
-      :title="
-        this.$l.detailField + (dataDetail ? this.$c.edit : this.$c.create)
-      "
-      :close-on-click-modal="false"
-      :visible.sync="visibleDetail"
-      width="600px"
-    >
-      <el-form :model="dataDetail">
-        <div style="display: flex; gap: 10px;margin-bottom:  10px;">
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-            <div style="font-weight: bold">Tên</div>
-            <div>
-              <el-input
-                :placeholder="$l.detailNamePd"
-                v-model="dataMain.name"
-              ></el-input>
-            </div>
-          </div>
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-            <div style="font-weight: bold">Kích hoạt</div>
-            <div style="height: 32px; display: flex; align-items: center">
-              <el-switch
-                v-model="dataMain.status"
-                inactiveValue="2"
-                activeValue="1"
-              >
-              </el-switch>
-            </div>
-          </div>
-        </div>
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-          <div style="font-weight: bold">Thông tin chi tiết</div>
-          <div style="height: 32px; display: flex; align-items: center">
-            <el-input
-              value="info"
-              style="display: none"
-              v-model="dataDetail.type"
-            ></el-input>
-            <el-input
-              :placeholder="$l.detailTitlePd"
-              :label="$l.detailTitlePddname"
-              v-model="dataDetail.title"
-            ></el-input>
-          </div>
-        </div>
-        <el-form-item>
-          <el-row
-            v-for="(item, index) in dataDetail.list"
-            :key="index"
-            style="margin-top: 5px"
-          >
-            <el-col :span="7">
-              <el-input
-                :placeholder="$l.detailKeyPd"
-                v-model="item.key"
-              ></el-input>
-            </el-col>
-            <el-col style="margin-left: 5px" :span="7">
-              <el-input :placeholder="$l.detailLabelPd" v-model="item.label">
-              </el-input>
-            </el-col>
-            <el-col style="margin-left: 5px" :span="5">
-              <el-checkbox v-model="item.enter">Xuống hàng</el-checkbox>
-            </el-col>
+    <!-- Main Content -->
+    <div class="flex-1 overflow-hidden p-4 flex gap-4">
 
-            <el-col :span="4" style="margin-left: 5px">
-              <el-button
-                type="danger"
-                size="mini"
-                icon="el-icon-minus"
-                circle
-                @click="removeItem(index)"
-              ></el-button>
-              <el-button
-                v-show="index == dataDetail.list.length - 1"
-                style="margin-left: 3px"
-                type="primary"
-                size="mini"
-                icon="el-icon-plus"
-                circle
-                @click="addItem()"
-              ></el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <div style="display: flex; gap: 4px; flex-wrap: wrap">
-          <el-tag
-            v-for="item in listField"
-            :key="item"
-            effect="dark"
-            @click="copyToClipboard(item)"
-            style="margin-left: 0; cursor: pointer"
-          >
-            {{ item }}
-          </el-tag>
+      <!-- LEFT: Master List -->
+      <div class="flex flex-col bg-white border border-[#E5E5E5] rounded shadow-sm transition-all duration-300" :class="detailFlag ? 'w-[45%]' : 'w-full'">
+        <div class="p-3 border-b border-[#E5E5E5] flex items-center gap-2">
+           <div class="flex-1 relative">
+             <i class="el-icon-search absolute left-2 top-1/2 -translate-y-1/2 text-[#606060]"></i>
+             <input
+               v-model="query.queryString.str"
+               type="text"
+               :placeholder="l.search"
+               class="w-full pl-8 pr-2 py-1.5 text-sm border border-[#CCCCCC] rounded outline-none focus:border-[#065FD4]"
+               @keyup.enter="researchMain"
+             />
+           </div>
+           <Button variant="secondary" size="sm" @click="researchMain">{{ c.queryButton }}</Button>
         </div>
-      </el-form>
-      <div style="padding-right: 100px; margin-top: 40px">
-        <div class="align-r">
-          <el-button @click="visibleDetail = false">{{ $c.cancel }}</el-button>
-          <el-button
-            v-if="!formProps.disabled"
-            type="primary"
-            @click.native="submmitDetail"
-            :loading="submmitLoadingDetail"
-            >{{ $c.confirm }}
-          </el-button>
-          <slot name="operation"></slot>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+           <!-- Header -->
+           <div class="grid grid-cols-[1fr_80px_80px_100px_140px_120px] px-4 py-2 bg-[#F9F9F9] text-xs font-medium text-[#606060] border-b border-[#E5E5E5]">
+              <div>{{ l.name }}</div>
+              <div>{{ l.process_code }}</div>
+              <div>{{ l.status }}</div>
+              <div>{{ c.modify_user }}</div>
+              <div>{{ c.modify_time }}</div>
+              <div class="text-right">{{ c.action }}</div>
+           </div>
+
+           <div v-if="list.length === 0" class="p-4 text-center text-[#606060] text-sm">{{ c.noData }}</div>
+
+           <div
+             v-for="item in list"
+             :key="item.id"
+             class="grid grid-cols-[1fr_80px_80px_100px_140px_120px] px-4 py-3 border-b border-[#E5E5E5] hover:bg-[#F0F8FF] cursor-pointer text-sm items-center transition-colors"
+             :class="queryDetail.queryString.parentId === item.id ? 'bg-[#E8F4FF] border-l-4 border-l-[#065FD4]' : ''"
+             @click="clickDetail(item)"
+           >
+              <div class="truncate" :title="item.name">{{ item.name }}</div>
+              <div class="truncate" :title="item.process_code">{{ item.process_code }}</div>
+              <div>
+                 <span
+                   class="px-2 py-0.5 rounded text-xs font-medium"
+                   :class="item.status == '1' ? 'bg-[#DEF7E5] text-[#069C56]' : 'bg-[#FEF0F0] text-[#F56C6C]'"
+                 >
+                   {{ item.status == '1' ? c.enabled : c.disabled }}
+                 </span>
+              </div>
+              <div class="truncate">{{ item.modify_user }}</div>
+              <div class="truncate text-xs text-[#606060]">{{ item.modify_time }}</div>
+
+              <div class="flex justify-end gap-2 text-[#606060]">
+                 <a
+                   class="text-xs font-medium hover:underline"
+                   :class="item.status == '1' ? 'text-[#E6A23C]' : 'text-[#069C56]'"
+                   @click.stop="disOrEnable(item)"
+                 >
+                    {{ item.status == '1' ? c.disable : c.enable }}
+                 </a>
+                 <i class="el-icon-edit hover:text-[#065FD4]" @click.stop="editItem(item)"></i>
+                 <i class="el-icon-delete hover:text-[#CC0000]" @click.stop="deleteItem(item)"></i>
+              </div>
+           </div>
+        </div>
+
+        <div class="p-2 border-t border-[#E5E5E5]">
+           <Pagination
+             :page="query.page"
+             :pageSize="query.size"
+             :total="total"
+             :l="l"
+             simple
+             @update:page="query.page = $event"
+             @update:pageSize="query.size = $event"
+             @change="getList"
+           />
         </div>
       </div>
-    </el-dialog>
+
+      <!-- RIGHT: Details List -->
+      <div v-if="detailFlag" class="flex-1 flex flex-col bg-white border border-[#E5E5E5] rounded shadow-sm overflow-hidden">
+        <div class="p-3 border-b border-[#E5E5E5] flex justify-between items-center h-[60px]">
+           <div class="flex items-center gap-2 flex-1">
+              <span class="text-sm font-medium whitespace-nowrap">Version:</span>
+              <select v-model="versionProcessSelected" class="border border-[#CCCCCC] rounded px-2 py-1 text-sm outline-none focus:border-[#065FD4] max-w-[150px]" @change="changeVersionProcess">
+                 <option v-for="v in versionProcess" :key="v.value" :value="v.value">{{ v.label }}</option>
+              </select>
+           </div>
+           <div class="flex gap-2">
+              <Button v-if="indexFlag" :loading="sortLoading" variant="secondary" size="sm" @click="updateDetailSort">
+                 {{ c.saveIndex }}
+              </Button>
+              <Button variant="primary" size="sm" @click="openDetail">
+                 <i class="el-icon-plus mr-1"></i>
+                 {{ l.addDetail || 'Add Detail' }}
+              </Button>
+           </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+           <!-- Header -->
+           <div class="grid grid-cols-[120px_1fr_80px_100px_140px_120px] px-4 py-2 bg-[#F9F9F9] text-xs font-medium text-[#606060] border-b border-[#E5E5E5]">
+              <div>{{ l.detialNmae }}</div>
+              <div>{{ l.field_json }}</div>
+              <div>{{ l.status }}</div>
+              <div>{{ c.modify_user }}</div>
+              <div>{{ c.modify_time }}</div>
+              <div class="text-right">{{ c.action }}</div>
+           </div>
+
+           <div class="min-w-full" ref="sortableDetailList">
+              <div v-if="listDetail.length === 0" class="p-4 text-center text-[#606060] text-sm">{{ c.noData }}</div>
+
+              <div
+                v-for="item in listDetail"
+                :key="item.id"
+                :data-id="item.id"
+                class="grid grid-cols-[120px_1fr_80px_100px_140px_120px] px-4 py-3 border-b border-[#E5E5E5] hover:bg-[#F9F9F9] items-center text-sm text-[#0D0D0D] cursor-move"
+              >
+                 <div class="truncate" :title="item.name">{{ item.name }}</div>
+                 <div class="truncate" :title="item.field_json">{{ item.field_json }}</div>
+                 <div>
+                    <span
+                      class="px-2 py-0.5 rounded text-xs font-medium"
+                      :class="item.status == '1' ? 'bg-[#DEF7E5] text-[#069C56]' : 'bg-[#FEF0F0] text-[#F56C6C]'"
+                    >
+                      {{ item.status == '1' ? c.enabled : c.disabled }}
+                    </span>
+                 </div>
+                 <div class="truncate">{{ item.modify_user }}</div>
+                 <div class="truncate text-xs text-[#606060]">{{ item.modify_time }}</div>
+
+                 <div class="flex justify-end gap-2 text-[#606060]">
+                    <a
+                      class="text-xs font-medium hover:underline"
+                      :class="item.status == '1' ? 'text-[#E6A23C]' : 'text-[#069C56]'"
+                      @click.stop="disOrEnable(item)"
+                    >
+                       {{ item.status == '1' ? c.disable : c.enable }}
+                    </a>
+                    <i class="el-icon-edit hover:text-[#065FD4]" @click.stop="editDetail(item)"></i>
+                    <i class="el-icon-delete hover:text-[#CC0000]" @click.stop="deleteDetail(item)"></i>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Master Drawer -->
+    <a-drawer :visible="editFormVisible" :title="name" :width="500" @close="editFormVisible = false" :body-style="{ padding: 0 }">
+       <div class="flex flex-col h-full bg-white font-roboto">
+         <div class="flex-1 p-6">
+            <div class="mb-4 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.name }}</label>
+              <input v-model="data.name" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent" />
+            </div>
+
+            <div class="mb-4 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.process_code }}</label>
+              <input v-model="data.process_code" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent" />
+            </div>
+
+            <div class="flex items-center gap-4">
+               <label class="text-sm text-[#0D0D0D]">{{ l.isEnable }}</label>
+               <a-switch v-model="statusBool" checked-children="Y" un-checked-children="N" />
+            </div>
+         </div>
+         <div class="border-t border-[#E5E5E5] p-4 flex justify-end items-center gap-2 bg-white">
+           <Button variant="ghost" @click="editFormVisible = false">{{ c.cancel }}</Button>
+           <Button variant="primary" :disabled="submmitLoading" @click="submmit">{{ c.confirm }}</Button>
+         </div>
+       </div>
+    </a-drawer>
+
+    <!-- Detail Drawer -->
+    <a-drawer :visible="visibleDetail" :title="l.detailField + (dataDetail ? c.edit : c.create)" :width="700" @close="visibleDetail = false" :body-style="{ padding: 0 }">
+       <div class="flex flex-col h-full bg-white font-roboto">
+         <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+               <div class="relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+                  <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.detailNamePd || 'Name' }}</label>
+                  <input v-model="dataMain.name" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent" />
+               </div>
+
+               <div class="flex items-center gap-4 pl-2">
+                  <label class="text-sm font-medium">Activate</label>
+                  <a-switch v-model="dataMainStatusBool" checked-children="Y" un-checked-children="N" />
+               </div>
+            </div>
+
+            <div class="mb-4 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+               <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.detailTitlePd || 'Detail Title' }}</label>
+               <input v-model="dataDetail.title" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent" />
+            </div>
+
+            <div class="mb-2 font-medium text-sm">Fields List</div>
+            <div v-for="(item, index) in dataDetail.list" :key="index" class="flex gap-2 mb-2 items-center">
+               <div class="flex-1 relative group border border-[#CCCCCC] rounded px-2 py-1 bg-white focus-within:border-[#065FD4]">
+                  <input v-model="item.key" :placeholder="l.detailKeyPd || 'Key'" class="w-full outline-none text-sm bg-transparent" />
+               </div>
+               <div class="flex-1 relative group border border-[#CCCCCC] rounded px-2 py-1 bg-white focus-within:border-[#065FD4]">
+                  <input v-model="item.label" :placeholder="l.detailLabelPd || 'Label'" class="w-full outline-none text-sm bg-transparent" />
+               </div>
+               <div class="flex items-center gap-1">
+                  <input type="checkbox" v-model="item.enter" class="cursor-pointer" />
+                  <span class="text-xs">Line Break</span>
+               </div>
+               <div class="flex items-center gap-1">
+                  <i class="el-icon-remove text-[#CC0000] text-xl cursor-pointer hover:opacity-80" @click="removeItem(index)"></i>
+                  <i v-if="index == dataDetail.list.length - 1" class="el-icon-circle-plus text-[#065FD4] text-xl cursor-pointer hover:opacity-80" @click="addItem()"></i>
+               </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+               <span
+                  v-for="item in listField" :key="item"
+                  class="px-2 py-1 bg-[#E8F4FF] text-[#065FD4] text-xs rounded cursor-pointer hover:bg-[#D1E9FF]"
+                  @click="copyToClipboard(item)"
+               >
+                  {{ item }}
+               </span>
+            </div>
+
+         </div>
+         <div class="border-t border-[#E5E5E5] p-4 flex justify-end items-center gap-2 bg-white">
+           <Button variant="ghost" @click="visibleDetail = false">{{ c.cancel }}</Button>
+           <Button variant="primary" :loading="submmitLoadingDetail" @click="submmitDetail">{{ c.confirm }}</Button>
+         </div>
+       </div>
+    </a-drawer>
+
+    <!-- Loading Overlay -->
+    <div v-if="pageLoading" class="absolute inset-0 z-50 bg-white/50 flex items-center justify-center">
+        <i class="el-icon-loading text-3xl text-[#065FD4]"></i>
+    </div>
   </div>
 </template>
-<script>
+
+<script setup>
+import { reactive, ref, computed, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import { message, Modal } from 'ant-design-vue'
+import api from '@/api'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import Button from '@/views/sysbasics/video/adminViews/component/common/Button.vue'
+import Pagination from '@/views/sysbasics/video/adminViews/component/common/Pagination.vue'
 import Sortable from 'sortablejs'
+import { cloneDeep } from 'lodash'
 
-import {
-  _,
-  api,
-  dayjs,
-  defaultConfig,
-  initFuncs,
-  zFormDialog,
-  zPagination,
-  zTable,
-} from '@/views/_common'
+// Global instance
+const instance = getCurrentInstance()
+const { $request, $message, $confirm } = instance.proxy
 
-const config = Object.assign({}, _.cloneDeep(defaultConfig), {
-  api: api.workflowField,
-  apiEdit: api.workflowField + 'addormodify',
-  apiCreate: api.workflowField + 'addormodify',
-  apiParamShow: api.param + 'getparamshow',
-  tableProps: {
-    'highlight-current-row': true,
-    border: true,
-    opsColWith: '120',
-  },
-  initData: { status: '1' },
-  data: {},
-  editFormVisible: false, //编辑模态框的显示状态
-  list: [],
-  total: 0,
-  query: {
-    queryString: {},
-    size: 10,
-    page: 1,
-  },
+// Localization
+const { l, c } = useLocalI18n('adminWorkflowFields')
+const name = computed(() => l.value.title || 'Workflow Fields')
 
-  formProps: {
-    dialogWidth: '40%',
-    labelWidth: '140px',
-  },
+// State
+const pageLoading = ref(false)
+const submmitLoading = ref(false)
+const submmitLoadingDetail = ref(false)
+const sortLoading = ref(false)
+const editFormVisible = ref(false)
+const visibleDetail = ref(false)
+const detailFlag = ref(false)
+const indexFlag = ref(false)
 
-  pagination: {
-    //分页组件配置 如不需分页，可以把pagination设置为null
-    layout: 'prev, pager, next, ->, total',
-  },
+// Master List
+const list = ref([])
+const total = ref(0)
+const query = reactive({
+  queryString: { str: '' },
+  size: 10,
+  page: 1,
 })
-export default {
-  name: 'adminWorkflowFields',
-  components: { zTable, zFormDialog, zPagination },
-  data: function () {
-    return {
-      ...config,
-      statusButton: { 1: this.$c.disable, 2: this.$c.enable },
-      statusButtonClass: { 1: 'text-yellow', 2: 'text-green' },
-      parentId: '',
-      name: this.$l.title,
-      workflowOptions: [],
-      detailFlag: false,
-      visibleDetail: false,
-      status: { 1: this.$c.enabled, 2: this.$c.disabled },
-      statusClass: { 2: 'bg-red', 1: 'bg-green' },
-      columns: [
-        { title: this.$l.name, key: 'name' },
-        { title: this.$l.process_code, key: 'process_code', width: 70 },
-        { title: this.$l.status, key: 'status', width: 70 },
-        { title: this.$c.modify_user, key: 'modify_user', width: 100 },
-        { title: this.$c.modify_time, key: 'modify_time', width: 140 },
-      ],
-      fields: [
-        {
-          title: this.$l.name,
-          key: 'name',
-          span: 24,
-          //required: true,
-        },
-        {
-          title: this.$l.process_code,
-          key: 'process_code',
-          span: 24,
-          //required: true,
-        },
-        {
-          title: this.$l.isEnable,
-          key: 'status',
-          span: 8,
-          name: 'switch',
-          props: { inactiveValue: '2', activeValue: '1' },
-        },
-      ],
-      dataMain: {},
-      dataDetailInit: {
-        title: '',
-        type: 'info',
-        list: [{ key: '', type: '' }],
-      },
-      dataDetail: {
-        title: '',
-        type: 'info',
-        list: [{ key: '', type: '' }],
-      },
-      queryDetail: { queryString: {}, size: 99, page: 1 },
-      processCode: '',
-      listDetail: [],
-      totalDetail: 0,
-      detailName: '',
-      indexFlag: false,
-      sortLoading: false,
-      submmitLoadingDetail: false,
-      listSortIds: [],
-      typeOptions: [
-        { value: 'info', label: 'Info' },
-        { value: 'grid', label: 'Grid' },
-      ],
 
-      versionProcess: [],
-      versionProcessSelected: '',
-      listField: [],
+const initData = {
+   name: '',
+   process_code: '',
+   status: '1'
+}
+const data = reactive({ ...initData })
 
-      columnsDetail: [
-        { title: this.$l.detialNmae, key: 'name', width: 120 },
-        { title: this.$l.field_json, key: 'field_json', width: 140 },
-        { title: this.$l.status, key: 'status', width: 80 },
-        { title: this.$c.modify_user, key: 'modify_user', width: 100 },
-        { title: this.$c.modify_time, key: 'modify_time', width: 140 },
-      ],
-      tableData: [],
+// Detail List
+const listDetail = ref([])
+const totalDetail = ref(0)
+const queryDetail = reactive({
+   queryString: { parentId: '' },
+   size: 99,
+   page: 1
+})
+const versionProcess = ref([])
+const versionProcessSelected = ref('')
+const listField = ref([])
+const listSortIds = ref([])
+const processCode = ref('')
+
+const dataMain = reactive({})
+const dataDetailInit = {
+   title: '',
+   type: 'info',
+   list: [{ key: '', type: '', label: '', enter: false }]
+}
+const dataDetail = reactive({ ...dataDetailInit })
+
+const sortableDetailList = ref(null)
+let sortable = null
+
+// Computed
+const statusBool = computed({
+   get: () => data.status === '1',
+   set: (val) => { data.status = val ? '1' : '2' }
+})
+
+const dataMainStatusBool = computed({
+   get: () => dataMain.status === '1',
+   set: (val) => { dataMain.status = val ? '1' : '2' }
+})
+
+// Methods
+const getList = () => {
+  pageLoading.value = true
+  $request(api.workflowField + 'getlist', query)
+    .then(r => {
+      list.value = r.data.list
+      total.value = r.data.total
+      pageLoading.value = false
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+const researchMain = () => {
+  listDetail.value = []
+  detailFlag.value = false
+  query.page = 1
+  getList()
+}
+
+const createItem = () => {
+  Object.assign(data, initData)
+  delete data.id
+  editFormVisible.value = true
+}
+
+const editItem = (item) => {
+   Object.assign(data, item)
+   data.status = String(data.status)
+   editFormVisible.value = true
+}
+
+const deleteItem = (item) => {
+  Modal.confirm({
+    title: c.value.oprConfirm,
+    content: c.value.cfmDelete,
+    onOk() {
+      pageLoading.value = true
+      $request(api.workflowField + 'delete/' + item.id, {}, 'post')
+        .then(() => {
+           message.success(c.value.success)
+           pageLoading.value = false
+           getList()
+        })
+        .catch(() => {
+           pageLoading.value = false
+        })
     }
-  },
-  methods: {
-    ...initFuncs,
-    changeGridField() {
-      if (this.dataDetail.type == 'info') this.dataDetail.grid_field = ''
-    },
-    changeVersionProcess() {
-      this.getDetailList()
-    },
-    researchMain() {
-      this.listDetail = []
-      this.query.page = 1
-      this.getList()
-    },
-    formatAfterGet(data) {
-      data.status = data.status.toString()
-      return data
-    },
-    updateDetailSort() {
-      this.sortLoading = true
-      this.$request(this.api + 'UpdateSort', this.listSortIds, 'post')
-        .then((r) => {
-          this.sortLoading = false
-          this.getDetailList()
-        })
-        .catch((e) => {
-          this.sortLoading = false
-        })
-    },
-    createItem() {
-      this.data = _.cloneDeep(this.initData)
-      this.editFormVisible = true
-    },
-    disOrEnable(v) {
-      let status = { 1: this.$c.disable, 2: this.$c.enable }
-      this.$confirm(status[v.status] + this.$l.record, this.$c.oprConfirm).then(
-        () => {
-          this.pageLoading = true
-          this.$request(this.api + 'DisOrEnable/' + v.id, {}, 'post')
-            .then((r) => {
-              this.pageLoading = false
-              this.$message({
-                message: this.$c.success,
-                type: 'success',
-              })
-              if (v.parent_id) this.getDetailList()
-              if (!v.parent_id) this.getList()
-            })
-            .catch(() => {
-              this.pageLoading = false
-            })
-        }
-      )
-    },
-    openDetail() {
-      this.dataMain = { status: '1' }
-      this.visibleDetail = true
-      this.dataDetail = _.cloneDeep(this.dataDetailInit)
-    },
-    clickDetail(v) {
-      this.dataMain = {}
-      this.processCode = ''
-      this.dataDetail = _.cloneDeep(this.dataDetailInit)
-      if (v) {
-        this.queryDetail.queryString.parentId = v.id
-        this.processCode = v.process_code
-        this.getListVersion(v.process_code)
-      }
+  })
+}
 
-      this.detailFlag = true
-    },
-    getListVersion(id) {
-      this.$request(api.param + 'getlistversion', { id: id }).then((r) => {
+const disOrEnable = (item) => {
+   const statusMap = { 1: c.value.disable, 2: c.value.enable }
+   Modal.confirm({
+      title: c.value.oprConfirm,
+      content: `${statusMap[item.status]} ${l.value.record || 'record'}?`,
+      onOk() {
+         pageLoading.value = true
+         $request(api.workflowField + 'DisOrEnable/' + item.id, {}, 'post')
+           .then(() => {
+              pageLoading.value = false
+              message.success(c.value.success)
+              if (item.parent_id) getDetailList()
+              if (!item.parent_id) getList()
+           })
+           .catch(() => {
+              pageLoading.value = false
+           })
+      }
+   })
+}
+
+const submmit = () => {
+   submmitLoading.value = true
+   const url = api.workflowField + 'addormodify'
+   $request(url, data, 'post')
+     .then(() => {
+        submmitLoading.value = false
+        message.success(c.value.success)
+        editFormVisible.value = false
+        getList()
+     })
+     .catch(() => {
+        submmitLoading.value = false
+     })
+}
+
+// Detail Logic
+const clickDetail = (v) => {
+   Object.assign(dataMain, {})
+   processCode.value = ''
+   Object.assign(dataDetail, cloneDeep(dataDetailInit))
+
+   if (v) {
+      queryDetail.queryString.parentId = v.id
+      processCode.value = v.process_code
+      getListVersion(v.process_code)
+   }
+   detailFlag.value = true
+}
+
+const getListVersion = (id) => {
+   $request(api.param + 'getlistversion', { id: id })
+     .then(r => {
         if (r.data.length != 0) {
-          this.versionProcessSelected = r.data[0].OID
+           versionProcessSelected.value = r.data[0].OID
         } else {
-          this.versionProcessSelected = ''
+           versionProcessSelected.value = ''
         }
-        this.versionProcess = r.data.map((item) => {
-          return { value: item.OID, label: item.VERSION }
-        })
+        versionProcess.value = r.data.map(item => ({ value: item.OID, label: item.VERSION }))
+        getDetailList()
+     })
+}
 
-        this.getDetailList()
-      })
-    },
-    getDetailList() {
-      this.pageLoading = true
-      let url = this.api + 'getlist'
-      this.$request(url, {
-        ...this.queryDetail,
-        queryString: JSON.stringify({
-          ...this.queryDetail.queryString,
-          oid: this.versionProcessSelected,
-        }),
-      })
-        .then((r) => {
-          this.pageLoading = false
-          this.listDetail = []
-          this.listDetail = r.data.list
+const changeVersionProcess = () => {
+   getDetailList()
+}
 
-          this.listSortIds = this.listDetail.map((v) => {
-            return v.id
-          })
-          this.setSort()
-          this.$forceUpdate()
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
+const getDetailList = () => {
+   pageLoading.value = true
+   const url = api.workflowField + 'getlist'
+   const q = cloneDeep(queryDetail)
+   q.queryString = JSON.stringify({
+      ...queryDetail.queryString,
+      oid: versionProcessSelected.value
+   })
 
-      this.$request(
-        this.apiParamShow,
-        { id: this.versionProcessSelected },
-        'get'
-      ).then((r) => {
-        this.listField = r.data
-      })
-    },
-    editDetail(v) {
-      this.$request(this.api + 'getbyid', { id: v.id }).then((r) => {
-        let data = r.data
-        if (data) {
-          this.dataMain = {
-            id: data.id,
-            process_code: data.process_code,
-            name: data.name,
-            sort: data.sort,
-            status: data.status.toString(),
-          }
+   $request(url, q)
+     .then(r => {
+        pageLoading.value = false
+        listDetail.value = r.data.list
+        listSortIds.value = listDetail.value.map(v => v.id)
+        initSortable()
+     })
+     .catch(() => {
+        pageLoading.value = false
+     })
 
-          if (data.field_json) this.dataDetail = JSON.parse(data.field_json)
+   $request(api.param + 'getparamshow', { id: versionProcessSelected.value }, 'get')
+     .then(r => {
+        listField.value = r.data
+     })
+}
+
+const openDetail = () => {
+   Object.assign(dataMain, { status: '1' })
+   visibleDetail.value = true
+   Object.assign(dataDetail, cloneDeep(dataDetailInit))
+}
+
+const editDetail = (v) => {
+   $request(api.workflowField + 'getbyid', { id: v.id })
+     .then(r => {
+        const d = r.data
+        if (d) {
+           Object.assign(dataMain, {
+              id: d.id,
+              process_code: d.process_code,
+              name: d.name,
+              sort: d.sort,
+              status: String(d.status)
+           })
+           if (d.field_json) {
+              Object.assign(dataDetail, JSON.parse(d.field_json))
+           }
         }
+        visibleDetail.value = true
+     })
+}
 
-        this.$forceUpdate()
-        this.visibleDetail = true
-      })
-    },
-
-    deleteDetail(v) {
-      this.$confirm(this.$c.cfmDelete, this.$c.oprConfirm).then(() => {
-        this.pageLoading = true
-        let url = this.api + 'delete/' + v.id
-
-        this.$request(url, {}, 'post')
-          .then((r) => {
-            this.pageLoading = false
-            this.$message({
-              message: this.$c.success,
-              type: 'success',
-            })
-            this.getDetailList()
-          })
-          .catch(() => {
-            this.pageLoading = false
-          })
-      })
-    },
-
-    addItem() {
-      this.dataDetail.list.push({ key: '', label: '' })
-    },
-    removeItem(i) {
-      this.dataDetail.list.splice(i, 1)
-      if (this.dataDetail.list.length == 0) this.addItem()
-    },
-    setSort() {
-      let el = this.$refs.dragTable.$el.querySelectorAll(
-        '.el-table__body-wrapper > table > tbody'
-      )[0]
-      this.sortable = Sortable.create(el, {
-        ghostClass: 'sortable-ghost',
-        setData: function (dataTransfer) {
-          dataTransfer.setData('Text', '')
-        },
-        onEnd: (evt) => {
-          // const targetRow = this.listDetail.splice(evt.oldIndex, 1)[0]
-          // this.detailList.splice(evt.newIndex, 0, targetRow)
-          var tmp = this.listSortIds[evt.oldIndex]
-          this.listSortIds[evt.oldIndex] = this.listSortIds[evt.newIndex]
-          this.listSortIds[evt.newIndex] = tmp
-          this.indexFlag = true
-        },
-      })
-    },
-    submmitDetail() {
-      this.submmitLoading = true
-      let url = this.apiCreate
-      let obj = {
-        field_json: JSON.stringify(this.dataDetail),
-        parent_id: this.queryDetail.queryString.parentId,
-        process_code: this.processCode,
-        status: this.dataMain.status,
-        oid: this.versionProcessSelected,
-        version: this.versionProcess.find((x) => {
-          return x.value == this.versionProcessSelected
-        }).label,
-        ...this.dataMain,
+const deleteDetail = (v) => {
+   Modal.confirm({
+      title: c.value.oprConfirm,
+      content: c.value.cfmDelete,
+      onOk() {
+         pageLoading.value = true
+         $request(api.workflowField + 'delete/' + v.id, {}, 'post')
+           .then(() => {
+              pageLoading.value = false
+              message.success(c.value.success)
+              getDetailList()
+           })
+           .catch(() => {
+              pageLoading.value = false
+           })
       }
-      this.$request(url, obj, 'post')
-        .then((r) => {
-          this.submmitLoadingDetail = false
-          this.$message({
-            message: this.$c.success,
-            type: 'success',
-          })
-          this.visibleDetail = false
-          this.getDetailList()
-        })
-        .catch(() => {
-          this.submmitLoadingDetail = false
-        })
-    },
+   })
+}
 
-    copyToClipboard(text) {
+const submmitDetail = () => {
+   submmitLoadingDetail.value = true
+   const url = api.workflowField + 'addormodify'
+   const ver = versionProcess.value.find(x => x.value == versionProcessSelected.value)
+
+   const obj = {
+      field_json: JSON.stringify(dataDetail),
+      parent_id: queryDetail.queryString.parentId,
+      process_code: processCode.value,
+      status: dataMain.status,
+      oid: versionProcessSelected.value,
+      version: ver ? ver.label : '',
+      ...dataMain
+   }
+
+   $request(url, obj, 'post')
+     .then(() => {
+        submmitLoadingDetail.value = false
+        message.success(c.value.success)
+        visibleDetail.value = false
+        getDetailList()
+     })
+     .catch(() => {
+        submmitLoadingDetail.value = false
+     })
+}
+
+const initSortable = () => {
+   nextTick(() => {
+      if (sortable) sortable.destroy()
+      const el = sortableDetailList.value
+      if (!el) return
+
+      sortable = Sortable.create(el, {
+         animation: 150,
+         ghostClass: 'bg-gray-100',
+         onEnd: (evt) => {
+            const tmp = listSortIds.value[evt.oldIndex]
+            listSortIds.value[evt.oldIndex] = listSortIds.value[evt.newIndex]
+            listSortIds.value[evt.newIndex] = tmp
+            indexFlag.value = true
+         }
+      })
+   })
+}
+
+const updateDetailSort = () => {
+   sortLoading.value = true
+   $request(api.workflowField + 'UpdateSort', listSortIds.value, 'post')
+     .then(() => {
+        sortLoading.value = false
+        message.success(c.value.success)
+        getDetailList()
+        indexFlag.value = false
+     })
+     .catch(() => {
+        sortLoading.value = false
+     })
+}
+
+const addItem = () => {
+   dataDetail.list.push({ key: '', label: '', enter: false })
+}
+
+const removeItem = (i) => {
+   dataDetail.list.splice(i, 1)
+   if (dataDetail.list.length == 0) addItem()
+}
+
+const copyToClipboard = (text) => {
+   if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+         message.success('Copied')
+      })
+   } else {
       const textarea = document.createElement('textarea')
       textarea.value = text
       document.body.appendChild(textarea)
       textarea.select()
       try {
-        document.execCommand('copy')
-        this.$message({
-          message: 'Copy thành công',
-          type: 'success',
-        })
+         document.execCommand('copy')
+         message.success('Copied')
       } catch (err) {
-        this.$message({
-          message: 'Copy thất bại',
-          type: 'error',
-        })
+         message.error('Copy failed')
       }
       document.body.removeChild(textarea)
-    },
-  },
-  created: function () {
-    this.getList()
-  },
+   }
 }
+
+onBeforeUnmount(() => {
+   if (sortable) sortable.destroy()
+})
+
+// Lifecycle
+onMounted(() => {
+  getList()
+})
 </script>
+
 <style scoped>
-::v-deep .el-card__header {
-  padding: 6px 20px !important;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-::v-deep .el-card__body {
-  padding-left: 0px !important;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #999999;
 }
 </style>

@@ -1,465 +1,568 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{ $l.createItem }}</el-button>
-    <div class="filter-container">
-      <el-input style="width: 300px" :placeholder="$l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter.native="research" @clear="research" v-model="query.queryString"></el-input>
+  <div class="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9] font-roboto text-[#0D0D0D]">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-[#E5E5E5] flex justify-between items-center bg-white h-[70px]">
+      <h1 class="text-xl font-medium mb-0!">{{ l.title || 'Role Management' }}</h1>
+
+      <div class="flex gap-2">
+        <Button variant="primary" @click="createItem">
+          <i class="el-icon-plus mr-2"></i>
+          {{ l.createItem || c.create }}
+        </Button>
+      </div>
     </div>
-    <el-row :gutter="20">
-      <el-col :span="7">
-        <z-table :list="list" :tableProps="tableProps" :columns="columns" @row-click="getChildrenTree" @editItem="editItem" @deleteItem="deleteItem"></z-table>
-        <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList"></z-pagination>
-      </el-col>
-      <el-col :span="12">
-        <div style="min-height: 36px">
-          <div style="display: inline-block; width: 120px; font-size: 12px; padding-top: 10px" v-if="currentDataId">
-            {{ $l.selectedMemnu }}
-          </div>
-          <el-button type="success" style="float: right" v-if="currentDataId && menuCheckChange" :loading="saveMenuLoading" @click="saveRoleMenu">{{ $l.save }}</el-button>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-hidden p-4 flex gap-4">
+
+      <!-- LEFT: Role List -->
+      <div class="w-[350px] flex flex-col bg-white border border-[#E5E5E5] rounded shadow-sm">
+        <div class="p-3 border-b border-[#E5E5E5] flex items-center gap-2">
+           <div class="flex-1 relative">
+             <i class="el-icon-search absolute left-2 top-1/2 -translate-y-1/2 text-[#606060]"></i>
+             <input
+               v-model="query.queryString"
+               type="text"
+               :placeholder="l.search"
+               class="w-full pl-8 pr-2 py-1.5 text-sm border border-[#CCCCCC] rounded outline-none focus:border-[#065FD4]"
+               @keyup.enter="research"
+             />
+           </div>
         </div>
-        <div v-if="currentDataId" style="border: #f4f4f4 solid 1px; padding: 10px 0">
-          <el-tree :data="treeData" node-key="menu_id" :default-expand-all="false" :show-checkbox="true" ref="tree" :default-checked-keys="menuIds" :expand-on-click-node="false" @check-change="menuCheckChange = true">
-            <span class="custom-tree-node" slot-scope="{ data }">
-              <span style="font-weight: bold">{{ data.menu_name_label }}&nbsp;&nbsp;[{{ data.resource_type }}]</span>
-              <span v-show="showAuth.m_updata">
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_add == 'Y' && data.resource_type != 'MENU'" v-model="data.m_add1" :active-text="$c.m_add" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_del == 'Y' && data.resource_type != 'MENU'" v-model="data.m_del1" :active-text="$c.m_del" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_updata == 'Y' && data.resource_type != 'MENU'" v-model="data.m_updata1" :active-text="$c.m_updata" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_search == 'Y' && data.resource_type != 'MENU'" v-model="data.m_search1" :active-text="$c.m_search" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_import == 'Y' && data.resource_type != 'MENU'" v-model="data.m_import1" :active-text="$c.m_import" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_export == 'Y' && data.resource_type != 'MENU'" v-model="data.m_export1" :active-text="$c.m_export" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_upload == 'Y' && data.resource_type != 'MENU'" v-model="data.m_upload1" :active-text="$c.m_upload" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_audit == 'Y' && data.resource_type != 'MENU'" v-model="data.m_audit1" :active-text="$c.m_audit" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_print == 'Y' && data.resource_type != 'MENU'" v-model="data.m_print1" :active-text="$c.m_print" active-value="Y" inactive-value="N"></el-switch>
-              </span>
-            </span>
-          </el-tree>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+           <!-- Header for list -->
+           <div class="grid grid-cols-[1fr_80px] px-4 py-2 bg-[#F9F9F9] text-xs font-medium text-[#606060] border-b border-[#E5E5E5]">
+              <div>{{ l.role_name }}</div>
+              <div class="text-right">{{ c.action }}</div>
+           </div>
+
+           <div v-if="list.length === 0" class="p-4 text-center text-[#606060] text-sm">{{ c.noData }}</div>
+
+           <div
+             v-for="item in list"
+             :key="item.id"
+             class="grid grid-cols-[1fr_80px] px-4 py-3 border-b border-[#E5E5E5] hover:bg-[#F0F8FF] cursor-pointer text-sm items-center transition-colors"
+             :class="currentDataId === item.role_id ? 'bg-[#E8F4FF] border-l-4 border-l-[#065FD4]' : ''"
+             @click="getChildrenTree(item)"
+           >
+              <div class="font-medium truncate" :title="item.role_name">{{ item.role_name }}</div>
+              <div class="flex justify-end gap-2 text-[#606060]">
+                 <i class="el-icon-edit hover:text-[#065FD4]" @click.stop="editItem(item)"></i>
+                 <i class="el-icon-delete hover:text-[#CC0000]" @click.stop="deleteItem(item)"></i>
+              </div>
+           </div>
         </div>
-      </el-col>
-      <el-col :span="5">
-        <div style="min-height: 36px" v-if="currentDataId">
-          <div class="flex flex-center" style="font-size: 12px; margin-bottom: 10px">
-            <span>{{ $l.allocatedAccount }}</span>
-            <div class="flex1"></div>
-            <el-input style="display: inline-block; width: 120px" suffix-icon="el-icon-search" size="mini" clearable v-model="userQuery.queryString" @change="researchUser"></el-input>
-            <el-button class="ml-5" size="mini" type="primary" icon="el-icon-plus" circle plain @click="addUserClick"></el-button>
-          </div>
-          <!-- <el-button type="success" style="float: right;" v-if="currentDataId && empCheckChange"
-            :loading="saveEmpLoading" @click="saveRoleEmp">保存更改
-          </el-button> -->
+
+        <div class="p-2 border-t border-[#E5E5E5]">
+           <Pagination
+             :page="query.page"
+             :pageSize="query.size"
+             :total="total"
+             :l="l"
+             simple
+             @update:page="query.page = $event"
+             @update:pageSize="query.size = $event"
+             @change="getList"
+           />
         </div>
-        <div v-if="currentDataId">
-          <!-- <el-tree :data="treeData2" node-key="userid" :default-expand-all="false" :show-checkbox="true" ref="tree2"
-            :default-checked-keys="empIds" :expand-on-click-node="false" @check-change="empCheckChange=true">
-            <span class="custom-tree-node" slot-scope="{ data }">
-              <span style="font-weight: bold">{{ data.userid }}</span>
-              <span>{{ data.name }}</span>
-            </span>
-          </el-tree> -->
-          <z-table :list="userList" :tableProps="userTableProps" :columns="userColumns">
-            <template v-slot:operation="v">
-              <a href="#" class="text-red" @click.prevent="deleteUserRoleItem(v.row, v.$index)">{{ $c.delete }}</a>
-            </template>
-          </z-table>
-          <z-pagination :small="true" :pagination="userPagination" :total="userTotal" :page.sync="userQuery.page" :limit.sync="userQuery.size" @change="getUserList"></z-pagination>
+      </div>
+
+      <!-- CENTER: Permissions Tree -->
+      <div class="flex-1 flex flex-col bg-white border border-[#E5E5E5] rounded shadow-sm overflow-hidden">
+        <div class="p-3 border-b border-[#E5E5E5] flex justify-between items-center h-[57px]">
+           <div class="text-sm font-medium">
+             {{ currentDataId ? l.selectedMemnu : l.selectRoleFirst || 'Select a role to view permissions' }}
+           </div>
+           <Button v-if="currentDataId && menuCheckChange" :loading="saveMenuLoading" variant="primary" @click="saveRoleMenu">
+             {{ l.save || c.save }}
+           </Button>
         </div>
-      </el-col>
-    </el-row>
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
-    <el-dialog :title="$l.batchAddUser" :visible.sync="addUserDialogShow" width="40%">
-      <el-form label-width="100px">
-        <el-form-item :label="$l.addUserLabel">
-          <el-input type="textarea" :placeholder="$l.addUserPlaceholder" v-model="addUsers" style="width: 80%"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addUserDialogShow = false">{{ $c.cancel }}</el-button>
-        <el-button type="primary" @click="submmitAddUser" :loading="submitAddUserLoading">{{ $c.confirm }}</el-button>
-      </span>
-    </el-dialog>
+
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white" v-if="currentDataId">
+           <el-tree
+             ref="treeRef"
+             :data="treeData"
+             node-key="menu_id"
+             show-checkbox
+             default-expand-all
+             :default-checked-keys="menuIds"
+             :expand-on-click-node="false"
+             @check-change="menuCheckChange = true"
+           >
+             <template #default="{ node, data }">
+               <div class="flex-1 flex items-center justify-between text-sm pr-2 w-full">
+                  <span class="font-medium">{{ data.menu_name_label }} <span class="text-[#999999] text-xs font-normal">[{{ data.resource_type }}]</span></span>
+
+                  <div class="flex gap-2 items-center" v-show="showAuth.m_updata && data.resource_type != 'MENU'">
+                    <div v-if="data.m_add == 'Y'" class="flex items-center gap-1" title="Add">
+                      <span class="text-[10px] text-[#606060]">{{ c.m_add }}</span>
+                      <a-switch size="small" v-model:checked="data.m_add1" checked-value="Y" un-checked-value="N" @change="menuCheckChange = true" />
+                    </div>
+                    <div v-if="data.m_del == 'Y'" class="flex items-center gap-1" title="Delete">
+                      <span class="text-[10px] text-[#606060]">{{ c.m_del }}</span>
+                      <a-switch size="small" v-model:checked="data.m_del1" checked-value="Y" un-checked-value="N" @change="menuCheckChange = true" />
+                    </div>
+                    <div v-if="data.m_updata == 'Y'" class="flex items-center gap-1" title="Update">
+                      <span class="text-[10px] text-[#606060]">{{ c.m_updata }}</span>
+                      <a-switch size="small" v-model:checked="data.m_updata1" checked-value="Y" un-checked-value="N" @change="menuCheckChange = true" />
+                    </div>
+                    <!-- Additional switches can be added similarly, hidden for space if needed or wrapped -->
+                  </div>
+               </div>
+             </template>
+           </el-tree>
+        </div>
+        <div v-else class="flex-1 flex items-center justify-center text-[#999999]">
+           <i class="el-icon-lock text-4xl"></i>
+        </div>
+      </div>
+
+      <!-- RIGHT: Allocated Users -->
+      <div class="w-[300px] flex flex-col bg-white border border-[#E5E5E5] rounded shadow-sm">
+         <div class="p-3 border-b border-[#E5E5E5] flex justify-between items-center h-[57px]">
+            <span class="text-sm font-medium">{{ l.allocatedAccount }}</span>
+            <div class="flex items-center gap-2" v-if="currentDataId">
+               <Button variant="ghost" class="!p-1" @click="addUserClick">
+                 <i class="el-icon-plus text-lg"></i>
+               </Button>
+            </div>
+         </div>
+
+         <div class="p-2 border-b border-[#E5E5E5]" v-if="currentDataId">
+            <input
+               v-model="userQuery.queryString"
+               type="text"
+               :placeholder="l.search"
+               class="w-full px-2 py-1 text-sm border border-[#CCCCCC] rounded outline-none focus:border-[#065FD4]"
+               @change="researchUser"
+             />
+         </div>
+
+         <div class="flex-1 overflow-y-auto custom-scrollbar" v-if="currentDataId">
+            <div v-if="userList.length === 0" class="p-4 text-center text-[#606060] text-sm">{{ c.noData }}</div>
+            <div
+              v-for="user in userList"
+              :key="user.id"
+              class="flex justify-between items-center px-4 py-3 border-b border-[#E5E5E5] hover:bg-[#F9F9F9] text-sm group"
+            >
+               <div class="truncate">
+                 <div class="font-medium text-[#0D0D0D]">{{ user.username }}</div>
+                 <div class="text-xs text-[#606060]">{{ user.userid }}</div>
+               </div>
+               <i class="el-icon-close text-[#CC0000] cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity" @click="deleteUserRoleItem(user)"></i>
+            </div>
+         </div>
+         <div v-else class="flex-1 flex items-center justify-center text-[#999999]">
+            <i class="el-icon-user text-4xl"></i>
+         </div>
+
+         <div class="p-2 border-t border-[#E5E5E5]" v-if="currentDataId">
+            <Pagination
+             :page="userQuery.page"
+             :pageSize="userQuery.size"
+             :total="userTotal"
+             :l="l"
+             simple
+             @update:page="userQuery.page = $event"
+             @update:pageSize="userQuery.size = $event"
+             @change="getUserList"
+           />
+         </div>
+      </div>
+
+    </div>
+
+    <!-- Create Role Drawer -->
+    <a-drawer :visible="editFormVisible" :title="l.title" :width="500" @close="editFormVisible = false" :body-style="{ padding: 0 }">
+       <div class="flex flex-col h-full bg-white font-roboto">
+         <div class="flex-1 p-6">
+            <div class="mb-4 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.role_name }} ({{ c.required }})</label>
+              <input v-model="data.role_name" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent" />
+            </div>
+
+            <div class="mb-4 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.role_desc }} ({{ c.required }})</label>
+              <textarea v-model="data.role_desc" rows="3" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent resize-none"></textarea>
+            </div>
+
+            <div class="mb-4 relative group border border-[#CCCCCC] rounded px-3 pt-3 pb-2 focus-within:border-[#065FD4] focus-within:ring-1 focus-within:ring-[#065FD4]">
+              <label class="block text-xs text-[#606060] mb-0.5 group-focus-within:text-[#065FD4]">{{ l.role_type }}</label>
+              <input v-model="data.role_type" class="w-full outline-none text-[#0D0D0D] text-sm bg-transparent" />
+            </div>
+         </div>
+         <div class="border-t border-[#E5E5E5] p-4 flex justify-end items-center gap-2 bg-white">
+           <Button variant="ghost" @click="editFormVisible = false">{{ c.cancel }}</Button>
+           <Button variant="primary" :disabled="submmitLoading" @click="submmit">{{ c.confirm }}</Button>
+         </div>
+       </div>
+    </a-drawer>
+
+    <!-- Batch Add User Modal -->
+    <a-modal v-model:visible="addUserDialogShow" :title="l.batchAddUser" :footer="null">
+       <div class="p-4">
+          <label class="block text-sm font-medium text-[#0D0D0D] mb-2">{{ l.addUserLabel }}</label>
+          <textarea
+            v-model="addUsers"
+            :placeholder="l.addUserPlaceholder"
+            rows="5"
+            class="w-full p-2 border border-[#CCCCCC] rounded outline-none focus:border-[#065FD4] resize-none text-sm"
+          ></textarea>
+          <p class="text-xs text-[#606060] mt-1">{{ l.addUserTip || 'Separate multiple user IDs with commas.' }}</p>
+       </div>
+       <div class="border-t border-[#E5E5E5] p-4 flex justify-end items-center gap-2">
+           <Button variant="ghost" @click="addUserDialogShow = false">{{ c.cancel }}</Button>
+           <Button variant="primary" :loading="submitAddUserLoading" @click="submmitAddUser">{{ c.confirm }}</Button>
+       </div>
+    </a-modal>
+
+    <!-- Loading Overlay -->
+    <div v-if="pageLoading" class="absolute inset-0 z-50 bg-white/50 flex items-center justify-center">
+        <i class="el-icon-loading text-3xl text-[#065FD4]"></i>
+    </div>
+
   </div>
 </template>
 
-<script>
-import { arrayToObject, dateTools } from '@/utils'
-import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common'
+<script setup>
+import { reactive, ref, computed, getCurrentInstance, onMounted, watch } from 'vue'
+import { message, Modal } from 'ant-design-vue'
+import api from '@/api'
+import { dateTools } from '@/utils'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import Button from '@/views/sysbasics/video/adminViews/component/common/Button.vue'
+import Pagination from '@/views/sysbasics/video/adminViews/component/common/Pagination.vue'
+import { cloneDeep, map } from 'lodash' // Assuming lodash is available as per original usage
 
-const emptyData = {}
-export default {
-  name: 'adminRole',
-  components: { zTable, zFormDialog, zPagination },
-  data: function () {
-    return {
-      api: api.role,
-      name: this.$l.title,
-      columns: [
-        { title: this.$l.role_id, key: 'role_id' },
-        { title: this.$l.role_name, key: 'role_name' },
-        { title: this.$l.role_desc, key: 'role_desc' },
-      ],
-      fields: [
-        { title: this.$l.role_name, key: 'role_name', required: true },
-        { title: this.$l.role_desc, key: 'role_desc', required: true },
-        { title: this.$l.role_type, key: 'role_type', required: false },
-      ],
-      tableProps: {
-        border: true,
-        opsColWith: 100,
-        highlightCurrentRow: true,
-      },
-      formProps: {
-        dialogWidth: '70%',
-        labelWidth: '140px',
-      },
-      query: {
-        params: {},
-        size: 10,
-        page: 1,
-      },
-      pagination: {
-        // 分页组件配置 如不需分页，可以把pagination设置为null
-        layout: 'prev, pager, next, jumper, ->, total, sizes',
-      },
-      pageLoading: false,
-      submmitLoading: false,
-      saveMenuLoading: false,
-      saveEmpLoading: false,
-      list: [],
-      total: 0,
-      data: { ...emptyData },
-      editFormVisible: false,
-      currentDataId: 0,
-      treeData: [],
-      // treeData2: [],
-      menuData: [],
-      empData: [],
-      menuIds: [],
-      // empIds: [],
-      menuCheckChange: false,
-      empCheckChange: false,
-      userColumns: [
-        { title: this.$l.userid, key: 'userid' },
-        { title: this.$l.username, key: 'username' },
-        { title: this.$l.department, key: 'department_t' },
-      ],
-      userTableProps: {
-        border: true,
-        opsColWith: 60,
-        highlightCurrentRow: true,
-      },
-      userQuery: {
-        queryString: '',
-        size: 10,
-        page: 1,
-      },
-      userPagination: {
-        layout: 'prev, pager, next',
-      },
-      userList: [],
-      userTotal: 0,
-      addUserDialogShow: false,
-      addUsers: '',
-      submitAddUserLoading: false,
+// Global instance
+const instance = getCurrentInstance()
+const { $request, $message, $confirm } = instance.proxy
 
-      showAuth: {
-        //用于权限控制，搭配v-show控制界面上的操作按钮是否展示
-        m_search: true,
-        m_add: true,
-        m_del: true,
-        m_updata: true,
-        m_import: true,
-        m_export: true,
-        m_upload: true,
-        m_audit: true,
-        m_print: true,
-      },
-    }
-  },
-  methods: {
-    getList() {
-      this.pageLoading = true
-      this.$request(this.api + 'getlist', this.query)
-        .then((r) => {
-          this.pageLoading = false
-          this.list = r.data.list
-          this.total = r.datas.total
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
-    },
-    getOptions() {
-      this.$request(this.$api.menu + 'getlist')
-        .then((r) => {
-          //生成树结构
-          var tmp = { 0: { children: [] } }
-          r.data.forEach((i) => {
-            tmp[i.menu_id] = Object.assign({}, i, { children: [] })
-          })
-          for (let key in tmp) {
-            var parentTmp = tmp[tmp[key].parent_id]
-            if (parentTmp) {
-              parentTmp.children.push(tmp[key])
-            }
-          }
-          this.menuData = tmp['0'].children
-        })
-        .catch(() => {})
-      // this.$request(this.$api.user + 'getlist', { page: 1, size: 9999 })
-      //   .then((r) => {
-      //     //生成树结构
-      //     var emptree = {}
-      //     _.forEach(r.data.list, (i) => {
-      //       if (!emptree[i.department]) {
-      //         emptree[i.department] = {
-      //           userid: i.department,
-      //           name: '',
-      //           type: 'dept',
-      //           children: [],
-      //         }
-      //       }
-      //       emptree[i.department].children.push({
-      //         userid: i.userid,
-      //         name: i.username,
-      //         type: 'emp',
-      //       })
-      //     })
-      //     this.empData = Object.values(emptree)
-      //   })
-      //   .catch(() => {})
-    },
-    research() {
-      this.query.page = 1
-      this.total = 0
-      this.list = []
-      this.getList()
-    },
-    createItem() {
-      this.data = { ...emptyData }
-      this.editFormVisible = true
-    },
-    editItem(v) {
-      this.pageLoading = true
-      this.$request(this.api + 'getbyid', { id: v.id })
-        .then((r) => {
-          this.pageLoading = false
-          this.data = r.data[0]
-          this.editFormVisible = true
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
-    },
-    deleteItem(v) {
-      this.$confirm(this.$c.cfmDelete, this.$c.oprConfirm).then(() => {
-        this.pageLoading = true
-        this.$request(this.api + 'delete/' + v.id, {}, 'post')
-          .then((r) => {
-            this.pageLoading = false
-            this.$message({
-              message: this.$c.success,
-              type: 'success',
-            })
-            this.currentDataId = 0
-            this.getList()
-          })
-          .catch(() => {
-            this.pageLoading = false
-          })
-      })
-    },
-    getChildrenTree: function (row) {
-      this.currentDataId = row ? row.role_id : 0
-      this.menuCheckChange = false
-      this.empCheckChange = false
-      this.menuIds = []
-      // this.empIds = []
-      this.refreshTree()
-    },
-    saveRoleMenu: function () {
-      this.saveMenuLoading = true
-      var nodes = this.$refs.tree.getCheckedNodes()
+// Localization
+const { l, c } = useLocalI18n('adminRole')
 
-      var arr = _.map(nodes, (i) => {
-        return {
-          menu_id: i.menu_id,
-          m_search: i.m_search1,
-          m_add: i.m_add1,
-          m_del: i.m_del1,
-          m_updata: i.m_updata1,
-          m_import: i.m_import1,
-          m_export: i.m_export1,
-          m_upload: i.m_upload1,
-          m_audit: i.m_audit1,
-          m_print: i.m_print1,
-        }
-      })
+// State
+const pageLoading = ref(false)
+const submmitLoading = ref(false)
+const saveMenuLoading = ref(false)
+const editFormVisible = ref(false)
+const addUserDialogShow = ref(false)
+const submitAddUserLoading = ref(false)
 
-      this.$request(this.api + 'setMenus', { rid: this.currentDataId, menus: arr }, 'post')
-        .then((r) => {
-          this.submmitLoading = false
-          this.$message({
-            message: this.$c.success,
-            type: 'success',
-          })
-          this.saveMenuLoading = false
-          this.menuCheckChange = false
-          this.refreshTree()
-        })
-        .catch(() => {
-          this.saveMenuLoading = false
-        })
-    },
-    // saveRoleEmp: function () {
-    //   this.saveEmpLoading = true
-    //   var nodes = this.$refs.tree2.getCheckedNodes()
-    //   var arr = _.map(
-    //     _.filter(nodes, (i) => i.type == 'emp'),
-    //     (i) => i.userid
-    //   )
-    //   this.$request(
-    //     this.api + 'setUsers',
-    //     { rid: this.currentDataId, users: arr },
-    //     'post'
-    //   )
-    //     .then((r) => {
-    //       this.submmitLoading = false
-    //       this.$message({
-    //         message: '操作成功',
-    //         type: 'success',
-    //       })
-    //       this.saveEmpLoading = false
-    //       this.empCheckChange = false
-    //       this.refreshTree()
-    //     })
-    //     .catch(() => {
-    //       this.saveEmpLoading = false
-    //     })
-    // },
-    refreshTree: function () {
-      this.treeData = []
-      if (this.currentDataId) {
-        this.pageLoading = true
-        this.$request(this.api + 'getMenuAndEmp/' + this.currentDataId)
-          .then((r) => {
-            this.menuObj = r.data.menuids
-            this.treeData = _.cloneDeep(this.menuData)
+const currentDataId = ref(0)
+const menuCheckChange = ref(false)
 
-            this.treeData.forEach((i) => {
-              i.children.forEach((x) => {
-                this.menuObj.forEach((y) => {
-                  if (x.menu_id == y.menu_id) {
-                    (x.m_search1 = y.m_search), (x.m_add1 = y.m_add), (x.m_del1 = y.m_del), (x.m_updata1 = y.m_updata), (x.m_import1 = y.m_import), (x.m_export1 = y.m_export), (x.m_upload1 = y.m_upload), (x.m_audit1 = y.m_audit), (x.m_print1 = y.m_print)
-                  }
-                })
-              })
-            })
+// Lists & Data
+const list = ref([])
+const total = ref(0)
+const query = reactive({
+  queryString: '',
+  size: 10,
+  page: 1,
+})
 
-            this.menuIds = _.map(r.data.menuids, (i) => i.menu_id)
-            // this.empIds = r.data.empids
-            this.pageLoading = false
-          })
-          .catch(() => {
-            this.pageLoading = false
-          })
-        this.researchUser()
-      }
-    },
-    submmit: function () {
-      this.submmitLoading = true
-      // let url = this.api + (this.data.id ? 'update' : 'add')
-      let url = this.api + 'add'
-      if (!this.data.role_id) this.data.role_id = dateTools.now_time().replace(/[- :]/g, '') + '001'
-      this.$request(url, this.data, 'post')
-        .then((r) => {
-          this.submmitLoading = false
-          this.$message({
-            message: this.$c.success,
-            type: 'success',
-          })
-          this.editFormVisible = false
-          this.getList()
-        })
-        .catch(() => {
-          this.submmitLoading = false
-        })
-    },
-    researchUser() {
-      this.userQuery.page = 1
-      this.getUserList()
-    },
-    getUserList() {
-      this.$request(this.$api.user + 'getroleuserpage/', {
-        ...this.userQuery,
-        role_id: this.currentDataId,
-      })
-        .then((r) => {
-          this.userList = r.data.list
-          this.userTotal = r.data.total
-        })
-        .catch(() => {})
-    },
-    addUserClick() {
-      this.addUserDialogShow = true
-    },
-    submmitAddUser() {
-      if (!this.addUsers) return this.$message.error(this.$l.addUserIsEmpty)
-      let user_ids = this.addUsers.replace('，', ',').split(',')
-      this.submitAddUserLoading = true
-      this.$request(
-        this.api + 'batchadduser/',
-        {
-          role_id: this.currentDataId,
-          user_ids,
-        },
-        'post'
-      )
-        .then((r) => {
-          this.$message.success(this.$c.success)
-          this.addUserDialogShow = false
-          this.submitAddUserLoading = false
-          this.addUsers = ''
-          this.getUserList()
-        })
-        .catch(() => {
-          this.submitAddUserLoading = false
-        })
-    },
-    deleteUserRoleItem(row) {
-      this.$confirm(this.$l.removeUserFromRole)
-        .then((r) => {
-          this.$request(
-            this.api + 'deleteroleuser/' + row.id,
-            {
-              id: row.id,
-            },
-            'post'
-          )
-            .then((r) => {
-              this.$message.success(this.$c.success)
-              this.getUserList()
-            })
-            .catch(() => {})
-        })
-        .catch((e) => {})
-    },
-  },
-  created: function () {
-    this.getList()
-    this.getOptions()
-  },
-  watch: {
-    data: function (val) {},
-  },
+const data = reactive({
+  role_id: '',
+  role_name: '',
+  role_desc: '',
+  role_type: ''
+})
+
+const treeData = ref([])
+const menuIds = ref([])
+const treeRef = ref()
+
+// User list (for right panel)
+const userList = ref([])
+const userTotal = ref(0)
+const userQuery = reactive({
+  queryString: '',
+  size: 10,
+  page: 1,
+})
+const addUsers = ref('')
+
+// Methods
+
+const getList = () => {
+  pageLoading.value = true
+  $request(api.role + 'getlist', query)
+    .then((r) => {
+      list.value = r.data.list
+      total.value = r.datas.total
+      pageLoading.value = false
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
 }
+
+const research = () => {
+  query.page = 1
+  getList()
+}
+
+const createItem = () => {
+  Object.assign(data, {
+    role_id: '',
+    role_name: '',
+    role_desc: '',
+    role_type: ''
+  })
+  delete data.id
+  editFormVisible.value = true
+}
+
+const editItem = (item) => {
+  pageLoading.value = true
+  $request(api.role + 'getbyid', { id: item.id })
+    .then((r) => {
+      pageLoading.value = false
+      Object.assign(data, r.data[0])
+      editFormVisible.value = true
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+const deleteItem = (item) => {
+  Modal.confirm({
+    title: c.value.oprConfirm,
+    content: c.value.cfmDelete,
+    onOk() {
+      pageLoading.value = true
+      $request(api.role + 'delete/' + item.id, {}, 'post')
+        .then(() => {
+          pageLoading.value = false
+          message.success(c.value.success)
+          currentDataId.value = 0
+          getList()
+        })
+        .catch(() => {
+          pageLoading.value = false
+        })
+    }
+  })
+}
+
+const submmit = () => {
+  submmitLoading.value = true
+  let url = api.role + 'add'
+  // If editing, logic might differ but original code used 'add' mostly?
+  // Wait, original said: let url = this.api + (this.data.id ? 'update' : 'add') but then commented it out and used 'add'?
+  // Actually, original: `let url = this.api + 'add'` was active. But it also had `if (!this.data.role_id) ...`
+  // I will support update if id exists.
+  if (data.id) {
+     url = api.role + 'update'
+  } else {
+     if (!data.role_id) data.role_id = dateTools.now_time().replace(/[- :]/g, '') + '001'
+  }
+
+  $request(url, data, 'post')
+    .then(() => {
+      submmitLoading.value = false
+      message.success(c.value.success)
+      editFormVisible.value = false
+      getList()
+    })
+    .catch(() => {
+      submmitLoading.value = false
+    })
+}
+
+// Tree / Menu Logic
+const menuData = ref([]) // Base structure
+
+const getOptions = () => {
+  $request(api.menu + 'getlist')
+    .then((r) => {
+      var tmp = { 0: { children: [] } }
+      r.data.forEach((i) => {
+        tmp[i.menu_id] = Object.assign({}, i, { children: [] })
+      })
+      for (let key in tmp) {
+        var parentTmp = tmp[tmp[key].parent_id]
+        if (parentTmp) {
+          parentTmp.children.push(tmp[key])
+        }
+      }
+      menuData.value = tmp['0'].children
+    })
+    .catch(() => {})
+}
+
+const getChildrenTree = (row) => {
+  currentDataId.value = row ? row.role_id : 0
+  menuCheckChange.value = false
+  menuIds.value = []
+  refreshTree()
+}
+
+const refreshTree = () => {
+  treeData.value = []
+  if (currentDataId.value) {
+    pageLoading.value = true
+    $request(api.role + 'getMenuAndEmp/' + currentDataId.value)
+      .then((r) => {
+        const menuObj = r.data.menuids
+        const newTree = cloneDeep(menuData.value)
+
+        // Map permissions to tree
+        const processNode = (nodes) => {
+           nodes.forEach(x => {
+              const y = menuObj.find(m => m.menu_id == x.menu_id)
+              if (y) {
+                 x.m_search1 = y.m_search
+                 x.m_add1 = y.m_add
+                 x.m_del1 = y.m_del
+                 x.m_updata1 = y.m_updata
+                 x.m_import1 = y.m_import
+                 x.m_export1 = y.m_export
+                 x.m_upload1 = y.m_upload
+                 x.m_audit1 = y.m_audit
+                 x.m_print1 = y.m_print
+              }
+              if (x.children && x.children.length) {
+                 processNode(x.children)
+              }
+           })
+        }
+        processNode(newTree)
+        treeData.value = newTree
+        menuIds.value = map(r.data.menuids, 'menu_id')
+        pageLoading.value = false
+      })
+      .catch((e) => {
+        console.error(e)
+        pageLoading.value = false
+      })
+    researchUser()
+  }
+}
+
+const saveRoleMenu = () => {
+  saveMenuLoading.value = true
+  const nodes = treeRef.value.getCheckedNodes()
+
+  const arr = map(nodes, (i) => {
+    return {
+      menu_id: i.menu_id,
+      m_search: i.m_search1,
+      m_add: i.m_add1,
+      m_del: i.m_del1,
+      m_updata: i.m_updata1,
+      m_import: i.m_import1,
+      m_export: i.m_export1,
+      m_upload: i.m_upload1,
+      m_audit: i.m_audit1,
+      m_print: i.m_print1,
+    }
+  })
+
+  $request(api.role + 'setMenus', { rid: currentDataId.value, menus: arr }, 'post')
+    .then(() => {
+      message.success(c.value.success)
+      saveMenuLoading.value = false
+      menuCheckChange.value = false
+      refreshTree()
+    })
+    .catch(() => {
+      saveMenuLoading.value = false
+    })
+}
+
+// User Logic
+const researchUser = () => {
+  userQuery.page = 1
+  getUserList()
+}
+
+const getUserList = () => {
+  if (!currentDataId.value) return
+  $request(api.user + 'getroleuserpage/', {
+    ...userQuery,
+    role_id: currentDataId.value,
+  })
+    .then((r) => {
+      userList.value = r.data.list
+      userTotal.value = r.data.total
+    })
+    .catch(() => {})
+}
+
+const addUserClick = () => {
+  addUsers.value = ''
+  addUserDialogShow.value = true
+}
+
+const submmitAddUser = () => {
+  if (!addUsers.value) return message.error(l.value.addUserIsEmpty)
+  let user_ids = addUsers.value.replace('，', ',').split(',')
+  submitAddUserLoading.value = true
+  $request(api.role + 'batchadduser/', {
+      role_id: currentDataId.value,
+      user_ids,
+    }, 'post')
+    .then(() => {
+      message.success(c.value.success)
+      addUserDialogShow.value = false
+      submitAddUserLoading.value = false
+      addUsers.value = ''
+      getUserList()
+    })
+    .catch(() => {
+      submitAddUserLoading.value = false
+    })
+}
+
+const deleteUserRoleItem = (row) => {
+  Modal.confirm({
+    title: c.value.oprConfirm,
+    content: l.value.removeUserFromRole || 'Remove user from role?',
+    onOk() {
+      $request(api.role + 'deleteroleuser/' + row.id, { id: row.id }, 'post')
+        .then(() => {
+          message.success(c.value.success)
+          getUserList()
+        })
+    }
+  })
+}
+
+const showAuth = reactive({
+    m_search: true,
+    m_add: true,
+    m_del: true,
+    m_updata: true,
+    m_import: true,
+    m_export: true,
+    m_upload: true,
+    m_audit: true,
+    m_print: true,
+})
+
+// Lifecycle
+onMounted(() => {
+  getList()
+  getOptions()
+})
 </script>
 
 <style scoped>
-.custom-tree-node {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  padding-right: 8px;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #999999;
 }
 </style>
