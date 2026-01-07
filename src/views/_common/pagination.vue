@@ -1,6 +1,6 @@
 <template>
-  <el-pagination style="margin-top: 5px;" :small="small" v-if="pagination" :current-page.sync="currentPage"
-    :page-size.sync="pageSize" :total="total" v-bind="pagination" @size-change="handleSizeChange"
+  <el-pagination style="margin-top: 5px;" :small="small" v-if="pagination" v-model:current-page="currentPage"
+    v-model:page-size="pageSize" :total="total" v-bind="pagination" @size-change="handleSizeChange"
     @current-change="handleCurrentChange">
   </el-pagination>
 </template>

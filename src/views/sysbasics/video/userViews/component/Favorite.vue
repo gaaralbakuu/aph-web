@@ -10,7 +10,7 @@
 
     <el-menu class="horizontal-menu" :default-active="showObj.activeName" mode="horizontal" @select="handleSelect"
       active-text-color="#409fee">
-      <el-menu-item index="first">{{$c.all}}</el-menu-item>
+      <el-menu-item index="first">{{ c.all}}</el-menu-item>
       <!-- <el-menu-item index="second">课程</el-menu-item> -->
       <!-- <el-menu-item index="third">专题</el-menu-item> -->
     </el-menu>
@@ -35,7 +35,7 @@
           <i class="el-icon-delete" @click="deleteClick(item, index)"></i>
         </div>
         <div class="btn-right">
-          <el-button type="primary" round @click="btnClick(item)">{{$l.goStudy}}</el-button>
+          <el-button type="primary" round @click="btnClick(item)">{{ l.goStudy}}</el-button>
         </div>
       </div>
     </div>
@@ -93,9 +93,9 @@
         let courseObj = {
           course_id: item.course_id,
         }
-        this.$confirm(this.$l.deleteTips, this.$l.myCollection, {
-          confirmButtonText: this.$c.confirm,
-          cancelButtonText: this.$c.cancel,
+        this.$confirm(this.l.deleteTips, this.l.myCollection, {
+          confirmButtonText: this.c.confirm,
+          cancelButtonText: this.c.cancel,
           type: 'warning',
         }).then(() => {
           this.$request(

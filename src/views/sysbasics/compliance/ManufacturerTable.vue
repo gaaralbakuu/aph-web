@@ -55,7 +55,7 @@
                         </div>
                         <div v-else class="text-center text-gray-300 italic py-4">{{ c.empty }}</div>
                       </div>
-                      <template slot="reference">
+                      <template #reference>
                         <el-button type="text" size="mini" class="p-1! px-2! text-xs! text-blue-500! border-0! hover:text-blue-400! hover:bg-blue-50! dark:hover:bg-blue-900/20!">
                           <i class="el-icon-view mr-1 text-xs"></i>
                           {{ c.view_address }}
@@ -81,7 +81,7 @@
                         </div>
                         <div v-else class="text-center text-gray-300 italic py-4">{{ c.empty }}</div>
                       </div>
-                      <template slot="reference">
+                      <template #reference>
                         <el-button type="text" size="mini" class="p-1! px-2! text-xs! text-blue-500! border-0! hover:text-blue-400! hover:bg-blue-50! dark:hover:bg-blue-900/20!">
                           <i class="el-icon-view mr-1 text-xs"></i>
                           {{ c.view_capabilities }}
@@ -111,7 +111,7 @@
                       <el-button type="text" class="p-2! text-gray-500! border-0! rounded! hover:text-blue-500! hover:bg-blue-50! transition-all! dark:hover:bg-blue-900/20!">
                         <i class="el-icon-more"></i>
                       </el-button>
-                      <el-dropdown-menu slot="dropdown" class="rounded-xl! shadow-lg! p-1.5!">
+                      <template #dropdown><el-dropdown-menu class="rounded-xl! shadow-lg! p-1.5!">
                         <el-dropdown-item command="detail">
                           <i class="el-icon-view w-3.5 text-sm"></i>
                           {{ $t('common.detail') }}
@@ -128,7 +128,7 @@
                           <i class="el-icon-delete w-3.5 text-sm"></i>
                           {{ $t('common.delete') }}
                         </el-dropdown-item>
-                      </el-dropdown-menu>
+                      </el-dropdown-menu></template>
                     </el-dropdown>
                   </div>
                 </template>

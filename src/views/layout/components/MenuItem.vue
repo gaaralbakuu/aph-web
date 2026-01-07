@@ -20,7 +20,7 @@ export default {
       if (icon.substr(0, 3) == 'fa-') {
         vnodes.push(<i class={'fa ' + icon}></i>)
       } else {
-        vnodes.push(<svg-icon icon-class={icon}/>)
+        vnodes.push(<SvgIcon icon-class={icon}/>)
       }
     }
 

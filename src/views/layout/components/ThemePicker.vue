@@ -3,10 +3,9 @@
 </template>
 
 <script>
-import elementPackage from 'element-ui/package.json'
-import Cookies from 'js-cookie'
-
-const version = elementPackage.version // element-ui version from node_modules
+// Element Plus does not expose package.json like Element UI did
+// We'll use a hardcoded version or fetch dynamically
+const version = '2.7.0' // Element Plus version
 const ORIGINAL_THEME = '#409EFF' // default color
 
 export default {
@@ -48,7 +47,7 @@ export default {
 
       const chalkHandler = getHandler('chalk', 'chalk-style')
       if (!this.chalk) {
-        // const url = `https://unpkg.com/element-ui@${version}/lib/theme-chalk/index.css`
+        // const url = `https://unpkg.com/element-plus@${version}/dist/index.css`
         const element = document.querySelector('link[rel^="stylesheet"]')
         if (element) {
           const url = element.getAttribute('href')

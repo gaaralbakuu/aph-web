@@ -86,7 +86,7 @@
             :playbackRateArray="[1]"
             :questionControl="currentVideo.is_process_question"
             :watermark="user.userId + ' ' + user.userName"
-            :playStatus.sync="isPlaying"
+            v-model:playStatus="isPlaying"
             @loadedMetadata="getPlayProgress"
             @pause="reportPlayProgress"
             @ended="reportPlayDuration"

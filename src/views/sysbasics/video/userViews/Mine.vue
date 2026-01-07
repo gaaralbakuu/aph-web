@@ -8,8 +8,8 @@
             <div class="name">
               {{ user.userName + '(' + user.userId + ')' }}
             </div>
-            <div class="dept">{{$l.dept}}:{{ user.department }}</div>
-            <div class="post">{{$l.post}}:{{ user.workName }}</div>
+            <div class="dept">{{ l.dept}}:{{ user.department }}</div>
+            <div class="post">{{ l.post}}:{{ user.workName }}</div>
           </div>
         </div>
         <div class="user-right">
@@ -17,19 +17,19 @@
             <div class="value">
               <a href="#">{{(analyLearninfo.month_play_time/60/60).toFixed(2)}}</a>
             </div>
-            <div class="desc">{{$l.monthlyDuration}}</div>
+            <div class="desc">{{ l.monthlyDuration}}</div>
           </div>
           <div class="item">
             <div class="value">
               <a href="#">{{analyLearninfo.score? analyLearninfo.score:0}}</a>
             </div>
-            <div class="desc">{{$l.totallyScore}}</div>
+            <div class="desc">{{ l.totallyScore}}</div>
           </div>
           <div class="item">
             <div class="value">
               <a href="#">{{(analyLearninfo.play_time/60/60).toFixed(2)}}</a>
             </div>
-            <div class="desc">{{$l.totallyDuration}}</div>
+            <div class="desc">{{ l.totallyDuration}}</div>
           </div>
           <!-- <div class="item">
             <div class="value">
@@ -44,9 +44,9 @@
           <el-menu default-active="0" unique-opened>
             <!-- <el-menu-item v-for="(i,index) in navigation" :key="index" :index="i.value">
               <i class="el-icon-notebook-2"></i>
-              <span slot="title">
+              <template #title><span>
                 <router-link :to="i.to">{{i.label}}</router-link>
-              </span>
+              </span></template>
             </el-menu-item> -->
             <router-link
               :to="i.to"
@@ -55,9 +55,9 @@
             >
               <el-menu-item :index="i.value">
                 <i class="el-icon-notebook-2"></i>
-                <span slot="title">
-                  {{ i.label }}
-                </span>
+                <template #title>
+                  <span>{{ i.label }}</span>
+                </template>
               </el-menu-item>
             </router-link>
           </el-menu>
@@ -83,17 +83,17 @@ export default {
       },
       navigation: [
         {
-          label: this.$l.training,
+          label: this.l.training,
           value: '0',
           to: '/videoLayout/mine/training',
         },
         {
-          label: this.$l.favorite,
+          label: this.l.favorite,
           value: '1',
           to: '/videoLayout/mine/favorite',
         },
         {
-          label: this.$l.history,
+          label: this.l.history,
           value: '2',
           to: '/videoLayout/mine/history',
         },

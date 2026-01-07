@@ -1,15 +1,15 @@
 <template>
 	<div class="app-container" v-loading="pageLoading">
 		<el-button type="primary" class="fr" @click="createItem">创建</el-button>
-		<!-- <el-button type="primary" class="fr" @click="createItem">{{ $l.createItem }}</el-button> -->
+		<!-- <el-button type="primary" class="fr" @click="createItem">{{ l.createItem }}</el-button> -->
 		<div class="filter-container">
 			<el-input
 				style="width: 300px;"
-				:placeholder="$l.search"
+				:placeholder="l.search"
 				clearable
 				prefix-icon="el-icon-search"
 				class="filter-item"
-				@keyup.enter.native="research"
+				@keyup.enter="research"
 				@clear="research"
 				v-model="query.id"
 			></el-input>
@@ -17,11 +17,11 @@
 		<el-row :gutter="20">
 			<el-col :span="10">
 				<z-table :list="list" :tableProps="tableProps" :columns="columns" @row-click="rowClick" @editItem="editItem" @deleteItem="deleteItem"></z-table>
-				<z-pagination :pagination="pagination" :total="total" :page.sync="query.curPage" :limit.sync="query.pageSize" @change="getList"></z-pagination>
+				<z-pagination :pagination="pagination" :total="total" v-model:page="query.curPage" v-model:limit="query.pageSize" @change="getList"></z-pagination>
 			</el-col>
 			<el-col :span="14">
 				<z-table :list="detailList" :tableProps="detailTableProps" :columns="detailColumns" @editItem="editDetailItem" @deleteItem="deleteDetailItem"></z-table>
-				<z-pagination :pagination="pagination" :total="detailTotal" :page.sync="detailQuery.curPage" :limit.sync="detailQuery.pageSize" @change="rowClick"></z-pagination>
+				<z-pagination :pagination="pagination" :total="detailTotal" v-model:page="detailQuery.curPage" v-model:limit="detailQuery.pageSize" @change="rowClick"></z-pagination>
 			</el-col>
 		</el-row>
 		<z-form-dialog
@@ -31,7 +31,7 @@
 			:fields="fields"
 			@submmit="submmit"
 			:submmitLoading="submmitLoading"
-			:visible.sync="editFormVisible"
+			v-model:visible="editFormVisible"
 		></z-form-dialog>
 		<z-form-dialog
 			:name="name"
@@ -40,14 +40,14 @@
 			:fields="detailFields"
 			@submmit="detailSubmmit"
 			:submmitLoading="submmitLoading"
-			:visible.sync="editDetailVisible"
+			v-model:visible="editDetailVisible"
 		></z-form-dialog>
 	</div>
 </template>
 
 <script>
 import { arrayToObject, dateTools } from '@/utils';
-import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common';
+import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common/index.js';
 
 const emptyData = {};
 export default {
@@ -56,13 +56,13 @@ export default {
 	data: function() {
 		return {
 			api: api.publiccode,
-			name: this.$l.title,
+			name: this.l.title,
 			columns: [
-				{ title: this.$l.role_id, key: 'rule_no' },
-				{ title: this.$l.role_id, key: 'name_zh' },
-				{ title: this.$l.role_name, key: 'lengths' },
-				{ title: this.$l.role_desc, key: 'rule_type' },
-				{ title: this.$l.role_desc, key: 'code_pz' }
+				{ title: this.l.role_id, key: 'rule_no' },
+				{ title: this.l.role_id, key: 'name_zh' },
+				{ title: this.l.role_name, key: 'lengths' },
+				{ title: this.l.role_desc, key: 'rule_type' },
+				{ title: this.l.role_desc, key: 'code_pz' }
 			],
 			fields: [
 				{ title: 'rule_no', key: 'rule_no', required: true },
@@ -105,11 +105,11 @@ export default {
 			currentDataId: 0,
 			menuData: [],
 			detailColumns: [
-				{ title: this.$l.userid, key: 'name_zh' },
-				{ title: this.$l.username, key: 'name_tw' },
-				{ title: this.$l.username, key: 'name_en' },
-				{ title: this.$l.username, key: 'create_time' },
-				{ title: this.$l.username, key: 'modify_time' }
+				{ title: this.l.userid, key: 'name_zh' },
+				{ title: this.l.username, key: 'name_tw' },
+				{ title: this.l.username, key: 'name_en' },
+				{ title: this.l.username, key: 'create_time' },
+				{ title: this.l.username, key: 'modify_time' }
 			],
 			detailTableProps: {
 				border: true,
@@ -185,13 +185,13 @@ export default {
 		},
 
 		deleteItem(v) {
-			this.$confirm(this.$c.cfmDelete, this.$c.oprConfirm).then(() => {
+			this.$confirm(this.c.cfmDelete, this.c.oprConfirm).then(() => {
 				this.pageLoading = true;
 				this.$request(this.api + 'delete/' + v.id, {}, 'post')
 					.then(r => {
 						this.pageLoading = false;
 						this.$message({
-							message: this.$c.success,
+							message: this.c.success,
 							type: 'success'
 						});
 						this.currentDataId = 0;
@@ -204,13 +204,13 @@ export default {
 		},
 
 		deleteDetailItem(v) {
-			this.$confirm(this.$c.cfmDelete, this.$c.oprConfirm).then(() => {
+			this.$confirm(this.c.cfmDelete, this.c.oprConfirm).then(() => {
 				this.pageLoading = true;
 				this.$request(this.api + 'delete/' + v.id, {}, 'post')
 					.then(r => {
 						this.pageLoading = false;
 						this.$message({
-							message: this.$c.success,
+							message: this.c.success,
 							type: 'success'
 						});
 						this.currentDataId = 0;
@@ -231,7 +231,7 @@ export default {
 				.then(r => {
 					this.submmitLoading = false;
 					this.$message({
-						message: this.$c.success,
+						message: this.c.success,
 						type: 'success'
 					});
 					this.editFormVisible = false;
@@ -244,7 +244,7 @@ export default {
 
 		detailSubmmit() {
 			return
-			if (!this.addUsers) return this.$message.error(this.$l.addUserIsEmpty);
+			if (!this.addUsers) return this.$message.error(this.l.addUserIsEmpty);
 			let user_ids = this.addUsers.replace('，', ',').split(',');
 			this.submitAddUserLoading = true;
 			this.$request(
@@ -256,7 +256,7 @@ export default {
 				'post'
 			)
 				.then(r => {
-					this.$message.success(this.$c.success);
+					this.$message.success(this.c.success);
 					this.editDetailVisible = false;
 					this.submitAddUserLoading = false;
 					this.addUsers = '';

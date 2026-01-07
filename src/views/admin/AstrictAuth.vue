@@ -1,13 +1,13 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{$c.create}}</el-button>
+    <el-button type="primary" class="fr" @click="createItem">{{ c.create}}</el-button>
     <div class="filter-container">
-      <el-input style="width: 200px" :placeholder="$l.org_id" clearable prefix-icon="el-icon-search" class="filter-item"
-        @keyup.enter.native="research" @clear="research" v-model="query.orgid"></el-input>
-      <el-input style="width: 200px" :placeholder="$l.dept_codes" clearable prefix-icon="el-icon-search"
-        class="filter-item" @keyup.enter.native="research" @clear="research" v-model="query.deptcodes">
+      <el-input style="width: 200px" :placeholder="l.org_id" clearable prefix-icon="el-icon-search" class="filter-item"
+        @keyup.enter="research" @clear="research" v-model="query.orgid"></el-input>
+      <el-input style="width: 200px" :placeholder="l.dept_codes" clearable prefix-icon="el-icon-search"
+        class="filter-item" @keyup.enter="research" @clear="research" v-model="query.deptcodes">
       </el-input>
-      <el-button class="filter-item" type="success" plain @click="research">{{$c.queryButton}}</el-button>
+      <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton}}</el-button>
     </div>
     <z-table :list="list" :tableProps="tableProps" :columns="columns">
       <template v-slot:content="v">
@@ -17,14 +17,14 @@
         <span v-else>{{ v.row[v.key] }}</span>
       </template>
       <template v-slot:operation="v">
-        <a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{$c.edit}}</a>&nbsp;
-        <a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{$c.delete}}</a>
+        <a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ c.edit}}</a>&nbsp;
+        <a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ c.delete}}</a>
       </template>
     </z-table>
-    <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size"
+    <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size"
       @change="getList"></z-pagination>
     <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit"
-      :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
+      :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
   </div>
 </template>
 <script>
@@ -65,26 +65,26 @@ export default {
         size: 10,
         page: 1,
       },
-      name: this.$l.title,
+      name: this.l.title,
       currentLang: localGet('lang') || 'zh-CN',
       data: {},
       columns: [
-        { title: this.$l.org_id, key: 'org_id', width: 120 },
-        { title: this.$l.dept_codes, key: 'dept_codes', width: 300 },
-        { title: this.$l.menu_name, key: 'menu_name', width: 200 },
-        { title: this.$c.remarks, key: 'remark' },
+        { title: this.l.org_id, key: 'org_id', width: 120 },
+        { title: this.l.dept_codes, key: 'dept_codes', width: 300 },
+        { title: this.l.menu_name, key: 'menu_name', width: 200 },
+        { title: this.c.remarks, key: 'remark' },
       ],
       fields: [
-        { title: this.$l.org_id, key: 'org_id', required: true, span: 24 },
+        { title: this.l.org_id, key: 'org_id', required: true, span: 24 },
         {
-          title: this.$l.dept_codes,
+          title: this.l.dept_codes,
           name: 'dynamicTag',
           key: 'dept_codes',
           required: true,
           span: 24,
         },
         {
-          title: this.$l.menu_name,
+          title: this.l.menu_name,
           key: 'menu_id',
           name: 'select',
           options: [],
@@ -92,7 +92,7 @@ export default {
           required: true,
           span: 24,
         },
-        { title: this.$c.remarks, key: 'remark', span: 24 },
+        { title: this.c.remarks, key: 'remark', span: 24 },
       ],
     }
   },

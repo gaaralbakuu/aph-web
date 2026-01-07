@@ -46,7 +46,7 @@
     </div>
 
     <!-- Create/Edit Folder Dialog -->
-    <CustomDialog :title="editingFolder ? l.editFolder : l.createFolder" width="500px" :lock-scroll="true" :visible.sync="folderDialogVisible" class="modern-dialog">
+    <CustomDialog :title="editingFolder ? l.editFolder : l.createFolder" width="500px" :lock-scroll="true" v-model:visible="folderDialogVisible" class="modern-dialog">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="bg-blue-50 p-4 rounded-lg">
@@ -112,7 +112,7 @@
           </div>
         </div>
       </template>
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <button @click="folderDialogVisible = false" class="h-10 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200">
             {{ c.cancel }}

@@ -31,14 +31,14 @@ export default {
         username: [
           {
             required: true,
-            message: this.$l.usernameValidate,
+            message: this.l.usernameValidate,
             trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: this.$l.passwordValidate,
+            message: this.l.passwordValidate,
             trigger: 'blur',
           },
         ],
@@ -89,7 +89,7 @@ export default {
             .then(() => {
               this.loading = false
               this.$message({
-                message: this.$l.success,
+                message: this.l.success,
                 type: 'success',
               })
               this.$router.push({ path: this.redirect || '/' })

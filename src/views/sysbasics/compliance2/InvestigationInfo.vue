@@ -55,21 +55,21 @@
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item :label="this.$l.auditDate">
+              <el-form-item :label="this.l.auditDate">
                 <el-date-picker
                   v-model="queryList.audit_time"
                   type="date"
-                  :placeholder="this.$l.pleaseSelectAnApprovalDate"
+                  :placeholder="this.l.pleaseSelectAnApprovalDate"
                   value-format="yyyy-MM-dd"
                   style="width: 200px"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item :label="this.$l.auditResult">
+              <el-form-item :label="this.l.auditResult">
                 <el-input
                   v-model="queryList.rec_status"
-                  :placeholder="this.$l.pleaseEnterTheAuditResult"
+                  :placeholder="this.l.pleaseEnterTheAuditResult"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -98,7 +98,7 @@
           style="width: 100%"
           highlight-current-row
         >
-          <el-table-column :label="this.$l.basicInformation">
+          <el-table-column :label="this.l.basicInformation">
             <el-table-column
               v-for="(item, index) in tableList.columns1"
               :key="index"
@@ -107,7 +107,7 @@
               :width="item.width"
               show-overflow-tooltip
             >
-              <template slot-scope="scope">
+              <template #default="scope">
                 <span v-if="item.key === 'serialNumbers'">
                   {{ scope.$index + 1 }}
                 </span>
@@ -117,7 +117,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column :label="this.$l.complianceContactInfor">
+          <el-table-column :label="this.l.complianceContactInfor">
             <el-table-column
               v-for="(item, index) in tableList.columns2"
               :key="index"
@@ -128,7 +128,7 @@
             >
             </el-table-column>
           </el-table-column>
-          <el-table-column :label="this.$l.latestSeaAudit">
+          <el-table-column :label="this.l.latestSeaAudit">
             <el-table-column
               v-for="(item, index) in tableList.columns3"
               :key="index"
@@ -139,7 +139,7 @@
             >
             </el-table-column>
           </el-table-column>
-          <el-table-column :label="this.$l.annualSeaAudit">
+          <el-table-column :label="this.l.annualSeaAudit">
             <el-table-column
               v-for="(item, index) in tableList.columns4"
               :key="index"
@@ -148,16 +148,16 @@
               :width="item.width"
               show-overflow-tooltip
             >
-              <template slot-scope="scope">
+              <template #default="scope">
                 <span v-if="item.key === 'audit_file'">
                   <a
                     href="javascript:void(0);"
                     @click="viewFile(scope.row.surveyid)"
-                    >{{ $l.viewFile }}</a
+                    >{{ l.viewFile }}</a
                   >
                 </span>
                 <span v-else-if="item.key === 'is_submit_cap'">
-                  {{ scope.row.is_submit_cap == 'Y' ? $l.yes : $l.no }}
+                  {{ scope.row.is_submit_cap == 'Y' ? l.yes : l.no }}
                 </span>
                 <span v-else>
                   {{ scope.row[item.key] }}
@@ -165,13 +165,13 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column fixed="right" :label="this.$c.operation" width="170">
-            <template slot-scope="scope">
+          <el-table-column fixed="right" :label="this.c.operation" width="170">
+            <template #default="scope">
               <el-button
                 @click="checkClick(scope.row, scope.$index)"
                 type="text"
                 size="small"
-                >{{ $c.check }}</el-button
+                >{{ c.check }}</el-button
               >
             </template>
           </el-table-column>
@@ -180,8 +180,8 @@
         <z-pagination
           :pagination="pagination"
           :total="tableList.total"
-          :page.sync="tableList.curPage"
-          :limit.sync="tableList.pageSize"
+          v-model:page="tableList.curPage"
+          v-model:limit="tableList.pageSize"
           @change="getList"
         >
         </z-pagination>
@@ -190,7 +190,7 @@
         <el-dialog
           width="80%"
           :lock-scroll="true"
-          :visible.sync="checkFormVisible"
+          v-model:visible="checkFormVisible"
           custom-class="custom-dialog"
         >
           <div style="padding: 0 50px">
@@ -198,25 +198,25 @@
               <el-form :model="checkSurvey.list">
                 <el-col :span="24">
                   <el-form-item
-                    :label="this.$l.basicInformation"
+                    :label="this.l.basicInformation"
                   ></el-form-item>
                 </el-col>
 
-                <el-form-item :label="this.$l.basicArchives">
+                <el-form-item :label="this.l.basicArchives">
                   <el-col :span="8">
                     <el-input v-model="checkSurvey.list.name_zh"></el-input>
                   </el-col>
                 </el-form-item>
 
                 <el-col :span="24">
-                  <el-form-item :label="this.$l.latestSeaAudit"></el-form-item>
+                  <el-form-item :label="this.l.latestSeaAudit"></el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item :label="this.$l.auditDate">
+                  <el-form-item :label="this.l.auditDate">
                     <el-date-picker
                       v-model="checkSurvey.list.audit_time"
                       type="date"
-                      :placeholder="this.$l.pleaseSelectAnApprovalDate"
+                      :placeholder="this.l.pleaseSelectAnApprovalDate"
                       value-format="yyyy-MM-dd"
                       style="width: 300px"
                     ></el-date-picker>
@@ -227,33 +227,33 @@
                 </el-col>
                 <el-col :span="6"
                   ><el-form-item
-                    :label="this.$l.nameOfTheThirdPartyOrganization"
+                    :label="this.l.nameOfTheThirdPartyOrganization"
                   >
                     <el-input
                       v-model="checkSurvey.list.third_party_org"
-                      :placeholder="this.$l.pleaseEnterThirdPartyOrganization"
+                      :placeholder="this.l.pleaseEnterThirdPartyOrganization"
                     ></el-input> </el-form-item
                 ></el-col>
                 <el-col :span="2">
                   <el-form-item label=""></el-form-item>
                 </el-col>
                 <el-col :span="6"
-                  ><el-form-item :label="this.$l.auditResult">
+                  ><el-form-item :label="this.l.auditResult">
                     <el-input
                       v-model="checkSurvey.list.audit_result"
-                      :placeholder="this.$l.pleaseEnterTheAuditResult"
+                      :placeholder="this.l.pleaseEnterTheAuditResult"
                     ></el-input> </el-form-item
                 ></el-col>
 
                 <el-col :span="24">
-                  <el-form-item :label="this.$l.annualSeaAudit"></el-form-item>
+                  <el-form-item :label="this.l.annualSeaAudit"></el-form-item>
                 </el-col>
                 <el-col :span="6"
-                  ><el-form-item :label="this.$l.dueAuditDate">
+                  ><el-form-item :label="this.l.dueAuditDate">
                     <el-date-picker
                       v-model="checkSurvey.list.due_audit_date"
                       type="date"
-                      :placeholder="this.$l.pleaseSelectAnApprovalDate"
+                      :placeholder="this.l.pleaseSelectAnApprovalDate"
                       value-format="yyyy-MM-dd"
                       style="width: 300px"
                     ></el-date-picker> </el-form-item
@@ -262,41 +262,41 @@
                   <el-form-item label=""></el-form-item>
                 </el-col>
                 <el-col :span="6"
-                  ><el-form-item :label="this.$l.costPayProgress">
+                  ><el-form-item :label="this.l.costPayProgress">
                     <el-input
                       v-model="checkSurvey.list.cost_pay_progress"
-                      :placeholder="this.$l.pleaseEnterTheAuditResult"
+                      :placeholder="this.l.pleaseEnterTheAuditResult"
                     ></el-input> </el-form-item
                 ></el-col>
                 <el-col :span="2">
                   <el-form-item label=""></el-form-item>
                 </el-col>
                 <el-col :span="6"
-                  ><el-form-item :label="this.$l.realAuditDate">
+                  ><el-form-item :label="this.l.realAuditDate">
                     <el-date-picker
                       v-model="checkSurvey.list.real_audit_date"
                       type="date"
-                      :placeholder="this.$l.pleaseSelectAnApprovalDate"
+                      :placeholder="this.l.pleaseSelectAnApprovalDate"
                       value-format="yyyy-MM-dd"
                       style="width: 300px"
                     ></el-date-picker> </el-form-item
                 ></el-col>
                 <el-col :span="8"
-                  ><el-form-item :label="this.$l.isSubmitCap">
+                  ><el-form-item :label="this.l.isSubmitCap">
                     <el-radio
                       v-model="checkSurvey.list.is_submit_cap"
                       label="Y"
-                      >{{ $l.yes }}</el-radio
+                      >{{ l.yes }}</el-radio
                     >
                     <el-radio
                       v-model="checkSurvey.list.is_submit_cap"
                       label="N"
-                      >{{ $l.no }}</el-radio
+                      >{{ l.no }}</el-radio
                     >
                   </el-form-item></el-col
                 >
                 <el-col :span="24">
-                  <el-form-item :label="this.$l.auditFile"></el-form-item>
+                  <el-form-item :label="this.l.auditFile"></el-form-item>
                 </el-col>
               </el-form>
             </div>
@@ -313,15 +313,15 @@
                 </el-table-column>
                 <el-table-column
                   fixed="right"
-                  :label="this.$c.operation"
+                  :label="this.c.operation"
                   width="145"
                 >
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button
                       @click="getFilePreview(scope.row.file_url)"
                       type="text"
                       size="small"
-                      >{{ $c.check }}</el-button
+                      >{{ c.check }}</el-button
                     >
                   </template>
                 </el-table-column>
@@ -405,19 +405,19 @@ export default {
       fileList: [],
       rec_status: [
         {
-          label: this.$l.cancelAudit,
+          label: this.l.cancelAudit,
           value: 0,
         },
         {
-          label: this.$l.newOrder,
+          label: this.l.newOrder,
           value: 1,
         },
         {
-          label: this.$l.audit,
+          label: this.l.audit,
           value: 7,
         },
         {
-          label: this.$l.end,
+          label: this.l.end,
           value: 99,
         },
       ],
@@ -429,78 +429,78 @@ export default {
         total: 0,
         columns1: [
           {
-            title: this.$l.serialNumbers,
+            title: this.l.serialNumbers,
             key: 'serialNumbers',
             width: 100,
           },
           {
-            title: this.$l.nameZh,
+            title: this.l.nameZh,
             key: 'name_zh',
             width: 120,
           },
           {
-            title: this.$l.address,
+            title: this.l.address,
             key: 'address',
             width: 150,
           },
           {
-            title: this.$l.requestorFacilityType,
+            title: this.l.requestorFacilityType,
             key: 'vehicleStime',
             width: 130,
           },
         ],
         columns2: [
           {
-            title: this.$l.name,
+            title: this.l.name,
             key: 'contact_name',
             width: 80,
           },
           {
-            title: this.$l.contactPhone,
+            title: this.l.contactPhone,
             key: 'contact_phone',
             width: 90,
           },
           {
-            title: this.$l.contactEmail,
+            title: this.l.contactEmail,
             key: 'contact_email',
             width: 190,
           },
         ],
         columns3: [
           {
-            title: this.$l.auditDate,
+            title: this.l.auditDate,
             key: 'audit_time',
             width: 140,
           },
           {
-            title: this.$l.auditResult,
+            title: this.l.auditResult,
             key: 'audit_result',
             width: 100,
           },
         ],
         columns4: [
           {
-            title: this.$l.dueAuditDate,
+            title: this.l.dueAuditDate,
             key: 'due_audit_date',
             width: 140,
           },
           {
-            title: this.$l.costPayProgress,
+            title: this.l.costPayProgress,
             key: 'cost_pay_progress',
             width: 120,
           },
           {
-            title: this.$l.realAuditDate,
+            title: this.l.realAuditDate,
             key: 'real_audit_date',
             width: 140,
           },
           {
-            title: this.$l.auditFile,
+            title: this.l.auditFile,
             key: 'audit_file',
             width: 80,
           },
           {
-            title: this.$l.isSubmitCap,
+            title: this.l.isSubmitCap,
             key: 'is_submit_cap',
             formatter: this.formatYN,
             width: 140,
@@ -513,7 +513,7 @@ export default {
         fileList: [],
         fields1: [
           {
-            title: this.$l.nameZh,
+            title: this.l.nameZh,
             key: 'name_zh',
             props: {
               disabled: true,
@@ -521,7 +521,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.address,
+            title: this.l.address,
             key: 'address',
             props: {
               disabled: true,
@@ -529,7 +529,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.requestorFacilityType,
+            title: this.l.requestorFacilityType,
             key: 'name_zh',
             props: {
               disabled: true,
@@ -537,7 +537,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.name,
+            title: this.l.name,
             key: 'contact_name',
             props: {
               disabled: true,
@@ -545,7 +545,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.contactPhone,
+            title: this.l.contactPhone,
             key: 'contact_phone',
             props: {
               disabled: true,
@@ -553,7 +553,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.contactEmail,
+            title: this.l.contactEmail,
             key: 'contact_email',
             props: {
               disabled: true,
@@ -561,7 +561,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.auditDate,
+            title: this.l.auditDate,
             key: 'audit_time',
             props: {
               disabled: true,
@@ -570,7 +570,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.auditResult,
+            title: this.l.auditResult,
             key: 'aduit_result',
             props: {
               disabled: true,
@@ -578,7 +578,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.dueAuditDate,
+            title: this.l.dueAuditDate,
             key: 'due_audit_date',
             props: {
               disabled: true,
@@ -587,7 +587,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.costPayProgress,
+            title: this.l.costPayProgress,
             key: 'cost_pay_progress',
             props: {
               disabled: true,
@@ -595,7 +595,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.realAuditDate,
+            title: this.l.realAuditDate,
             key: 'real_audit_date',
             props: {
               disabled: true,
@@ -604,7 +604,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.auditResult,
+            title: this.l.auditResult,
             key: 'vehicleStime',
             props: {
               disabled: true,
@@ -612,7 +612,7 @@ export default {
             span: 8,
           },
           {
-            title: this.$l.isSubmitCap,
+            title: this.l.isSubmitCap,
             key: 'is_submit_cap',
             props: {
               disabled: true,
@@ -623,33 +623,33 @@ export default {
         ],
         columns: [
           {
-            title: this.$l.fileName,
+            title: this.l.fileName,
             key: 'file_name',
             width: 220,
           },
 
           {
-            title: this.$l.fileSuffix,
+            title: this.l.fileSuffix,
             key: 'file_suffix',
             width: 140,
           },
           {
-            title: this.$l.createUser,
+            title: this.l.createUser,
             key: 'create_user',
             width: 140,
           },
           {
-            title: this.$l.createTime,
+            title: this.l.createTime,
             key: 'create_time',
             width: 140,
           },
           {
-            title: this.$l.modifyUser,
+            title: this.l.modifyUser,
             key: 'modify_user',
             width: 140,
           },
           {
-            title: this.$l.modifyTime,
+            title: this.l.modifyTime,
             key: 'modify_time',
             width: 140,
           },
@@ -662,65 +662,65 @@ export default {
         queryString: '',
         columns: [
           {
-            title: this.$l.manufactureId,
+            title: this.l.manufactureId,
             key: 'manufacture_id',
             width: 100,
           },
           {
-            title: this.$l.manufacturerName,
+            title: this.l.manufacturerName,
             key: 'name_zh',
             width: 100,
           },
           {
-            title: this.$l.manufacturerNameEn,
+            title: this.l.manufacturerNameEn,
             key: 'name_en',
             width: 100,
           },
 
           {
-            title: this.$l.manufacturerAddress,
+            title: this.l.manufacturerAddress,
             key: 'address',
             width: 100,
           },
           {
-            title: this.$l.namlegalPersoneEn,
+            title: this.l.namlegalPersoneEn,
             key: 'legal_person',
             width: 100,
           },
           {
-            title: this.$l.contactName,
+            title: this.l.contactName,
             key: 'contact_name',
             width: 100,
           },
 
           {
-            title: this.$l.contactPhone,
+            title: this.l.contactPhone,
             key: 'contact_phone',
             width: 100,
           },
 
           {
-            title: this.$l.contactEmail,
+            title: this.l.contactEmail,
             key: 'contact_email',
             width: 100,
           },
           {
-            title: this.$l.contactJobTitle,
+            title: this.l.contactJobTitle,
             key: 'contact_job_title',
             width: 100,
           },
           {
-            title: this.$l.country,
+            title: this.l.country,
             key: 'country',
             width: 100,
           },
           {
-            title: this.$l.customsNumber,
+            title: this.l.customsNumber,
             key: 'customs_number',
             width: 100,
           },
           {
-            title: this.$l.requestorFacilityType,
+            title: this.l.requestorFacilityType,
             key: 'requestor_facility_type',
             width: 100,
           },

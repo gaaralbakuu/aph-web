@@ -55,7 +55,7 @@
                         </div>
                         <div v-else class="no-data">{{ c.empty }}</div>
                       </div>
-                      <template slot="reference">
+                      <template #reference>
                         <el-button type="text" size="mini" class="view-link">
                           <i class="el-icon-view"></i>
                           {{ c.view_address }}
@@ -81,7 +81,7 @@
                         </div>
                         <div v-else class="no-data">{{ c.empty }}</div>
                       </div>
-                      <template slot="reference">
+                      <template #reference>
                         <el-button type="text" size="mini" class="view-link">
                           <i class="el-icon-view"></i>
                           {{ c.view_capabilities }}
@@ -111,7 +111,7 @@
                       <el-button type="text" class="action-button">
                         <i class="el-icon-more"></i>
                       </el-button>
-                      <el-dropdown-menu slot="dropdown" class="action-dropdown">
+                      <template #dropdown><el-dropdown-menu class="action-dropdown">
                         <el-dropdown-item command="detail">
                           <i class="el-icon-view"></i>
                           {{ $t('common.detail') }}
@@ -128,7 +128,7 @@
                           <i class="el-icon-delete"></i>
                           {{ $t('common.delete') }}
                         </el-dropdown-item>
-                      </el-dropdown-menu>
+                      </el-dropdown-menu></template>
                     </el-dropdown>
                   </div>
                 </template>

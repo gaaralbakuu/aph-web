@@ -2,9 +2,11 @@
   <div class="icons-container">
     <div v-for="item of iconsMap" :key="item.index" @click="handleClipboard(generateIconCode(item),$event)">
       <el-tooltip placement="top">
-        <div slot="content">
-          {{ generateIconCode(item) }}
-        </div>
+        <template #content>
+          <div>
+            {{ generateIconCode(item) }}
+          </div>
+        </template>
         <div class="icon-item">
           <svg-icon :icon-class="item" class-name="disabled" />
           <span>{{ item }}</span>
@@ -28,7 +30,7 @@ export default {
   },
   methods: {
     generateIconCode(symbol) {
-      return `<svg-icon icon-class="${symbol}" />`
+      return `<SvgIcon icon-class="${symbol}" />`
     },
     handleClipboard(text, event) {
       clipboard(text, event)

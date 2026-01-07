@@ -12,13 +12,13 @@
       <div class="bg-white text-black rounded-md shadow dark:bg-[#1a1a1a] dark:text-white flex flex-col py-2 font-medium">
         <div class="flex flex-col">
           <div class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer" :class="{ 'bg-gray-100 dark:bg-gray-700': size === 'medium' }" @click="handleSetSize('medium')">
-            {{ $l.loose }}
+            {{ l.loose }}
           </div>
           <div class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer" :class="{ 'bg-gray-100 dark:bg-gray-700': size === 'small' }" @click="handleSetSize('small')">
-            {{ $l.moderate }}
+            {{ l.moderate }}
           </div>
           <div class="text-sm hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-3 cursor-pointer" :class="{ 'bg-gray-100 dark:bg-gray-700': size === 'mini' }" @click="handleSetSize('mini')">
-            {{ $l.compact }}
+            {{ l.compact }}
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@ export default {
       this.$store.dispatch('setSize', size)
       this.refreshView()
       this.$message({
-        message: this.$l.switchSuccess,
+        message: this.l.switchSuccess,
         type: 'success',
       })
     },
@@ -55,7 +55,7 @@ export default {
       })
     },
     mounted() {
-      console.log('asdddddddddddddddddddd', this.$l)
+      // console.log('Debug:', this.l) // Fixed: removed $l reference
     },
   },
 }

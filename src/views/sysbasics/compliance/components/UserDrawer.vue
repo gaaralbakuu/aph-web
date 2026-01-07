@@ -67,8 +67,8 @@
               small
               layout="prev, pager, next"
               :total="searchTotal"
-              :page-size.sync="searchQuery.size"
-              :current-page.sync="searchQuery.page"
+              v-model:page-size="searchQuery.size"
+              v-model:current-page="searchQuery.page"
               @current-change="handleSearch"
            ></el-pagination>
         </div>

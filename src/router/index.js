@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 /* Layout */
 import Layout from '@/views/layout/Layout.vue'
@@ -14,7 +14,7 @@ const isDevelopMode = import.meta.env.DEV
 const constantRouterMap = [
   {
     path: '/',
-    redirect: '/home/welcome',
+    redirect: '/home/welcome'
   },
   {
     path: '/login',
@@ -32,19 +32,19 @@ const constantRouterMap = [
     children: [
       {
         path: ':path*',
-        component: () => import('@/views/redirect/index'),
+        component: () => import('@/views/redirect/index.vue'),
       },
     ],
   },
   {
     path: '/401',
-    component: () => import('@/views/errorPage/401'),
+    component: () => import('@/views/errorPage/401.vue'),
     name: '401',
   },
   {
     path: '/404',
     name: '404',
-    component: () => import('@/views/errorPage/404'),
+    component: () => import('@/views/errorPage/404.vue'),
   },
   {
     path: '/home',
@@ -52,7 +52,7 @@ const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-      component: () => import('@/views/home/Welcome.vue'),
+        component: () => import('@/views/home/Welcome.vue'),
         name: 'welcome',
         meta: { title: 'Welcome Page' },
       },
@@ -62,7 +62,7 @@ const constantRouterMap = [
   
   {
     path: '/examDetail',
-    component: () => import('@/views/sysbasics/video/userViews/ExamDetail'),
+    component: () => import('@/views/sysbasics/video/userViews/ExamDetail.vue'),
     name: 'examDetail',
     meta: { noCache: isDevelopMode }
   },
@@ -76,25 +76,25 @@ const constantRouterMap = [
     children: [
       {
         path: 'home',
-        component: () => import('@/views/sysbasics/video/userViews/Home'),
+        component: () => import('@/views/sysbasics/video/userViews/Home.vue'),
         name: 'videoHome',
         meta: { noCache: isDevelopMode, title: 'Video Dashboard' },
       },
       {
         path: 'trainingDetail',
-        component: () => import('@/views/sysbasics/video/userViews/TrainingDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/TrainingDetail.vue'),
         name: 'trainingDetail',
         meta: { noCache: isDevelopMode, title: 'Training Details' },
       },
       {
         path: 'topicDetail',
-        component: () => import('@/views/sysbasics/video/userViews/TopicDetail'),
+        component: () => import('@/views/sysbasics/video/userViews/TopicDetail.vue'),
         name: 'topicDetail',
         meta: { noCache: isDevelopMode, title: 'Topic Details' },
       },
       {
         path: 'play',
-        component: () => import('@/views/sysbasics/video/userViews/Play'),
+        component: () => import('@/views/sysbasics/video/userViews/Play.vue'),
         name: 'videoPlay',
         meta: { noCache: isDevelopMode, title: 'Video Player' },
       },
@@ -154,4 +154,20 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 }),
 })
 
-export default router
+export {router};
+
+// const routes = [
+//   {
+//     path: '/',
+//     component: {
+//       template: '<div style="color:red;font-size:30px">ROUTER OK</div>'
+//     }
+//   }
+// ]
+
+// const router = createRouter({
+//   history: createWebHistory(),
+//   routes
+// })
+
+// export default router

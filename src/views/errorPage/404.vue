@@ -1,12 +1,12 @@
 <template>
     <div class="app-container">
-        <tip-box :content="$l.notFoundContent" type="danger"></tip-box>
-        <el-button icon="arrow-left" class="pan-back-btn" @click="back">{{$c.back}}</el-button>
+        <tip-box :content="l.notFoundContent" type="danger"></tip-box>
+        <el-button icon="arrow-left" class="pan-back-btn" @click="back">{{ c.back}}</el-button>
     </div>
 </template>
 
 <script>
-import TipBox from '@/components/TipBox'
+import TipBox from '@/components/TipBox/index.vue'
 
 export default {
   name: 'page404',

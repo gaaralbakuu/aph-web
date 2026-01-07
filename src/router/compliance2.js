@@ -1,4 +1,4 @@
-import Layout from '@/views/layout/Layout'
+import Layout from '@/views/layout/Layout.vue'
 let isDevelopMode = process.env.NODE_ENV === 'development' ? true : false//保存当前环境是否为开发环境
 export default {
     path: '/compliance2',
@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'complianceManufacturer',
-            component: () => import('@/views/sysbasics/compliance2/ComplianceManufacturer'),
+            component: () => import('@/views/sysbasics/compliance2/ComplianceManufacturer.vue'),
             name: 'complianceManufacturer',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'investigation',
-            component: () => import('@/views/sysbasics/compliance2/Investigation'),
+            component: () => import('@/views/sysbasics/compliance2/Investigation.vue'),
             name: 'investigation',
             meta: {
                 noCache: isDevelopMode
@@ -22,7 +22,7 @@ export default {
         },
         {
             path: 'investigationInfo',
-            component: () => import('@/views/sysbasics/compliance2/InvestigationInfo'),
+            component: () => import('@/views/sysbasics/compliance2/InvestigationInfo.vue'),
             name: 'investigationInfo',
             meta: {
                 noCache: isDevelopMode
@@ -30,7 +30,7 @@ export default {
         },
         {
             path: 'issuesType',
-            component: () => import('@/views/sysbasics/compliance2/IssuesType'),
+            component: () => import('@/views/sysbasics/compliance2/IssuesType.vue'),
             name: 'issuesType',
             meta: {
                 noCache: isDevelopMode
@@ -38,7 +38,7 @@ export default {
         },
         {
             path: 'shareInformation',
-            component: () => import('@/views/sysbasics/compliance2/ShareInformation'),
+            component: () => import('@/views/sysbasics/compliance2/ShareInformation.vue'),
             name: 'shareInformation',
             meta: {
                 noCache: isDevelopMode

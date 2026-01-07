@@ -1,17 +1,17 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+    <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
 
-    <breadcrumb class="breadcrumb-container"></breadcrumb>
+    <Breadcrumb class="breadcrumb-container"></Breadcrumb>
 
     <div class="right-menu">
-      <error-log class="errLog-container right-menu-item"></error-log>
+      <ErrorLog class="errLog-container right-menu-item"></ErrorLog>
 
       <el-tooltip effect="dark" :content="l.navbarScreenfull" placement="bottom">
-        <screenfull class="screenfull right-menu-item"></screenfull>
+        <Screenfull class="screenfull right-menu-item"></Screenfull>
       </el-tooltip>
 
-      <lang-select class="international right-menu-item"></lang-select>
+      <LangSelect class="international right-menu-item"></LangSelect>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
@@ -41,12 +41,12 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
-import LangSelect from '@/components/LangSelect'
-import userAvatarImg from '@/assets/user.png'
+import Breadcrumb from './Breadcrumb.vue'
+import Hamburger from './Hamburger.vue'
+import ErrorLog from './ErrorLog.vue'
+import Screenfull from './Screenfull.vue'
+import LangSelect from './LangSelect.vue'
+import userAvatarImg from '@/assets/default_avatar.png'
 
 const store = useStore()
 const router = useRouter()

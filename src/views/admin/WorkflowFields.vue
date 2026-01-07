@@ -2,13 +2,12 @@
   <div class="app-container" v-loading="pageLoading">
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-button type="primary" class="fr" @click="createItem">{{
-          $c.create
+        <el-button type="primary" class="fr" @click="createItem">{{ c.create
         }}</el-button>
         <div class="filter-container">
           <el-input
             style="width: 300px"
-            :placeholder="$l.search"
+            :placeholder="l.search"
             clearable
             prefix-icon="el-icon-search"
             class="filter-item"
@@ -19,7 +18,7 @@
             type="success"
             @click="researchMain"
             plain
-            >{{ $c.queryButton }}</el-button
+            >{{ c.queryButton }}</el-button
           >
         </div>
       </el-col>
@@ -49,11 +48,9 @@
               @click.prevent="disOrEnable(v.row)"
               >{{ statusButton[v.row.status] }}</a
             >
-            <a href="#" class="text-blue" @click.prevent="editItem(v.row)">{{
-              $c.edit
+            <a href="#" class="text-blue" @click.prevent="editItem(v.row)">{{ c.edit
             }}</a>
-            <a href="#" class="text-red" @click.prevent="deleteItem(v.row)">{{
-              $c.delete
+            <a href="#" class="text-red" @click.prevent="deleteItem(v.row)">{{ c.delete
             }}</a>
           </template>
         </z-table>
@@ -61,8 +58,8 @@
           :list="list"
           :pagination="pagination"
           :total="total"
-          :page.sync="query.page"
-          :limit.sync="query.size"
+          v-model:page="query.page"
+          v-model:limit="query.size"
           @change="getList"
         ></z-pagination>
       </el-col>
@@ -73,7 +70,7 @@
         :fields="fields"
         @submmit="submmit"
         :submmitLoading="submmitLoading"
-        :visible.sync="editFormVisible"
+        v-model:visible="editFormVisible"
       >
       </z-form-dialog>
 
@@ -94,7 +91,7 @@
               @change="changeVersionProcess"
               style="width: 100%"
               v-model="versionProcessSelected"
-              :placeholder="$l.typePd"
+              :placeholder="l.typePd"
             >
               <el-option
                 v-for="item in versionProcess"
@@ -106,8 +103,7 @@
             </el-select>
           </div>
           <div style="display: flex; flex-direction: row-reverse; gap: 4px">
-            <el-button @click="openDetail" type="primary" plain>{{
-              $l.addDetail
+            <el-button @click="openDetail" type="primary" plain>{{ l.addDetail
             }}</el-button>
             <el-button
               :loading="sortLoading"
@@ -116,7 +112,7 @@
               style="margin-left: 0"
               type="success"
               plain
-              >{{ $c.saveIndex }}</el-button
+              >{{ c.saveIndex }}</el-button
             >
           </div>
           <!-- <el-input
@@ -125,7 +121,7 @@
             clearable
             prefix-icon="el-icon-search"
             class="filter-item"
-            @keyup.enter.native="research"
+            @keyup.enter="research"
             @clear="research"
             v-model="queryDetail.queryString.str"
           ></el-input>
@@ -158,19 +154,17 @@
               @click.prevent="disOrEnable(v.row)"
               >{{ statusButton[v.row.status] }}</a
             >
-            <a href="#" class="text-blue" @click.prevent="editDetail(v.row)">{{
-              $c.edit
+            <a href="#" class="text-blue" @click.prevent="editDetail(v.row)">{{ c.edit
             }}</a>
-            <a href="#" class="text-red" @click.prevent="deleteDetail(v.row)">{{
-              $c.delete
+            <a href="#" class="text-red" @click.prevent="deleteDetail(v.row)">{{ c.delete
             }}</a>
           </template>
         </z-table>
         <!-- <z-pagination
           :pagination="pagination"
           :total="totalDetail"
-          :page.sync="queryDetail.page"
-          :limit.sync="queryDetail.size"
+          v-model:page="queryDetail.page"
+          v-model:limit="queryDetail.size"
           @change="getDetailList"
         ></z-pagination> -->
       </el-col>
@@ -179,10 +173,10 @@
     <!-- detail -->
     <el-dialog
       :title="
-        this.$l.detailField + (dataDetail ? this.$c.edit : this.$c.create)
+        this.l.detailField + (dataDetail ? this.c.edit : this.c.create)
       "
       :close-on-click-modal="false"
-      :visible.sync="visibleDetail"
+      v-model:visible="visibleDetail"
       width="600px"
     >
       <el-form :model="dataDetail">
@@ -191,7 +185,7 @@
             <div style="font-weight: bold">Tên</div>
             <div>
               <el-input
-                :placeholder="$l.detailNamePd"
+                :placeholder="l.detailNamePd"
                 v-model="dataMain.name"
               ></el-input>
             </div>
@@ -217,8 +211,8 @@
               v-model="dataDetail.type"
             ></el-input>
             <el-input
-              :placeholder="$l.detailTitlePd"
-              :label="$l.detailTitlePddname"
+              :placeholder="l.detailTitlePd"
+              :label="l.detailTitlePddname"
               v-model="dataDetail.title"
             ></el-input>
           </div>
@@ -231,12 +225,12 @@
           >
             <el-col :span="7">
               <el-input
-                :placeholder="$l.detailKeyPd"
+                :placeholder="l.detailKeyPd"
                 v-model="item.key"
               ></el-input>
             </el-col>
             <el-col style="margin-left: 5px" :span="7">
-              <el-input :placeholder="$l.detailLabelPd" v-model="item.label">
+              <el-input :placeholder="l.detailLabelPd" v-model="item.label">
               </el-input>
             </el-col>
             <el-col style="margin-left: 5px" :span="5">
@@ -277,13 +271,13 @@
       </el-form>
       <div style="padding-right: 100px; margin-top: 40px">
         <div class="align-r">
-          <el-button @click="visibleDetail = false">{{ $c.cancel }}</el-button>
+          <el-button @click="visibleDetail = false">{{ c.cancel }}</el-button>
           <el-button
             v-if="!formProps.disabled"
             type="primary"
-            @click.native="submmitDetail"
+            @click="submmitDetail"
             :loading="submmitLoadingDetail"
-            >{{ $c.confirm }}
+            >{{ c.confirm }}
           </el-button>
           <slot name="operation"></slot>
         </div>
@@ -342,37 +336,37 @@ export default {
   data: function () {
     return {
       ...config,
-      statusButton: { 1: this.$c.disable, 2: this.$c.enable },
+      statusButton: { 1: this.c.disable, 2: this.c.enable },
       statusButtonClass: { 1: 'text-yellow', 2: 'text-green' },
       parentId: '',
-      name: this.$l.title,
+      name: this.l.title,
       workflowOptions: [],
       detailFlag: false,
       visibleDetail: false,
-      status: { 1: this.$c.enabled, 2: this.$c.disabled },
+      status: { 1: this.c.enabled, 2: this.c.disabled },
       statusClass: { 2: 'bg-red', 1: 'bg-green' },
       columns: [
-        { title: this.$l.name, key: 'name' },
-        { title: this.$l.process_code, key: 'process_code', width: 70 },
-        { title: this.$l.status, key: 'status', width: 70 },
-        { title: this.$c.modify_user, key: 'modify_user', width: 100 },
-        { title: this.$c.modify_time, key: 'modify_time', width: 140 },
+        { title: this.l.name, key: 'name' },
+        { title: this.l.process_code, key: 'process_code', width: 70 },
+        { title: this.l.status, key: 'status', width: 70 },
+        { title: this.c.modify_user, key: 'modify_user', width: 100 },
+        { title: this.c.modify_time, key: 'modify_time', width: 140 },
       ],
       fields: [
         {
-          title: this.$l.name,
+          title: this.l.name,
           key: 'name',
           span: 24,
           //required: true,
         },
         {
-          title: this.$l.process_code,
+          title: this.l.process_code,
           key: 'process_code',
           span: 24,
           //required: true,
         },
         {
-          title: this.$l.isEnable,
+          title: this.l.isEnable,
           key: 'status',
           span: 8,
           name: 'switch',
@@ -409,11 +403,11 @@ export default {
       listField: [],
 
       columnsDetail: [
-        { title: this.$l.detialNmae, key: 'name', width: 120 },
-        { title: this.$l.field_json, key: 'field_json', width: 140 },
-        { title: this.$l.status, key: 'status', width: 80 },
-        { title: this.$c.modify_user, key: 'modify_user', width: 100 },
-        { title: this.$c.modify_time, key: 'modify_time', width: 140 },
+        { title: this.l.detialNmae, key: 'name', width: 120 },
+        { title: this.l.field_json, key: 'field_json', width: 140 },
+        { title: this.l.status, key: 'status', width: 80 },
+        { title: this.c.modify_user, key: 'modify_user', width: 100 },
+        { title: this.c.modify_time, key: 'modify_time', width: 140 },
       ],
       tableData: [],
     }
@@ -451,15 +445,15 @@ export default {
       this.editFormVisible = true
     },
     disOrEnable(v) {
-      let status = { 1: this.$c.disable, 2: this.$c.enable }
-      this.$confirm(status[v.status] + this.$l.record, this.$c.oprConfirm).then(
+      let status = { 1: this.c.disable, 2: this.c.enable }
+      this.$confirm(status[v.status] + this.l.record, this.c.oprConfirm).then(
         () => {
           this.pageLoading = true
           this.$request(this.api + 'DisOrEnable/' + v.id, {}, 'post')
             .then((r) => {
               this.pageLoading = false
               this.$message({
-                message: this.$c.success,
+                message: this.c.success,
                 type: 'success',
               })
               if (v.parent_id) this.getDetailList()
@@ -556,7 +550,7 @@ export default {
     },
 
     deleteDetail(v) {
-      this.$confirm(this.$c.cfmDelete, this.$c.oprConfirm).then(() => {
+      this.$confirm(this.c.cfmDelete, this.c.oprConfirm).then(() => {
         this.pageLoading = true
         let url = this.api + 'delete/' + v.id
 
@@ -564,7 +558,7 @@ export default {
           .then((r) => {
             this.pageLoading = false
             this.$message({
-              message: this.$c.success,
+              message: this.c.success,
               type: 'success',
             })
             this.getDetailList()
@@ -619,7 +613,7 @@ export default {
         .then((r) => {
           this.submmitLoadingDetail = false
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           this.visibleDetail = false

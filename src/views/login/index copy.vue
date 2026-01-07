@@ -26,13 +26,13 @@
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
-            :placeholder="$l.username"
+            :placeholder="l.username"
             name="username"
             type="text"
             auto-complete="on">
-            <template slot="suffix">
+            <template #suffix>
               <div class="svg-container">
-                <svg-icon icon-class="user" />
+                <SvgIcon icon-class="user" />
               </div>
             </template>
           </el-input>
@@ -41,13 +41,13 @@
           <el-input
             :type="passwordType"
             v-model="loginForm.password"
-            :placeholder="$l.password"
+            :placeholder="l.password"
             name="password"
             auto-complete="on"
-            @keyup.enter.native="handleLogin">
-            <template slot="suffix">
+            @keyup.enter="handleLogin">
+            <template #suffix>
               <div class="svg-container pointer" @click="showPwd">
-                <svg-icon :icon-class="eyeClass" />
+                <SvgIcon :icon-class="eyeClass" />
               </div>
             </template>
           </el-input>
@@ -58,8 +58,8 @@
           type="primary"
           round
           style="width: 100%; margin-top: 20px; margin-bottom: 30px"
-          @click.native.prevent="handleLogin">
-          {{ $l.login }}
+          @click.prevent="handleLogin">
+          {{ l.login }}
         </el-button>
         <div style="text-align: right; margin-bottom: 30px">
           <el-link
@@ -67,7 +67,7 @@
             @click="register(2)"
             type="primary"
             style="font-size: 12px; float: left">
-            {{ $l.forgetPass }}
+            {{ l.forgetPass }}
           </el-link>
           <!-- <el-link :underline="false" @click="register" type="primary" style="font-size:12px">忘记密码</el-link> -->
           <el-link
@@ -75,7 +75,7 @@
             @click="register(1)"
             type="primary"
             style="font-size: 12px; float: right">
-            {{ $l.register }}
+            {{ l.register }}
           </el-link>
           <div style="clear: both"></div>
         </div>
@@ -105,14 +105,14 @@ export default {
         username: [
           {
             required: true,
-            message: this.$l.usernameValidate,
+            message: this.l.usernameValidate,
             trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: this.$l.passwordValidate,
+            message: this.l.passwordValidate,
             trigger: 'blur',
           },
         ],
@@ -163,7 +163,7 @@ export default {
             .then(() => {
               this.loading = false
               this.$message({
-                message: this.$l.success,
+                message: this.l.success,
                 type: 'success',
               })
               this.$router.push({ path: this.redirect || '/' })

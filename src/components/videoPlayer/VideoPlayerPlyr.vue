@@ -16,8 +16,8 @@
     <div v-show="showObj.resumePlayBtn" class="resumePlayBtn">
       <div v-if="lastPlayTime !== videoObj.duration">
         {{ $t('videoPlayer.resume_play_question', { time: formatSeconds(lastPlayTime, true) }) }}
-        <el-button type="text" @click="backToLastPlay">{{ $c.confirm }}</el-button>
-        <el-button type="text" class="text-red" @click="showObj.resumePlayBtn = false">{{ $c.cancel }}</el-button>
+        <el-button type="text" @click="backToLastPlay">{{ c.confirm }}</el-button>
+        <el-button type="text" class="text-red" @click="showObj.resumePlayBtn = false">{{ c.cancel }}</el-button>
       </div>
     </div>
 
@@ -25,7 +25,7 @@
     <div v-if="showObj.topMessageShow" class="topMessage">
       <div>
         {{ showObj.topMessage }}
-        <el-button type="text" class="text-blue" @click="showObj.topMessageShow = false">{{ $c.cancel }}</el-button>
+        <el-button type="text" class="text-blue" @click="showObj.topMessageShow = false">{{ c.cancel }}</el-button>
       </div>
     </div>
 
@@ -34,9 +34,9 @@
       <div v-if="showObj.breakPointShow" class="modal">
         <div class="modal-content" @click.stop>
           <el-button v-if="!showObj.showAnswer" class="modal-rightBtn" type="primary" @click="submitAnswer">
-            {{ $l.submit_answer }}
+            {{ l.submit_answer }}
           </el-button>
-          <el-button v-else class="modal-rightBtn" type="success" @click="closeModal">{{ questionObj.remainingTime }}{{ $l.seconds_to_close }}</el-button>
+          <el-button v-else class="modal-rightBtn" type="success" @click="closeModal">{{ questionObj.remainingTime }}{{ l.seconds_to_close }}</el-button>
 
           <div class="modal-title">
             <div>
@@ -886,8 +886,8 @@ export default {
       } else if (!document.hidden && !this.flagObj.isPlaying) {
         if (this.flagObj.needAlert && !this.flagObj.hasAlerted) {
           this.flagObj.hasAlerted = true
-          this.$alert(this.$l.prevent_leaving, this.$l.leaving_detected, {
-            confirmButtonText: this.$c.confirm,
+          this.$alert(this.l.prevent_leaving, this.l.leaving_detected, {
+            confirmButtonText: this.c.confirm,
             callback: (action) => {
               this.flagObj.needAlert = false
             },
@@ -906,7 +906,7 @@ export default {
       if (this.finishPoint > 0) {
         this.paramsObj.markersArray.push({
           time: this.finishPoint <= this.videoObj.duration ? this.finishPoint : this.videoObj.duration,
-          text: this.$l.finish_point,
+          text: this.l.finish_point,
           color: '#18b566',
         })
       }
@@ -1003,7 +1003,7 @@ export default {
     },
 
     onRateChange(e) {
-      this.topMsg(this.$l.playback_speed_no_progress)
+      this.topMsg(this.l.playback_speed_no_progress)
       this.$emit('rateChange', e)
     },
 

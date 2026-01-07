@@ -7,7 +7,7 @@
       {{ c.saveIndex }}
     </el-button>
     <div class="filter-container">
-      <el-input style="width: 200px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter.native="getList" @clear="getList" v-model="query.queryString.str"></el-input>
+      <el-input style="width: 200px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter="getList" @clear="getList" v-model="query.queryString.str"></el-input>
       <el-select v-model="query.queryString.status" class="filter-item" clearable :placeholder="l.statusPd" @change="getList">
         <el-option :label="c.enabled" value="1"></el-option>
         <el-option :label="c.disabled" value="2"></el-option>
@@ -22,8 +22,8 @@
         <a href="#" v-if="v.row.status == 1" class="text-red" @click.prevent="deleteItem(v.row, 2)">{{ c.disable }}</a>
       </template>
     </z-table>
-    <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList"></z-pagination>
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
+    <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList"></z-pagination>
+    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
   </div>
 </template>
 

@@ -6,11 +6,11 @@
           <div class="topic-filter">
             <div style="padding: 15px 0px;">
               <el-form inline label-position="left">
-                <el-form-item :label="$l.topicName">
+                <el-form-item :label="l.topicName">
                   <el-input v-model="topicObj.query.name" clearable @clear='getTopicList'
-                    @keyup.native.enter="getTopicList"></el-input>
+                    @keyup.enter="getTopicList"></el-input>
                 </el-form-item>
-                <el-form-item> <el-button type="primary" @click="getTopicList">{{$c.m_search}}</el-button></el-form-item>
+                <el-form-item> <el-button type="primary" @click="getTopicList">{{ c.m_search}}</el-button></el-form-item>
               </el-form>
             </div>
 
@@ -30,16 +30,16 @@
               <img v-if="i.detail.length>0" class="img" :src="$api.videoServer+'/'+i.detail[0].thumbnail_path" />
               <div v-else class="emptyImg">
                 <div class="text">
-                  {{$l.noCover}}
+                  {{ l.noCover}}
                 </div>
               </div>
               <div class="info">
                 <div class="title">{{i.title_label}}</div>
                 <div class="detailBox">
                   <div class="detail">
-                    {{$l.contentLeft}} {{i.detail.length}} {{$l.contentRight}}
+                    {{ l.contentLeft}} {{i.detail.length}} {{ l.contentRight}}
                   </div>
-                  <div class="time">{{$l.latestUpdate}}：{{i.modify_time}}</div>
+                  <div class="time">{{ l.latestUpdate}}：{{i.modify_time}}</div>
                 </div>
               </div>
             </div>
@@ -75,17 +75,17 @@
           total: 0
         },
         rankList: [{
-            label: this.$l.latest,
+            label: this.l.latest,
             current: false,
             asc: false
           },
           {
-            label: this.$l.mostPopular,
+            label: this.l.mostPopular,
             current: false,
             asc: false
           },
           {
-            label: this.$l.positiveReview,
+            label: this.l.positiveReview,
             current: false,
             asc: false
           },

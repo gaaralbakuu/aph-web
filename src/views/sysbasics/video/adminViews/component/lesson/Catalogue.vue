@@ -1,7 +1,7 @@
 <template>
   <div ref="lesssonCatalogue-container" class="lesssonCatalogue-container">
-    <el-drawer class="drawer-container" :visible.sync="showObj.catalog_show" :wrapperClosable="false" size="40%" :before-close="getCatalogList">
-      <div slot="title" class="title">{{ l.addEditCatalogue }}</div>
+    <el-drawer class="drawer-container" v-model:visible="showObj.catalog_show" :wrapperClosable="false" size="40%" :before-close="getCatalogList">
+      <template #title><div class="title">{{ l.addEditCatalogue }}</div></template>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
@@ -41,9 +41,9 @@
           <el-button type="success" @click="getCollegeList" style="margin-left: 10px">{{ l.refresh }}</el-button>
         </div>
         <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true" :data="publicCodeObj.collegeList" :filter-node-method="filterOrg">
-          <div class="org-tree-node" slot-scope="{ node, data }" @click="clickCollege(data.id)">
+          <template #{ node, data }><div class="org-tree-node" v- @click="clickCollege(data.id)">
             <span>{{ data.name_label }}</span>
-          </div>
+          </div></template>
         </el-tree>
       </div>
       <div style="width: 65%">
@@ -59,7 +59,7 @@
             <el-button type="primary" @click="addCatalog()" style="margin-left: 10px">{{ l.addCatalogue }}</el-button>
           </div>
           <el-tree ref="catalogTree" node-key="id" :accordion="true" :default-expand-all="true" :data="catalogObj.data" :filter-node-method="filterCatalog" :empty-text="l.emptyCatalogue">
-            <div class="custom-tree-node" slot-scope="{ node, data }">
+            <template #{ node, data }><div class="custom-tree-node" v->
               <span>{{ data.name_label }}</span>
               <span>
                 <el-button type="text" @click.stop="addCatalog(data)">{{ l.addChildCatalog }}</el-button>
@@ -68,7 +68,7 @@
                 <el-button v-if="data.is_valid == 'N'" type="text" style="color: seagreen" @click.stop="modifyCatalogStatus(data)">{{ l.enable }}</el-button>
                 <el-button v-else type="text" style="color: red" @click.stop="modifyCatalogStatus(data)">{{ l.disable }}</el-button>
               </span>
-            </div>
+            </div></template>
           </el-tree>
         </div>
         <div v-show="catalogObj.query.college_id == ''" style="width: 100%; height: 500px; line-height: 500px; text-align: center; color: #aaa; font-size: 20px">
@@ -78,13 +78,13 @@
     </div>
 
     <!-- 课程管理drawer -->
-    <el-drawer class="drawer-container" :visible.sync="showObj.course_show" :wrapperClosable="false" size="50%">
-      <div slot="title" class="title">{{ l.courseManagement }}</div>
+    <el-drawer class="drawer-container" v-model:visible="showObj.course_show" :wrapperClosable="false" size="50%">
+      <template #title><div class="title">{{ l.courseManagement }}</div></template>
       <div class="form-container">
         <el-button type="primary" @click="beforeOpenCourseDialog">{{ l.addCourse }}</el-button>
         <el-table :data="courseObj.list" style="width: 100%">
           <el-table-column prop="thumbnail_path" :label="l.cover">
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="img" v-if="scope.row.thumbnail_path">
                 <img class="auto-img" :src="$api.videoServer + '/' + scope.row.thumbnail_path" />
               </div>
@@ -97,7 +97,7 @@
           <el-table-column prop="name_zh" :label="l.title"></el-table-column>
           <el-table-column prop="is_valid" :label="l.status"></el-table-column>
           <el-table-column :label="l.operation">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button type="text" style="color: red" @click="toggleCourseStatus(scope.row)">{{ l.remove }}</el-button>
             </template>
           </el-table-column>
@@ -109,18 +109,18 @@
     </el-drawer>
 
     <!-- 选择课程 -->
-    <el-dialog :visible.sync="showObj.selectCourse" :title="l.addCourse" width="70%">
+    <el-dialog v-model:visible="showObj.selectCourse" :title="l.addCourse" width="70%">
       <div style="height: 500px; display: flex; justify-content: space-between">
         <div style="width: 48%; border: 1px solid #ddd; border-radius: 5px; padding: 5px">
           <div style="margin-bottom: 10px; display: flex; justify-content: space-between">
-            <el-input v-model="courseObj.query.name" style="width: 200px" @keyup.native.enter="getCourseList"></el-input>
+            <el-input v-model="courseObj.query.name" style="width: 200px" @keyup.enter="getCourseList"></el-input>
             <el-button type="primary" @click="getCourseList">{{ l.search }}</el-button>
             <el-button type="success" @click="multipleAdd">{{ l.batchAdd }}</el-button>
           </div>
           <el-table :data="courseObj.courseList" height="420" @selection-change="handleSelectionChangeToBeAdded">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="thumbnail_path" :label="l.cover">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <div class="img" v-if="scope.row.thumbnail_path">
                   <img class="auto-img" :src="$api.videoServer + '/' + scope.row.thumbnail_path" />
                 </div>
@@ -132,7 +132,7 @@
             </el-table-column>
             <el-table-column prop="name_zh" :label="l.title"></el-table-column>
             <el-table-column :label="l.operation">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button type="text" @click="addCourse(scope.row)">{{ l.add }}</el-button>
               </template>
             </el-table-column>
@@ -147,17 +147,17 @@
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="name_zh" :label="l.title"></el-table-column>
             <el-table-column :label="l.operation">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button type="text" style="color: red" @click="removeCourse(scope.$index)">{{ l.remove }}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer">
+      <template #footer><div class="dialog-footer">
         <el-button type="primary" @click="bindCourseToCatalog">{{ l.confirm }}</el-button>
         <el-button @click="showObj.selectCourse = false">{{ l.cancel }}</el-button>
-      </div>
+      </div></template>
     </el-dialog>
   </div>
 </template>

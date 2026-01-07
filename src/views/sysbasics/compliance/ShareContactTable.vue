@@ -40,7 +40,7 @@
             width="80" 
             fixed="left"
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="font-mono text-gray-500 font-medium">
                 {{ (page.page - 1) * page.pageSize + scope.$index + 1 }}
               </span>
@@ -54,7 +54,7 @@
             min-width="150"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                   <i class="fa fa-user text-green-600 text-sm"></i>
@@ -73,7 +73,7 @@
             min-width="200"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="flex items-center gap-2">
                 <i class="fa fa-envelope text-blue-500"></i>
                 <a 
@@ -94,7 +94,7 @@
             width="150"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="flex items-center gap-2">
                 <i class="fa fa-phone text-green-500"></i>
                 <a 
@@ -115,7 +115,7 @@
             width="120"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="text-gray-700">
                 {{ scope.row.department || c.empty }}
               </span>
@@ -129,7 +129,7 @@
             width="120"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
                 {{ scope.row.position || c.empty }}
               </span>
@@ -142,7 +142,7 @@
             :label="l.status"
             width="100"
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <span 
                 :class="{
                   'px-2 py-1 rounded text-xs font-medium': true,
@@ -161,7 +161,7 @@
             :label="c.operation"
             width="150"
           >
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="flex items-center gap-2">
                 <!-- View Button -->
                 <button 
@@ -223,8 +223,8 @@
         <z-pagination 
           :pagination="pagination" 
           :total="total" 
-          :page.sync="page.page" 
-          :limit.sync="page.pageSize" 
+          v-model:page="page.page" 
+          v-model:limit="page.pageSize" 
           @change="handlePageChange"
           class="custom-pagination"
         />

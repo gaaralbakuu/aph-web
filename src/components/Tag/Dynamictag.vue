@@ -5,7 +5,7 @@
       {{tag}}
     </el-tag>
     <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" :size="conf.inputSize"
-      :style="{width:conf.inputWidth+'px'}" @keyup.enter.native.prevent="handleInputConfirm" @blur="handleInputConfirm">
+      :style="{width:conf.inputWidth+'px'}" @keyup.enter.prevent="handleInputConfirm" @blur="handleInputConfirm">
     </el-input>
     <el-button v-else type="primary" class="button-new-tag" :size="conf.buttonSize" icon="el-icon-plus"
       @click="showInput" circle></el-button>

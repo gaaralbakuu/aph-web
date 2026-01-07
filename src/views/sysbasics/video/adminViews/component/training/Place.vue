@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-drawer class="drawer-container" :visible.sync="showObj.add_show" :wrapperClosable="false" size="40%"
+    <el-drawer class="drawer-container" v-model:visible="showObj.add_show" :wrapperClosable="false" size="40%"
       :before-close="getTrainPlaceList">
-      <div slot="title" class="title">{{l.addTrainingPlace}}</div>
+      <template #title><div class="title">{{l.addTrainingPlace}}</div></template>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
@@ -41,9 +41,9 @@
       </div>
     </el-drawer>
 
-    <el-drawer class="drawer-container" :visible.sync="showObj.edit_show" :wrapperClosable="false" size="40%"
+    <el-drawer class="drawer-container" v-model:visible="showObj.edit_show" :wrapperClosable="false" size="40%"
       :before-close="getTrainPlaceList">
-      <div slot="title" class="title">{{l.editTrainingPlace}}</div>
+      <template #title><div class="title">{{l.editTrainingPlace}}</div></template>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
@@ -106,15 +106,17 @@
     </div>
     <div style="height: calc(100% - 60px);">
       <a-table :dataSource="trainPlaceList.data" :columns="tableColumns" :scroll="{ y: 720 }" ref="userTable">
-        <template slot="operation" slot-scope="text, record">
-          <el-button @click="editLecturer(record)" type="text" size="small">{{ l.edit }}</el-button>
-          <el-button v-if="record.is_valid == 'Y'" @click="deleteLecturer(record)" type="text" size="small" style="color: red">{{ l.disable }}</el-button>
-          <el-button v-else @click="deleteLecturer(record)" type="text" size="small" style="color: rgb(58, 188, 19)">{{ l.enable }}</el-button>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'operation'">
+            <el-button @click="editLecturer(record)" type="text" size="small">{{ l.edit }}</el-button>
+            <el-button v-if="record.is_valid == 'Y'" @click="deleteLecturer(record)" type="text" size="small" style="color: red">{{ l.disable }}</el-button>
+            <el-button v-else @click="deleteLecturer(record)" type="text" size="small" style="color: rgb(58, 188, 19)">{{ l.enable }}</el-button>
+          </template>
         </template>
       </a-table>
 
-      <z-pagination :pagination="pagination" :total="trainPlaceList.total" :page.sync="trainPlaceList.form.page"
-        :limit.sync="trainPlaceList.form.pageSize" @change="getTrainPlaceList">
+      <z-pagination :pagination="pagination" :total="trainPlaceList.total" v-model:page="trainPlaceList.form.page"
+        v-model:limit="trainPlaceList.form.pageSize" @change="getTrainPlaceList">
       </z-pagination>
     </div>
   </div>

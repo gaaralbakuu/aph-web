@@ -25,7 +25,7 @@
         </el-dropdown>
       </div>
       <div class="flex items-center gap-2">
-        <lang-select class="lang-select" />
+        <LangSelect class="lang-select" />
         <div class="relative group ml-auto">
           <div class="h-10 w-10 rounded-md text-[20px] cursor-pointer flex items-center justify-center bg-[#f5f5f5] text-black hover:bg-[#eaeaea] hover:text-black dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#272727] dark:hover:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">

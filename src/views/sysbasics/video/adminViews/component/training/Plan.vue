@@ -3,12 +3,12 @@
     <div class="component">
       <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none;" accept="image/*" />
 
-      <el-dialog :visible.sync="showObj.coverDialog" :title="l.preview">
+      <el-dialog v-model:visible="showObj.coverDialog" :title="l.preview">
         <img width="100%" :src="coverObj.dialogImageUrl" alt="" fit='fill'>
       </el-dialog>
 
       <!-- 选择考试dialog -->
-      <el-dialog :visible.sync="showObj.selectExam" @open='getExamList' :title="l.bindExam" width="75%">
+      <el-dialog v-model:visible="showObj.selectExam" @open='getExamList' :title="l.bindExam" width="75%">
         <div class="examSelect-dialog">
           <el-form inline label-width="60px">
             <el-form-item :label="l.collegeFilter">
@@ -40,7 +40,7 @@
             <a-table-column :title="l.endTime" dataIndex="end_time"></a-table-column>
             <a-table-column :title="l.enableStatus" dataIndex="is_valid"></a-table-column>
             <a-table-column :title="l.actions" fixed="right" :width="200">
-              <template #default="text, record">
+              <template #default="{text, record}">
                 <a-button type="link" style="color: green;" @click="previewDetail(record)">{{l.preview}}</a-button>
                 <a-button type="link" @click="selectItemToDetail(record)">{{l.select}}</a-button>
               </template>
@@ -49,7 +49,7 @@
         </div>
       </el-dialog>
 
-      <el-dialog :visible.sync="showObj.selectCourse" :title="l.addCourse" width="75%" @open='getCourseList'
+      <el-dialog v-model:visible="showObj.selectCourse" :title="l.addCourse" width="75%" @open='getCourseList'
         class="lessonList-dialog">
         <el-form inline>
           <el-form-item :label="l.college">
@@ -61,7 +61,7 @@
           </el-form-item>
           <el-form-item :label="l.name">
             <el-input v-model="courseObj.query.name" clearable @clear='getCourseList'
-              @keyup.native.enter="getCourseList"></el-input>
+              @keyup.enter="getCourseList"></el-input>
           </el-form-item>
           <el-form-item :label="l.status">
             <div class="frcc">
@@ -83,7 +83,7 @@
             </template>
           </a-table-column>
           <a-table-column :title="l.cover">
-            <template #default="text, record">
+            <template #default="{text, record}">
               <div class="img" v-if="record.thumbnail_path">
                 <img class="auto-img" @click="coverPreview($api.videoServer+'/'+ record.thumbnail_path)"
                   :src="$api.videoServer+'/'+ record.thumbnail_path" />
@@ -100,7 +100,7 @@
           <a-table-column :title="l.courseCredit" dataIndex="score"></a-table-column>
           <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
           <a-table-column :title="l.actions" fixed="right" :width="200">
-            <template #default="text, record">
+            <template #default="{text, record}">
               <a-button type="link" @click="selectItemToDetail(record)">{{l.add}}</a-button>
             </template>
           </a-table-column>
@@ -115,7 +115,7 @@
       </el-dialog>
 
       <!-- 新增或修改培训班以及配套资源 -->
-      <el-drawer class="drawer-container" direction='btt' :visible.sync="showObj.trainingShow" :wrapperClosable='false'
+      <el-drawer class="drawer-container" direction='btt' v-model:visible="showObj.trainingShow" :wrapperClosable='false'
         size="92%">
         <div slot='title' class="title">{{l.manageTraining}}</div>
         <el-tabs ref='tabs' type="border-card" class="form-container" @tab-click="swiperTab"
@@ -224,12 +224,12 @@
               <a-table-column :title="l.name" dataIndex="name_label">
               </a-table-column>
               <a-table-column :title="l.type">
-                <template #default="text, record">
+                <template #default="{text, record}">
                   {{record.type==1?l.exam:l.courseName}}
                 </template>
               </a-table-column>
               <a-table-column :title="l.required">
-                <template #default="text, record">
+                <template #default="{text, record}">
                   <a-switch v-model="record.is_must" :checked-value="1" :un-checked-value="0">
                   </a-switch>
                 </template>
@@ -264,7 +264,7 @@
           </el-form-item>
           <el-form-item :label="l.name">
             <el-input v-model="trainingObj.query.name" clearable @clear='getTrainingList'
-              @keyup.native.enter="getTrainingList"></el-input>
+              @keyup.enter="getTrainingList"></el-input>
           </el-form-item>
           <el-form-item :label="l.status">
             <el-select v-model="trainingObj.query.is_valid" @change="getTrainingList" style="width: 100px;">
@@ -293,7 +293,7 @@
           <a-table-column :title="l.endTime" dataIndex="end_date"></a-table-column>
           <a-table-column :title="l.enableStatus" dataIndex="is_valid"></a-table-column>
           <a-table-column :title="l.actions" fixed="right" :width="250">
-            <template #default="text, record">
+            <template #default="{text, record}">
               <a-button type="link" @click="modifyTraining(record)">{{l.manage}}</a-button>
               <a-button v-if="record.is_valid=='N'" type="link" style="color: seagreen;" @click="modifyStatus(record)">{{l.enable}}</a-button>
               <a-button v-else type="link" style="color: red;" @click="modifyStatus(record)">{{l.disable}}</a-button>

@@ -1,27 +1,27 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{$c.create}}</el-button>
+    <el-button type="primary" class="fr" @click="createItem">{{ c.create}}</el-button>
     <div class="filter-container">
 
-      <el-input style="width: 300px;" :placeholder="$c.queryPlaceholder" clearable prefix-icon="el-icon-search"
-        class="filter-item" @keyup.enter.native="research" @clear="research" v-model="query.queryString"></el-input>
-      <el-button class="filter-item" type="success" plain @click="research">{{$c.queryButton}}</el-button>
-      <el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{$c.export}}
+      <el-input style="width: 300px;" :placeholder="c.queryPlaceholder" clearable prefix-icon="el-icon-search"
+        class="filter-item" @keyup.enter="research" @clear="research" v-model="query.queryString"></el-input>
+      <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton}}</el-button>
+      <el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{ c.export}}
       </el-button>
     </div>
     <z-table :list="list" :tableProps="tableProps" :columns="columns" @editItem="editItem" @deleteItem="deleteItem">
       <template v-slot:operation="v">
-        <a href="#" class="text-blue" @click.prevent="editItem(v.row,v.$index)">{{$c.edit}}</a>
+        <a href="#" class="text-blue" @click.prevent="editItem(v.row,v.$index)">{{ c.edit}}</a>
         <span>&nbsp;</span>
-        <a href="#" class="text-green" @click.prevent="copyItem(v.row,v.$index)">{{$c.copy}}</a>
+        <a href="#" class="text-green" @click.prevent="copyItem(v.row,v.$index)">{{ c.copy}}</a>
         <span>&nbsp;</span>
-        <a href="#" class="text-red" @click.prevent="deleteItem(v.row,v.$index)">{{$c.delete}}</a>
+        <a href="#" class="text-red" @click.prevent="deleteItem(v.row,v.$index)">{{ c.delete}}</a>
       </template>
     </z-table>
-    <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size"
+    <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size"
       @change="getList"></z-pagination>
     <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit"
-      :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
+      :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
   </div>
 </template>
 
@@ -49,18 +49,18 @@ export default {
   data: function () {
     return {
       ...config,
-      name: this.$l.title,
+      name: this.l.title,
       columns: [
-    { title: this.$l.userid, key: 'userid' , width: 160 },
-    { title: this.$l.username, key: 'username' , width: 200 },
-    { title: this.$l.department, key: 'department_t' , width: 200 },
-    { title: this.$l.in_date, key: 'in_date' , width: 200 },
-    { title: this.$l.out_date, key: 'out_date' , width: 200 },
-    { title: this.$c.modify_user, key: 'modify_user' , width: 160 },
-    { title: this.$c.modify_time, key: 'modify_time' }
+    { title: this.l.userid, key: 'userid' , width: 160 },
+    { title: this.l.username, key: 'username' , width: 200 },
+    { title: this.l.department, key: 'department_t' , width: 200 },
+    { title: this.l.in_date, key: 'in_date' , width: 200 },
+    { title: this.l.out_date, key: 'out_date' , width: 200 },
+    { title: this.c.modify_user, key: 'modify_user' , width: 160 },
+    { title: this.c.modify_time, key: 'modify_time' }
   ],
   fields: [
-    { title: this.$l.userid, key: 'userid', required: true },
+    { title: this.l.userid, key: 'userid', required: true },
 
   ],
       typeOptions: [],

@@ -80,10 +80,10 @@
 
     <!-- Pagination -->
     <div class="pagination-section">
-      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.curPage" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
+      <z-pagination :pagination="pagination" :total="manufacturer.query.total" v-model:page="manufacturer.query.curPage" v-model:limit="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
     <!-- Create/Edit Dialog -->
-    <CustomDialog :title="manufacturer.data.id ? c.edit : c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" custom-class="scrollable-dialog manufacturer-form-dialog">
+    <CustomDialog :title="manufacturer.data.id ? c.edit : c.create" v-model:visible="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" custom-class="scrollable-dialog manufacturer-form-dialog">
       <template #content>
         <div class="form-container">
           <!-- Basic Information Section -->
@@ -326,17 +326,17 @@
           </div>
         </div>
       </template>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="manufacturer.addOrEditFormVisible = false" class="dialog-cancel-button">
           {{ c.cancel }}
         </el-button>
         <el-button type="primary" @click="OPenManufacturer" class="dialog-confirm-button">
           {{ c.confirm }}
         </el-button>
-      </span>
+      </span></template>
     </CustomDialog>
     <!-- 确认信息窗口 -->
-    <el-dialog :title="l.confirm_info" :visible.sync="manufacturer.inforFormVisible" width="40%">
+    <el-dialog :title="l.confirm_info" v-model:visible="manufacturer.inforFormVisible" width="40%">
       <el-descriptions :title="l.basic">
         <el-descriptions-item :label="l.manufacture_name_CN">
           {{ manufacturer.data.name_zh }}
@@ -440,18 +440,18 @@
           manufacturer.data.contact_email
         }}</el-descriptions-item>
       </el-descriptions> -->
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="manufacturer.inforFormVisible = false">
           {{ c.cancel }}
         </el-button>
         <el-button type="primary" @click="submmitManufacturer">
           {{ c.confirm }}
         </el-button>
-      </span>
+      </span></template>
     </el-dialog>
 
     <!-- 合规联系人信息 -->
-    <el-dialog :title="l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" width="50%">
+    <el-dialog :title="l.contact_info" @submmit="contactInfoSubmmit" v-model:visible="contactInfo.dialogFormVisible" width="50%">
       <el-form :model="contactInfo.data" label-position="top" inline style="border-radius: 2px" :rules="rulesRules">
         <el-row>
           <el-col :span="12">
@@ -476,7 +476,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="contactInfo.dialogFormVisible = false">
           {{ c.cancel }}
         </el-button>
@@ -484,13 +484,13 @@
           {{ c.confirm }}
         </el-button>
         <slot name="operation"></slot>
-      </span>
+      </span></template>
     </el-dialog>
 
     <!-- 地址窗口 -->
-    <z-form-dialog :name="l.addr_and_processes" :data="address.data" :formProps="formProps" :fields="address.fields" @submmit="addressSubmmit" :submmitLoading="submmitLoading" :visible.sync="address.dialogFormVisible"></z-form-dialog>
+    <z-form-dialog :name="l.addr_and_processes" :data="address.data" :formProps="formProps" :fields="address.fields" @submmit="addressSubmmit" :submmitLoading="submmitLoading" v-model:visible="address.dialogFormVisible"></z-form-dialog>
     <!-- 附件窗口 -->
-    <el-dialog :title="l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
+    <el-dialog :title="l.add_attachments" v-model:visible="attachment.dialogFormVisible" width="30%">
       <el-form ref="form">
         <el-form-item label="">
           <el-button type="primary" @click="selectFile">
@@ -524,7 +524,7 @@
       </el-form>
     </el-dialog>
     <!-- 地址信息 -->
-    <el-dialog :title="l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
+    <el-dialog :title="l.addr_and_processes" v-model:visible="address.dialogTableVisible2" width="30%">
       <el-table :data="address.list">
         <el-table-column property="address_zh" :label="l.address_zh"></el-table-column>
         <el-table-column property="address_en" :label="l.address_en"></el-table-column>
@@ -533,13 +533,13 @@
       </el-table>
     </el-dialog>
     <!-- 附件信息 -->
-    <el-dialog :title="l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
+    <el-dialog :title="l.attachment_info" v-model:visible="attachment.dialogFormVisible2" width="30%">
       <el-table :data="attachment.list">
         <el-table-column property="file_name" :label="l.fileName"></el-table-column>
         <el-table-column property="create_user" :label="l.create_people"></el-table-column>
         <el-table-column property="create_time" :label="l.create_date"></el-table-column>
         <el-table-column fixed="right" :label="l.operation">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button @click="checkAttachments(scope.row)" type="text" size="small">
               {{ l.check }}
             </el-button>
@@ -551,7 +551,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog :visible.sync="visabled.uploadFile" width="30%">
+    <el-dialog v-model:visible="visabled.uploadFile" width="30%">
       <div>
         <el-form style="margin-top: 20px">
           <el-form-item :label="l.upload_file" required>
@@ -571,7 +571,7 @@
     <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3" @update:visible="attachment.dialogFormVisible3 = $event"></filePreviews>
 
     <!-- Chi tiết modal -->
-    <CustomDialog :title="c.detail" :visible.sync="manufacturer.detailFormVisible" :clickOutside="false" width="90%" custom-class="scrollable-dialog manufacturer-detail-dialog">
+    <CustomDialog :title="c.detail" v-model:visible="manufacturer.detailFormVisible" :clickOutside="false" width="90%" custom-class="scrollable-dialog manufacturer-detail-dialog">
       <template #content>
         <div class="form-container">
           <!-- Basic Information Section -->
@@ -713,14 +713,14 @@
               <el-table :data="attachment.list" class="form-table" border>
                 <el-table-column prop="file_name" :label="l.fileName" min-width="200"></el-table-column>
                 <el-table-column prop="attachment_type" :label="l.fileType" min-width="120">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <span>{{ matterType(scope.row.attachment_type) }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="create_user" :label="l.create_people" min-width="120"></el-table-column>
                 <el-table-column prop="create_time" :label="l.create_date" min-width="150"></el-table-column>
                 <el-table-column :label="c.operation" width="150" fixed="right">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button @click="checkAttachments(scope.row)" type="text" size="small" class="delete-action-button">
                       {{ l.check }}
                     </el-button>
@@ -734,11 +734,11 @@
           </div>
         </div>
       </template>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="manufacturer.detailFormVisible = false" class="dialog-cancel-button">
           {{ c.cancel }}
         </el-button>
-      </span>
+      </span></template>
     </CustomDialog>
   </div>
 </template>
@@ -747,8 +747,8 @@
 import { ref, reactive, computed, onMounted, getCurrentInstance, watch, set } from 'vue'
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
-import { getToken, localGet } from '@/utils/auth'
-import { _, api, defaultConfig, zFormDialog, zPagination, zTable } from '@/views/_common'
+import { getToken, localGet } from '@/utils/auth.js'
+import { _, api, defaultConfig, zFormDialog, zPagination, zTable } from '@/views/_common/index.js'
 import CustomDialog from '../../_common/CustomDialog.vue'
 import filePreviews from '../../_common/filePreviews.vue'
 import ManufacturerTable from './ManufacturerTable.vue'

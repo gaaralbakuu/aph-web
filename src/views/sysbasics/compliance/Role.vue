@@ -41,7 +41,7 @@
          </div>
          <!-- Footer -->
          <div class="p-2 border-t border-[#E5E5E5] bg-white">
-            <z-pagination :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList" :options="{ small: true, layout: 'prev, pager, next' }"></z-pagination>
+            <z-pagination :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList" :options="{ small: true, layout: 'prev, pager, next' }"></z-pagination>
          </div>
       </div>
 
@@ -70,7 +70,7 @@
             {{ l.selectRoleFirst || 'Select a role' }}
          </div>
          <div class="p-2 border-t border-[#E5E5E5] bg-white" v-if="currentDataId">
-            <z-pagination :total="userTotal" :page.sync="userQuery.page" :limit.sync="userQuery.size" @change="getUserList" :options="{ small: true, layout: 'prev, pager, next' }"></z-pagination>
+            <z-pagination :total="userTotal" v-model:page="userQuery.page" v-model:limit="userQuery.size" @change="getUserList" :options="{ small: true, layout: 'prev, pager, next' }"></z-pagination>
          </div>
       </div>
 
@@ -95,8 +95,8 @@
               :expand-on-click-node="false"
               @check-change="menuCheckChange = true"
               class="custom-tree filter-tree">
-                <span class="custom-tree-node flex-1 flex items-center justify-between pr-2 py-1 text-sm w-full" slot-scope="{ data }">
-                    <span class="font-medium text-[#0D0D0D] text-sm">{{ data.menu_name_label }} <span class="text-[#999999] font-normal text-xs ml-1">[{{ data.resource_type }}]</span></span>
+                <template #{ data }><span class="custom-tree-node flex-1 flex items-center justify-between pr-2 py-1 text-sm w-full" v->
+                    <span class="font-medium text-[#0D0D0D] text-sm">{{ data.menu_name_label }} <span class="text-[#999999] font-normal text-xs ml-1">[{{ data.resource_type }}]</span></template></span>
                     <span v-show="showAuth.m_updata && data.resource_type != 'MENU'" class="flex gap-2 items-center" @click.stop>
                         <el-tooltip :content="c.m_add" placement="top" v-if="data.m_add == 'Y'" :open-delay="500">
                             <el-switch size="mini" v-model="data.m_add1" active-value="Y" inactive-value="N" @change="menuCheckChange = true" active-color="#069C56"></el-switch>
@@ -140,8 +140,8 @@
     </div>
 
     <!-- Dialogs -->
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
-    <chooseUser :visible.sync="addUserDialogShow" :useridList.sync="addUsers" @submmit="submmitAddUser"></chooseUser>
+    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
+    <chooseUser v-model:visible="addUserDialogShow" v-model:useridList="addUsers" @submmit="submmitAddUser"></chooseUser>
   </div>
 </template>
 

@@ -1,16 +1,17 @@
 <template>
 	<el-form :model="data" v-bind="formProps">
 		<el-row v-bind="formProps">
-			<template v-for="(f,index) in fields">
-				<el-col :span="f.span ? f.span : 24" :key="index" v-if="!f.hidden" :offset="f.offset ? f.offset : 0">
-					<el-form-item :prop="f.key">
-						<span slot="label">
-							<span v-if="f.required" class="text-red">*</span>
-							<el-tooltip v-if="f.tips" :content="f.tips" placement="top">
-								<div class="inlineBlock text-blue pointer">{{f.name=='checkbox'?'':f.title}}</div>
-							</el-tooltip>
-							<span v-else>{{f.name=='checkbox'?'':f.title}}</span>
-						</span>
+			<el-col v-for="(f,index) in fields" :key="index" :span="f.span ? f.span : 24" v-if="!f.hidden" :offset="f.offset ? f.offset : 0">
+				<el-form-item :prop="f.key">
+					<template #label>
+							<span>
+								<span v-if="f.required" class="text-red">*</span>
+								<el-tooltip v-if="f.tips" :content="f.tips" placement="top">
+									<div class="inlineBlock text-blue pointer">{{f.name=='checkbox'?'':f.title}}</div>
+								</el-tooltip>
+								<span v-else>{{f.name=='checkbox'?'':f.title}}</span>
+							</span>
+						</template>
 						<el-input v-if="f.name=='textarea'" type="textarea" v-bind="f.props" v-on="f.events||{}"
 							v-model="data[f.key]"></el-input>
 						<el-date-picker v-else-if="f.name=='date'" v-model="data[f.key]" style="width: 100%"
@@ -56,7 +57,9 @@
 						</img-uploader>
 						<el-upload v-else-if="f.name=='fileUploader'" :file-list="data[f.key]" v-bind="f.props">
 							<el-button type="primary">点击上传</el-button>
-							<div v-show="f.tips" slot="tip" class="el-upload__tip">{{f.tips}}</div>
+							<template #tip>
+								<div v-show="f.tips" class="el-upload__tip">{{f.tips}}</div>
+							</template>
 						</el-upload>
 						<el-input-number v-else-if="f.name=='number'" v-model="data[f.key]" v-bind="f.props"
 							v-on="f.events||{}">
@@ -64,14 +67,13 @@
 						<el-input v-else v-model="data[f.key]" v-bind="f.props" v-on="f.events||{}"></el-input>
 					</el-form-item>
 				</el-col>
-			</template>
 		</el-row>
 	</el-form>
 </template>
 
 <script>
-	import ImgUploader from '@/components/Img/Uploader'
-	import DynamicTag from '@/components/Tag/DynamicTag'
+	import ImgUploader from '@/components/Img/Uploader.vue'
+	import DynamicTag from '@/components/Tag/Dynamictag.vue'
 
 	export default {
 		name: 'z-form',

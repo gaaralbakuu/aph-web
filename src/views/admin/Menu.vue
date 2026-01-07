@@ -1,17 +1,17 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
     <div style="padding: 10px 0; min-height: 40px">
-      <el-button v-if="treeData.length == 0" @click="createNode(null)">{{$c.addItem}}</el-button>
+      <el-button v-if="treeData.length == 0" @click="createNode(null)">{{ c.addItem}}</el-button>
       <span v-if="treeData.length > 0" class="text-gray" style="font-size: 12px">
-        {{$c.indexDescription}}</span>
+        {{ c.indexDescription}}</span>
       <el-button type="success" v-if="indexChangeFlag" @click="saveIndex" :loading="sortLoading"
-        style="float: right; margin-top: -6px">{{$c.saveIndex}}
+        style="float: right; margin-top: -6px">{{ c.saveIndex}}
       </el-button>
     </div>
     <div style="border: #f4f4f4 solid 1px; padding: 10px 0">
       <el-tree :data="treeData" node-key="id" :default-expand-all="false" :expand-on-click-node="false" draggable
         :allow-drop="nodeIndexCheck" @node-drop="afterDrop">
-        <div class="custom-tree-node" slot-scope="{ data }">
+        <template #{ data }><div class="custom-tree-node" v->
           <div style="flex:1;overflow:hidden;">
             <span class="label" :class="{
                 'bg-blue': data.resource_type == 'APP',
@@ -22,76 +22,76 @@
               data.menu_name_label
             }}</span>
             <span style="margin-left: 10px; font-weight: normal; color: #999999">{{ data.resource_path }}</span>
-          </div>
+          </div></template>
           <div style="margin-left:10px;">
-            <a href="#" v-if="data.enabled == 1" class="text-blue" :title="$c.enabled" style="font-size: 14px"
+            <a href="#" v-if="data.enabled == 1" class="text-blue" :title="c.enabled" style="font-size: 14px"
               @click.prevent="disableOrEnable(data)">
               <i class="el-icon-open"></i>
             </a>
-            <a href="#" v-else class="text-gray" :title="$c.disabled" style="font-size: 16px"
+            <a href="#" v-else class="text-gray" :title="c.disabled" style="font-size: 16px"
               @click.prevent="disableOrEnable(data)">
               <i class="el-icon-turn-off"></i>
             </a>
-            <a href="#" class="text-blue pl-5" @click.prevent="editNode(data)" :title="$c.edit">{{$c.edit}}</a>&nbsp;
+            <a href="#" class="text-blue pl-5" @click.prevent="editNode(data)" :title="c.edit">{{ c.edit}}</a>&nbsp;
             <a href="#" class="text-green pl-5" @click.prevent="createNode(data)"
-              :title="$c.createNode">{{$c.createNode}}</a>&nbsp;
+              :title="c.createNode">{{ c.createNode}}</a>&nbsp;
             <a href="#" class="text-yellow pl-5" @click.prevent="createChildNode(data)"
-              :title="$c.createChildNode">{{ data.resource_type == 'MENU' ? $c.createChildNode : '　　　　' }}</a>&nbsp;
-            <a href="#" class="text-red pl-5" @click.prevent="removeNode(data)" :title="$c.delete">{{$c.delete}}</a>
+              :title="c.createChildNode">{{ data.resource_type == 'MENU' ? c.createChildNode : '　　　　' }}</a>&nbsp;
+            <a href="#" class="text-red pl-5" @click.prevent="removeNode(data)" :title="c.delete">{{ c.delete}}</a>
           </div>
         </div>
       </el-tree>
     </div>
     <!-- <z-form-dialog name="菜单" :data="nodeData" :formProps="formProps" :fields="nodeFields" @submmit="submmitNode"
-      :submmitLoading="submmitLoading" :visible.sync="editNodeFormVisible"></z-form-dialog> -->
-    <el-dialog :title="$l.title" :visible.sync="editNodeFormVisible" width="40%">
+      :submmitLoading="submmitLoading" v-model:visible="editNodeFormVisible"></z-form-dialog> -->
+    <el-dialog :title="l.title" v-model:visible="editNodeFormVisible" width="40%">
       <el-form label-width="100px">
-        <el-form-item :label="$l.resourcetType">
+        <el-form-item :label="l.resourcetType">
           <el-row>
             <el-col :span="22">
               <el-select style="width: 100%" v-model="nodeData.resource_type"
-                :placeholder="$c.resourcetTypePlaceholder">
+                :placeholder="c.resourcetTypePlaceholder">
                 <el-option v-for="(item, index) in options" :key="index" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item :label="$l.resourcePath">
+        <el-form-item :label="l.resourcePath">
           <el-row>
             <el-col :span="22">
               <el-input v-model="nodeData.resource_path"></el-input>
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item :label="$l.imageUrl">
+        <el-form-item :label="l.imageUrl">
           <el-row>
             <el-col :span="22">
               <el-input v-model="nodeData.image_url"></el-input>
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item :label="$l.isshow">
+        <el-form-item :label="l.isshow">
           <el-row>
-            <el-select v-model="nodeData.is_show" class="filter-item" :placeholder="$l.isshow">
+            <el-select v-model="nodeData.is_show" class="filter-item" :placeholder="l.isshow">
              <el-option label="Y" value="Y"></el-option>
              <el-option label="N" value="N"></el-option>
             </el-select>
 
           </el-row>
         </el-form-item>
-        <el-form-item :label="$l.menuName">
+        <el-form-item :label="l.menuName">
           <div v-for="(v, i) in labelData" :key="i" style="margin-bottom: 5px">
             <el-row>
               <el-col :span="8">
-                <el-select v-model="v.key" :placeholder="$c.selectLang">
+                <el-select v-model="v.key" :placeholder="c.selectLang">
                   <el-option v-for="(item, index) in langOptions" :key="index" :label="item.param_condition1"
                     :value="item.param_value">
                   </el-option>
                 </el-select>
               </el-col>
               <el-col :span="10" style="margin-left: 5px">
-                <el-input :placeholder="$l.menuNamePlaceholder" v-model="v.label" style="width: 100%"></el-input>
+                <el-input :placeholder="l.menuNamePlaceholder" v-model="v.label" style="width: 100%"></el-input>
               </el-col>
               <el-col :span="4" style="margin-left: 5px">
                 <el-button type="danger" size="mini" icon="el-icon-minus" @click="removeItem(i)" circle></el-button>
@@ -102,14 +102,12 @@
           </div>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editNodeFormVisible = false">{{
-          $c.cancel
+      <template #footer><span class="dialog-footer">
+        <el-button @click="editNodeFormVisible = false">{{ c.cancel
         }}</el-button>
-        <el-button type="primary" @click="submmitNode">{{
-          $c.confirm
+        <el-button type="primary" @click="submmitNode">{{ c.confirm
         }}</el-button>
-      </span>
+      </span></template>
     </el-dialog>
   </div>
 </template>
@@ -134,9 +132,9 @@ export default {
       treeData: [],
       nodeData: {},
       options: [
-        { label: this.$l.directory, value: 'MENU' },
-        { label: this.$l.web, value: 'WEB' },
-        { label: this.$l.app, value: 'APP' },
+        { label: this.l.directory, value: 'MENU' },
+        { label: this.l.web, value: 'WEB' },
+        { label: this.l.app, value: 'APP' },
       ],
       optionsYN: [
             { value: 'N', label: 'N' },
@@ -180,7 +178,7 @@ export default {
         data.resource_type != 'MENU'
       ) {
         this.$message({
-          message: this.$l.isExistChildren,
+          message: this.l.isExistChildren,
           type: 'error',
         })
         return
@@ -198,7 +196,7 @@ export default {
         .then((r) => {
           this.submmitLoading = false
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           this.editNodeFormVisible = false
@@ -221,7 +219,7 @@ export default {
         .then((r) => {
           this.pageLoading = false
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           data.enabled = post.enabled
@@ -232,13 +230,13 @@ export default {
     },
     removeNode: function (data) {
       let that = this
-      this.$confirm(that.$c.cfmDelete, that.$c.oprConfirm).then(() => {
+      this.$confirm(that.c.cfmDelete, that.c.oprConfirm).then(() => {
         this.pageLoading = true
         this.$request(this.api + 'delete/' + data.menu_id, {}, 'post')
           .then((r) => {
             this.pageLoading = false
             this.$message({
-              message: this.$c.success,
+              message: this.c.success,
               type: 'success',
             })
             this.refreshTree()
@@ -261,7 +259,7 @@ export default {
         .then((r) => {
           this.sortLoading = false
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           this.indexChangeFlag = false

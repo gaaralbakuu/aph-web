@@ -1,6 +1,6 @@
 <template>
   <div class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper">
+    <ScrollPane ref="scrollPane" class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
         ref="tagRef"
@@ -14,7 +14,7 @@
         {{ tag.title }}
         <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
-    </scroll-pane>
+    </ScrollPane>
     <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">{{ l.refresh }}</li>
       <!-- <li @click="closeSelectedTag(selectedTag)">关闭当前</li> -->
@@ -28,7 +28,7 @@
 import { ref, computed, watch, nextTick, getCurrentInstance, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
-import ScrollPane from '@/components/ScrollPane'
+import ScrollPane from '@/components/ScrollPane/index.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 // Props/Emits if needed

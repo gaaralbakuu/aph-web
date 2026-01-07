@@ -5,7 +5,7 @@
       <thead class="bg-gray-50">
         <tr>
           <th v-for="(item, index) in columns" :key="index" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ item.title || item.key }}</th>
-          <th v-if="!tableProps.hideOperations" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $c.operation }}</th>
+          <th v-if="!tableProps.hideOperations" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ c.operation }}</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -17,8 +17,8 @@
           </td>
           <td v-if="!tableProps.hideOperations" class="px-6 py-4 whitespace-nowrap text-sm font-medium">
             <slot name="operation" v-bind="{row:row,$index:rowIndex}">
-              <a href="#" class="text-blue-600 hover:text-blue-900" @click.prevent="editItem(row, rowIndex)">{{ $c.edit }}</a>&nbsp;
-              <a href="#" class="text-red-600 hover:text-red-900" @click.prevent="deleteItem(row, rowIndex)">{{ $c.delete }}</a>
+              <a href="#" class="text-blue-600 hover:text-blue-900" @click.prevent="editItem(row, rowIndex)">{{ c.edit }}</a>&nbsp;
+              <a href="#" class="text-red-600 hover:text-red-900" @click.prevent="deleteItem(row, rowIndex)">{{ c.delete }}</a>
             </slot>
           </td>
         </tr>

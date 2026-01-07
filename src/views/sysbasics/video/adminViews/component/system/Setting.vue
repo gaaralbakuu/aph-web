@@ -3,7 +3,7 @@
     <div class="pageBody">
       <el-collapse v-model="activeNames">
         <el-collapse-item name="platformName">
-          <template slot="title">
+          <template #title>
             <div style="font-size: 20px; font-weight: bold">
               {{ l.platformName }}
             </div>

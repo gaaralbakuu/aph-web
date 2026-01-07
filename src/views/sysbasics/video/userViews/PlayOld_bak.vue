@@ -4,38 +4,38 @@
     <FilePreviews :file-url="showObj.fileUrl" :visible="showObj.filePreviews"
       @update:visible="showObj.filePreviews = $event" />
 
-    <el-dialog class="examRecord-dialog" :title="$l.examRecord" :visible.sync="showObj.examDialog" width="50%">
+    <el-dialog class="examRecord-dialog" :title="l.examRecord" v-model:visible="showObj.examDialog" width="50%">
       <el-table :data="examRecord" stripe style="width: 100%" max-height="350px" empty-text=" ">
-        <el-table-column type="index" :label="$c.sn"></el-table-column>
-        <el-table-column prop="create_time" :label="$l.examedTime"></el-table-column>
-        <el-table-column prop="create_user" :label="$l.examUser"></el-table-column>
-        <el-table-column prop="score" :label="$l.examScore"></el-table-column>
-        <el-table-column :label="$c.operate" width="150" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="reviewExam(scope.row)">{{$l.check}}</el-button>
+        <el-table-column type="index" :label="c.sn"></el-table-column>
+        <el-table-column prop="create_time" :label="l.examedTime"></el-table-column>
+        <el-table-column prop="create_user" :label="l.examUser"></el-table-column>
+        <el-table-column prop="score" :label="l.examScore"></el-table-column>
+        <el-table-column :label="c.operate" width="150" align="center">
+          <template #default="scope">
+            <el-button type="text" size="mini" @click="reviewExam(scope.row)">{{ l.check}}</el-button>
           </template>
         </el-table-column>
-        <div slot="append">
+        <template #append><div>
           <div class="goToExam">
             <div class="detail">
-              {{$l.mostExam}}
+              {{ l.mostExam}}
               <el-button class="num"
-                type="text">{{currentExam.max_reply_num}}</el-button>{{$l.examUnit}}，{{$l.youCanExam}}
+                type="text">{{currentExam.max_reply_num}}</el-button>{{ l.examUnit}}，{{ l.youCanExam}}
               <el-button class="num" type="text" :style="{
                     color:currentExam.max_reply_num-examRecord.length<=0?'red':''
-                  }">{{currentExam.max_reply_num-examRecord.length}}</el-button>{{$l.examUnit}}
-            </div>
+                  }">{{currentExam.max_reply_num-examRecord.length}}</el-button>{{ l.examUnit}}
+            </div></template>
             <div class="goToExam-btn">
               <el-button class="go" type="text" plain @click="goToExam"
-                :disabled="currentExam.max_reply_num-examRecord.length<=0">{{$l.goExam}}</el-button>
+                :disabled="currentExam.max_reply_num-examRecord.length<=0">{{ l.goExam}}</el-button>
             </div>
           </div>
         </div>
       </el-table>
-      <div slot="footer">
-        <el-button type="success" plain @click="getReplyRecord(currentExam)">{{$l.refresh}}</el-button>
-        <el-button type="primary" plain @click="showObj.examDialog = false">{{$l.close}}</el-button>
-      </div>
+      <template #footer><div>
+        <el-button type="success" plain @click="getReplyRecord(currentExam)">{{ l.refresh}}</el-button>
+        <el-button type="primary" plain @click="showObj.examDialog = false">{{ l.close}}</el-button>
+      </div></template>
     </el-dialog>
 
     <div class="page-body">
@@ -61,7 +61,7 @@
               :lastPlayTime="progressObj.progress" :maxPlayTime="progressObj.max_progress"
               :finishPoint="currentVideo.finish_time" :playbackRateArray="[1]"
               :questionControl="currentVideo.is_process_question" :watermark="user.userId + ' ' + user.userName"
-              :playStatus.sync="isPlaying" @loadedMetadata="getPlayProgress" @pause="reportPlayProgress"
+              v-model:playStatus="isPlaying" @loadedMetadata="getPlayProgress" @pause="reportPlayProgress"
               @ended="reportPlayDuration" @seeked="reportPlayProgress" @play="playVideoAction" @progressUpdate="onVideoProgressUpdate">
             </videoPlayer>
           </div>
@@ -70,10 +70,10 @@
             <div class="navi">
               <div @click="showObj.playlist='course'" :style="{
                 color:showObj.playlist=='course'?'#409fee':'#fff'
-              }">{{$l.courseTitle}}</div>
+              }">{{ l.courseTitle}}</div>
               <div v-show="topicObj.list[0].detail.length>1" @click="showObj.playlist='topic'" :style="{
                 color:showObj.playlist=='topic'?'#409fee':'#fff'
-              }">{{$l.topicTitle}}</div>
+              }">{{ l.topicTitle}}</div>
             </div>
             <div class="list" v-show="showObj.playlist=='course'">
               <div v-for="(i, index) in videoList" :key="i.id" class="item" @click="toggleVideo(index)" :style="{
@@ -81,9 +81,9 @@
               }">
                 <div class="title">
                   <el-tooltip effect="light" placement="right">
-                    <div slot="content" style="max-width: 300px" class="text-clamp-4">
+                    <template #content><div style="max-width: 300px" class="text-clamp-4">
                       {{ i.description }}
-                    </div>
+                    </div></template>
                     <span class="text-clamp-2" style="max-width: calc(100% - 20px)">{{ i.title }}</span>
                   </el-tooltip>
                   <i v-show="playingIndex == index" :class="
@@ -93,8 +93,8 @@
                     " style="width: 20px"></i>
                 </div>
                 <div class="duration">
-                  <div>{{$l.duration}}:{{ formatDuration(i.duration) }}</div>
-                  <div>{{$l.needToLearn}}:{{ formatDuration(i.finish_time) }}</div>
+                  <div>{{ l.duration}}:{{ formatDuration(i.duration) }}</div>
+                  <div>{{ l.needToLearn}}:{{ formatDuration(i.finish_time) }}</div>
                 </div>
               </div>
             </div>
@@ -106,9 +106,9 @@
               }">
                 <div class="title">
                   <el-tooltip effect="light" placement="right">
-                    <div slot="content" style="max-width: 300px" class="text-clamp-4">
+                    <template #content><div style="max-width: 300px" class="text-clamp-4">
                       {{ i.description }}
-                    </div>
+                    </div></template>
                     <span class="text-clamp-2"
                       :style="{'max-width': 'calc(100% - 20px)'}">{{ i.course_name_label }}</span>
                   </el-tooltip>
@@ -117,7 +117,7 @@
                   </div>
                 </div>
                 <div class="duration">
-                  <div>{{$l.createTime}}:{{i.create_time}}</div>
+                  <div>{{ l.createTime}}:{{i.create_time}}</div>
                   <div>
                     <span style="margin-right: 1em;"><i
                         class="iconfont icon-appreciate_light"></i>{{i.goodBad_Info.good_count}}</span>
@@ -160,47 +160,47 @@
           <div class="info"></div>
           <div class="sub-info">
             <div class="info-item">
-              <div class="info-label">{{$l.courseCatalog}}:</div>
+              <div class="info-label">{{ l.courseCatalog}}:</div>
               <div> {{returnPublicObjLabel(courseInfo.type,'value','label','courseCatalog')}}</div>
             </div>
             <div class="info-item">
-              <div class="info-label">{{$l.createDept}}:</div>
+              <div class="info-label">{{ l.createDept}}:</div>
               <div>{{ courseInfo.create_dept +' '+courseInfo.create_time }}</div>
             </div>
 
             <!-- <div class="info-item">
                  <div class="info-label">课程来源:</div>
-                 <div>{{$c.noData}}</div>
+                 <div>{{ c.noData}}</div>
                </div> -->
             <div class="info-item">
-              <div class="info-label">{{$l.totalDuration}}:</div>
+              <div class="info-label">{{ l.totalDuration}}:</div>
               <div>{{formatDuration(courseInfo.totalDuration)}}</div>
             </div>
             <div class="info-item">
-              <div class="info-label">{{$l.score}}:</div>
+              <div class="info-label">{{ l.score}}:</div>
               <div>{{ courseInfo.score }}</div>
             </div>
           </div>
           <div class="sub-info">
             <div class="info-item">
-              <div class="info-label">{{$l.lecturer}}:</div>
-              <div>{{ courseInfo.lecturer==1?$l.internalLecturer:$l.externalLecturer }}</div>
+              <div class="info-label">{{ l.lecturer}}:</div>
+              <div>{{ courseInfo.lecturer==1?l.internalLecturer:l.externalLecturer }}</div>
             </div>
             <div class="info-item">
-              <div class="info-label">{{$l.trainLanguage}}:</div>
+              <div class="info-label">{{ l.trainLanguage}}:</div>
               <div>{{returnPublicObjLabel(courseInfo.language,'value','label','language_type')}}</div>
             </div>
 
             <div class="info-item">
-              <div class="info-label">{{$l.applicableGroup}}:</div>
+              <div class="info-label">{{ l.applicableGroup}}:</div>
               <div>{{courseInfo.applicable_group}}</div>
             </div>
             <div class="info-item">
-              <div class="info-label">{{$l.profit}}:</div>
+              <div class="info-label">{{ l.profit}}:</div>
               <div>{{ courseInfo.profit }}</div>
             </div>
           </div>
-          <div class="desc-label">{{$l.courseDesc}}:</div>
+          <div class="desc-label">{{ l.courseDesc}}:</div>
 
           <div class="desc">
             {{ courseInfo.description }}
@@ -212,27 +212,27 @@
         <div class="info-wrapper-right">
           <!-- 右侧资料和练习区域 -->
           <div class="material">
-            <div class="title">{{$l.courseMaterial}}</div>
+            <div class="title">{{ l.courseMaterial}}</div>
             <div class="list-wrapper frcc" v-if="attachmentList.length == 0">
-              <div>{{$c.noData}}</div>
+              <div>{{ c.noData}}</div>
             </div>
             <div class="list-wrapper" v-else>
               <div class="item" v-for="i in attachmentList" :key="i.id">
                 <span class="label">{{ i.name_label }}</span>
-                <el-button class="button" type="text" @click="previewFile(i.file_url)">{{$c.check}}</el-button>
+                <el-button class="button" type="text" @click="previewFile(i.file_url)">{{ c.check}}</el-button>
               </div>
             </div>
           </div>
           <!-- <div style="height: 30px;width: 1px;"></div> -->
           <div class="material">
-            <div class="title">{{$l.courseExam}}</div>
+            <div class="title">{{ l.courseExam}}</div>
             <div class="list-wrapper frcc" v-if="examList.length == 0">
-              <div>{{$c.noData}}</div>
+              <div>{{ c.noData}}</div>
             </div>
             <div class="list-wrapper" v-else>
               <div class="item" v-for="i in examList" :key="i.id">
                 <span class="label">{{ i.name_label }}</span>
-                <el-button class="button" type="text" @click="getReplyRecord(i)">{{$l.examDetail}}</el-button>
+                <el-button class="button" type="text" @click="getReplyRecord(i)">{{ l.examDetail}}</el-button>
               </div>
             </div>
           </div>
@@ -494,12 +494,12 @@
           if (r.status) {
             if (this.my_goodBad_info.type == 1) {
               this.$message({
-                message: this.$c.success,
+                message: this.c.success,
                 type: 'success',
               })
             } else {
               this.$message({
-                message: this.$c.success,
+                message: this.c.success,
                 type: 'success',
               })
             }
@@ -521,12 +521,12 @@
             } else {
               if (this.my_goodBad_info.type == 1) {
                 this.$message({
-                  message: this.$c.success,
+                  message: this.c.success,
                   type: 'success',
                 })
               } else {
                 this.$message({
-                  message: this.$c.success,
+                  message: this.c.success,
                   type: 'success',
                 })
               }
@@ -700,7 +700,7 @@
       playVideoAction() {
         if (!this.params.playId) {
           this.$refs.videoPlayer.player.pause()
-          this.$message(this.$l.playActionError)
+          this.$message(this.l.playActionError)
           return
         }
         if (this.$refs.videoPlayer.player) {
@@ -747,7 +747,7 @@
           
           if (currentRate != 1) {
             return this.$message({
-              message: this.$l.playbackSpeedError,
+              message: this.l.playbackSpeedError,
               type: 'warning'
             })
           }

@@ -50,11 +50,11 @@
 
     <!-- Pagination -->
     <div class="p-3">
-      <z-pagination :pagination="pagination" :total="tableData.total" :page.sync="query.page" :limit.sync="query.pageSize" @change="getList" class="custom-pagination" />
+      <z-pagination :pagination="pagination" :total="tableData.total" v-model:page="query.page" v-model:limit="query.pageSize" @change="getList" class="custom-pagination" />
     </div>
 
     <!-- Create/Edit Dialog -->
-    <CustomDialog :title="l.create" :visible.sync="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+    <CustomDialog :title="l.create" v-model:visible="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="text-xl font-black text-gray-900 dark:text-white">{{ l.basicInformation }}</div>
@@ -136,7 +136,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="addCancel('form')" :disabled="isSubmitting" class="rounded-md">{{ l.cancel }}</el-button>
           <el-button type="primary" @click="submit('form')" :loading="isSubmitting" class="rounded-md">{{ l.submit }}</el-button>
@@ -144,7 +144,7 @@
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="l.check" :visible.sync="dialogFormVisible" width="90%" :height="'100%'">
+    <CustomDialog :title="l.check" v-model:visible="dialogFormVisible" width="90%" :height="'100%'">
       <template #content>
         <div class="flex flex-col h-full overflow-hidden gap-2">
           <div class="grid grid-cols-2 gap-3">
@@ -169,12 +169,12 @@
           <improve-management-details-table :data="detailtable.list" :isLoading="detailtable.isLoading" @action="handleDetailsTableAction" class="main-table" :page="getDetailsQuery" />
         </div>
       </template>
-      <template slot="footer">
-        <z-pagination :pagination="pagination" :total="detailtable.total" :page.sync="getDetailsQuery.page" :limit.sync="getDetailsQuery.pageSize" @change="showHisList(is_his)"></z-pagination>
+      <template #footer>
+        <z-pagination :pagination="pagination" :total="detailtable.total" v-model:page="getDetailsQuery.page" v-model:limit="getDetailsQuery.pageSize" @change="showHisList(is_his)"></z-pagination>
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="l.selectManufacture" :visible.sync="dialogSelectManufacture" :height="'100%'">
+    <CustomDialog :title="l.selectManufacture" v-model:visible="dialogSelectManufacture" :height="'100%'">
       <template #content>
         <div class="flex flex-col overflow-hidden h-full gap-3">
           <div class="flex-1 overflow-auto border border-gray-200 rounded">
@@ -211,13 +211,13 @@
           <!-- Pagination for manufacturer list -->
           <div class="flex justify-between items-center">
             <div class="text-sm text-gray-500">{{ l.total }}: {{ manufacture.total }}</div>
-            <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.query.page" :limit.sync="manufacture.query.pageSize" @change="getManufactureList" />
+            <z-pagination :pagination="pagination" :total="manufacture.total" v-model:page="manufacture.query.page" v-model:limit="manufacture.query.pageSize" @change="getManufactureList" />
           </div>
         </div>
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="l.result" :visible.sync="passFormVisible" width="100%" :maxWidth="'600px'" class="modern-dialog">
+    <CustomDialog :title="l.result" v-model:visible="passFormVisible" width="100%" :maxWidth="'600px'" class="modern-dialog">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
@@ -253,7 +253,7 @@
           </div>
         </div>
       </template>
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="passFormVisible = false" class="rounded-md">{{ l.cancel }}</el-button>
           <el-button type="primary" @click="passsubmit" class="rounded-md">{{ l.submit }}</el-button>
@@ -261,7 +261,7 @@
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="l.editInformation" :visible.sync="editVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+    <CustomDialog :title="l.editInformation" v-model:visible="editVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="text-xl font-black text-gray-900 dark:text-white">{{ l.basicInformation }}</div>
@@ -314,7 +314,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="editVisible = false" :disabled="isEditSubmitting" class="rounded-md">{{ l.cancel }}</el-button>
           <el-button type="primary" @click="submitEdit" :loading="isEditSubmitting" class="rounded-md">{{ l.submit }}</el-button>
@@ -323,7 +323,7 @@
     </CustomDialog>
 
     <!-- Rectification Dialog -->
-    <CustomDialog :title="l.rectificationInfo" :visible.sync="rectificationVisible" width="90%" :maxWidth="'1200px'">
+    <CustomDialog :title="l.rectificationInfo" v-model:visible="rectificationVisible" width="90%" :maxWidth="'1200px'">
       <template #content>
         <div class="flex flex-col gap-6 max-h-[70vh] overflow-y-auto">
           <!-- 问题信息 -->
@@ -424,7 +424,7 @@
           </div>
         </div>
       </template>
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="rectificationVisible = false" class="rounded-md">{{ l.close }}</el-button>
         </div>
@@ -432,7 +432,7 @@
     </CustomDialog>
 
     <!-- 文件查看 -->
-    <el-dialog :visible.sync="fileTableVisable" :title="l.viewDocument">
+    <el-dialog v-model:visible="fileTableVisable" :title="l.viewDocument">
       <div>
         <!-- 文件表格 -->
         <z-table :list="file.list" :columns="file.columns">
@@ -443,7 +443,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog width="80% " :visible.sync="recEmailVisible">
+    <el-dialog width="80% " v-model:visible="recEmailVisible">
       <div>
         <el-form style="border-radius: 2px">
           <el-row>
@@ -490,7 +490,7 @@
     </el-dialog>
 
     <!-- 批量导入 -->
-    <el-dialog :visible.sync="visabled.uploadFile" width="30%">
+    <el-dialog v-model:visible="visabled.uploadFile" width="30%">
       <div>
         <el-form style="margin-top: 20px">
           <el-form-item :label="l.upload_file" required>
@@ -512,9 +512,9 @@
 import { reactive, ref, computed, onMounted, getCurrentInstance, watch } from 'vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
-import { getToken } from '@/utils/auth'
-import { checkField } from '@/utils/checkFiled'
-import { _, api, zPagination, zTable } from '@/views/_common'
+import { getToken } from '@/utils/auth.js'
+import { checkField } from '@/utils/checkFiled.js'
+import { _, api, zPagination, zTable } from '@/views/_common/index.js'
 import CustomDialog from '../../_common/CustomDialog.vue'
 import FilePreviews from '../../_common/FilePreviews.vue'
 import ImproveManagementDetailsTable from './ImproveManagementDetailsTable.vue'

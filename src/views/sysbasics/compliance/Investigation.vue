@@ -82,11 +82,11 @@
 
     <!-- Pagination -->
     <div class="p-3">
-      <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList" class="custom-pagination" />
+      <z-pagination :pagination="pagination" :total="tableList.total" v-model:page="tableList.curPage" v-model:limit="tableList.pageSize" @change="getList" class="custom-pagination" />
     </div>
 
     <!-- Edit Dialog -->
-    <CustomDialog :title="l.modify" :visible.sync="editFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+    <CustomDialog :title="l.modify" v-model:visible="editFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="text-xl font-black text-gray-900 dark:text-white">{{ l.basicInformation }}</div>
@@ -159,7 +159,7 @@
               <el-table :data="editSurvey.fileList" class="rounded-lg">
                 <el-table-column v-for="(item, index) in editSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                 <el-table-column fixed="right" :label="c.operation" width="145">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button @click="editDeleteFile(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ c.delete }}</el-button>
                     <el-button @click="removeEditFile(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ l.deleteFile }}</el-button>
                   </template>
@@ -170,7 +170,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="editFormVisible = false" class="rounded-md">{{ c.cancel }}</el-button>
           <el-button type="primary" @click="submmitedit" class="rounded-md">{{ c.confirm }}</el-button>
@@ -179,7 +179,7 @@
     </CustomDialog>
 
     <!-- 查看 -->
-    <CustomDialog :title="c.check" :clickOutside="false" width="100%" :lock-scroll="true" :visible.sync="checkFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
+    <CustomDialog :title="c.check" :clickOutside="false" width="100%" :lock-scroll="true" v-model:visible="checkFormVisible" custom-class="custom-dialog" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-2">
           <div class="text-xl font-black text-gray-900 dark:text-white">{{ l.basicInformation }}</div>
@@ -246,7 +246,7 @@
             <el-table :data="checkSurvey.fileList">
               <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
               <el-table-column fixed="right" :label="c.operation" width="145">
-                <template slot-scope="scope">
+                <template #default="scope">
                   <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
                   <el-button @click="downloadFile(scope.row)" type="text" size="small">{{ l.download }}</el-button>
                 </template>
@@ -258,7 +258,7 @@
     </CustomDialog>
 
     <!-- 审核 -->
-    <CustomDialog :title="l.audit" :visible.sync="auditFormVisible" :clickOutside="false" width="40%" :maxWidth="'600px'">
+    <CustomDialog :title="l.audit" v-model:visible="auditFormVisible" :clickOutside="false" width="40%" :maxWidth="'600px'">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
@@ -285,7 +285,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="auditFormVisible = false" class="rounded-md">{{ c.cancel }}</el-button>
           <el-button type="primary" @click="submitAudit" class="rounded-md">{{ c.confirm }}</el-button>
@@ -293,7 +293,7 @@
       </template>
     </CustomDialog>
 
-    <CustomDialog :title="l.audit" :visible.sync="auditFormsVisible" :clickOutside="false" width="40%" :maxWidth="'600px'">
+    <CustomDialog :title="l.audit" v-model:visible="auditFormsVisible" :clickOutside="false" width="40%" :maxWidth="'600px'">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
@@ -303,7 +303,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="auditFormsVisible = false" class="rounded-md">{{ c.cancel }}</el-button>
           <el-button type="primary" @click="submitAudit" class="rounded-md">{{ c.confirm }}</el-button>
@@ -312,7 +312,7 @@
     </CustomDialog>
 
     <!-- Thêm -->
-    <CustomDialog :title="l.cAdd" :visible.sync="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+    <CustomDialog :title="l.cAdd" v-model:visible="addFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="text-xl font-black text-gray-900 dark:text-white">{{ l.basicInformation }}</div>
@@ -377,7 +377,7 @@
               <el-table :data="addSurvey.fileList" class="rounded-lg">
                 <el-table-column v-for="(item, index) in addSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                 <el-table-column fixed="right" :label="c.operation" width="145">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button @click="removeAddClick(scope.row, scope.$index)" type="text" size="small" class="text-red-500">{{ c.delete }}</el-button>
                   </template>
                 </el-table-column>
@@ -387,7 +387,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="addFormVisible = false" class="rounded-md">{{ c.cancel }}</el-button>
           <el-button type="primary" @click="submmitadd" class="rounded-md">{{ c.confirm }}</el-button>
@@ -396,7 +396,7 @@
     </CustomDialog>
 
     <!-- 新增 选择基础档案 -->
-    <CustomDialog :formProps="formProps" :visible.sync="addselectFormVisible" :title="l.selectTheBaseFile" :maxWidth="'800px'" :width="'100%'">
+    <CustomDialog :formProps="formProps" v-model:visible="addselectFormVisible" :title="l.selectTheBaseFile" :maxWidth="'800px'" :width="'100%'">
       <template #content>
         <div class="flex flex-col gap-2">
           <div class="flex gap-2 items-center">
@@ -407,19 +407,19 @@
           <el-table :data="manufacture.list" style="width: 100%; height: 700px" max-height="550">
             <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
             <el-table-column fixed="right" :label="c.operation" width="100">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button @click="addselectItem(scope.row)" type="text" size="small">{{ l.choose }}</el-button>
               </template>
             </el-table-column>
           </el-table>
 
-          <z-pagination :pagination="pagination" :total="manufacture.total" :page.sync="manufacture.curPage" :limit.sync="manufacture.pageSize" @change="getManufacturerList"></z-pagination>
+          <z-pagination :pagination="pagination" :total="manufacture.total" v-model:page="manufacture.curPage" v-model:limit="manufacture.pageSize" @change="getManufacturerList"></z-pagination>
         </div>
       </template>
     </CustomDialog>
 
     <!-- 修改 选择基础档案 -->
-    <CustomDialog :formProps="formProps" :visible.sync="editselectFormVisible">
+    <CustomDialog :formProps="formProps" v-model:visible="editselectFormVisible">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex gap-2 items-center">
@@ -432,7 +432,7 @@
           <el-table :data="manufacture.list" style="width: 100%">
             <el-table-column v-for="(item, index) in manufacture.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
             <el-table-column fixed="right" :label="c.operation" width="145">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button @click="editselectItem(scope.row)" type="text" size="small">{{ l.choose }}</el-button>
               </template>
             </el-table-column>
@@ -441,7 +441,7 @@
       </template>
     </CustomDialog>
 
-    <CustomDialog width="80%" :visible.sync="recEmailVisible" :height="'100%'">
+    <CustomDialog width="80%" v-model:visible="recEmailVisible" :height="'100%'">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -451,7 +451,7 @@
               <el-table :data="roleList.list" style="width: 100%">
                 <el-table-column v-for="(item, index) in roleList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                 <el-table-column fixed="right" :label="c.operation" width="145">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button @click="addRoleItem(scope.row)" type="text" size="small">{{ l.addNotification }}</el-button>
                   </template>
                 </el-table-column>
@@ -464,7 +464,7 @@
               <el-table :data="recEmailList.list" style="width: 100%">
                 <el-table-column v-for="(item, index) in recEmailList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                 <el-table-column fixed="right" :label="c.operation" width="145">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button @click="deleteRoleItem(scope.row)" type="text" size="small" style="color: red">{{ l.cancellationNotice }}</el-button>
                   </template>
                 </el-table-column>
@@ -492,13 +492,13 @@
     </CustomDialog>
 
     <!-- 查看附件 -->
-    <CustomDialog width="50%" :title="l.viewAttachment" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
+    <CustomDialog width="50%" :title="l.viewAttachment" :lock-scroll="true" v-model:visible="viewFileFormVisible" custom-class="custom-dialog">
       <div style="padding: 0 50px">
         <!-- 文件表格 -->
         <el-table :data="checkFile.fileList" style="width: 100%">
           <el-table-column v-for="(item, index) in checkFile.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
           <el-table-column v-if="true" :label="c.operation" :width="86" fixed="right">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
             </template>
           </el-table-column>
@@ -507,7 +507,7 @@
     </CustomDialog>
 
     <!-- 查看历史 -->
-    <CustomDialog :title="l.history" :visible.sync="historyFormVisible" width="95%" :maxWidth="'1500px'" :height="'100%'">
+    <CustomDialog :title="l.history" v-model:visible="historyFormVisible" width="95%" :maxWidth="'1500px'" :height="'100%'">
       <template #content>
         <div class="flex flex-col gap-6 h-full">
           <!-- History Table -->
@@ -517,15 +517,15 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="p-3">
-          <z-pagination :pagination="pagination" :total="historyList.total" :page.sync="historyList.curPage" :limit.sync="historyList.pageSize" @change="getHistoryListCurrent" class="custom-pagination" />
+          <z-pagination :pagination="pagination" :total="historyList.total" v-model:page="historyList.curPage" v-model:limit="historyList.pageSize" @change="getHistoryListCurrent" class="custom-pagination" />
         </div>
       </template>
     </CustomDialog>
 
     <!-- 编辑提醒/警告函号 -->
-    <CustomDialog :title="l.edit_notices" :visible.sync="editNoticesVisible" :clickOutside="false" width="100%" :maxWidth="'500px'">
+    <CustomDialog :title="l.edit_notices" v-model:visible="editNoticesVisible" :clickOutside="false" width="100%" :maxWidth="'500px'">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
@@ -540,7 +540,7 @@
         </div>
       </template>
 
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <el-button @click="editNoticesVisible = false" class="rounded-md">{{ c.cancel }}</el-button>
           <el-button type="primary" @click="submitEditNotices" class="rounded-md">{{ c.confirm }}</el-button>
@@ -555,9 +555,9 @@
 <script setup>
 import { reactive, ref, computed, onMounted, getCurrentInstance, watch } from 'vue'
 import axios from 'axios'
-import { getToken } from '@/utils/auth'
-import { _, api, dayjs, initFuncs, zForm, zPagination, zTable } from '@/views/_common'
-import exportExcel from '../../../utils/exportExcel'
+import { getToken } from '@/utils/auth.js'
+import { _, api, dayjs, initFuncs, zForm, zPagination, zTable } from '@/views/_common/index.js'
+import exportExcel from '../../../utils/exportExcel.js'
 import CustomDialog from '../../_common/CustomDialog.vue'
 import filePreviews from '../../_common/filePreviews.vue'
 import InvestigationHistoryTable from './InvestigationHistoryTable.vue'

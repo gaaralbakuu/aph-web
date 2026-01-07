@@ -1,8 +1,8 @@
 <template>
   <div class="menuManage-container">
     <div class="pageBody">
-      <el-drawer class="drawer-container" :visible.sync="showObj.menu" :wrapperClosable="false" size="50%">
-        <div slot="title" class="title">{{ l.addEditMenu }}</div>
+      <el-drawer class="drawer-container" v-model:visible="showObj.menu" :wrapperClosable="false" size="50%">
+        <template #title><div class="title">{{ l.addEditMenu }}</div></template>
         <div class="form-container">
           <el-form label-width="80px" size="medium">
             <el-form-item :label="l.menuType" required>
@@ -97,7 +97,7 @@
       </div>
 
       <el-tree ref="tree" class="filter-tree" :data="menuObj.list" :props="defaultProps" node-key="menu_id" draggable :allow-drop="nodeIndexCheck" @node-drop="afterDrop">
-        <div class="custom-menu-node" slot-scope="{ node, data }" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 2px 0px">
+        <template #{ node, data }><div class="custom-menu-node" v- style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 2px 0px">
           <div>
             <span>
               <el-tag style="text-align: center" effect="dark" size="mini" :type="data.resource_type == 'navigator' ? 'warning' : data.resource_type == 'catalogue' ? 'primary' : 'success'">
@@ -106,7 +106,7 @@
             </span>
             <span style="font-weight: 600">{{ data[`name_${locale.split('-')[0]}`] }}</span>
             <span v-show="data.resource_type == 'menu'" style="color: #aaa">{{ data.resource_path }}</span>
-          </div>
+          </div></template>
           <div>
             <el-tooltip :content="data.enabled == 1 ? l.clickToDisable : l.clickToEnable" placement="top">
               <el-switch @click.stop @change="switchEnabled(data)" v-model="data.enabled" active-color="#13ce66" :active-value="1" :inactive-value="0"></el-switch>

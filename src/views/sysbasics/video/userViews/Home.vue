@@ -48,8 +48,8 @@
 </template>
 
 <script setup>
-import BannerCarousel from './component/BannerCarousel'
-import CourseCarousel from './component/CourseCarousel'
+import BannerCarousel from './component/BannerCarousel.vue'
+import CourseCarousel from './component/CourseCarousel.vue'
 import { mapGetters } from 'vuex'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { getCurrentInstance, ref, computed, watch, onMounted } from 'vue'

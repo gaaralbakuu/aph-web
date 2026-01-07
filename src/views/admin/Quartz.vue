@@ -1,21 +1,19 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{
-      $c.create
+    <el-button type="primary" class="fr" @click="createItem">{{ c.create
     }}</el-button>
     <div class="filter-container">
       <el-input
         style="width: 300px"
-        :placeholder="$c.queryPlaceholder"
+        :placeholder="c.queryPlaceholder"
         clearable
         prefix-icon="el-icon-search"
         class="filter-item"
-        @keyup.enter.native="research"
+        @keyup.enter="research"
         @clear="research"
         v-model="query.queryString"
       ></el-input>
-      <el-button class="filter-item" type="success" plain @click="research">{{
-        $c.queryButton
+      <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton
       }}</el-button>
       <el-button
         class="filter-item"
@@ -23,7 +21,7 @@
         plain
         @click="exportData"
         :loading="exportLoading"
-        >{{ $c.export }}
+        >{{ c.export }}
       </el-button>
     </div>
     <z-table
@@ -35,14 +33,13 @@
     >
       <template v-slot:content="v">
         <template v-if="v.key === 'enabled'">
-          <span v-if="!v.row[v.key]" class="label bg-gray">{{
-            $l.stopped
+          <span v-if="!v.row[v.key]" class="label bg-gray">{{ l.stopped
           }}</span>
-          <span v-else class="label bg-blue">{{ $c.enabled }}</span>
+          <span v-else class="label bg-blue">{{ c.enabled }}</span>
         </template>
         <template v-else-if="v.key === 'running'">
-          <span v-if="!v.row[v.key]" class="label bg-gray">{{ $l.free }}</span>
-          <span v-else class="label bg-green">{{ $l.operating }}</span>
+          <span v-if="!v.row[v.key]" class="label bg-gray">{{ l.free }}</span>
+          <span v-else class="label bg-green">{{ l.operating }}</span>
         </template>
         <span v-else>{{ v.row[v.key] }}</span>
       </template>
@@ -53,7 +50,7 @@
           @click.prevent="editItem(v.row, v.$index)"
           :underline="false"
         >
-          <i class="fa fa-pencil" :title="$c.edit"></i>
+          <i class="fa fa-pencil" :title="c.edit"></i>
         </el-link>
         <el-link
           class="ml-5"
@@ -62,7 +59,7 @@
           @click.prevent="startOrPauseJob(v.row, 1)"
           :underline="false"
         >
-          <i class="fa fa-play" :title="$c.enable"></i>
+          <i class="fa fa-play" :title="c.enable"></i>
         </el-link>
         <el-link
           class="ml-5"
@@ -71,7 +68,7 @@
           @click.prevent="startOrPauseJob(v.row, 0)"
           :underline="false"
         >
-          <i class="fa fa-stop" :title="$l.stop"></i>
+          <i class="fa fa-stop" :title="l.stop"></i>
         </el-link>
         <el-link
           class="ml-5"
@@ -80,7 +77,7 @@
           @click.prevent="doOnceJob(v.row)"
           :underline="false"
         >
-          <i class="fa fa-repeat" :title="$l.runOne"></i>
+          <i class="fa fa-repeat" :title="l.runOne"></i>
         </el-link>
         <el-link
           class="ml-5"
@@ -89,7 +86,7 @@
           @click.prevent="deleteItem(v.row, v.$index)"
           :underline="false"
         >
-          <i class="fa fa-trash" :title="$c.delete"></i>
+          <i class="fa fa-trash" :title="c.delete"></i>
         </el-link>
         <el-link
           class="ml-5"
@@ -97,15 +94,15 @@
           @click.prevent="showLog(v.row, v.$index)"
           :underline="false"
         >
-          <i class="fa fa-list-ol" :title="$l.log"></i>
+          <i class="fa fa-list-ol" :title="l.log"></i>
         </el-link>
       </template>
     </z-table>
     <z-pagination
       :pagination="pagination"
       :total="total"
-      :page.sync="query.page"
-      :limit.sync="query.size"
+      v-model:page="query.page"
+      v-model:limit="query.size"
       @change="getList"
     ></z-pagination>
     <z-form-dialog
@@ -115,22 +112,22 @@
       :fields="fields"
       @submmit="submmit"
       :submmitLoading="submmitLoading"
-      :visible.sync="editFormVisible"
+      v-model:visible="editFormVisible"
     ></z-form-dialog>
     <el-dialog
-      :title="$l.logShow"
+      :title="l.logShow"
       width="50%"
       :close-on-click-modal="false"
-      :visible.sync="logDialogShow"
+      v-model:visible="logDialogShow"
     >
       <el-button
         style="margin-top: -15px"
         class="fr"
         :disabled="loglist.length == 0"
         type="danger"
-        @click.native="emptyLog"
+        @click="emptyLog"
         :loading="submmitLoading"
-        >{{ $l.clear }}
+        >{{ l.clear }}
       </el-button>
       <z-table
         :list="loglist"
@@ -143,8 +140,8 @@
       <z-pagination
         :pagination="pagination"
         :total="logtotal"
-        :page.sync="logQuery.page"
-        :limit.sync="logQuery.size"
+        v-model:page="logQuery.page"
+        v-model:limit="logQuery.size"
         @change="getLogList"
       ></z-pagination>
     </el-dialog>
@@ -175,93 +172,93 @@ export default {
   data: function () {
     return {
       ...config,
-      name: this.$l.title,
+      name: this.l.title,
       columns: [
-        { title: this.$l.job_name, key: 'job_name', width: 100 },
-        { title: this.$l.job_group, key: 'job_group', width: 80 },
-        { title: this.$l.enabled, key: 'enabled', width: 80 },
-        { title: this.$l.description, key: 'description', width: 140 },
-        { title: this.$l.running, key: 'running', width: 80 },
-        { title: this.$l.last_run_time, key: 'last_run_time', width: 140 },
+        { title: this.l.job_name, key: 'job_name', width: 100 },
+        { title: this.l.job_group, key: 'job_group', width: 80 },
+        { title: this.l.enabled, key: 'enabled', width: 80 },
+        { title: this.l.description, key: 'description', width: 140 },
+        { title: this.l.running, key: 'running', width: 80 },
+        { title: this.l.last_run_time, key: 'last_run_time', width: 140 },
         {
-          title: this.$l.trigger_type_label,
+          title: this.l.trigger_type_label,
           key: 'trigger_type_label',
           width: 100,
         },
-        { title: this.$l.cron, key: 'cron', width: 120 },
-        { title: this.$l.begintime, key: 'begintime', width: 140 },
-        { title: this.$l.endtime, key: 'endtime', width: 140 },
-        { title: this.$l.runtimes, key: 'runtimes', width: 70 },
-        { title: this.$l.interval_second, key: 'interval_second', width: 90 },
-        { title: this.$l.assembly_name, key: 'assembly_name', width: 140 },
-        { title: this.$l.class_fullname, key: 'class_fullname', width: 170 },
-        { title: this.$c.remarks, key: 'remarks' },
-        { title: this.$c.modify_user, key: 'modify_user', width: 90 },
-        { title: this.$c.modify_time, key: 'modify_time', width: 140 },
+        { title: this.l.cron, key: 'cron', width: 120 },
+        { title: this.l.begintime, key: 'begintime', width: 140 },
+        { title: this.l.endtime, key: 'endtime', width: 140 },
+        { title: this.l.runtimes, key: 'runtimes', width: 70 },
+        { title: this.l.interval_second, key: 'interval_second', width: 90 },
+        { title: this.l.assembly_name, key: 'assembly_name', width: 140 },
+        { title: this.l.class_fullname, key: 'class_fullname', width: 170 },
+        { title: this.c.remarks, key: 'remarks' },
+        { title: this.c.modify_user, key: 'modify_user', width: 90 },
+        { title: this.c.modify_time, key: 'modify_time', width: 140 },
       ],
       fields: [
-        { title: this.$l.job_name, key: 'job_name', required: true, span: 12 },
+        { title: this.l.job_name, key: 'job_name', required: true, span: 12 },
         {
-          title: this.$l.job_group,
+          title: this.l.job_group,
           key: 'job_group',
           required: true,
           span: 12,
         },
         {
-          title: this.$l.trigger_type_label,
+          title: this.l.trigger_type_label,
           key: 'trigger_type',
           required: true,
           span: 12,
           name: 'select',
           options: [],
         },
-        { title: this.$l.description, key: 'description', span: 12 },
+        { title: this.l.description, key: 'description', span: 12 },
         {
-          title: this.$l.assembly_name,
+          title: this.l.assembly_name,
           key: 'assembly_name',
           required: true,
           span: 12,
         },
         {
-          title: this.$l.class_fullname,
+          title: this.l.class_fullname,
           key: 'class_fullname',
           required: true,
           span: 12,
         },
         {
-          title: this.$l.begintime,
+          title: this.l.begintime,
           key: 'begintime',
           span: 12,
           name: 'date',
           props: { type: 'datetime', valueFormat: 'yyyy-MM-dd HH:mm:ss' },
         },
         {
-          title: this.$l.endtime,
+          title: this.l.endtime,
           key: 'endtime',
           span: 12,
           name: 'date',
           props: { type: 'datetime', valueFormat: 'yyyy-MM-dd HH:mm:ss' },
         },
         {
-          title: this.$l.runtimes,
+          title: this.l.runtimes,
           key: 'runtimes',
           name: 'number',
           span: 12,
           hidden: false,
         },
         {
-          title: this.$l.interval_second,
+          title: this.l.interval_second,
           key: 'interval_second',
           name: 'number',
           span: 12,
           hidden: false,
         },
-        { title: this.$l.cron, key: 'cron', hidden: false },
-        { title: this.$c.remarks, key: 'remarks', name: 'textarea' },
+        { title: this.l.cron, key: 'cron', hidden: false },
+        { title: this.c.remarks, key: 'remarks', name: 'textarea' },
       ],
       typeOptions: [
-        { label: this.$l.cron, value: 'cron' },
-        { label: this.$l.typeOptions2, value: 'simple' },
+        { label: this.l.cron, value: 'cron' },
+        { label: this.l.typeOptions2, value: 'simple' },
       ],
       table2: {
         border: false,
@@ -269,9 +266,9 @@ export default {
         hideOperations: true,
       },
       table2columns: [
-        { title: this.$l.logBegintime, key: 'begintime' },
-        { title: this.$l.logEndtime, key: 'endtime' },
-        { title: this.$l.logSpendTime, key: 'spend_time' },
+        { title: this.l.logBegintime, key: 'begintime' },
+        { title: this.l.logEndtime, key: 'endtime' },
+        { title: this.l.logSpendTime, key: 'spend_time' },
         // { title: '数据1', key: 'data1', width: 100 },
         // { title: '数据2', key: 'data2', width: 100 },
         // { title: '数据3', key: 'data3', width: 100 },
@@ -298,7 +295,7 @@ export default {
       this.$request(url, { id: row.id, enable }, 'post')
         .then((r) => {
           this.pageLoading = false
-          this.$message.success(this.$c.success)
+          this.$message.success(this.c.success)
           this.getList()
         })
         .catch(() => {
@@ -311,7 +308,7 @@ export default {
       this.$request(url, { id: row.id }, 'post')
         .then((r) => {
           this.pageLoading = false
-          this.$message.success(this.$l.runed)
+          this.$message.success(this.l.runed)
           this.getList()
         })
         .catch(() => {
@@ -335,12 +332,12 @@ export default {
         .catch(() => {})
     },
     emptyLog() {
-      this.$confirm(this.$l.clearLog).then(() => {
+      this.$confirm(this.l.clearLog).then(() => {
         this.submmitLoading = true
         let url = api.quartz + 'emptylog'
         this.$request(url, { jobid: this.loglist[0].job_id }, 'post')
           .then((r) => {
-            this.$message.success(this.$c.success)
+            this.$message.success(this.c.success)
             this.submmitLoading = false
             this.logDialogShow = false
           })

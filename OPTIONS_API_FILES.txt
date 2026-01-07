@@ -1,0 +1,80 @@
+DANH SÁCH FILE CHƯA CONVERT SANG COMPOSITION API
+================================================================================
+
+src\components\Img\Uploader.vue
+src\components\Pagination\index.vue
+src\components\PanThumb\index.vue
+src\components\ScrollPane\index.vue
+src\components\SvgIcon\index.vue
+src\components\Tag\Dynamictag.vue
+src\components\TestHotReload.vue
+src\components\TextHoverEffect\Mallki.vue
+src\components\TipBox\index.vue
+src\components\UploadExcel\index.vue
+src\components\Video\VideoCard.vue
+src\components\Video\VideoPlayer\index.vue
+src\components\videoPlayer\VideoPlayerPlyr.vue
+src\components\videoPlayer\videoPlayer.vue
+src\views\_common\ChooseUser.vue
+src\views\_common\DialogStackDemo.vue
+src\views\_common\FilePreviews.vue
+src\views\_common\ShadcnInput.vue
+src\views\_common\dentify.vue
+src\views\_common\form.vue
+src\views\_common\formDialog.vue
+src\views\_common\pagination.vue
+src\views\_common\table.vue
+src\views\admin\AppVersion.vue
+src\views\admin\AstrictAuth.vue
+src\views\admin\Banner.vue
+src\views\admin\Dictionary.vue
+src\views\admin\Menu.vue
+src\views\admin\Param.vue
+src\views\admin\Quartz.vue
+src\views\admin\Role.vue
+src\views\admin\TestUser.vue
+src\views\admin\User.vue
+src\views\admin\UserFeedback.vue
+src\views\admin\WorkflowFields.vue
+src\views\errorPage\401.vue
+src\views\errorPage\404.vue
+src\views\example\svg-icons\index.vue
+src\views\layout\SubLayout.vue
+src\views\layout\components\Breadcrumb.vue
+src\views\layout\components\ErrorLog.vue
+src\views\layout\components\Hamburger.vue
+src\views\layout\components\LangSelect.vue
+src\views\layout\components\MenuItem.vue
+src\views\layout\components\Navbar copy.vue
+src\views\layout\components\NavbarCopy.vue
+src\views\layout\components\Screenfull.vue
+src\views\layout\components\SidebarItem.vue
+src\views\layout\components\SizeSelect.vue
+src\views\layout\components\ThemePicker.vue
+src\views\login\index copy 2.vue
+src\views\login\index copy 3.vue
+src\views\login\index copy.vue
+src\views\redirect\index.vue
+src\views\sysbasics\Epidemic.vue
+src\views\sysbasics\PublicCode.vue
+src\views\sysbasics\SysMsg.vue
+src\views\sysbasics\compliance2\ComplianceManufacturer.vue
+src\views\sysbasics\compliance2\Investigation.vue
+src\views\sysbasics\compliance2\InvestigationInfo.vue
+src\views\sysbasics\compliance2\IssuesType.vue
+src\views\sysbasics\compliance2\ShareInformation.vue
+src\views\sysbasics\compliance\Manufacturer.vue
+src\views\sysbasics\video\adminViews\component\lesson\Course.vue
+src\views\sysbasics\video\layout\VideoAdminLayout.vue
+src\views\sysbasics\video\layout\VideoUserLayout copy.vue
+src\views\sysbasics\video\layout\videoUserLayout copy x.vue
+src\views\sysbasics\video\userViews\Course.vue
+src\views\sysbasics\video\userViews\Mine.vue
+src\views\sysbasics\video\userViews\Play4.vue
+src\views\sysbasics\video\userViews\PlayOld_bak.vue
+src\views\sysbasics\video\userViews\Topic.vue
+src\views\sysbasics\video\userViews\TopicDetail.vue
+src\views\sysbasics\video\userViews\component\Favorite.vue
+src\views\sysbasics\video\userViews\component\History.vue
+src\views\sysbasics\video\userViews\component\Training.vue
+src\views\sysbasics\video\userViews\home copy.vue

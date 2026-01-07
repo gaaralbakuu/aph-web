@@ -106,7 +106,7 @@
                       <el-button type="text" class="!p-2 !text-gray-500 !border-0 !rounded hover:!text-blue-500 hover:!bg-blue-50 !transition-all dark:hover:!bg-blue-900/20">
                       <i class="el-icon-more"></i>
                       </el-button>
-                      <el-dropdown-menu slot="dropdown" class="!rounded-xl !shadow-lg !p-1.5">
+                      <template #dropdown><el-dropdown-menu class="!rounded-xl !shadow-lg !p-1.5">
                       <el-dropdown-item command="edit">
                         <i class="el-icon-edit w-3.5 text-sm"></i>
                         {{ c.edit }}
@@ -123,7 +123,7 @@
                         <i class="el-icon-delete w-3.5 text-sm"></i>
                         {{ c.delete }}
                       </el-dropdown-item>
-                      </el-dropdown-menu>
+                      </el-dropdown-menu></template>
                     </el-dropdown>
                   </div>
                 </template>

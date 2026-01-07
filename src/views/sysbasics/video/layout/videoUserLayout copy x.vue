@@ -12,9 +12,9 @@
                   {{ selectedCollage.name_label }}
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
-                <el-dropdown-menu slot="dropdown">
+                <template #dropdown><el-dropdown-menu>
                   <el-dropdown-item v-for="(item, index) in collageList.data" :key="index" :command="item">{{ item.name_label }}</el-dropdown-item>
-                </el-dropdown-menu>
+                </el-dropdown-menu></template>
               </el-dropdown>
             </div>
           </div>
@@ -28,7 +28,7 @@
         <div class="menu-wrapper" v-else></div>
 
         <div class="right-menu">
-          <lang-select class="lang-select" />
+          <LangSelect class="lang-select" />
           <el-dropdown trigger="click" class="avatar-container">
             <div class="avatar-wrapper">
               <img src="@/assets/default_avatar.png" />
@@ -36,20 +36,20 @@
                 <label>{{ user.userId }}</label>
                 <div>{{ user.userName }}</div>
               </div>
-              <svg-icon icon-class="more" style="transform: scale(2); margin-left: 5px" />
+              <SvgIcon icon-class="more" style="transform: scale(2); margin-left: 5px" />
               <!-- <i class="el-icon-more-outline" style="transform: rotate(90deg) scale(2);"></i> -->
             </div>
-            <el-dropdown-menu slot="dropdown">
+            <template #dropdown><el-dropdown-menu>
               <el-dropdown-item v-if="adminEntryMenu != null">
-                <router-link :to="adminEntryMenu.resource_path" style="color: dimgrey">{{ $c.videoAdminHome }}</router-link>
+                <router-link :to="adminEntryMenu.resource_path" style="color: dimgrey">{{ c.videoAdminHome }}</router-link>
               </el-dropdown-item>
               <el-dropdown-item :divided="adminEntryMenu != null">
-                <router-link to="/home/welcome" style="color: dimgrey">{{ $c.videoUserHome }}</router-link>
+                <router-link to="/home/welcome" style="color: dimgrey">{{ c.videoUserHome }}</router-link>
               </el-dropdown-item>
               <el-dropdown-item divided>
-                <div @click="logout">{{ $c.logOut }}</div>
+                <div @click="logout">{{ c.logOut }}</div>
               </el-dropdown-item>
-            </el-dropdown-menu>
+            </el-dropdown-menu></template>
           </el-dropdown>
         </div>
       </div>

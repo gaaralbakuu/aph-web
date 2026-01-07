@@ -1,35 +1,35 @@
 <template>
   <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{ $l.createItem }}</el-button>
+    <el-button type="primary" class="fr" @click="createItem">{{ l.createItem }}</el-button>
     <div class="filter-container">
-      <el-input style="width: 300px" :placeholder="$l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter.native="research" @clear="research" v-model="query.queryString"></el-input>
+      <el-input style="width: 300px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter="research" @clear="research" v-model="query.queryString"></el-input>
     </div>
     <el-row :gutter="20">
       <el-col :span="7">
         <z-table :list="list" :tableProps="tableProps" :columns="columns" @row-click="getChildrenTree" @editItem="editItem" @deleteItem="deleteItem"></z-table>
-        <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList"></z-pagination>
+        <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList"></z-pagination>
       </el-col>
       <el-col :span="12">
         <div style="min-height: 36px">
           <div style="display: inline-block; width: 120px; font-size: 12px; padding-top: 10px" v-if="currentDataId">
-            {{ $l.selectedMemnu }}
+            {{ l.selectedMemnu }}
           </div>
-          <el-button type="success" style="float: right" v-if="currentDataId && menuCheckChange" :loading="saveMenuLoading" @click="saveRoleMenu">{{ $l.save }}</el-button>
+          <el-button type="success" style="float: right" v-if="currentDataId && menuCheckChange" :loading="saveMenuLoading" @click="saveRoleMenu">{{ l.save }}</el-button>
         </div>
         <div v-if="currentDataId" style="border: #f4f4f4 solid 1px; padding: 10px 0">
           <el-tree :data="treeData" node-key="menu_id" :default-expand-all="false" :show-checkbox="true" ref="tree" :default-checked-keys="menuIds" :expand-on-click-node="false" @check-change="menuCheckChange = true">
-            <span class="custom-tree-node" slot-scope="{ data }">
-              <span style="font-weight: bold">{{ data.menu_name_label }}&nbsp;&nbsp;[{{ data.resource_type }}]</span>
+            <template #{ data }><span class="custom-tree-node" v->
+              <span style="font-weight: bold">{{ data.menu_name_label }}&nbsp;&nbsp;[{{ data.resource_type }}]</span></template>
               <span v-show="showAuth.m_updata">
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_add == 'Y' && data.resource_type != 'MENU'" v-model="data.m_add1" :active-text="$c.m_add" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_del == 'Y' && data.resource_type != 'MENU'" v-model="data.m_del1" :active-text="$c.m_del" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_updata == 'Y' && data.resource_type != 'MENU'" v-model="data.m_updata1" :active-text="$c.m_updata" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_search == 'Y' && data.resource_type != 'MENU'" v-model="data.m_search1" :active-text="$c.m_search" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_import == 'Y' && data.resource_type != 'MENU'" v-model="data.m_import1" :active-text="$c.m_import" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_export == 'Y' && data.resource_type != 'MENU'" v-model="data.m_export1" :active-text="$c.m_export" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_upload == 'Y' && data.resource_type != 'MENU'" v-model="data.m_upload1" :active-text="$c.m_upload" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_audit == 'Y' && data.resource_type != 'MENU'" v-model="data.m_audit1" :active-text="$c.m_audit" active-value="Y" inactive-value="N"></el-switch>
-                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_print == 'Y' && data.resource_type != 'MENU'" v-model="data.m_print1" :active-text="$c.m_print" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_add == 'Y' && data.resource_type != 'MENU'" v-model="data.m_add1" :active-text="c.m_add" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_del == 'Y' && data.resource_type != 'MENU'" v-model="data.m_del1" :active-text="c.m_del" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_updata == 'Y' && data.resource_type != 'MENU'" v-model="data.m_updata1" :active-text="c.m_updata" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_search == 'Y' && data.resource_type != 'MENU'" v-model="data.m_search1" :active-text="c.m_search" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_import == 'Y' && data.resource_type != 'MENU'" v-model="data.m_import1" :active-text="c.m_import" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_export == 'Y' && data.resource_type != 'MENU'" v-model="data.m_export1" :active-text="c.m_export" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_upload == 'Y' && data.resource_type != 'MENU'" v-model="data.m_upload1" :active-text="c.m_upload" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_audit == 'Y' && data.resource_type != 'MENU'" v-model="data.m_audit1" :active-text="c.m_audit" active-value="Y" inactive-value="N"></el-switch>
+                <el-switch :width="27" @change="menuCheckChange = true" v-show="data.m_print == 'Y' && data.resource_type != 'MENU'" v-model="data.m_print1" :active-text="c.m_print" active-value="Y" inactive-value="N"></el-switch>
               </span>
             </span>
           </el-tree>
@@ -38,7 +38,7 @@
       <el-col :span="5">
         <div style="min-height: 36px" v-if="currentDataId">
           <div class="flex flex-center" style="font-size: 12px; margin-bottom: 10px">
-            <span>{{ $l.allocatedAccount }}</span>
+            <span>{{ l.allocatedAccount }}</span>
             <div class="flex1"></div>
             <el-input style="display: inline-block; width: 120px" suffix-icon="el-icon-search" size="mini" clearable v-model="userQuery.queryString" @change="researchUser"></el-input>
             <el-button class="ml-5" size="mini" type="primary" icon="el-icon-plus" circle plain @click="addUserClick"></el-button>
@@ -50,38 +50,38 @@
         <div v-if="currentDataId">
           <!-- <el-tree :data="treeData2" node-key="userid" :default-expand-all="false" :show-checkbox="true" ref="tree2"
             :default-checked-keys="empIds" :expand-on-click-node="false" @check-change="empCheckChange=true">
-            <span class="custom-tree-node" slot-scope="{ data }">
-              <span style="font-weight: bold">{{ data.userid }}</span>
+            <template #{ data }><span class="custom-tree-node" v->
+              <span style="font-weight: bold">{{ data.userid }}</span></template>
               <span>{{ data.name }}</span>
             </span>
           </el-tree> -->
           <z-table :list="userList" :tableProps="userTableProps" :columns="userColumns">
             <template v-slot:operation="v">
-              <a href="#" class="text-red" @click.prevent="deleteUserRoleItem(v.row, v.$index)">{{ $c.delete }}</a>
+              <a href="#" class="text-red" @click.prevent="deleteUserRoleItem(v.row, v.$index)">{{ c.delete }}</a>
             </template>
           </z-table>
-          <z-pagination :small="true" :pagination="userPagination" :total="userTotal" :page.sync="userQuery.page" :limit.sync="userQuery.size" @change="getUserList"></z-pagination>
+          <z-pagination :small="true" :pagination="userPagination" :total="userTotal" v-model:page="userQuery.page" v-model:limit="userQuery.size" @change="getUserList"></z-pagination>
         </div>
       </el-col>
     </el-row>
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
-    <el-dialog :title="$l.batchAddUser" :visible.sync="addUserDialogShow" width="40%">
+    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
+    <el-dialog :title="l.batchAddUser" v-model:visible="addUserDialogShow" width="40%">
       <el-form label-width="100px">
-        <el-form-item :label="$l.addUserLabel">
-          <el-input type="textarea" :placeholder="$l.addUserPlaceholder" v-model="addUsers" style="width: 80%"></el-input>
+        <el-form-item :label="l.addUserLabel">
+          <el-input type="textarea" :placeholder="l.addUserPlaceholder" v-model="addUsers" style="width: 80%"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addUserDialogShow = false">{{ $c.cancel }}</el-button>
-        <el-button type="primary" @click="submmitAddUser" :loading="submitAddUserLoading">{{ $c.confirm }}</el-button>
-      </span>
+      <template #footer><span class="dialog-footer">
+        <el-button @click="addUserDialogShow = false">{{ c.cancel }}</el-button>
+        <el-button type="primary" @click="submmitAddUser" :loading="submitAddUserLoading">{{ c.confirm }}</el-button>
+      </span></template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { arrayToObject, dateTools } from '@/utils'
-import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common'
+import { _, api, zFormDialog,zPagination, zTable } from '@/views/_common/index.js'
 
 const emptyData = {}
 export default {
@@ -90,16 +90,16 @@ export default {
   data: function () {
     return {
       api: api.role,
-      name: this.$l.title,
+      name: this.l.title,
       columns: [
-        { title: this.$l.role_id, key: 'role_id' },
-        { title: this.$l.role_name, key: 'role_name' },
-        { title: this.$l.role_desc, key: 'role_desc' },
+        { title: this.l.role_id, key: 'role_id' },
+        { title: this.l.role_name, key: 'role_name' },
+        { title: this.l.role_desc, key: 'role_desc' },
       ],
       fields: [
-        { title: this.$l.role_name, key: 'role_name', required: true },
-        { title: this.$l.role_desc, key: 'role_desc', required: true },
-        { title: this.$l.role_type, key: 'role_type', required: false },
+        { title: this.l.role_name, key: 'role_name', required: true },
+        { title: this.l.role_desc, key: 'role_desc', required: true },
+        { title: this.l.role_type, key: 'role_type', required: false },
       ],
       tableProps: {
         border: true,
@@ -137,9 +137,9 @@ export default {
       menuCheckChange: false,
       empCheckChange: false,
       userColumns: [
-        { title: this.$l.userid, key: 'userid' },
-        { title: this.$l.username, key: 'username' },
-        { title: this.$l.department, key: 'department_t' },
+        { title: this.l.userid, key: 'userid' },
+        { title: this.l.username, key: 'username' },
+        { title: this.l.department, key: 'department_t' },
       ],
       userTableProps: {
         border: true,
@@ -250,13 +250,13 @@ export default {
         })
     },
     deleteItem(v) {
-      this.$confirm(this.$c.cfmDelete, this.$c.oprConfirm).then(() => {
+      this.$confirm(this.c.cfmDelete, this.c.oprConfirm).then(() => {
         this.pageLoading = true
         this.$request(this.api + 'delete/' + v.id, {}, 'post')
           .then((r) => {
             this.pageLoading = false
             this.$message({
-              message: this.$c.success,
+              message: this.c.success,
               type: 'success',
             })
             this.currentDataId = 0
@@ -298,7 +298,7 @@ export default {
         .then((r) => {
           this.submmitLoading = false
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           this.saveMenuLoading = false
@@ -373,7 +373,7 @@ export default {
         .then((r) => {
           this.submmitLoading = false
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           this.editFormVisible = false
@@ -402,7 +402,7 @@ export default {
       this.addUserDialogShow = true
     },
     submmitAddUser() {
-      if (!this.addUsers) return this.$message.error(this.$l.addUserIsEmpty)
+      if (!this.addUsers) return this.$message.error(this.l.addUserIsEmpty)
       let user_ids = this.addUsers.replace('，', ',').split(',')
       this.submitAddUserLoading = true
       this.$request(
@@ -414,7 +414,7 @@ export default {
         'post'
       )
         .then((r) => {
-          this.$message.success(this.$c.success)
+          this.$message.success(this.c.success)
           this.addUserDialogShow = false
           this.submitAddUserLoading = false
           this.addUsers = ''
@@ -425,7 +425,7 @@ export default {
         })
     },
     deleteUserRoleItem(row) {
-      this.$confirm(this.$l.removeUserFromRole)
+      this.$confirm(this.l.removeUserFromRole)
         .then((r) => {
           this.$request(
             this.api + 'deleteroleuser/' + row.id,
@@ -435,7 +435,7 @@ export default {
             'post'
           )
             .then((r) => {
-              this.$message.success(this.$c.success)
+              this.$message.success(this.c.success)
               this.getUserList()
             })
             .catch(() => {})

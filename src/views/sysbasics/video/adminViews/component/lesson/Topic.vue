@@ -223,7 +223,7 @@
     </a-drawer>
 
     <!-- Add Course Dialog -->
-    <el-dialog :visible.sync="showObj.courseDialog" @open="getCourseList" width="900px" :title="l.addCourseDialogTitle">
+    <el-dialog v-model:visible="showObj.courseDialog" @open="getCourseList" width="900px" :title="l.addCourseDialogTitle">
       <div class="flex flex-col h-[500px] font-roboto">
         <!-- Filter -->
         <div class="flex flex-wrap gap-4 mb-4">
@@ -244,7 +244,7 @@
         <div class="flex-1 overflow-auto border border-[#E5E5E5] rounded">
           <a-table :dataSource="courseObj.list" rowKey="id" :pagination="false" :rowSelection="{ onChange: handleSelectionChange }">
             <a-table-column :title="l.cover">
-              <template slot-scope="text, record">
+              <template #default="{ text, record }">
                 <div class="w-16 h-10 bg-[#E5E5E5] rounded-sm overflow-hidden relative">
                   <img v-if="!imageErrors[record.id] && record.thumbnail_path" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-full h-full object-cover" @error="handleImageError(record.id)" />
                   <div v-else class="w-full h-full flex items-center justify-center bg-[#CCCCCC] text-white! text-[10px] font-bold">
@@ -256,7 +256,7 @@
             <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
             <a-table-column :title="l.description" dataIndex="description" width="200" :ellipsis="true"></a-table-column>
             <a-table-column :title="l.action" width="120">
-              <template slot-scope="text, record">
+              <template #default="{ text, record }">
                 <button class="text-[#065FD4] hover:underline mr-2" @click="toPlay(record.id)">{{ l.preview }}</button>
                 <button class="text-[#069C56] hover:underline" @click="addSingleCourseToTopic(record)">{{ l.select }}</button>
               </template>

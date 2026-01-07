@@ -18,8 +18,8 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import SidebarItem from '../SidebarItem'
-import variables from '@/styles/variables.scss'
+import SidebarItem from '../SidebarItem.vue'
+import variables from '@/styles/layout.scss'
 
 defineOptions({ name: 'Sidebar' })
 

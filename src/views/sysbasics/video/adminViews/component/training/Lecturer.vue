@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-drawer class="drawer-container" :visible.sync="showObj.add_show" :wrapperClosable="false" size="40%"
+    <el-drawer class="drawer-container" v-model:visible="showObj.add_show" :wrapperClosable="false" size="40%"
       :before-close="getLecturerList">
-      <div slot="title" class="title">{{l.addLecturer}}</div>
+      <template #title><div class="title">{{l.addLecturer}}</div></template>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
@@ -54,9 +54,9 @@
       </div>
     </el-drawer>
 
-    <el-drawer class="drawer-container" :visible.sync="showObj.edit_show" :wrapperClosable="false" size="40%"
+    <el-drawer class="drawer-container" v-model:visible="showObj.edit_show" :wrapperClosable="false" size="40%"
       :before-close="getLecturerList">
-      <div slot="title" class="title">{{l.editLecturer}}</div>
+      <template #title><div class="title">{{l.editLecturer}}</div></template>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
@@ -128,15 +128,17 @@
     </div>
     <div style="height: calc(100% - 60px);">
       <a-table :dataSource="lecturerList.data" :columns="columns" :scroll="{ y: 720 }">
-        <template slot="operation" slot-scope="text, record">
-          <a-button @click="editLecturer(record)" type="link" size="small">{{l.edit}}</a-button>
-          <a-button @click="deleteLecturer(record)" type="link" size="small" style="color: red">
-            {{l.delete}}</a-button>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'operation'">
+            <a-button @click="editLecturer(record)" type="link" size="small">{{l.edit}}</a-button>
+            <a-button @click="deleteLecturer(record)" type="link" size="small" style="color: red">
+              {{l.delete}}</a-button>
+          </template>
         </template>
       </a-table>
 
-      <z-pagination :pagination="pagination" :total="lecturerList.total" :page.sync="lecturerList.form.page"
-        :limit.sync="lecturerList.form.pageSize" @change="getLecturerList">
+      <z-pagination :pagination="pagination" :total="lecturerList.total" v-model:page="lecturerList.form.page"
+        v-model:limit="lecturerList.form.pageSize" @change="getLecturerList">
       </z-pagination>
     </div>
   </div>
@@ -233,6 +235,7 @@ const columns = computed(() => [
     },
     {
       title: l.operation,
+      key: 'operation',
       fixed: 'right',
       width: 100,
       scopedSlots: { customRender: 'operation' },

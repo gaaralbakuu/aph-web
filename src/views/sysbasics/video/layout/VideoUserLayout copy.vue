@@ -47,17 +47,17 @@ export default {
         {
           icon: HomeIcon,
           resource_path: '/videoLayout/home',
-          name_label: this.$l.home,
+          name_label: this.l.home,
         },
         {
           icon: CourseIcon,
           resource_path: '/videoLayout/course',
-          name_label: this.$l.course,
+          name_label: this.l.course,
         },
         {
           icon: TopicIcon,
           resource_path: '/videoLayout/topic',
-          name_label: this.$l.topic,
+          name_label: this.l.topic,
         },
       ],
       collageList: {

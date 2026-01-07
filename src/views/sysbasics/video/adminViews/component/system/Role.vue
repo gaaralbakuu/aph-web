@@ -2,7 +2,7 @@
   <div class="roleManage-container">
     <div class="pageBody">
       <div class="components">
-        <el-drawer class="drawer-container" :visible.sync="showObj.role" :wrapperClosable='false' size="60%">
+        <el-drawer class="drawer-container" v-model:visible="showObj.role" :wrapperClosable='false' size="60%">
           <div slot='title' class="title">{{l.addEditRole}}</div>
           <div class="form-container">
             <el-form label-width="120px" size="medium">
@@ -37,7 +37,7 @@
             <el-button type="danger" @click="showObj.role = false">{{l.discard}}</el-button>
           </div>
         </el-drawer>
-        <chooseUser :visible.sync="showObj.chooseUser" :useridList.sync="userObj.toBeAddedList" @submmit="submmitUser">
+        <chooseUser v-model:visible="showObj.chooseUser" v-model:useridList="userObj.toBeAddedList" @submmit="submmitUser">
         </chooseUser>
       </div>
 
@@ -50,11 +50,11 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="l.name">
-            <el-input clearable v-model="roleObj.query.role_name" @keyup.enter.native="getRoleList"
+            <el-input clearable v-model="roleObj.query.role_name" @keyup.enter="getRoleList"
               @clear="getRoleList"></el-input>
           </el-form-item>
           <el-form-item :label="l.description">
-            <el-input clearable v-model="roleObj.query.role_desc" @keyup.enter.native="getRoleList"
+            <el-input clearable v-model="roleObj.query.role_desc" @keyup.enter="getRoleList"
               @clear="getRoleList"></el-input>
           </el-form-item>
           <el-form-item label="">
@@ -73,7 +73,7 @@
             <el-table-column prop="role_name" :label="l.roleName"></el-table-column>
             <el-table-column prop="role_desc" :label="l.roleDescription"></el-table-column>
             <el-table-column :label="l.operation">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button type="text" @click="modifyRole(scope.row)">{{l.edit}}</el-button>
                 <el-button type="text" class="text-red" @click="deleteRole(scope.row)">{{l.delete}}</el-button>
               </template>
@@ -97,7 +97,7 @@
                   <el-table-column prop="name_t" :label="l.username"></el-table-column>
                   <el-table-column prop="department_t" :label="l.department"></el-table-column>
                   <el-table-column :label="l.operation">
-                    <template slot-scope="scope">
+                    <template #default="scope">
                       <el-button type="text" class="text-red" @click="deleteUser(scope.row)">{{l.delete}}</el-button>
                     </template>
                   </el-table-column>
@@ -111,14 +111,14 @@
                 <el-button type="success" @click="submitMenu">{{l.saveMenu}}</el-button>
               </div>
               <el-tree class="filter-tree" :data="publicCodeObj.menuList" node-key="menu_id" show-checkbox ref="tree">
-                <div class="custom-menu-node" slot-scope="{ node, data }">
+                <template #{ node, data }><div class="custom-menu-node" v->
                   <span>
                     <el-tag style="text-align: center;" effect="dark" size="mini"
                       :type="data.resource_type=='navigator'?'warning':data.resource_type=='catalogue'?'primary':'success'">{{data.resource_type.substr(0,4).toUpperCase()}}</el-tag>
                   </span>
                   <span style="font-weight: 600;">{{ data[`name_${locale.split('-')[0]}`] }}</span>
                   <span v-show="data.resource_path" style="color: #aaa;">{{ data.resource_path }}</span>
-                </div>
+                </div></template>
               </el-tree>
             </el-tab-pane>
           </el-tabs>

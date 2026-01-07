@@ -1,7 +1,7 @@
 <template>
   <div class="banner-container">
 
-    <el-dialog :visible.sync="showObj.topic" @open='getTopicList' width="60%" :title="l.topicDialogTitle">
+    <el-dialog v-model:visible="showObj.topic" @open='getTopicList' width="60%" :title="l.topicDialogTitle">
       <div class="CourseSelect-dialog">
         <el-form inline>
           <el-form-item :label="l.college">
@@ -28,7 +28,7 @@
           <el-table-column :label="l.lastModifyTime" prop="modify_time"></el-table-column>
           <el-table-column :label="l.enabled" prop="is_valid" width="80"></el-table-column>
           <el-table-column :label="l.operation" width="120" fixed="right">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button type='text' @click="selectTopic(scope.row)">{{l.edit}}</el-button>
             </template>
           </el-table-column>
@@ -38,12 +38,14 @@
           layout="total, sizes, prev, pager, next, jumper" :total="topicObj.total" style="float: right;">
         </el-pagination>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button style="width: 8em;" type="primary" plain @click="showObj.topic = false">{{l.close}}</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button style="width: 8em;" type="primary" plain @click="showObj.topic = false">{{l.close}}</el-button>
+        </div>
+      </template>
     </el-dialog>
 
-    <el-dialog :visible.sync="showObj.course" @open='getCourseList' width="60%" :title="l.addToTopic">
+    <el-dialog v-model:visible="showObj.course" @open='getCourseList' width="60%" :title="l.addToTopic">
       <div class="CourseSelect-dialog">
         <el-form inline>
           <el-form-item :label="l.college">
@@ -54,7 +56,7 @@
           </el-form-item>
           <el-form-item :label="l.name">
             <el-input :placeholder="l.keywordSearch" v-model="courseObj.query.name" clearable @clear='getCourseList'
-              @keyup.native.enter="getCourseList"></el-input>
+              @keyup.enter="getCourseList"></el-input>
           </el-form-item>
           <el-form-item :label="l.courseType">
             <el-select v-model="courseObj.query.is_public" :disabled="!isAdmin&&courseObj.query.college_id==''"
@@ -75,7 +77,7 @@
           <el-table-column type="index" width="50" :label="l.serialNumber">
           </el-table-column>
           <el-table-column prop="thumbnail_path" :label="l.cover">
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="img" v-if="scope.row.thumbnail_path">
                 <img class="auto-img" :src="$api.baseUrl+'/'+ scope.row.thumbnail_path" />
               </div>
@@ -90,7 +92,7 @@
           <el-table-column prop="description" :label="l.description">
           </el-table-column>
           <el-table-column :label="l.operation" width="120" fixed="right">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button class="text-green" type='text' @click="toPlay(scope.row.id)">{{l.preview}}</el-button>
               <el-button type="text" @click="selectCourse(scope.row)">{{l.select}}</el-button>
             </template>
@@ -102,9 +104,11 @@
           :total="courseObj.total" style="float: right;">
         </el-pagination>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button style="width: 8em;" type="primary" plain @click="showObj.course = false">{{l.close}}</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button style="width: 8em;" type="primary" plain @click="showObj.course = false">{{l.close}}</el-button>
+        </div>
+      </template>
     </el-dialog>
 
     <input ref="coverInput" type="file" @change="uploadCoverChange" style="display: none;" accept="image/*" />
@@ -131,26 +135,26 @@
     <div class="banner-content">
       <el-table :data="bannerList">
         <el-table-column :label="l.cover">
-          <template slot-scope="v">
+          <template #default="v">
             <img style="width: 200px;height: 100px;" :src="$api.baseUrl+'/'+v.row.file_url" />
           </template>
         </el-table-column>
         <el-table-column :label="l.name" prop="name"></el-table-column>
         <el-table-column :label="l.description" prop="description"></el-table-column>
         <el-table-column :label="l.jumpLink" prop="link">
-          <template slot-scope="v">
+          <template #default="v">
             {{v.row.link||l.noJump}}
           </template>
         </el-table-column>
         <el-table-column :label="l.status" prop="status">
-          <template slot-scope="v">
+          <template #default="v">
             {{v.row.status==1?l.enabled:l.disabled}}
           </template>
         </el-table-column>
         <el-table-column :label="l.modify_time" prop="modify_time"></el-table-column>
         <el-table-column :label="l.modify_user" prop="modify_user"></el-table-column>
         <el-table-column :label="l.operation" fixed="right">
-          <template slot-scope="v">
+          <template #default="v">
             <a href="#" class="text-blue" @click.prevent="editItem(v.row)">{{l.edit}}</a>&nbsp;
             <a href="#" class="text-red" @click.prevent="deleteItem(v.row)">{{l.delete}}</a>
           </template>
@@ -162,7 +166,7 @@
       </el-pagination>
     </div>
 
-    <el-drawer class="drawer-container" :visible.sync="showObj.bannerShow" :wrapperClosable='false' size="40%">
+    <el-drawer class="drawer-container" v-model:visible="showObj.bannerShow" :wrapperClosable='false' size="40%">
       <div slot='title' class="title">{{l.bannerManagement}}</div>
       <div class="form-container">
         <div class="form">
@@ -204,7 +208,7 @@
             </el-form-item>
             <el-form-item :label="l.target" v-show="targetObj.type!=''">
               <el-input v-model="targetObj.label" disabled>
-                <template slot="append">
+                <template #append>
                   <el-button @click="openSelectTarget" style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
                 </template>
               </el-input>

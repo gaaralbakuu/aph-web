@@ -1,16 +1,16 @@
 <template>
     <div class="app-container" v-loading="pageLoading">
-        <el-button type="primary" class="fr" @click="createItem" style="margin-left: 5px">{{$c.create}}</el-button>
-        <el-button :loading="sortLoading" v-if="indexFlag" class="fr" @click="updateDetailSort" type="success" plain>{{$c.saveIndex}}</el-button>
+        <el-button type="primary" class="fr" @click="createItem" style="margin-left: 5px">{{ c.create}}</el-button>
+        <el-button :loading="sortLoading" v-if="indexFlag" class="fr" @click="updateDetailSort" type="success" plain>{{ c.saveIndex}}</el-button>
         <div class="filter-container">
-            <el-input style="width: 200px" :placeholder="$l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter.native="research" @clear="research"
+            <el-input style="width: 200px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter="research" @clear="research"
                 v-model="query.queryString.str"></el-input>
-            <el-select v-model="query.queryString.status" class="filter-item" clearable :placeholder="$l.statusPd">
-                <el-option :label="$c.all" value="0"></el-option>
-                <el-option :label="$c.enabled" value="1"></el-option>
-                <el-option :label="$c.disabled" value="2"></el-option>
+            <el-select v-model="query.queryString.status" class="filter-item" clearable :placeholder="l.statusPd">
+                <el-option :label="c.all" value="0"></el-option>
+                <el-option :label="c.enabled" value="1"></el-option>
+                <el-option :label="c.disabled" value="2"></el-option>
             </el-select>
-            <el-button class="filter-item" type="success" plain @click="research">{{$c.queryButton}}</el-button>
+            <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton}}</el-button>
             <!-- <el-button
         class="filter-item"
         type="info"
@@ -28,8 +28,8 @@
                 <span v-else>{{ v.row[v.key] }}</span>
             </template>
         </z-table>
-        <z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList"></z-pagination>
-        <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="editFormVisible"></z-form-dialog>
+        <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList"></z-pagination>
+        <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
     </div>
 </template>
 
@@ -55,43 +55,43 @@ export default {
     data: function () {
         return {
             ...config,
-            status: { 1: this.$c.enabled, 2: this.$c.disabled },
+            status: { 1: this.c.enabled, 2: this.c.disabled },
             statusClass: { 2: 'bg-red', 1: 'bg-green' },
             indexFlag: false,
             sortLoading: false,
-            name: this.$l.title,
+            name: this.l.title,
             query: {
                 queryString: {},
                 size: 10,
                 page: 1,
             },
             columns: [
-                { title: this.$l.name, key: 'name', width: 200 },
-                { title: this.$l.description, key: 'description' },
-                { title: this.$l.link, key: 'link' },
-                { title: this.$l.file_name, key: 'file_name' },
-                { title: this.$l.file_url, key: 'file_url' },
-                { title: this.$l.empnopz, key: 'empnopz' },
-                { title: this.$l.orgidpz, key: 'orgidpz' },
-                { title: this.$l.deptnopz, key: 'deptnopz' },
-                { title: this.$l.otherspz, key: 'otherspz' },
-                { title: this.$l.status, key: 'status', width: 70 },
-                { title: this.$c.modify_user, key: 'modify_user', width: 100 },
-                { title: this.$c.modify_time, key: 'modify_time', width: 140 },
+                { title: this.l.name, key: 'name', width: 200 },
+                { title: this.l.description, key: 'description' },
+                { title: this.l.link, key: 'link' },
+                { title: this.l.file_name, key: 'file_name' },
+                { title: this.l.file_url, key: 'file_url' },
+                { title: this.l.empnopz, key: 'empnopz' },
+                { title: this.l.orgidpz, key: 'orgidpz' },
+                { title: this.l.deptnopz, key: 'deptnopz' },
+                { title: this.l.otherspz, key: 'otherspz' },
+                { title: this.l.status, key: 'status', width: 70 },
+                { title: this.c.modify_user, key: 'modify_user', width: 100 },
+                { title: this.c.modify_time, key: 'modify_time', width: 140 },
             ],
             fields: [
-                { title: this.$l.name, key: 'name', required: true },
-                { title: this.$l.description, key: 'description' },
-                { title: this.$l.link, key: 'link' },
+                { title: this.l.name, key: 'name', required: true },
+                { title: this.l.description, key: 'description' },
+                { title: this.l.link, key: 'link' },
                 {
-                    title: this.$l.isEnable,
+                    title: this.l.isEnable,
                     key: 'status',
                     span: 8,
                     name: 'switch',
                     props: { inactiveValue: '2', activeValue: '1' },
                 },
                 {
-                    title: this.$l.upload,
+                    title: this.l.upload,
                     key: 'file',
                     name: 'imgUploader',
                     props: {
@@ -104,7 +104,7 @@ export default {
                     },
                 },
         {
-          title: this.$l.empnopz,
+          title: this.l.empnopz,
           key: 'empnopz',
           name: 'select',
           events: {},
@@ -112,12 +112,12 @@ export default {
             { value: 'N', label: 'N' },
             { value: 'Y', label: 'Y' },
           ],
-          props: { placeholder: this.$l.orgidpzPd },
+          props: { placeholder: this.l.orgidpzPd },
           required: true,
           span: 12,
           },
           {
-                title: this.$l.orgidpz,
+                title: this.l.orgidpz,
           key: 'orgidpz',
           name: 'select',
           events: {},
@@ -125,12 +125,12 @@ export default {
             { value: 'N', label: 'N' },
             { value: 'Y', label: 'Y' },
           ],
-          props: { placeholder: this.$l.orgidpzPd },
+          props: { placeholder: this.l.orgidpzPd },
           required: true,
           span: 12,
           },
           {
-                title: this.$l.deptnopz,
+                title: this.l.deptnopz,
           key: 'deptnopz',
           name: 'select',
           events: {},
@@ -138,12 +138,12 @@ export default {
             { value: 'N', label: 'N' },
             { value: 'Y', label: 'Y' },
           ],
-          props: { placeholder: this.$l.deptnopzPd },
+          props: { placeholder: this.l.deptnopzPd },
           required: true,
           span: 12,
           },
           {
-          title: this.$l.otherspz,
+          title: this.l.otherspz,
           key: 'otherspz',
           name: 'select',
           events: {},
@@ -151,7 +151,7 @@ export default {
             { value: 'N', label: 'N' },
             { value: 'Y', label: 'Y' },
           ],
-          props: { placeholder: this.$l.otherspzPd },
+          props: { placeholder: this.l.otherspzPd },
           required: true,
           span: 12,
           },
@@ -206,7 +206,7 @@ export default {
                 .then((r) => {
                     this.submmitLoading = false
                     this.$message({
-                        message: this.$c.success,
+                        message: this.c.success,
                         type: 'success',
                     })
                     this.editFormVisible = false

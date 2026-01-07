@@ -5,34 +5,34 @@
         <el-dropdown trigger="click" @command="handleCommand">
           <div><b style="color: #409fee;">{{showObj.type}}</b><i class="el-icon-arrow-down el-icon--right"></i>
           </div>
-          <el-dropdown-menu slot="dropdown">
+          <template #dropdown><el-dropdown-menu>
             <el-dropdown-item v-for="(item,index) in paramsObj.type" :key="index" :divided="index>0"
               :command="'type-'+item.value+'-'+item.label">
               {{item.label}}
             </el-dropdown-item>
-          </el-dropdown-menu>
+          </el-dropdown-menu></template>
         </el-dropdown>
       </div>
       <div class="filter-item">
         <el-dropdown trigger="click" @command="handleCommand">
           <div><b style="color: #409fee;">{{showObj.urgent}}</b><i class="el-icon-arrow-down el-icon--right"></i></div>
-          <el-dropdown-menu slot="dropdown">
+          <template #dropdown><el-dropdown-menu>
             <el-dropdown-item v-for="(item,index) in paramsObj.urgent" :key="index" :divided="index>0"
               :command="'urgent-'+item.value+'-'+item.label">
               {{item.label}}
             </el-dropdown-item>
-          </el-dropdown-menu>
+          </el-dropdown-menu></template>
         </el-dropdown>
       </div>
     </div> -->
 
     <el-menu class="horizontal-menu" :default-active="showObj.activeName" mode="horizontal" @select="handleSelect"
       active-text-color="#409fee">
-      <el-menu-item index="first">{{$c.all}}</el-menu-item>
-     <!-- <el-menu-item index="first">{{$l.notComplete}}</el-menu-item>
-      <el-menu-item index="second">{{$l.completed}}</el-menu-item>
-      <el-menu-item index="third">{{$l.expired}}</el-menu-item>
-      <el-menu-item index="four">{{$l.historyCompleted}}</el-menu-item> -->
+      <el-menu-item index="first">{{ c.all}}</el-menu-item>
+     <!-- <el-menu-item index="first">{{ l.notComplete}}</el-menu-item>
+      <el-menu-item index="second">{{ l.completed}}</el-menu-item>
+      <el-menu-item index="third">{{ l.expired}}</el-menu-item>
+      <el-menu-item index="four">{{ l.historyCompleted}}</el-menu-item> -->
     </el-menu>
 
     <div class="learning-content">
@@ -45,14 +45,14 @@
             {{item.name_zh}}
           </div>
           <div class="course-info">
-            <span>{{$l.introduce}}：{{item.description}}</span>
+            <span>{{ l.introduce}}：{{item.description}}</span>
           </div>
           <div class="status">
-            {{$l.trainTime}}：{{item.start_date.substr(0,10) + ' - ' + item.end_date.substr(0,10)}}
+            {{ l.trainTime}}：{{item.start_date.substr(0,10) + ' - ' + item.end_date.substr(0,10)}}
           </div>
         </div>
         <div class="btn-right">
-          <el-button type="primary"  round @click="checkDetail(item)">{{$l.check}}</el-button>
+          <el-button type="primary"  round @click="checkDetail(item)">{{ l.check}}</el-button>
         </div>
       </div>
     </div>
@@ -65,8 +65,8 @@
       return {
         showObj: {
           activeName: 'first',
-          type: this.$c.all,
-          urgent: this.$l.urgent
+          type: this.c.all,
+          urgent: this.l.urgent
         },
         trainingObj: {
           query: {
@@ -83,32 +83,32 @@
         },
         paramsObj: {
           urgent: [{
-              label: this.$l.urgent,
+              label: this.l.urgent,
               value: "urgent"
             },
             {
-              label: this.$l.newest,
+              label: this.l.newest,
               value: "newest"
             }
           ],
           type: [{
-              label: this.$c.all,
+              label: this.c.all,
               value: "all"
             },
             {
-              label:this.$l.course,
+              label:this.l.course,
               value: "course"
             },
             {
-              label: this.$l.topic,
+              label: this.l.topic,
               value: "topic"
             },
             {
-              label: this.$l.training,
+              label: this.l.training,
               value: "training"
             },
             {
-              label: this.$l.exam,
+              label: this.l.exam,
               value: "exam"
             },
           ]

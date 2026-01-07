@@ -2,7 +2,7 @@
   <div>
     <div class="flex overflow-hidden items-start border border-b border-gray-300">
       <div class="flex-1 h-full">
-        <VideoPlayer ref="videoPlayerRef" :src="state.currentVideo.url" :other_src="state.currentVideo.other_url" :progressControl="true" :markers="state.questionList" :playInBackground="false" :resumePlaying="true" :lastPlayTime="state.progressObj.progress" :maxPlayTime="state.progressObj.max_progress" :finishPoint="state.currentVideo.finish_time" :playbackRateArray="[1]" :questionControl="state.currentVideo.is_process_question" :watermark="user.userId + ' ' + user.userName" :playStatus.sync="state.isPlaying" @loadedMetadata="getPlayProgress" @pause="reportPlayProgress" @ended="reportPlayDuration" @seeked="reportPlayProgress" @play="playVideoAction" @progressUpdate="onVideoProgressUpdate"></VideoPlayer>
+        <VideoPlayer ref="videoPlayerRef" :src="state.currentVideo.url" :other_src="state.currentVideo.other_url" :progressControl="true" :markers="state.questionList" :playInBackground="false" :resumePlaying="true" :lastPlayTime="state.progressObj.progress" :maxPlayTime="state.progressObj.max_progress" :finishPoint="state.currentVideo.finish_time" :playbackRateArray="[1]" :questionControl="state.currentVideo.is_process_question" :watermark="user.userId + ' ' + user.userName" v-model:playStatus="state.isPlaying" @loadedMetadata="getPlayProgress" @pause="reportPlayProgress" @ended="reportPlayDuration" @seeked="reportPlayProgress" @play="playVideoAction" @progressUpdate="onVideoProgressUpdate"></VideoPlayer>
       </div>
 
       <div class="flex flex-col overflow-hidden w-[420px] border-l border-gray-300 bg-gray-50" :style="{ height: playlistHeight }">
@@ -61,9 +61,11 @@
               }">
               <div class="title">
                 <el-tooltip effect="light" placement="right">
-                  <div slot="content" style="max-width: 300px" class="text-clamp-4">
-                    {{ i.description }}
-                  </div>
+                  <template #content>
+                    <div style="max-width: 300px" class="text-clamp-4">
+                      {{ i.description }}
+                    </div>
+                  </template>
                   <span class="text-clamp-2" :style="{ 'max-width': 'calc(100% - 20px)' }">{{ i.course_name_label }}</span>
                 </el-tooltip>
                 <div v-show="state.topicObj.index == index">
@@ -234,7 +236,7 @@
 <script setup>
 import { reactive, computed, watch, onMounted, onBeforeUnmount, nextTick, ref, getCurrentInstance } from 'vue'
 import store from '@/store'
-import { Message as ElMessage } from 'element-ui'
+import { ElMessage } from 'element-plus'
 import debounce from 'lodash.debounce'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 import api from '@/api'

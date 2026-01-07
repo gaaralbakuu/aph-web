@@ -1,4 +1,4 @@
-import Layout from '@/views/layout/Layout'
+import Layout from '@/views/layout/Layout.vue'
 let isDevelopMode = process.env.NODE_ENV === 'development' ? true : false//保存当前环境是否为开发环境
 export default {
     path: '/compliance',
@@ -6,7 +6,7 @@ export default {
     children: [
         {
             path: 'Investigation',
-            component: () => import('@/views/sysbasics/compliance/Investigation'),
+            component: () => import('@/views/sysbasics/compliance/Investigation.vue'),
             name: 'Investigation',
             meta: {
                 noCache: isDevelopMode
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: 'ShareInformation',
-            component: () => import('@/views/sysbasics/compliance/ShareInformation'),
+            component: () => import('@/views/sysbasics/compliance/ShareInformation.vue'),
             name: 'ShareInformation',
             meta: {
                 noCache: isDevelopMode
@@ -22,7 +22,7 @@ export default {
         },
         {
             path: 'InvestigationInfo',
-            component: () => import('@/views/sysbasics/compliance/InvestigationInfo'),
+            component: () => import('@/views/sysbasics/compliance/InvestigationInfo.vue'),
             name: 'InvestigationInfo',
             meta: {
                 noCache: isDevelopMode
@@ -30,7 +30,7 @@ export default {
         },
         {
             path: 'AccountManagement',
-            component: () => import('@/views/sysbasics/compliance/AccountManagement'),
+            component: () => import('@/views/sysbasics/compliance/AccountManagement.vue'),
             name: 'AccountManagement',
             meta: {
                 noCache: isDevelopMode
@@ -39,7 +39,7 @@ export default {
 
         {
             path: 'Manufacturer',
-            component: () => import('@/views/sysbasics/compliance/Manufacturer'),
+            component: () => import('@/views/sysbasics/compliance/Manufacturer.vue'),
             name: 'Manufacturer',
             meta: {
                 noCache: isDevelopMode
@@ -47,7 +47,7 @@ export default {
         },
         {
             path: 'Manufacturer2',
-            component: () => import('@/views/sysbasics/compliance/Manufacturer2'),
+            component: () => import('@/views/sysbasics/compliance/Manufacturer2.vue'),
             name: 'Manufacturer2',
             meta: {
                 noCache: isDevelopMode
@@ -63,7 +63,7 @@ export default {
         // },
         {
             path: 'ImproveAnalysis',
-            component: () => import('@/views/sysbasics/compliance/ImproveAnalysis'),
+            component: () => import('@/views/sysbasics/compliance/ImproveAnalysis.vue'),
             name: 'ImproveAnalysis',
             meta: {
                 noCache: isDevelopMode
@@ -71,7 +71,7 @@ export default {
         },
         {
             path: 'ImproveManagement',
-            component: () => import('@/views/sysbasics/compliance/ImproveManagement'),
+            component: () => import('@/views/sysbasics/compliance/ImproveManagement.vue'),
             name: 'ImproveManagement',
             meta: {
                 noCache: isDevelopMode
@@ -79,7 +79,7 @@ export default {
         },
         {
           path: 'ImproveManagementInfo',
-          component: () => import('@/views/sysbasics/compliance/ImproveManagementInfo'),
+          component: () => import('@/views/sysbasics/compliance/ImproveManagementInfo.vue'),
           name: 'improveManagementInfo',
           meta: {
               noCache: isDevelopMode
@@ -87,7 +87,7 @@ export default {
       },
         {
           path: 'cisbanner',
-          component: () => import('@/views/sysbasics/compliance/Banner'),
+          component: () => import('@/views/sysbasics/compliance/Banner.vue'),
           name: 'sysbasicscompliancebanner',
           meta: {
             noCache: true

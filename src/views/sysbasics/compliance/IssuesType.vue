@@ -24,12 +24,12 @@
       <iframe :src="docUrl" style="width:100%; height:100vh;" frameborder="0" v-show="false"></iframe>
     </template>
 
-    <el-dialog :title="l.select" :visible.sync="selectFormVisible" width="70%">
+    <el-dialog :title="l.select" v-model:visible="selectFormVisible" width="70%">
       <el-table :data="manufacture.tableData" height="400px">
         <el-table-column v-for="(item, index) in manufactureColumns" :key="index" :label="item.label" :prop="item.key">
         </el-table-column>
         <el-table-column align="right">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
           </template>
         </el-table-column>
@@ -46,7 +46,7 @@
       <el-table-column prop="corrective_plan" :label="l.correctivePlan" width="250">
       </el-table-column>
       <el-table-column prop="attchments" :label="l.attchments" width="120">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-button type="text" @click="getAtt(scope.$index, scope.row)">查看附件</el-button>
         </template>
       </el-table-column>
@@ -63,7 +63,7 @@
       <el-table-column prop="audit_time" :label="l.verifyDate" width="90">
       </el-table-column>
       <el-table-column fixed="right" :label="l.operate" width="130" v-if="showHis == false">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-button @click="editDetail(scope.$index, scope.row)" type="text">{{ l.Rectification }}</el-button>
           <el-button v-show="scope.row.is_sumbit == 'Y'" @click="takeOut(scope.$index, scope.row)"
             type="text">取回</el-button>
@@ -71,11 +71,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="getList" @current-change="getList" :current-page.sync="query.page"
-      :page-sizes="[6, 12, 15, 20]" :page-size.sync="query.pageSize" layout="total, sizes, prev, pager, next, jumper"
+    <el-pagination @size-change="getList" @current-change="getList" v-model:current-page="query.page"
+      :page-sizes="[6, 12, 15, 20]" v-model:page-size="query.pageSize" layout="total, sizes, prev, pager, next, jumper"
       :total="table.total">
     </el-pagination>
-    <el-dialog :title="l.Rectification" :visible.sync="editVisible" width="50%">
+    <el-dialog :title="l.Rectification" v-model:visible="editVisible" width="50%">
       <el-form :model="editForm" :rules="rules" ref="editFormRef">
         <el-form-item :label="l.correctiveDate" :label-width="formLabelWidth" prop="corrective_date">
           <el-date-picker v-model="editForm.corrective_date" type="datetime" :placeholder="l.inputCorrective_date">
@@ -102,19 +102,19 @@
         <el-table-column prop="create_time" label="创建时间" width="150">
         </el-table-column>
         <el-table-column fixed="right" width="145">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button @click="removeAttachments(scope.row, scope.$index, 1)" type="text" size="small">{{ c.delete
               }}</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="editVisible = false">{{ l.cancel }}</el-button>
         <el-button type="primary" @click="submitAtt">{{ l.submit }}</el-button>
-      </span>
+      </span></template>
     </el-dialog>
 
-    <el-dialog :visible.sync="fileTableVisable">
+    <el-dialog v-model:visible="fileTableVisable">
       <div>
         <!-- 文件表格 -->
         <el-table :data="file.list" style="width: 90%">
@@ -122,7 +122,7 @@
             :width="item.width">
           </el-table-column>
           <el-table-column fixed="right" :label="c.operation" width="145">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
             </template>
           </el-table-column>

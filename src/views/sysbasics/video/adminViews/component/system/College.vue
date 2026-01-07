@@ -1,7 +1,7 @@
 <template>
   <div ref="lesssonCatalogue-container" class="lesssonCatalogue-container">
-    <el-drawer class="drawer-container" :visible.sync="showObj.collegeShow" :wrapperClosable="false" size="40%" :before-close="getCollegeList">
-      <div slot="title" class="title">{{ l.addEditCollege }}</div>
+    <el-drawer class="drawer-container" v-model:visible="showObj.collegeShow" :wrapperClosable="false" size="40%" :before-close="getCollegeList">
+      <template #title><div class="title">{{ l.addEditCollege }}</div></template>
       <div class="form-container">
         <div class="form">
           <el-form label-width="100px" size="medium">
@@ -37,12 +37,12 @@
           <el-button type="primary" @click="addORG" style="margin-left: 10px">{{ l.addCollege }}</el-button>
         </div>
         <el-tree class="org-tree" ref="orgTree" node-key="id" :accordion="true" :default-expand-all="true" :data="collegeList.data" :filter-node-method="filterOrg">
-          <div class="org-tree-node" slot-scope="{ node, data }" @click="getCollegeUser(data.id)">
+          <template #{ node, data }><div class="org-tree-node" v- @click="getCollegeUser(data.id)">
             <span>{{ data.name_zh }}</span>
             <span>
               <el-button type="text" @click.prevent="editORG(data)">{{ l.edit }}</el-button>
             </span>
-          </div>
+          </div></template>
         </el-tree>
       </div>
       <div style="width: 65%">
@@ -57,15 +57,15 @@
         <el-table :data="collegeUserList.data" style="width: 100%" :max-height="showObj.calculateMaxheight" ref="userTable">
           <el-table-column v-for="(item, index) in collegeUserList.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
           <el-table-column fixed="right" :label="l.operation" width="100">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button @click="deleteUesrs(scope.row)" type="text" size="small" style="color: red">{{ l.delete }}</el-button>
             </template>
           </el-table-column>
         </el-table>
 
-        <z-pagination :pagination="pagination" :total="collegeUserList.total" :page.sync="collegeUserList.query.page" :limit.sync="collegeUserList.query.pageSize" @change="getCollegeUser"></z-pagination>
+        <z-pagination :pagination="pagination" :total="collegeUserList.total" v-model:page="collegeUserList.query.page" v-model:limit="collegeUserList.query.pageSize" @change="getCollegeUser"></z-pagination>
 
-        <chooseUser :visible.sync="showObj.addUserDialogShow" :useridList.sync="addUsers" @submmit="submmitAddUser"></chooseUser>
+        <chooseUser v-model:visible="showObj.addUserDialogShow" v-model:useridList="addUsers" @submmit="submmitAddUser"></chooseUser>
       </div>
     </div>
   </div>

@@ -1,8 +1,6 @@
 <template>
   <el-config-provider :locale="locale">
-    <div id="app">
-      <router-view></router-view>
-    </div>
+    <RouterView />
   </el-config-provider>
 </template>
 
@@ -21,11 +19,16 @@ const { proxy } = getCurrentInstance()
 const locale = computed(() => {
   const lang = localGet('lang')
   switch (lang) {
-    case 'zh-CN': return zhCn
-    case 'zh-TW': return zhTw
-    case 'en-US': return en
-    case 'vi-VN': return vi
-    default: return vi
+    case 'zh-CN':
+      return zhCn
+    case 'zh-TW':
+      return zhTw
+    case 'en-US':
+      return en
+    case 'vi-VN':
+      return vi
+    default:
+      return vi
   }
 })
 

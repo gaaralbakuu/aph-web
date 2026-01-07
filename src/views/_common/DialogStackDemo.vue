@@ -20,7 +20,7 @@
 
     <!-- Dialog 1 -->
     <CustomDialog
-      :visible.sync="dialog1Visible"
+      v-model:visible="dialog1Visible"
       title="Dialog 1"
       width="600px"
       dialog-id="demo-dialog-1"
@@ -48,7 +48,7 @@
 
     <!-- Dialog 2 -->
     <CustomDialog
-      :visible.sync="dialog2Visible"
+      v-model:visible="dialog2Visible"
       title="Dialog 2"
       width="500px"
       dialog-id="demo-dialog-2"
@@ -76,7 +76,7 @@
 
     <!-- Dialog 3 -->
     <CustomDialog
-      :visible.sync="dialog3Visible"
+      v-model:visible="dialog3Visible"
       title="Dialog 3"
       width="400px"
       dialog-id="demo-dialog-3"

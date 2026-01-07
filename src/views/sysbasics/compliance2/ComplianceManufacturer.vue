@@ -201,7 +201,7 @@ import {
   zFormDialog,
   zPagination,
   zTable,
-} from '@/views/_common'
+} from '@/views/_common/index.js'
 
 import filePreviews from '../../_common/filePreviews.vue'
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {

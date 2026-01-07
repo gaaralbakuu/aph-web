@@ -23,7 +23,7 @@
         </div>
         <nav :class="['flex-1 overflow-y-auto py-1', {'px-1': isCollapse, 'px-3': !isCollapse}]" >
           <ul class="space-y-1">
-            <sidebar-item
+            <SidebarItem
               v-for="item in user.menus"
               :key="item.id"
               :item="item"
@@ -39,19 +39,12 @@
     <div class="app-aside-right no-scroll-x flex h-full flex-1 flex-col bg-gray-50 dark:bg-black">
       <header class="flex h-auto flex-col border-b border-gray-100/60 bg-white/70 dark:border-white/10 dark:bg-black/40">
         <navbar />
-        <!-- <tags-view v-if="showTagBar"></tags-view> -->
       </header>
-      <main class="flex-1 overflow-y-auto" v-if="showTagBar">
-        <router-view v-slot="{ Component, route }">
-          <keep-alive :include="cachedViews">
-            <component :is="Component" :key="route.fullPath" />
-          </keep-alive>
-        </router-view>
-      </main>
-      <main class="flex-1 overflow-y-auto" v-else>
-        <router-view v-slot="{ Component, route }">
-          <component :is="Component" :key="route.fullPath" />
-        </router-view>
+      <main class="flex-1 overflow-y-auto">
+        <keep-alive v-if="showTagBar" :include="cachedViews">
+          <router-view />
+        </keep-alive>
+        <router-view v-else />
       </main>
     </div>
   </div>
@@ -63,13 +56,13 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
 import scuLogoImg from '@/assets/apache.png'
-import con from '@/config'
+import con from '@/config/index.js'
 
 import Navbar from './components/Navbar.vue'
 import SidebarItem from './components/SidebarItem.vue'
 import TagsView from './components/TagsView.vue'
 
-import { useResizeHandler } from '@/composables/useResizeHandler'
+import { useResizeHandler } from '@/composables/useResizeHandler.js'
 
 const store = useStore()
 const route = useRoute()

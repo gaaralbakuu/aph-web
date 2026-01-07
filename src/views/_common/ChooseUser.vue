@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-dialog
-      :title="$l.title"
-      :visible.sync="dialogShow"
+      :title="l.title"
+      v-model:visible="dialogShow"
       width="60%"
       @opened="initData">
       <el-row :gutter="10">
@@ -13,23 +13,25 @@
               node-key="id"
               :default-expand-all="false"
               :expand-on-click-node="false">
-              <div class="custom-tree-node" slot-scope="{ data }">
-                <div
-                  style="flex: 1; overflow: hidden"
-                  @click="getUserByDept(data)">
-                  <span
-                    class="label"
-                    :class="{
-                      'bg-green': data.up_dept_no != null,
-                      'bg-yellow': data.up_dept_no == null,
-                    }">
-                    {{ data.up_dept_no == null ? $l.mainDept : $l.levelDept }}
-                  </span>
-                  <span style="margin-left: 10px" class="text-bold">
-                    {{ data.dept_name_label }}
-                  </span>
-                  <span
-                    class="fr"
+              <template #default="{ data }">
+                <div class="custom-tree-node">
+                  <div
+                    style="flex: 1; overflow: hidden"
+                    @click="getUserByDept(data)">
+                    <span
+                      class="label"
+                      :class="{
+                        'bg-green': data.up_dept_no != null,
+                        'bg-yellow': data.up_dept_no == null,
+                      }">
+                      {{ data.up_dept_no == null ? l.mainDept : l.levelDept }}
+                    </span>
+                    <span style="margin-left: 10px" class="text-bold">
+                      {{ data.dept_name_label }}
+                    </span>
+                  </div>
+                </div>
+              </template>
                     style="
                       margin-left: 10px;
                       font-weight: normal;
@@ -45,19 +47,20 @@
 
         <el-col :span="14">
           <div style="display: flex; flex-direction: column; gap: 4px">
-            <div style="font-weight: bold">{{ $l.userList }}</div>
+            <div style="font-weight: bold">{{ l.userList }}</div>
             <div
               style="display: flex; justify-content: space-between; gap: 4px">
               <el-input
-                :placeholder="$c.queryPlaceholder"
+                :placeholder="c.queryPlaceholder"
                 v-model="userTable.query.queryString"
-                @keyup.enter.native="getUser"
+                @keyup.enter="getUser"
                 style="width: 350px"
                 clearable>
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="getUser"></el-button>
+                <template #append>
+                  <el-button
+                    icon="el-icon-search"
+                    @click="getUser"></el-button>
+                </template>
               </el-input>
             </div>
           </div>
@@ -66,35 +69,36 @@
             :columns="userTable.columns"
             :tableProps="userTable.tableProps">
             <template #operation="{row}">
-              <el-button @click="addUser(row)" type="text" size="small">{{ $l.add || 'Add' }}</el-button>
+              <el-button @click="addUser(row)" type="text" size="small">{{ l.add || 'Add' }}</el-button>
             </template>
           </z-table>
           <z-pagination
             :pagination="userTable.pagination"
             :total="userTable.total"
-            :page.sync="userTable.query.page"
-            :limit.sync="userTable.query.size"
+            v-model:page="userTable.query.page"
+            v-model:limit="userTable.query.size"
             @change="getUser(null)"></z-pagination>
         </el-col>
 
         <el-col :span="10">
           <div style="display: flex; flex-direction: column; gap: 4px">
-            <div style="font-weight: bold">{{ $l.selectedList }}</div>
+            <div style="font-weight: bold">{{ l.selectedList }}</div>
             <div style="display: flex; justify-content: space-between; gap: 4px;">
               <el-input
-                :placeholder="$c.queryPlaceholder"
+                :placeholder="c.queryPlaceholder"
                 v-model="selectedObj.queryString"
-                @keyup.enter.native="filterUser"
+                @keyup.enter="filterUser"
                 style="width: 450px"
                 clearable
                 @clear="reGetList">
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="filterUser"></el-button>
+                <template #append>
+                  <el-button
+                    icon="el-icon-search"
+                    @click="filterUser"></el-button>
+                </template>
               </el-input>
               <el-button type="danger" class="fr" @click="mulDeleteUser">
-                {{ $c.delete }}
+                {{ c.delete }}
               </el-button>
             </div>
           </div>
@@ -110,7 +114,7 @@
                 href="#"
                 class="text-red"
                 @click.prevent="deleteUser(v.row, v.$index)">
-                {{ $c.delete }}&nbsp;
+                {{ c.delete }}&nbsp;
               </a>
             </template>
           </z-table>
@@ -180,11 +184,11 @@ export default {
         columns: [
           {
             key: 'userid',
-            title: this.$c.userid,
+            title: this.c.userid,
           },
           {
             key: 'username',
-            title: this.$c.username,
+            title: this.c.username,
           },
         ],
         total: 0,
@@ -210,16 +214,16 @@ export default {
         queryString: null,
         columns: [
           {
-            title: this.$c.userid,
+            title: this.c.userid,
             key: 'userid',
             width: 70,
           },
           {
-            title: this.$c.username,
+            title: this.c.username,
             key: 'username',
           },
           // {
-          //   title: this.$c.dept,
+          //   title: this.c.dept,
           //   key: 'department_t',
           // },
         ],

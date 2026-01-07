@@ -6,38 +6,38 @@
 				type="daterange"
 				format="yyyy-MM-dd"
 				value-format="yyyy-MM-dd"
-				:range-separator="$l.to"
-				:start-placeholder="$l.Startdate"
-				:end-placeholder="$l.Enddate"
+				:range-separator="l.to"
+				:start-placeholder="l.Startdate"
+				:end-placeholder="l.Enddate"
 			></el-date-picker>
-			<el-input style="width: 250px" :placeholder="$l.search" clearable prefix-icon="el-icon-search" class="filter-item" v-model="query.queryString.content"></el-input>
-			<el-button class="filter-item" type="success" plain @click="search">{{ $c.queryButton }}</el-button>
+			<el-input style="width: 250px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item" v-model="query.queryString.content"></el-input>
+			<el-button class="filter-item" type="success" plain @click="search">{{ c.queryButton }}</el-button>
 		</div>
 
 		<el-table stripe :data="tableData" v-loading="pageLoading" border style="width: 100%">
-			<el-table-column prop="create_time" :label="$l.date" width="150"></el-table-column>
-			<el-table-column prop="create_user" :label="$l.user" width="100"></el-table-column>
+			<el-table-column prop="create_time" :label="l.date" width="150"></el-table-column>
+			<el-table-column prop="create_user" :label="l.user" width="100"></el-table-column>
 
-			<el-table-column prop="content" :label="$l.proposal"></el-table-column>
-			<el-table-column :label="$l.screenshot" width="200">
-				<template slot-scope="scope">
-					<a class="text-blue" @click.prevent="showImgs(scope.row)" v-if="scope.row.imgs">{{ scope.row.imgSrcs.length }} {{ $l.Picture }}</a>
+			<el-table-column prop="content" :label="l.proposal"></el-table-column>
+			<el-table-column :label="l.screenshot" width="200">
+				<template #default="scope">
+					<a class="text-blue" @click.prevent="showImgs(scope.row)" v-if="scope.row.imgs">{{ scope.row.imgSrcs.length }} {{ l.Picture }}</a>
 				</template>
 			</el-table-column>
 
-			<el-table-column prop="reassignment_no" :label="$l.reassignment_no" width="100"></el-table-column>
-			<el-table-column prop="reply_qty" :label="$l.reply_qty" width="50"></el-table-column>
+			<el-table-column prop="reassignment_no" :label="l.reassignment_no" width="100"></el-table-column>
+			<el-table-column prop="reply_qty" :label="l.reply_qty" width="50"></el-table-column>
 
-			<el-table-column prop="last_reply" :label="$l.last_reply" width="100"></el-table-column>
-			<el-table-column prop="reply_time" :label="$l.reply_time" width="150"></el-table-column>
+			<el-table-column prop="last_reply" :label="l.last_reply" width="100"></el-table-column>
+			<el-table-column prop="reply_time" :label="l.reply_time" width="150"></el-table-column>
 
-			<el-table-column prop="modify_user" :label="$l.modify_user" width="100"></el-table-column>
-			<el-table-column prop="modify_time" :label="$l.modify_time" width="150"></el-table-column>
-			<el-table-column fixed="right" :label="$c.operation" width="220">
-				<template slot-scope="scope">
-					<el-button @click="replylist(scope.$index)" type="primary" size="mini">{{ $c.queryButton }}</el-button>
-					<el-button type="success" size="mini" @click="reply(scope.$index)">{{ $c.replymessage }}</el-button>
-					<el-button type="danger" @click="transfershow(scope.$index)" size="mini">{{ $c.dispatch }}</el-button>
+			<el-table-column prop="modify_user" :label="l.modify_user" width="100"></el-table-column>
+			<el-table-column prop="modify_time" :label="l.modify_time" width="150"></el-table-column>
+			<el-table-column fixed="right" :label="c.operation" width="220">
+				<template #default="scope">
+					<el-button @click="replylist(scope.$index)" type="primary" size="mini">{{ c.queryButton }}</el-button>
+					<el-button type="success" size="mini" @click="reply(scope.$index)">{{ c.replymessage }}</el-button>
+					<el-button type="danger" @click="transfershow(scope.$index)" size="mini">{{ c.dispatch }}</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -55,8 +55,8 @@
 			:total="total"
 		></el-pagination>
 
-		<el-dialog v-if="tableData.length != 0" title="信息回复" :visible.sync="dialogVisible" width="40%" :before-close="handleClose">
-			<h3>{{ $l.proposal }}</h3>
+		<el-dialog v-if="tableData.length != 0" title="信息回复" v-model:visible="dialogVisible" width="40%" :before-close="handleClose">
+			<h3>{{ l.proposal }}</h3>
 			<span>{{ tableData[index].content }}</span>
 			<br />
 			<h3></h3>
@@ -66,13 +66,13 @@
 			</div>
 			<el-input type="textarea" :autosize="{ minRows: 4 }" placeholder="请输入回复内容" v-model="textarea1"></el-input>
 
-			<span slot="footer" class="dialog-footer">
+			<template #footer><span class="dialog-footer">
 				<el-button @click="dialogVisible = false">取消</el-button>
 				<el-button type="primary" @click="feedback">回复</el-button>
-			</span>
+			</span></template>
 		</el-dialog>
 
-		<el-dialog title="回复信息查询" :visible.sync="replylistVisible" width="60%" :before-close="handleClose">
+		<el-dialog title="回复信息查询" v-model:visible="replylistVisible" width="60%" :before-close="handleClose">
 			<div class="block">
 				<div class="radio">
 					排序：
@@ -89,19 +89,19 @@
 				</el-timeline>
 			</div>
 
-			<span slot="footer" class="dialog-footer"><el-button @click="replylistVisible = false">返回</el-button></span>
+			<template #footer><span class="dialog-footer"><el-button @click="replylistVisible = false">返回</el-button></span></template>
 		</el-dialog>
 
-		<el-dialog title="回复转派" :visible.sync="transferVisible" width="30%" :before-close="handleClose">
+		<el-dialog title="回复转派" v-model:visible="transferVisible" width="30%" :before-close="handleClose">
 			<div class="block">
 				员工编号
 				<el-input placeholder="请输入转派后新回复者的员工编号" v-model="transferempno" clearable></el-input>
 			</div>
 
-			<span slot="footer" class="dialog-footer">
+			<template #footer><span class="dialog-footer">
 				<el-button @click="transferVisible = false">取消</el-button>
 				<el-button @click="transferaction">转派</el-button>
-			</span>
+			</span></template>
 		</el-dialog>
 	</div>
 </template>
@@ -109,17 +109,11 @@
 //import api from '@/api'
 import 'viewerjs/dist/viewer.css';
 
-import Viewer from 'v-viewer';
-import Vue from 'vue';
 import { createLogger } from 'vuex';
 
 import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common';
 
-Vue.use(Viewer, {
-	defaultOptions: {
-		zIndex: 999999
-	}
-});
+// Viewer is already registered globally in main.js
 
 export default {
 	name: 'userfeedback',
@@ -136,7 +130,7 @@ export default {
 				page: 1
 			},
 			total: null,
-			name: this.$l.title,
+			name: this.l.title,
 			imgSrcs: [],
 			dialogVisible: false,
 			feedbackdata: {

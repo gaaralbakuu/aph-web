@@ -29,7 +29,7 @@
           v-show="isOpen && !collapse"
           class="mt-1 space-y-1 border-l border-white/10 pl-3"
         >
-          <sidebar-item
+          <SidebarItem
             v-for="child in item.children"
             :key="child.id"
             :item="child"
@@ -56,152 +56,171 @@
             :class="['fa', iconName, 'text-base']"
             aria-hidden="true"
           ></i>
-          <svg-icon v-else :icon-class="iconName" class="h-5 w-5" />
+          <SvgIcon v-else :icon-class="iconName" class="h-5 w-5" />
           <span v-if="!collapse" class="truncate">{{ item.title }}</span>
         </div>
       </a>
     </div>
   </li>
 </template>
-<script>
+<script setup>
+import { ref, computed, watch, getCurrentInstance } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { validateURL } from '@/utils/validate'
 
-export default {
-  name: 'SidebarItem',
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    },
-    level: {
-      type: Number,
-      default: 0,
-    },
-    collapse: {
-      type: Boolean,
-      default: false,
-    },
-    textColor: {
-      type: String,
-      default: '#B8C7CE',
-    },
-    activeColor: {
-      type: String,
-      default: '#FFFFFF',
-    },
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true,
   },
-  data() {
-    return {
-      isOpen: this.item && this.item.children && this.item.children.length > 0 && this.hasActiveDescendant(this.item),
-    }
+  level: {
+    type: Number,
+    default: 0,
   },
-  computed: {
-    hasChildren() {
-      return Array.isArray(this.item.children) && this.item.children.length > 0
-    },
-    iconName() {
-      return this.getIcon(this.item.icon)
-    },
-    isFontIcon() {
-      return this.iconName && this.iconName.substr(0, 3) === 'fa-'
-    },
-    branchActive() {
-      return this.hasChildren && this.hasActiveDescendant(this.item)
-    },
-    isActive() {
-      if (this.hasChildren) {
-        return false
-      }
-      if (this.isExternalLink(this.item.target)) {
-        return false
-      }
-      return this.$route.name === this.item.target
-    },
-    buttonClasses() {
-      return [
-        'flex h-11 w-full items-center rounded-lg transition-colors duration-200 focus:outline-none',
-        this.collapse ? 'justify-center px-0' : 'justify-between px-3',
-        'hover:bg-white/5',
-      ]
-    },
-    buttonStyle() {
-      return {
-        color: this.branchActive ? this.activeColor : this.textColor,
-        backgroundColor: this.branchActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-      }
-    },
-    leafClasses() {
-      return [
-        'flex h-11 w-full items-center rounded-lg transition-colors duration-200 focus:outline-none',
-        this.collapse ? 'justify-center px-0' : 'justify-start px-3',
-        'hover:bg-white/5',
-      ]
-    },
-    leafStyle() {
-      return {
-        backgroundColor: this.isActive ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
-        color: this.isActive ? this.activeColor : this.textColor,
-      }
-    },
-    contentStyle() {
-      if (this.collapse) {
-        return {}
-      }
-      const indent = Math.max(this.level, 0) * 12
-      return {
-        paddingLeft: indent ? indent + 'px' : '0px',
-      }
-    },
+  collapse: {
+    type: Boolean,
+    default: false,
   },
-  watch: {
-    collapse(val) {
-      if (val) {
-        this.isOpen = false
-      } else if (this.hasChildren && this.hasActiveDescendant(this.item)) {
-        this.isOpen = true
-      }
-    },
-    '$route.name'() {
-      if (this.hasChildren) {
-        this.isOpen = this.hasActiveDescendant(this.item)
-      }
-    },
+  textColor: {
+    type: String,
+    default: '#B8C7CE',
   },
-  methods: {
-    isExternalLink(routePath) {
-      return validateURL(routePath)
-    },
-    handleLeafClick(e) {
-      if (this.isExternalLink(this.item.target)) {
-        return
-      }
-      e.preventDefault()
-      this.$router.push({ name: this.item.target }).catch(() => {})
-    },
-    toggleOpen() {
-      if (this.collapse) {
-        return
-      }
-      this.isOpen = !this.isOpen
-    },
-    getIcon(icon) {
-      if (!icon) {
-        return 'fa-cube'
-      }
-      return icon
-    },
-    hasActiveDescendant(node) {
-      if (!node) {
-        return false
-      }
-      if (node.is_show === 'Y' && node.target && !this.isExternalLink(node.target) && this.$route.name === node.target) {
-        return true
-      }
-      if (!node.children || node.children.length === 0) {
-        return false
-      }
-      return node.children.some((child) => this.hasActiveDescendant(child))
-    },
+  activeColor: {
+    type: String,
+    default: '#FFFFFF',
   },
+})
+
+const route = useRoute()
+const router = useRouter()
+
+// Helper function để kiểm tra external link
+const isExternalLink = (routePath) => {
+  return validateURL(routePath)
+}
+
+// Helper function để lấy icon
+const getIcon = (icon) => {
+  if (!icon) {
+    return 'fa-cube'
+  }
+  return icon
+}
+
+// Recursive function để kiểm tra active descendant
+const hasActiveDescendant = (node) => {
+  if (!node) {
+    return false
+  }
+  if (node.is_show === 'Y' && node.target && !isExternalLink(node.target) && route.name === node.target) {
+    return true
+  }
+  if (!node.children || node.children.length === 0) {
+    return false
+  }
+  return node.children.some((child) => hasActiveDescendant(child))
+}
+
+// Reactive state
+const isOpen = ref(
+  props.item && props.item.children && props.item.children.length > 0 && hasActiveDescendant(props.item)
+)
+
+// Computed properties
+const hasChildren = computed(() => {
+  return Array.isArray(props.item.children) && props.item.children.length > 0
+})
+
+const iconName = computed(() => {
+  return getIcon(props.item.icon)
+})
+
+const isFontIcon = computed(() => {
+  return iconName.value && iconName.value.substr(0, 3) === 'fa-'
+})
+
+const branchActive = computed(() => {
+  return hasChildren.value && hasActiveDescendant(props.item)
+})
+
+const isActive = computed(() => {
+  if (hasChildren.value) {
+    return false
+  }
+  if (isExternalLink(props.item.target)) {
+    return false
+  }
+  return route.name === props.item.target
+})
+
+const buttonClasses = computed(() => {
+  return [
+    'flex h-11 w-full items-center rounded-lg transition-colors duration-200 focus:outline-none',
+    props.collapse ? 'justify-center px-0' : 'justify-between px-3',
+    'hover:bg-white/5',
+  ]
+})
+
+const buttonStyle = computed(() => {
+  return {
+    color: branchActive.value ? props.activeColor : props.textColor,
+    backgroundColor: branchActive.value ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+  }
+})
+
+const leafClasses = computed(() => {
+  return [
+    'flex h-11 w-full items-center rounded-lg transition-colors duration-200 focus:outline-none',
+    props.collapse ? 'justify-center px-0' : 'justify-start px-3',
+    'hover:bg-white/5',
+  ]
+})
+
+const leafStyle = computed(() => {
+  return {
+    backgroundColor: isActive.value ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+    color: isActive.value ? props.activeColor : props.textColor,
+  }
+})
+
+const contentStyle = computed(() => {
+  if (props.collapse) {
+    return {}
+  }
+  const indent = Math.max(props.level, 0) * 12
+  return {
+    paddingLeft: indent ? indent + 'px' : '0px',
+  }
+})
+
+// Watchers
+watch(() => props.collapse, (val) => {
+  if (val) {
+    isOpen.value = false
+  } else if (hasChildren.value && hasActiveDescendant(props.item)) {
+    isOpen.value = true
+  }
+})
+
+watch(() => route.name, () => {
+  if (hasChildren.value) {
+    isOpen.value = hasActiveDescendant(props.item)
+  }
+})
+
+// Methods
+const handleLeafClick = (e) => {
+  if (isExternalLink(props.item.target)) {
+    return
+  }
+  e.preventDefault()
+  router.push({ name: props.item.target }).catch(() => {})
+}
+
+const toggleOpen = () => {
+  if (props.collapse) {
+    return
+  }
+  isOpen.value = !isOpen.value
 }
 </script>

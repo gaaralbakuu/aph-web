@@ -5,50 +5,51 @@ import { ElMessage } from 'element-plus'
 
 import { getToken } from '@/utils/auth' // getToken from cookie
 
-import store from '../store'
-import router from './index'
+import { useUserStore } from '@/stores/user'
+import { usePermissionStore } from '@/stores/permission'
+import { router } from './index'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/register', '/examDetail', '/videoLayout/home'] // no redirect whitelist
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start() // start progress bar
+  
   if (getToken()) {
     // determine if there has token
     /* has token */
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done() // if current page is homepage will not trigger	afterEach hook, so manually handle it
+      NProgress.done() // if current page is homepage will not trigger afterEach hook, so manually handle it
     } else {
-      if (!store.getters.user.userId) {
-        // 判断当前用户是否已拉取完user_info信息
-        store
-          .dispatch('GetUserInfo')
-          .then((res) => {
-            // 拉取user_info
-            store
-              .dispatch('GenerateRoutes', store.getters.user)
-              .then(() => {
-                // console.log(router, store.getters.addRouters)
-                // router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-                Array.from(store.getters.addRouters).forEach((route) => {
-                  const exists = router.getRoutes().some((r) => r.path === route.path)
-                  if (!exists) router.addRoute(route)
-                })
-                next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-              })
-              .catch((e) => {
-                console.info(e)
-              })
+      const userStore = useUserStore()
+      const permissionStore = usePermissionStore()
+      
+      if (!userStore.user.userId) {
+        // Kiểm tra xem đã load user info chưa
+        try {
+          // Lấy thông tin user
+          await userStore.getUserInfo()
+          
+          // Generate routes dựa trên quyền
+          await permissionStore.generateRoutes(userStore.user)
+          
+          // Thêm dynamic routes vào router
+          permissionStore.addRouters.forEach((route) => {
+            const exists = router.getRoutes().some((r) => r.path === route.path)
+            if (!exists) router.addRoute(route)
           })
-          .catch((err) => {
-            console.log(err)
-            store.dispatch('FedLogOut').then(() => {
-              ElMessage.error('用户身份验证失败，请重新登录')
-              next({ path: '/' })
-            })
-          })
+          
+          // Đảm bảo addRoute hoàn thành trước khi navigate
+          next({ ...to, replace: true })
+        } catch (err) {
+          console.error(err)
+          // Xử lý lỗi xác thực
+          await userStore.fedLogout()
+          ElMessage.error('用户身份验证失败，请重新登录')
+          next({ path: '/' })
+        }
       } else {
         next()
       }
@@ -56,10 +57,10 @@ router.beforeEach((to, from, next) => {
   } else {
     /* has no token */
     if (whiteList.indexOf(to.path) !== -1) {
-      // 在免登录白名单，直接进入
+      // Trong whitelist, cho phép truy cập
       next()
     } else {
-      next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
+      next(`/login?redirect=${to.path}`) // Redirect đến trang login
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }
   }

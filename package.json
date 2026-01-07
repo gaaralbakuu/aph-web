@@ -2,6 +2,7 @@
   "name": "apache-uniapp-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:production": "vite --mode production",
@@ -44,6 +45,7 @@
     "lodash": "^4.17.15",
     "lodash.debounce": "^4.0.8",
     "nprogress": "^0.2.0",
+    "pinia": "^3.0.4",
     "plyr": "^3.8.3",
     "qrcodejs2": "^0.0.2",
     "screenfull": "^3.3.3",

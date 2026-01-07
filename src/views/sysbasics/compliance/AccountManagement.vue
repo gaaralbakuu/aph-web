@@ -47,7 +47,7 @@
     <el-button v-show="showAuth.m_add" type="primary" class="create_btn" size="medium" @click="add">{{ c.create }}</el-button>
     <!-- 表格 -->
     <a-table :dataSource="account.list" :columns="accountColumns" :pagination="false" :bordered="config.tableProps.border" rowKey="id">
-      <template slot="operation" slot-scope="text, record, index">
+      <template #text, record, index><template #operation v->
         <a v-if="record.is_valid == 'N'" href="#" class="text-blue">
           {{ c.enable }}
         </a>
@@ -62,12 +62,12 @@
         <a v-show="showAuth.m_del" href="#" class="text-red" @click.prevent="deleteItem(record, index)">
           {{ c.delete }}
         </a>
-      </template>
+      </template></template>
     </a-table>
     <!-- 分页 -->
-    <z-pagination :pagination="pagination" :total="account.total" :page.sync="account.query.page" :limit.sync="account.query.pageSize" @change="getUser"></z-pagination>
+    <z-pagination :pagination="pagination" :total="account.total" v-model:page="account.query.page" v-model:limit="account.query.pageSize" @change="getUser"></z-pagination>
     <!-- 创建、编辑表单 -->
-    <CustomDialog :title="l.account" :visible.sync="account.editFormVisible" :maxWidth="'500px'" :clickOutside="false">
+    <CustomDialog :title="l.account" v-model:visible="account.editFormVisible" :maxWidth="'500px'" :clickOutside="false">
       <template #notice>
         <div class="text-sm text-gray-500 bg-gray-50 px-6 py-3">{{ l.createAccountNotice }}</div>
       </template>
@@ -133,17 +133,17 @@
       </template>
     </CustomDialog>
     <!-- 选择分类对话框 -->
-    <CustomDialog :title="l.baseFile_select" :visible.sync="manufacturer.dialogVisible" width="100%" :maxWidth="'600px'">
-      <el-input style="width: 200px; margin-bottom: 10px" prefix-icon="el-icon-search" :placeholder="l.manufacture_name" clearable class="filter-item" @keyup.enter.native="getManufacturer" @clear="getManufacturer" @blur="getManufacturer" v-model="manufacturer.manufacture_name"></el-input>
+    <CustomDialog :title="l.baseFile_select" v-model:visible="manufacturer.dialogVisible" width="100%" :maxWidth="'600px'">
+      <el-input style="width: 200px; margin-bottom: 10px" prefix-icon="el-icon-search" :placeholder="l.manufacture_name" clearable class="filter-item" @keyup.enter="getManufacturer" @clear="getManufacturer" @blur="getManufacturer" v-model="manufacturer.manufacture_name"></el-input>
       <a-table :dataSource="manufacturer.list" :columns="manufacturerColumns" :pagination="false" :bordered="config.tableProps.border" rowKey="manufacture_id" @row="sendManufacturerItem">
-        <template slot="operation" slot-scope="text, record, index">
+        <template #text, record, index><template #operation v->
           <a href="#" class="text-blue" @click.prevent="sendManufacturerItem(record, index)">
             {{ l.select }}
           </a>
           &nbsp;
-        </template>
+        </template></template>
       </a-table>
-      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
+      <z-pagination :pagination="pagination" :total="manufacturer.query.total" v-model:page="manufacturer.query.page" v-model:limit="manufacturer.query.pageSize" @change="getManufacturer"></z-pagination>
     </CustomDialog>
   </div>
 </template>

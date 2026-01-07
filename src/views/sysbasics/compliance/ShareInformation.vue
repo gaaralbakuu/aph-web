@@ -66,7 +66,7 @@
       :title="l.selectFile"
       width="70%" 
       :lock-scroll="true" 
-      :visible.sync="addHelpFormVisible"
+      v-model:visible="addHelpFormVisible"
       class="modern-dialog"
     >
       <template #content>
@@ -132,7 +132,7 @@
             <h5 class="font-medium text-gray-900 mb-3">{{ l.selectedFiles }}</h5>
             <el-table :data="addHelpManual.fileList" class="modern-table">
               <el-table-column v-for="(item, index) in addHelpManualColumns" :key="index" :prop="item.key" :label="item.title" :width="item.width">
-                <template slot-scope="scope">
+                <template #default="scope">
                   <span v-if="item.key === 'file_name'" class="font-medium text-gray-900">
                     {{ scope.row[item.key] }}
                   </span>
@@ -143,7 +143,7 @@
                 </template>
               </el-table-column>
               <el-table-column fixed="right" :label="c.operation" width="100">
-                <template slot-scope="scope">
+                <template #default="scope">
                   <button 
                     @click="removeClick(scope.row)" 
                     class="h-8 w-8 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 rounded-full transition-colors duration-200"
@@ -156,7 +156,7 @@
           </div>
         </div>
       </template>
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <button 
             @click="addHelpFormVisible = false" 
@@ -179,7 +179,7 @@
       :title="l.addContact"
       width="70%" 
       :lock-scroll="true" 
-      :visible.sync="addCisFormVisible"
+      v-model:visible="addCisFormVisible"
       class="modern-dialog"
     >
       <template #content>
@@ -216,7 +216,7 @@
           </div>
         </div>
       </template>
-      <template slot="footer">
+      <template #footer>
         <div class="flex gap-3 justify-end">
           <button 
             @click="addCisFormVisible = false" 

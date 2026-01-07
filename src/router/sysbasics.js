@@ -1,4 +1,4 @@
-import Layout from '@/views/layout/Layout'
+import Layout from '@/views/layout/Layout.vue'
 
 export default {
   path: '/sysbasics',
@@ -6,7 +6,7 @@ export default {
   children: [
     {
       path: 'sysmesg',
-      component: () => import('@/views/sysbasics/SysMsg'),
+      component: () => import('@/views/sysbasics/SysMsg.vue'),
       name: 'sysbasicssymesg',
       meta: {
         noCache: true,
@@ -14,7 +14,7 @@ export default {
     },
     {
       path: 'epidemic',
-      component: () => import('@/views/sysbasics/Epidemic'),
+      component: () => import('@/views/sysbasics/Epidemic.vue'),
       name: 'sysbasicsepidemic',
       meta: {
         noCache: true,
@@ -22,7 +22,7 @@ export default {
     },
     {
       path: 'publiccode',
-      component: () => import('@/views/sysbasics/PublicCode'),
+      component: () => import('@/views/sysbasics/PublicCode.vue'),
       name: 'publiccode',
       meta: {
         noCache: true,

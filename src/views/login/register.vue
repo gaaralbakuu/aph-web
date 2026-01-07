@@ -45,9 +45,9 @@
           <el-form-item prop="password">
             <el-input :disabled="!showVcode" :type="passwordType" v-model="registerForm.password"
               :placeholder="l.password1" auto-complete="on" @focus="focusFlag1 = true" @blur="focusFlag1 = false">
-              <template slot="suffix">
+              <template #suffix>
                 <div class="svg-container pointer" @click="showPwd">
-                  <svg-icon :icon-class="eyeClass" />
+                  <SvgIcon :icon-class="eyeClass" />
                 </div>
               </template>
             </el-input>
@@ -63,9 +63,9 @@
           <!-- <el-form-item prop="password2">
             <el-input :disabled="!showVcode" @focus="focusFlag2 = true" @blur="focusFlag2 = false" :type="passwordType"
               v-model="registerForm.password2" :placeholder="l.password2" name="password" auto-complete="on">
-              <template slot="suffix">
+              <template #suffix>
                 <div class="svg-container" @click="showPwd">
-                  <svg-icon :icon-class="eyeClass" />
+                  <SvgIcon :icon-class="eyeClass" />
                 </div>
               </template>
             </el-input>
@@ -98,7 +98,7 @@
 <script setup>
 import dayjs from 'dayjs'
 import { ref, reactive, computed, watch, onMounted, getCurrentInstance } from 'vue'
-import { Message as ElMessage } from 'element-ui'
+import { ElMessage } from 'element-plus'
 import { useLocalI18n } from '@/composables/useLocalI18n'
 
 import bg from '@/assets/bg.jpg'

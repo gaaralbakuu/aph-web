@@ -1,18 +1,16 @@
 <template>
   <div v-if="menuItems && menuItems.length">
-    <template v-for="item in menuItems">
-      <!-- 如果是目录类型 -->
-      <el-submenu v-if="item.resource_type === 'catalogue'" :key="item.menu_id" :index="item.menu_id">
-        <template slot="title">{{ item.name_label }}</template>
-        <!-- 递归调用自身来处理子菜单 -->
-        <recursive-menu :menu-items="item.children"></recursive-menu>
-      </el-submenu>
+    <!-- 如果是目录类型 -->
+    <el-submenu v-for="item in menuItems" v-if="item.resource_type === 'catalogue'" :key="item.menu_id" :index="item.menu_id">
+      <template #title>{{ item.name_label }}</template>
+      <!-- 递归调用自身来处理子菜单 -->
+      <recursive-menu :menu-items="item.children"></recursive-menu>
+    </el-submenu>
 
-      <!-- 如果是菜单类型 -->
-      <el-menu-item v-else-if="item.resource_type === 'menu'" :key="item.menu_id" :index="item.menu_id">
-        <router-link class="link" :to="item.resource_path">{{ item.name_label }}</router-link>
-      </el-menu-item>
-    </template>
+    <!-- 如果是菜单类型 -->
+    <el-menu-item v-for="item in menuItems" v-else-if="item.resource_type === 'menu'" :key="item.menu_id" :index="item.menu_id">
+      <router-link class="link" :to="item.resource_path">{{ item.name_label }}</router-link>
+    </el-menu-item>
   </div>
 </template>
 

@@ -1,4 +1,4 @@
-import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import zhLocale from 'element-plus/es/locale/lang/zh-cn'
 export default {
     // It can be written in the unit of page, such as the content of the home page, written in the home field.
     //The common part is written in the common part.

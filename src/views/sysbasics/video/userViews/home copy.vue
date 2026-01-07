@@ -14,9 +14,9 @@
     <div class="page-body">
       <div class="series-wrapper">
         <div class="title-wrapper">
-          <div class="title">{{$l.newestCourse}}</div>
+          <div class="title">{{ l.newestCourse}}</div>
           <div class="more" @click="toPage('course')" style="cursor: pointer;">
-            {{$l.moreCourse}} <i class="el-icon-arrow-right"></i>
+            {{ l.moreCourse}} <i class="el-icon-arrow-right"></i>
           </div>
         </div>
         <div class="playlist" v-if="courseList.length>0">
@@ -25,7 +25,7 @@
               <img class="auto-img" :src="$api.videoServer + '/' + i.thumbnail_path" />
             </div>
             <div v-else class="emptyImg">
-              <div class="text">{{$c.noCover}}</div>
+              <div class="text">{{ c.noCover}}</div>
             </div>
             <div class="info">
               <div class="title">{{ i.name_label }}</div>
@@ -43,7 +43,7 @@
         </div>
         <div class="playlist-empty" v-else>
           <div>
-            {{$l.noCourseTips}}
+            {{ l.noCourseTips}}
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@
           <div class="title-wrapper">
             <div class="title">{{ i.title_label }}</div>
             <div class="more" @click="toDetailPage(i)" style="cursor: pointer;">
-              {{$l.enterTopic}} <i class="el-icon-arrow-right"></i>
+              {{ l.enterTopic}} <i class="el-icon-arrow-right"></i>
             </div>
           </div>
           <div class="playlist">
@@ -62,7 +62,7 @@
                 <img class="auto-img" :src="$api.videoServer + '/' + x.thumbnail_path" />
               </div>
               <div v-else class="emptyImg">
-                <div class="text">{{$c.noCover}}</div>
+                <div class="text">{{ c.noCover}}</div>
               </div>
               <div class="info">
                 <div class="title">{{ x.course_name_label }}</div>
@@ -85,17 +85,17 @@
 
       <div class="rank-wrpaper">
         <div class="title-wrapper">
-          <div class="title">{{$l.rank}}</div>
+          <div class="title">{{ l.rank}}</div>
           <div style="margin-left: 20px;">
-            <el-date-picker v-model="queryMonth" type="daterange" range-separator="-" :start-placeholder="$c.startDate"
-              :end-placeholder="$c.endDate" value-format='yyyy-MM-dd' @change="changeRankList">
+            <el-date-picker v-model="queryMonth" type="daterange" range-separator="-" :start-placeholder="c.startDate"
+              :end-placeholder="c.endDate" value-format='yyyy-MM-dd' @change="changeRankList">
             </el-date-picker>
           </div>
         </div>
         <div class="list">
           <div class="rank">
             <div class="title-wrapper">
-              <div class="title">{{$l.courseRank}}</div>
+              <div class="title">{{ l.courseRank}}</div>
             </div>
             <div class="rank-list" v-show="rankObj.rankingInfos[0].length>0">
               <div class="rank-item" v-for="(i, index) in rankObj.rankingInfos[0]" :key="index">
@@ -112,20 +112,20 @@
                     </div>
                   </div>
                 </div>
-                <div class="score">{{i.num||0 }} {{$l.courseUnit}}</div>
+                <div class="score">{{i.num||0 }} {{ l.courseUnit}}</div>
               </div>
             </div>
             <div class="rank-list" style="display: flex;align-items: center;"
               v-show="rankObj.rankingInfos[0].length==0">
               <div class="emptyData">
-                {{$c.noData}}
+                {{ c.noData}}
               </div>
             </div>
           </div>
 
           <div class="rank">
             <div class="title-wrapper">
-              <div class="title">{{$l.scoreRank}}</div>
+              <div class="title">{{ l.scoreRank}}</div>
             </div>
             <div class="rank-list" v-show="rankObj.rankingInfos[1].length>0">
               <div class="rank-item" v-for="(i, index) in rankObj.rankingInfos[1]" :key="index">
@@ -142,20 +142,20 @@
                     </div>
                   </div>
                 </div>
-                <div class="score">{{ i.score||0 }} {{$l.scoreUnit}}</div>
+                <div class="score">{{ i.score||0 }} {{ l.scoreUnit}}</div>
               </div>
             </div>
             <div class="rank-list" style="display: flex;align-items: center;"
               v-show="rankObj.rankingInfos[1].length==0">
               <div class="emptyData">
-                {{$c.noData}}
+                {{ c.noData}}
               </div>
             </div>
           </div>
 
           <div class="rank">
             <div class="title-wrapper">
-              <div class="title">{{$l.durationRank}}</div>
+              <div class="title">{{ l.durationRank}}</div>
             </div>
             <div class="rank-list" v-show="rankObj.rankingInfos[2].length>0">
               <div class="rank-item" v-for="(i, index) in rankObj.rankingInfos[2]" :key="index">
@@ -172,13 +172,13 @@
                     </div>
                   </div>
                 </div>
-                <div class="score">{{ Math.floor(i.time/60) ||0}} {{$l.durationUnit}}</div>
+                <div class="score">{{ Math.floor(i.time/60) ||0}} {{ l.durationUnit}}</div>
               </div>
             </div>
             <div class="rank-list" style="display: flex;align-items: center;"
               v-show="rankObj.rankingInfos[2].length==0">
               <div class="emptyData">
-                {{$c.noData}}
+                {{ c.noData}}
               </div>
             </div>
           </div>

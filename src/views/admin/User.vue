@@ -1,30 +1,30 @@
 <template>
 	<div class="app-container" v-loading="pageLoading">
-		<el-button type="primary" class="fr" @click="addUser">{{ $c.create }}</el-button>
+		<el-button type="primary" class="fr" @click="addUser">{{ c.create }}</el-button>
 		<!-- <el-button key="import" class="fr" type="success" style="margin-right: 5px;" @click="dialogExcelVisible = true">导入</el-button> -->
 		<div class="filter-container">
 			<el-input
 				style="width: 300px"
-				:placeholder="$c.queryPlaceholder"
+				:placeholder="c.queryPlaceholder"
 				clearable
 				prefix-icon="el-icon-search"
 				class="filter-item"
-				@keyup.enter.native="research"
+				@keyup.enter="research"
 				@clear="research"
 				v-model="query.queryString"
 			></el-input>
 			<el-select style="width: 140px" class="filter-item" v-model="query.status">
-				<el-option value="" :label="$c.all"></el-option>
-				<el-option value="0" :label="$c.enabled"></el-option>
-				<el-option value="1" :label="$c.disabled"></el-option>
+				<el-option value="" :label="c.all"></el-option>
+				<el-option value="0" :label="c.enabled"></el-option>
+				<el-option value="1" :label="c.disabled"></el-option>
 			</el-select>
-			<el-button class="filter-item" type="success" plain @click="research">{{ $c.queryButton }}</el-button>
-			<el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{ $c.export }}</el-button>
+			<el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton }}</el-button>
+			<el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{ c.export }}</el-button>
 		</div>
 		<z-table :list="list" :tableProps="tableProps" :columns="userObj.columns" @editItem="editItem" @deleteItem="deleteItem">
 			<template v-slot:content="{ row, key }">
 				<div v-if="key == 'in_date' || key == 'out_date'">
-					<span>{{ row[key] | datetime }}</span>
+					<span>{{ $filters.datetime(row[key]) }}</span>
 				</div>
 				<div v-else-if="key == 'enable'">
 					<span class="label" :class="row[key] == '0' ? 'bg-green' : 'bg-gray'">{{ row[key] == '0' ? 'Y' : 'N' }}</span>
@@ -35,15 +35,15 @@
 				<span v-else>{{ row[key] }}</span>
 			</template>
 			<template v-slot:operation="v">
-				<a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ $l.editItem }}</a>
+				<a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ l.editItem }}</a>
 				&nbsp;
-				<a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ $c.delete }}</a>
+				<a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ c.delete }}</a>
 				&nbsp;
-				<a href="#" class="text-yellow" @click.prevent="forceChangePass(v.row, v.$index)">{{ $l.changePwd }}</a>
+				<a href="#" class="text-yellow" @click.prevent="forceChangePass(v.row, v.$index)">{{ l.changePwd }}</a>
 				&nbsp;
 			</template>
 		</z-table>
-		<z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList"></z-pagination>
+		<z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList"></z-pagination>
 		<z-form-dialog
 			:name="name"
 			:data="data"
@@ -51,37 +51,37 @@
 			:fields="userObj.fields"
 			@submmit="submmit"
 			:submmitLoading="submmitLoading"
-			:visible.sync="editFormVisible"
+			v-model:visible="editFormVisible"
 		></z-form-dialog>
-		<el-dialog :title="$l.dropDept" :visible.sync="dropDeptVisible">
+		<el-dialog :title="l.dropDept" v-model:visible="dropDeptVisible">
 			<el-input
 				style="width: 300px"
-				:placeholder="$c.queryPlaceholder"
+				:placeholder="c.queryPlaceholder"
 				clearable
 				prefix-icon="el-icon-search"
 				class="filter-item"
-				@keyup.enter.native="researchDept"
+				@keyup.enter="researchDept"
 				@clear="researchDept"
 				v-model="deptObj.query"
 			></el-input>
 			<z-table :list="deptObj.list" :tableProps="tableProps" :columns="deptObj.columns">
 				<template v-slot:operation="v">
-					<a href="#" class="text-blue" @click.prevent="sendDeptItem(v.row, v.$index)">{{$c.confirm}}</a>
+					<a href="#" class="text-blue" @click.prevent="sendDeptItem(v.row, v.$index)">{{ c.confirm}}</a>
 					&nbsp;
 				</template>
 			</z-table>
-			<z-pagination :pagination="pagination" :total="deptObj.total" :page.sync="deptObj.curPage" :limit.sync="deptObj.pageSize" @change="researchDept"></z-pagination>
+			<z-pagination :pagination="pagination" :total="deptObj.total" v-model:page="deptObj.curPage" v-model:limit="deptObj.pageSize" @change="researchDept"></z-pagination>
 		</el-dialog>
 
-		<!-- <el-dialog title="Excel导入" :visible.sync="dialogExcelVisible">
+		<!-- <el-dialog title="Excel导入" v-model:visible="dialogExcelVisible">
       <div style="margin-bottom: 10px;"><a href="#" @click.prevent="getTemp">下载批量导入用户模板</a></div>
       <upload-excel-component ref="uploadExcel" :on-success="handleSuccess" :before-upload="beforeUpload" />
-      <div slot="footer" class="dialog-footer">
+      <template #footer><div class="dialog-footer">
         <el-button @click="dialogExcelVisible = false">取消</el-button>
         <el-button type="primary" :loading="excelLoading" @click="excelSubmit()">
           确认
         </el-button>
-      </div>
+      </div></template>
     </el-dialog> -->
 	</div>
 </template>
@@ -89,8 +89,8 @@
 <script>
 import dayjs from 'dayjs';
 
-import UploadExcelComponent from '@/components/UploadExcel';
-import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common';
+import UploadExcelComponent from '@/components/UploadExcel/index.vue';
+import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common/index.js';
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
 	api: api.user,
@@ -125,7 +125,7 @@ export default {
 	data: function() {
 		return {
 			...config,
-			name: this.$l.title,
+			name: this.l.title,
 			data: {
 				department_t: null,
 				dept_no: null,
@@ -141,39 +141,39 @@ export default {
 				total: 0,
 				curPage: 1,
 				columns: [
-					{ title: this.$l.org_id, key: 'org_id', width: 100 },
-					{ title: this.$l.dept_no, key: 'dept_no', width: 100 },
-					{ title: this.$l.dept_name, key: 'dept_name_zh', width: 100 },
-					{ title: this.$l.up_dept_no, key: 'up_dept_no', width: 100 },
-					{ title: this.$l.up_deptname, key: 'up_deptname' }
+					{ title: this.l.org_id, key: 'org_id', width: 100 },
+					{ title: this.l.dept_no, key: 'dept_no', width: 100 },
+					{ title: this.l.dept_name, key: 'dept_name_zh', width: 100 },
+					{ title: this.l.up_dept_no, key: 'up_dept_no', width: 100 },
+					{ title: this.l.up_deptname, key: 'up_deptname' }
 				]
 			},
 			userObj: {
 				columns: [
-					{ title: this.$l.userid, key: 'userid', width: 100 },
-					{ title: this.$l.username, key: 'username', width: 100 },
-					{ title: this.$l.department, key: 'department_t' },
-					{ title: this.$l.work_name, key: 'work_name' },
-					{ title: this.$l.instel, key: 'instel', width: 120 },
-					{ title: this.$l.register, key: 'register', width: 100 },
-					{ title: this.$l.in_date, key: 'in_date', width: 100 },
-					{ title: this.$l.out_date, key: 'out_date', width: 100 },
-					{ title: this.$l.last_date, key: 'last_date', width: 150 },
-					{ title: this.$l.enable, key: 'enable', width: 100 }
+					{ title: this.l.userid, key: 'userid', width: 100 },
+					{ title: this.l.username, key: 'username', width: 100 },
+					{ title: this.l.department, key: 'department_t' },
+					{ title: this.l.work_name, key: 'work_name' },
+					{ title: this.l.instel, key: 'instel', width: 120 },
+					{ title: this.l.register, key: 'register', width: 100 },
+					{ title: this.l.in_date, key: 'in_date', width: 100 },
+					{ title: this.l.out_date, key: 'out_date', width: 100 },
+					{ title: this.l.last_date, key: 'last_date', width: 150 },
+					{ title: this.l.enable, key: 'enable', width: 100 }
 				],
 				fields: [
-					{ title: this.$l.userid, key: 'userid', span: 8 },
+					{ title: this.l.userid, key: 'userid', span: 8 },
 					{
-						title: this.$l.username,
+						title: this.l.username,
 						key: 'username',
 						span: 8
 					},
-					{ title: this.$l.instel, key: 'instel', span: 8 },
-					{ title: this.$l.name_t, key: 'name_t', span: 8 },
-					{ title: this.$l.name_s, key: 'name_s', span: 8 },
-					{ title: this.$l.name_e, key: 'name_e', span: 8 },
+					{ title: this.l.instel, key: 'instel', span: 8 },
+					{ title: this.l.name_t, key: 'name_t', span: 8 },
+					{ title: this.l.name_s, key: 'name_s', span: 8 },
+					{ title: this.l.name_e, key: 'name_e', span: 8 },
 					{
-						title: this.$l.in_date,
+						title: this.l.in_date,
 						key: 'in_date',
 						name: 'date',
 						span: 8,
@@ -183,7 +183,7 @@ export default {
 						}
 					},
 					{
-						title: this.$l.out_date,
+						title: this.l.out_date,
 						key: 'out_date',
 						name: 'date',
 						span: 8,
@@ -193,7 +193,7 @@ export default {
 						}
 					},
 					{
-						title: this.$l.birthday,
+						title: this.l.birthday,
 						key: 'birthday',
 						name: 'date',
 						span: 8,
@@ -202,10 +202,10 @@ export default {
 							valueFormat: 'yyyy-MM-dd'
 						}
 					},
-					{ title: this.$l.icno, key: 'ic_no', span: 8 },
+					{ title: this.l.icno, key: 'ic_no', span: 8 },
 					{
 						options: [],
-						title: this.$l.work_name,
+						title: this.l.work_name,
 						key: 'work_name',
 						span: 8,
 						name: 'selectObj',
@@ -214,7 +214,7 @@ export default {
 						}
 					},
 					{
-						title: this.$l.sex,
+						title: this.l.sex,
 						key: 'sex',
 						span: 8,
 						name: 'select',
@@ -229,15 +229,15 @@ export default {
 							}
 						]
 					},
-					{ title: this.$l.org_id, key: 'org_id', span: 8, props: { disabled: true } },
+					{ title: this.l.org_id, key: 'org_id', span: 8, props: { disabled: true } },
 					{
-						title: this.$l.dept_no,
+						title: this.l.dept_no,
 						key: 'dept_no',
 						span: 8,
 						props: { disabled: true }
 					},
 					{
-						title: this.$l.dept_name,
+						title: this.l.dept_name,
 						key: 'department_t',
 						span: 8,
 						props: { disabled: true }
@@ -246,14 +246,14 @@ export default {
 						title: '',
 						name: 'button',
 						span: 8,
-						value: this.$l.dropDept,
+						value: this.l.dropDept,
 						props: { type: 'primary' },
 						events: {
 							click: this.openDept
 						}
 					},
 					{
-						title: this.$l.enable,
+						title: this.l.enable,
 						key: 'enable',
 						name: 'switch',
 						span: 8,
@@ -263,7 +263,7 @@ export default {
 						}
 					},
 					{
-						title: this.$l.roles,
+						title: this.l.roles,
 						key: 'roles',
 						name: 'select',
 						props: {
@@ -298,9 +298,9 @@ export default {
 
 		forceChangePass(v) {
 			//强制修改用户密码
-			this.$prompt(this.$l.inputPwd, this.$c.oprConfirm, {
-				confirmButtonText: this.$c.confirm,
-				cancelButtonText: this.$c.cancel
+			this.$prompt(this.l.inputPwd, this.c.oprConfirm, {
+				confirmButtonText: this.c.confirm,
+				cancelButtonText: this.c.cancel
 			})
 				.then(({ value }) => {
 					this.pageLoading = true;
@@ -308,7 +308,7 @@ export default {
 						.then(r => {
 							this.pageLoading = false;
 							this.$message({
-								message: this.$c.success,
+								message: this.c.success,
 								type: 'success'
 							});
 						})

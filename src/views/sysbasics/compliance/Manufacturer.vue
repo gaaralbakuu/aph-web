@@ -2,8 +2,8 @@
   <div class="h-full flex flex-col overflow-hidden">
     <input type="file" ref="fileInput" style="display: none" @change="fileChange" />
     <div class="p-3 border-b border-solid border-gray-100 flex flex-col gap-[1px]">
-      <div class="text-2xl font-bold text-black">{{ $l.title }}</div>
-      <div class="text-gray-500 text-sm">{{ $l.description }}</div>
+      <div class="text-2xl font-bold text-black">{{ l.title }}</div>
+      <div class="text-gray-500 text-sm">{{ l.description }}</div>
     </div>
     <!-- Search Section -->
     <div class="flex gap-3 flex-wrap justify-between p-3">
@@ -11,13 +11,13 @@
         <div class="relative h-9 flex items-center gap-2 mr-5">
           <div class="flex bg-gray-100 p-0.5 rounded h-9">
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === '' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = ''">
-              {{ $c.all }}
+              {{ c.all }}
             </button>
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T1SC' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T1SC'">
-              {{ $l.requestor_facility_type_T1SC }}
+              {{ l.requestor_facility_type_T1SC }}
             </button>
             <button :class="['h-full px-4 rounded font-normal transition', manufacturer.query.requestor_facility_type === 'T2' ? 'bg-white shadow' : 'bg-gray-100 text-gray-700']" @click="manufacturer.query.requestor_facility_type = 'T2'">
-              {{ $l.requestor_facility_type_T2 }}
+              {{ l.requestor_facility_type_T2 }}
             </button>
           </div>
           <div class="h-full py-2">
@@ -32,7 +32,7 @@
               <path d="M9.1 11h5.7" />
             </svg>
           </div>
-          <input type="text" :placeholder="$l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
+          <input type="text" :placeholder="l.manufacture_name" v-model="manufacturer.query.manufacture_name" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div>
         <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -41,7 +41,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
             </svg>
           </div>
-          <input type="text" :placeholder="$l.addr" v-model="manufacturer.query.addr" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
+          <input type="text" :placeholder="l.addr" v-model="manufacturer.query.addr" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div>
         <!-- <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -49,7 +49,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
           </div>
-          <input type="text" :placeholder="$l.legal_person" v-model="manufacturer.query.legal_person" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
+          <input type="text" :placeholder="l.legal_person" v-model="manufacturer.query.legal_person" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div> -->
         <div class="relative h-9">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -61,16 +61,16 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
           </div>
-          <input type="text" :placeholder="$l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
+          <input type="text" :placeholder="l.produce_processes" v-model="manufacturer.query.produce_processes" class="h-9 pr-3 pl-10 border border-gray-200 rounded-full focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white!" />
         </div>
       </div>
       <!-- Search buttons -->
       <div class="flex gap-3">
         <button v-show="showAuth.m_search" @click="getList" class="h-9 rounded flex items-center bg-black text-white! px-4 hover:bg-gray-800 transition-colors duration-150">
-          {{ $c.queryButton }}
+          {{ c.queryButton }}
         </button>
         <button v-show="showAuth.m_search" @click="reset" class="h-9 rounded flex items-center bg-white text-black border border-solid border-gray-200 px-4 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-150">
-          {{ $c.reset }}
+          {{ c.reset }}
         </button>
       </div>
     </div>
@@ -82,28 +82,28 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          {{ $c.create }}
+          {{ c.create }}
         </button>
         <!-- 
         <button v-show="showAuth.m_export" @click="exportExcel" class="inline-flex items-center h-8 bg-green-600 hover:bg-green-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          {{ $c.export }}
+          {{ c.export }}
         </button>
 
         <button @click="visabled.uploadFile = true" class="inline-flex items-center h-8 bg-yellow-600 hover:bg-yellow-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
-          {{ $c.m_upload }}
+          {{ c.m_upload }}
         </button>
 
         <button @click="exportTemplate" class="inline-flex items-center h-8 bg-gray-600 hover:bg-gray-700 text-white! font-medium rounded-full px-3 shadow-sm transition duration-200 ease-in-out transform gap-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          {{ $l.downloadTemplate }}
+          {{ l.downloadTemplate }}
         </button> -->
       </div>
     </div>
@@ -114,60 +114,60 @@
 
     <!-- Pagination -->
     <div class="p-3">
-      <z-pagination :pagination="pagination" :total="manufacturer.query.total" :page.sync="manufacturer.query.page" :limit.sync="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
+      <z-pagination :pagination="pagination" :total="manufacturer.query.total" v-model:page="manufacturer.query.page" v-model:limit="manufacturer.query.pageSize" @change="getList" class="custom-pagination" />
     </div>
 
     
     <!-- Create/Edit Dialog -->
-    <CustomDialog :title="manufacturer.data.id ? $c.edit : $c.create" :visible.sync="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
+    <CustomDialog :title="manufacturer.data.id ? c.edit : c.create" v-model:visible="manufacturer.addOrEditFormVisible" :clickOutside="false" width="90%" :maxWidth="'1080px'">
       <template #content>
         <div class="flex flex-col gap-2">
-          <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.basic }}</div>
+          <div class="text-xl font-black text-gray-900 dark:text-white!">{{ l.basic }}</div>
           <!-- Basic Information Section -->
           <div class="">
-            <div class="text-base font-semibold text-black">{{ $l.partner_information }}</div>
+            <div class="text-base font-semibold text-black">{{ l.partner_information }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.manufacture_name_CN }}</label>
-                <el-input :placeholder="$l.input_manufacture_name_CN" v-model="manufacturer.data.name_zh" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.manufacture_name_CN }}</label>
+                <el-input :placeholder="l.input_manufacture_name_CN" v-model="manufacturer.data.name_zh" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.manufacture_name_US }}</label>
-                <el-input :placeholder="$l.input_manufacture_name_US" v-model="manufacturer.data.name_en" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.manufacture_name_US }}</label>
+                <el-input :placeholder="l.input_manufacture_name_US" v-model="manufacturer.data.name_en" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.legal_person }}</label>
-                <el-input :placeholder="$l.input_legal_person" v-model="manufacturer.data.legal_person" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.legal_person }}</label>
+                <el-input :placeholder="l.input_legal_person" v-model="manufacturer.data.legal_person" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.partner_country }}</label>
-                <el-input :placeholder="$l.input_partner_country" v-model="manufacturer.data.country" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.partner_country }}</label>
+                <el-input :placeholder="l.input_partner_country" v-model="manufacturer.data.country" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.cooperation_group_name }}</label>
-                <el-input :placeholder="$c.input" v-model="manufacturer.data.cooperation_group_name" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.cooperation_group_name }}</label>
+                <el-input :placeholder="c.input" v-model="manufacturer.data.cooperation_group_name" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ $l.registration_legal }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ l.registration_legal }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.customs_number }}</label>
-                <el-input :placeholder="$c.input" v-model="manufacturer.data.customs_number" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.customs_number }}</label>
+                <el-input :placeholder="c.input" v-model="manufacturer.data.customs_number" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.biz_license_number }}</label>
-                <el-input :placeholder="$c.input" v-model="manufacturer.data.biz_license_number" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.biz_license_number }}</label>
+                <el-input :placeholder="c.input" v-model="manufacturer.data.biz_license_number" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ $l.cooperation_authorization }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ l.cooperation_authorization }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.requestor_facility_type }}</label>
+                <label class="text-sm font-light">{{ l.requestor_facility_type }}</label>
                 <el-radio-group v-model="manufacturer.data.requestor_facility_type" class="flex gap-4 h-9 items-center">
                   <el-radio label="T1SC">T1SC</el-radio>
                   <el-radio label="T2">T2</el-radio>
@@ -175,105 +175,105 @@
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.is_involve_product }}</label>
+                <label class="text-sm font-light">{{ l.is_involve_product }}</label>
 
                 <el-radio-group v-model="manufacturer.data.is_involve_product" class="flex gap-4 h-9 items-center">
-                  <el-radio label="Y">{{ $l.product }}</el-radio>
-                  <el-radio label="N">{{ $l.exploit }}</el-radio>
+                  <el-radio label="Y">{{ l.product }}</el-radio>
+                  <el-radio label="N">{{ l.exploit }}</el-radio>
                 </el-radio-group>
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.is_alidas_authorized }}</label>
+                <label class="text-sm font-light">{{ l.is_alidas_authorized }}</label>
                 <el-radio-group v-model="manufacturer.data.is_alidas_authorized" class="flex gap-4 h-9 items-center">
-                  <el-radio label="Y">{{ $c.Y }}</el-radio>
-                  <el-radio label="N">{{ $c.N }}</el-radio>
+                  <el-radio label="Y">{{ c.Y }}</el-radio>
+                  <el-radio label="N">{{ c.N }}</el-radio>
                 </el-radio-group>
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.cooperation_start_date }}</label>
-                <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
+                <label class="text-sm font-light">{{ l.cooperation_start_date }}</label>
+                <el-date-picker v-model="manufacturer.data.cooperation_start_date" type="datetime" :placeholder="c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.cooperation_end_date }}</label>
-                <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime" :placeholder="$c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
+                <label class="text-sm font-light">{{ l.cooperation_end_date }}</label>
+                <el-date-picker v-model="manufacturer.data.cooperation_end_date" type="datetime" :placeholder="c.input" class="w-full rounded-md" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.authorization_status }}</label>
+                <label class="text-sm font-light">{{ l.authorization_status }}</label>
                 <el-select v-model="manufacturer.data.authorization_status" placeholder="Select" class="w-full rounded-md">
                   <el-option v-for="item in options_authorization_status" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ $l.production_operations }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ l.production_operations }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.requestor_facility_code }}</label>
-                <el-input :placeholder="$c.input" v-model="manufacturer.data.requestor_facility_code" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.requestor_facility_code }}</label>
+                <el-input :placeholder="c.input" v-model="manufacturer.data.requestor_facility_code" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.requestor_contact_name }}</label>
-                <el-input :placeholder="$c.input" v-model="manufacturer.data.requestor_contact_name" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.requestor_contact_name }}</label>
+                <el-input :placeholder="c.input" v-model="manufacturer.data.requestor_contact_name" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.monthly_produce_quantity }}</label>
+                <label class="text-sm font-light">{{ l.monthly_produce_quantity }}</label>
                 <el-input-number v-model="manufacturer.data.monthly_produce_quantity" :min="1" class="w-full rounded-md" controls-position="right" style="width: 100%" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.employee_num }}</label>
+                <label class="text-sm font-light">{{ l.employee_num }}</label>
                 <el-input-number v-model="manufacturer.data.employee_num" :min="1" class="w-full rounded-md" controls-position="right" style="width: 100%" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ $l.codes_identifiers }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ l.codes_identifiers }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.vendor_code }}</label>
-                <el-input :placeholder="$l.input_vendor_code" v-model="manufacturer.data.vendor_code" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.vendor_code }}</label>
+                <el-input :placeholder="l.input_vendor_code" v-model="manufacturer.data.vendor_code" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.unique_identifier }}</label>
-                <el-input :placeholder="$l.input_unique_identifier" v-model="manufacturer.data.unique_identifier" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.unique_identifier }}</label>
+                <el-input :placeholder="l.input_unique_identifier" v-model="manufacturer.data.unique_identifier" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.ffc_id }}</label>
-                <el-input :placeholder="$l.input_ffc_id" v-model="manufacturer.data.ffc_id" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.ffc_id }}</label>
+                <el-input :placeholder="l.input_ffc_id" v-model="manufacturer.data.ffc_id" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.sap_code }}</label>
-                <el-input :placeholder="$l.input_sap_code" v-model="manufacturer.data.sap_code" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.sap_code }}</label>
+                <el-input :placeholder="l.input_sap_code" v-model="manufacturer.data.sap_code" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ $l.classification_orders }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ l.classification_orders }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.classification }}</label>
-                <el-input :placeholder="$l.input_classification" v-model="manufacturer.data.classification" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.classification }}</label>
+                <el-input :placeholder="l.input_classification" v-model="manufacturer.data.classification" clearable class="w-full rounded-md" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.types_of_orders }}</label>
-                <el-input :placeholder="$l.input_types_of_orders" v-model="manufacturer.data.types_of_orders" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.types_of_orders }}</label>
+                <el-input :placeholder="l.input_types_of_orders" v-model="manufacturer.data.types_of_orders" clearable class="w-full rounded-md" />
               </div>
             </div>
 
-            <div class="text-base font-semibold text-black mt-4">{{ $l.warnings_compliance }}</div>
+            <div class="text-base font-semibold text-black mt-4">{{ l.warnings_compliance }}</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-light">{{ $l.compliance_warning_letter }}</label>
-                <el-input :placeholder="$l.input_compliance_warning_letter" v-model="manufacturer.data.compliance_warning_letter" clearable class="w-full rounded-md" />
+                <label class="text-sm font-light">{{ l.compliance_warning_letter }}</label>
+                <el-input :placeholder="l.input_compliance_warning_letter" v-model="manufacturer.data.compliance_warning_letter" clearable class="w-full rounded-md" />
               </div>
             </div>
           </div>
 
           <div class="mt-4 flex justify-between items-center">
             <div class="text-xl font-black text-gray-900 dark:text-white!">
-              {{ $l.contact_info }}
+              {{ l.contact_info }}
             </div>
 
             <div>
@@ -282,7 +282,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
 
-                {{ $c.addData || 'Add data' }}
+                {{ c.addData || 'Add data' }}
               </button>
             </div>
           </div>
@@ -291,11 +291,11 @@
               <template v-slot:operation="v">
                 <el-button type="text" size="small" class="text-blue-500 hover:underline mr-2" @click="contactInfoEditItem(v.row, v.$index)">
                   <i class="el-icon-edit"></i>
-                  {{ $c.edit }}
+                  {{ c.edit }}
                 </el-button>
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="contactInfoDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
-                  {{ $c.delete }}
+                  {{ c.delete }}
                 </el-button>
               </template>
             </z-table>
@@ -303,7 +303,7 @@
 
           <div class="mt-4 flex justify-between items-center">
             <div class="text-xl font-black text-gray-900 dark:text-white!">
-              {{ $l.addr_and_processes }}
+              {{ l.addr_and_processes }}
             </div>
 
             <div>
@@ -312,7 +312,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
 
-                {{ $c.addData || 'Add data' }}
+                {{ c.addData || 'Add data' }}
               </button>
             </div>
           </div>
@@ -322,11 +322,11 @@
               <template v-slot:operation="v">
                 <el-button type="text" size="small" class="text-blue-500 hover:underline mr-2" @click="addressEditItem(v.row, v.$index)">
                   <i class="el-icon-edit"></i>
-                  {{ $c.edit }}
+                  {{ c.edit }}
                 </el-button>
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="addressDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
-                  {{ $c.delete }}
+                  {{ c.delete }}
                 </el-button>
               </template>
             </z-table>
@@ -334,7 +334,7 @@
 
           <div class="mt-4 flex justify-between items-center">
             <div class="text-xl font-black text-gray-900 dark:text-white!">
-              {{ $l.compliance_evidence }}
+              {{ l.compliance_evidence }}
             </div>
 
             <div>
@@ -343,7 +343,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
 
-                {{ $c.add_attachments || 'Add attachments' }}
+                {{ c.add_attachments || 'Add attachments' }}
               </button>
             </div>
           </div>
@@ -353,54 +353,54 @@
               <template v-slot:operation="v">
                 <el-button type="text" size="small" class="text-red-500 hover:underline" @click="attachmentDeleteItem(v.row, v.$index)">
                   <i class="el-icon-delete"></i>
-                  {{ $c.delete }}
+                  {{ c.delete }}
                 </el-button>
               </template>
             </z-table>
           </div>
         </div>
       </template>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="manufacturer.addOrEditFormVisible = false" class="dialog-cancel-button">
-          {{ $c.cancel }}
+          {{ c.cancel }}
         </el-button>
         <el-button type="primary" @click="OPenManufacturer" class="dialog-confirm-button">
-          {{ $c.confirm }}
+          {{ c.confirm }}
         </el-button>
-      </span>
+      </span></template>
     </CustomDialog>
     <!-- 确认信息窗口 -->
-    <CustomDialog :title="$l.confirm_info" :visible.sync="manufacturer.inforFormVisible" :maxWidth="'1000px'" :width="'100%'">
+    <CustomDialog :title="l.confirm_info" v-model:visible="manufacturer.inforFormVisible" :maxWidth="'1000px'" :width="'100%'">
       <template #content>
         <div class="flex flex-col gap-6 p-4">
           <!-- 基本信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-blue-50 to-blue-100 px-4 py-3 dark:from-blue-900 dark:to-blue-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.partner_information }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ l.partner_information }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.manufacture_name_CN }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.manufacture_name_CN }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_zh) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.manufacture_name_US }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.manufacture_name_US }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_en) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.legal_person }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.legal_person }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.legal_person) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.partner_country }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.partner_country }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.country) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_facility_name }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.requestor_facility_name }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_facility_code }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.requestor_facility_code }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
               </div>
             </div>
@@ -409,31 +409,31 @@
           <!-- 商业信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-green-50 to-green-100 px-4 py-3 dark:from-green-900 dark:to-green-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.export_business }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ l.export_business }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.export_business }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.export_business }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_export_biz) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_involve_product }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.is_involve_product }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.customs_number }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.customs_number }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.customs_number) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.biz_license_number }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.biz_license_number }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.cooperation_start_date }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.cooperation_start_date }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(Sdate) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.vendor_code }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.vendor_code }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.vendor_code) }}</span>
               </div>
             </div>
@@ -442,31 +442,31 @@
           <!-- 授权信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-purple-50 to-purple-100 px-4 py-3 dark:from-purple-900 dark:to-purple-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.cooperation_authorization }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ l.cooperation_authorization }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_alidas_producer }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.is_alidas_producer }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_alidas_producer) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.is_alidas_authorized }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.is_alidas_authorized }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.authorization_status }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.authorization_status }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.requestor_contact_name }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.requestor_contact_name }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.compliance_warning_letter }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.compliance_warning_letter }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.classification }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.classification }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.classification) }}</span>
               </div>
             </div>
@@ -475,19 +475,19 @@
           <!-- 生产信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-3 dark:from-orange-900 dark:to-orange-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.production_operations }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ l.production_operations }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.monthly_produce_quantity }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.monthly_produce_quantity }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.employee_num }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.employee_num }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.employee_num) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.types_of_orders }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.types_of_orders }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
               </div>
             </div>
@@ -496,89 +496,89 @@
           <!-- 标识信息 Section -->
           <div class="rounded-lg border border-gray-200 shadow-sm overflow-hidden dark:border-gray-700">
             <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 px-4 py-3 dark:from-indigo-900 dark:to-indigo-800 border-b border-gray-200 dark:border-gray-700">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ $l.codes_identifiers }}</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-white!">{{ l.codes_identifiers }}</h3>
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.unique_identifier }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.unique_identifier }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.ffc_id }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.ffc_id }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.ffc_id) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $l.sap_code }}</span>
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ l.sap_code }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.sap_code) }}</span>
               </div>
             </div>
           </div>
         </div>
       </template>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="manufacturer.inforFormVisible = false">
-          {{ $c.cancel }}
+          {{ c.cancel }}
         </el-button>
         <el-button type="primary" @click="submmitManufacturer">
-          {{ $c.confirm }}
+          {{ c.confirm }}
         </el-button>
-      </span>
+      </span></template>
     </CustomDialog>
 
     <!-- 合规联系人信息 -->
-    <CustomDialog :title="$l.contact_info" @submmit="contactInfoSubmmit" :visible.sync="contactInfo.dialogFormVisible" :maxWidth="'600px'">
+    <CustomDialog :title="l.contact_info" @submmit="contactInfoSubmmit" v-model:visible="contactInfo.dialogFormVisible" :maxWidth="'600px'">
       <template #notice>
         <div class="text-sm text-gray-500 py-3 px-6 bg-gray-50 leading-4">
-          {{ $l.contact_info_notice || 'contact_info_notice' }}
+          {{ l.contact_info_notice || 'contact_info_notice' }}
         </div>
       </template>
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.contact_name }}
+              {{ l.contact_name }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_name" clearable />
+            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_name" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.contact_job_title }}
+              {{ l.contact_job_title }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_job_title" clearable />
+            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_job_title" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.contact_phone }}
+              {{ l.contact_phone }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_phone" clearable />
-            <p class="text-xs text-gray-400">{{ $l.contact_phone_note || 'contact_phone_note' }}</p>
+            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_phone" clearable />
+            <p class="text-xs text-gray-400">{{ l.contact_phone_note || 'contact_phone_note' }}</p>
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.contact_email }}
+              {{ l.contact_email }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="contactInfo.data.contact_email" clearable />
-            <p class="text-xs text-gray-400">{{ $l.contact_email_note || 'contact_email_note' }}</p>
+            <el-input :placeholder="l.input" v-model="contactInfo.data.contact_email" clearable />
+            <p class="text-xs text-gray-400">{{ l.contact_email_note || 'contact_email_note' }}</p>
           </div>
         </div>
       </template>
       <template #footer>
         <el-button @click="contactInfo.dialogFormVisible = false">
-          {{ $c.cancel }}
+          {{ c.cancel }}
         </el-button>
         <el-button type="primary" @click="contactInfoSubmmit">
-          {{ $c.confirm }}
+          {{ c.confirm }}
         </el-button>
         <slot name="operation"></slot>
       </template>
     </CustomDialog>
 
     <!-- Địa chỉ - CustomDialog -->
-    <CustomDialog :title="$l.addr_and_processes" @submmit="addressSubmmit" :visible.sync="address.dialogFormVisible" :maxWidth="'600px'">
+    <CustomDialog :title="l.addr_and_processes" @submmit="addressSubmmit" v-model:visible="address.dialogFormVisible" :maxWidth="'600px'">
       <template #notice>
         <div class="text-sm text-gray-500 py-3 px-6 bg-gray-50 leading-4">Thông tin địa chỉ và quy trình sản xuất là bắt buộc. Vui lòng điền đầy đủ thông tin.</div>
       </template>
@@ -586,49 +586,49 @@
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.address_zh }}
+              {{ l.address_zh }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="address.data.address_zh" clearable />
+            <el-input :placeholder="l.input" v-model="address.data.address_zh" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.address_en }}
+              {{ l.address_en }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="address.data.address_en" clearable />
+            <el-input :placeholder="l.input" v-model="address.data.address_en" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.own_processes }}
+              {{ l.own_processes }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="address.data.own_processes" clearable />
+            <el-input :placeholder="l.input" v-model="address.data.own_processes" clearable />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-light flex">
-              {{ $l.match_processes }}
+              {{ l.match_processes }}
               <span class="text-red-500">*</span>
             </label>
-            <el-input :placeholder="$l.input" v-model="address.data.match_processes" clearable />
+            <el-input :placeholder="l.input" v-model="address.data.match_processes" clearable />
           </div>
         </div>
       </template>
       <template #footer>
         <el-button @click="address.dialogFormVisible = false">
-          {{ $c.cancel }}
+          {{ c.cancel }}
         </el-button>
         <el-button type="primary" @click="addressSubmmit">
-          {{ $c.confirm }}
+          {{ c.confirm }}
         </el-button>
       </template>
     </CustomDialog>
     <!-- 附件窗口 -->
-    <CustomDialog :title="$l.add_attachments" :visible.sync="attachment.dialogFormVisible" width="30%">
+    <CustomDialog :title="l.add_attachments" v-model:visible="attachment.dialogFormVisible" width="30%">
       <el-form ref="form">
         <el-form-item label="">
           <el-button type="primary" @click="selectFile">
-            {{ $l.selectFile }}
+            {{ l.selectFile }}
           </el-button>
           <div class="text item">
             {{ attachment.fileList.file.name }}
@@ -637,67 +637,67 @@
             <progress v-if="this.attachment.uploadProgress > 0" :value="this.attachment.uploadProgress" max="100"></progress>
           </div>
         </el-form-item>
-        <el-form-item :label="$l.fileName">
-          <el-input :placeholder="$l.input_fileName" v-model="attachment.fileList.file.name" :disabled="true" style="width: 300px"></el-input>
+        <el-form-item :label="l.fileName">
+          <el-input :placeholder="l.input_fileName" v-model="attachment.fileList.file.name" :disabled="true" style="width: 300px"></el-input>
         </el-form-item>
-        <el-form-item :label="$l.fileType">
-          <el-select :placeholder="$l.choose" style="width: 300px" v-model="attachment.fileList.attachment_type">
+        <el-form-item :label="l.fileType">
+          <el-select :placeholder="l.choose" style="width: 300px" v-model="attachment.fileList.attachment_type">
             <el-option v-for="item in attachment.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <div style="float: right">
             <el-button @click="attachment.dialogFormVisible = false">
-              {{ $c.cancel }}
+              {{ c.cancel }}
             </el-button>
             <el-button type="primary" @click="attachmentSubmmit">
-              {{ $c.confirm }}
+              {{ c.confirm }}
             </el-button>
           </div>
         </el-form-item>
       </el-form>
     </CustomDialog>
     <!-- 地址信息 -->
-    <CustomDialog :title="$l.addr_and_processes" :visible.sync="address.dialogTableVisible2" width="30%">
+    <CustomDialog :title="l.addr_and_processes" v-model:visible="address.dialogTableVisible2" width="30%">
       <el-table :data="address.list">
-        <el-table-column property="address_zh" :label="$l.address_zh"></el-table-column>
-        <el-table-column property="address_en" :label="$l.address_en"></el-table-column>
-        <el-table-column property="own_processes" :label="$l.own_processes"></el-table-column>
-        <el-table-column property="match_processes" :label="$l.own_processes"></el-table-column>
+        <el-table-column property="address_zh" :label="l.address_zh"></el-table-column>
+        <el-table-column property="address_en" :label="l.address_en"></el-table-column>
+        <el-table-column property="own_processes" :label="l.own_processes"></el-table-column>
+        <el-table-column property="match_processes" :label="l.own_processes"></el-table-column>
       </el-table>
     </CustomDialog>
     <!-- 附件信息 -->
-    <CustomDialog :title="$l.attachment_info" :visible.sync="attachment.dialogFormVisible2" width="30%">
+    <CustomDialog :title="l.attachment_info" v-model:visible="attachment.dialogFormVisible2" width="30%">
       <el-table :data="attachment.list">
-        <el-table-column property="file_name" :label="$l.fileName"></el-table-column>
-        <el-table-column property="create_user" :label="$l.create_people"></el-table-column>
-        <el-table-column property="create_time" :label="$l.create_date"></el-table-column>
-        <el-table-column fixed="right" :label="$l.operation">
-          <template slot-scope="scope">
+        <el-table-column property="file_name" :label="l.fileName"></el-table-column>
+        <el-table-column property="create_user" :label="l.create_people"></el-table-column>
+        <el-table-column property="create_time" :label="l.create_date"></el-table-column>
+        <el-table-column fixed="right" :label="l.operation">
+          <template #default="scope">
             <el-button @click="checkAttachments(scope.row)" type="text" size="small">
-              {{ $l.check }}
+              {{ l.check }}
             </el-button>
             <el-button type="text" size="small" @click="downAttachments(scope.row)">
-              {{ $l.down }}
+              {{ l.down }}
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </CustomDialog>
 
-    <CustomDialog :visible.sync="visabled.uploadFile" width="30%">
+    <CustomDialog v-model:visible="visabled.uploadFile" width="30%">
       <div>
         <el-form style="margin-top: 20px">
-          <el-form-item :label="$l.upload_file" required>
+          <el-form-item :label="l.upload_file" required>
             <input type="file" accept=".xls,.xlsx" class="el-input" @change="onFileChange" ref="addfileinput" style="border: 1px solid #dcdcdc; border-radius: 5px; padding: 3px" />
           </el-form-item>
         </el-form>
         <div style="margin-top: 40px; text-align: right">
           <el-button type="primary" @click="visabled.uploadFile = false">
-            {{ $c.cancel }}
+            {{ c.cancel }}
           </el-button>
           <el-button type="success" @click="uploadExcel">
-            {{ $c.m_upload }}
+            {{ c.m_upload }}
           </el-button>
         </div>
       </div>
@@ -705,144 +705,144 @@
     <filePreviews v-if="attachment.fileUrl" :file-url="attachment.fileUrl" :visible="attachment.dialogFormVisible3" @update:visible="attachment.dialogFormVisible3 = $event"></filePreviews>
 
     <!-- Chi tiết modal -->
-    <CustomDialog :title="$c.detail" :visible.sync="manufacturer.detailFormVisible" :clickOutside="false" width="90%" :maxWidth="'1280px'" custom-class="scrollable-dialog manufacturer-detail-dialog">
+    <CustomDialog :title="c.detail" v-model:visible="manufacturer.detailFormVisible" :clickOutside="false" width="90%" :maxWidth="'1280px'" custom-class="scrollable-dialog manufacturer-detail-dialog">
       <template #content>
         <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-4">
-            <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.basic }}</div>
+            <div class="text-xl font-black text-gray-900 dark:text-white!">{{ l.basic }}</div>
 
             <div>
-              <div class="text-base font-semibold text-black">{{ $l.partner_information }}</div>
+              <div class="text-base font-semibold text-black">{{ l.partner_information }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.manufacture_name_CN }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.manufacture_name_CN }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_zh) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.manufacture_name_US }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.manufacture_name_US }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.name_en) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.legal_person }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.legal_person }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.legal_person) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.partner_country }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.partner_country }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.country) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_group_name }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.cooperation_group_name }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.cooperation_group_name) }}</span>
                 </div>
               </div>
             </div>
 
             <div class="mt-4">
-              <div class="text-base font-semibold text-black">{{ $l.registration_legal }}</div>
+              <div class="text-base font-semibold text-black">{{ l.registration_legal }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.customs_number }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.customs_number }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.customs_number) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.biz_license_number }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.biz_license_number }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.biz_license_number) }}</span>
                 </div>
               </div>
             </div>
 
             <div class="mt-4">
-              <div class="text-base font-semibold text-black">{{ $l.cooperation_authorization }}</div>
+              <div class="text-base font-semibold text-black">{{ l.cooperation_authorization }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_facility_type }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.requestor_facility_type }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_type) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.is_involve_product }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.is_involve_product }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayProductFlag(manufacturer.data.is_involve_product) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.is_alidas_authorized }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.is_alidas_authorized }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayYnFlag(manufacturer.data.is_alidas_authorized) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_start_date }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.cooperation_start_date }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.cooperation_start_date) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.cooperation_end_date }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.cooperation_end_date }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.cooperation_end_date) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.authorization_status }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.authorization_status }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayAuthorizationStatus(manufacturer.data.authorization_status) }}</span>
                 </div>
               </div>
             </div>
 
             <div class="mt-4">
-              <div class="text-base font-semibold text-black">{{ $l.production_operations }}</div>
+              <div class="text-base font-semibold text-black">{{ l.production_operations }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_facility_code }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.requestor_facility_code }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_facility_code) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.requestor_contact_name }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.requestor_contact_name }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.requestor_contact_name) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.monthly_produce_quantity }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.monthly_produce_quantity }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.monthly_produce_quantity) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.employee_num }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.employee_num }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.employee_num) }}</span>
                 </div>
               </div>
             </div>
 
             <div class="mt-4">
-              <div class="text-base font-semibold text-black">{{ $l.codes_identifiers }}</div>
+              <div class="text-base font-semibold text-black">{{ l.codes_identifiers }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.vendor_code }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.vendor_code }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.vendor_code) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.unique_identifier }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.unique_identifier }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.unique_identifier) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.ffc_id }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.ffc_id }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.ffc_id) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.sap_code }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.sap_code }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.sap_code) }}</span>
                 </div>
               </div>
             </div>
 
             <div class="mt-4">
-              <div class="text-base font-semibold text-black">{{ $l.classification_orders }}</div>
+              <div class="text-base font-semibold text-black">{{ l.classification_orders }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.classification }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.classification }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.classification) }}</span>
                 </div>
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.types_of_orders }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.types_of_orders }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.types_of_orders) }}</span>
                 </div>
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-base font-semibold text-black">{{ $l.warnings_compliance }}</div>
+              <div class="text-base font-semibold text-black">{{ l.warnings_compliance }}</div>
               <div class="grid grid-cols-1 gap-3 md:grid-cols-3 mt-2">
                 <div class="flex flex-col gap-1 p-3 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 md:col-span-3">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ $l.compliance_warning_letter }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ l.compliance_warning_letter }}</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white!">{{ displayValue(manufacturer.data.compliance_warning_letter) }}</span>
                 </div>
               </div>
@@ -851,56 +851,56 @@
 
           <div class="flex flex-col gap-2" v-if="contactInfo.list && contactInfo.list.length > 0">
             <div class="mt-4 flex items-center justify-between">
-              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.contact_info }}</div>
+              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ l.contact_info }}</div>
             </div>
             <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
               <el-table :data="contactInfo.list" border class="w-full">
-                <el-table-column prop="contact_name" :label="$l.contact_name" min-width="120"></el-table-column>
-                <el-table-column prop="contact_job_title" :label="$l.contact_job_title" min-width="120"></el-table-column>
-                <el-table-column prop="contact_phone" :label="$l.contact_phone" min-width="140"></el-table-column>
-                <el-table-column prop="contact_email" :label="$l.contact_email" min-width="180"></el-table-column>
+                <el-table-column prop="contact_name" :label="l.contact_name" min-width="120"></el-table-column>
+                <el-table-column prop="contact_job_title" :label="l.contact_job_title" min-width="120"></el-table-column>
+                <el-table-column prop="contact_phone" :label="l.contact_phone" min-width="140"></el-table-column>
+                <el-table-column prop="contact_email" :label="l.contact_email" min-width="180"></el-table-column>
               </el-table>
             </div>
           </div>
 
           <div class="flex flex-col gap-2" v-if="address.list && address.list.length > 0">
             <div class="mt-4 flex items-center justify-between">
-              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.addr_and_processes }}</div>
+              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ l.addr_and_processes }}</div>
             </div>
             <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
               <el-table :data="address.list" border class="w-full">
-                <el-table-column prop="address_zh" :label="$l.address_zh" min-width="200"></el-table-column>
-                <el-table-column prop="address_en" :label="$l.address_en" min-width="200"></el-table-column>
-                <el-table-column prop="own_processes" :label="$l.own_processes" min-width="150"></el-table-column>
-                <el-table-column prop="match_processes" :label="$l.match_processes" min-width="150"></el-table-column>
+                <el-table-column prop="address_zh" :label="l.address_zh" min-width="200"></el-table-column>
+                <el-table-column prop="address_en" :label="l.address_en" min-width="200"></el-table-column>
+                <el-table-column prop="own_processes" :label="l.own_processes" min-width="150"></el-table-column>
+                <el-table-column prop="match_processes" :label="l.match_processes" min-width="150"></el-table-column>
               </el-table>
             </div>
           </div>
 
           <div class="flex flex-col gap-2" v-if="attachment.list && attachment.list.length > 0">
             <div class="mt-4 flex items-center justify-between">
-              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ $l.compliance_evidence }}</div>
+              <div class="text-xl font-black text-gray-900 dark:text-white!">{{ l.compliance_evidence }}</div>
               <div>
                 <el-button type="text" size="small" class="delete-action-button" @click="downloadAllAttachments(manufacturer.data.id)">Tải xuống tất cả</el-button>
               </div>
             </div>
             <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-700">
               <el-table :data="attachment.list" border class="w-full">
-                <el-table-column prop="file_name" :label="$l.fileName" min-width="200"></el-table-column>
-                <el-table-column prop="attachment_type" :label="$l.fileType" min-width="120">
-                  <template slot-scope="scope">
+                <el-table-column prop="file_name" :label="l.fileName" min-width="200"></el-table-column>
+                <el-table-column prop="attachment_type" :label="l.fileType" min-width="120">
+                  <template #default="scope">
                     <span>{{ matterType(scope.row.attachment_type) }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="create_user" :label="$l.create_people" min-width="120"></el-table-column>
-                <el-table-column prop="create_time" :label="$l.create_date" min-width="150"></el-table-column>
-                <el-table-column :label="$c.operation" width="150" fixed="right">
-                  <template slot-scope="scope">
+                <el-table-column prop="create_user" :label="l.create_people" min-width="120"></el-table-column>
+                <el-table-column prop="create_time" :label="l.create_date" min-width="150"></el-table-column>
+                <el-table-column :label="c.operation" width="150" fixed="right">
+                  <template #default="scope">
                     <el-button @click="checkAttachments(scope.row)" type="text" size="small" class="delete-action-button">
-                      {{ $l.check }}
+                      {{ l.check }}
                     </el-button>
                     <el-button type="text" size="small" @click="downAttachments(scope.row)" class="delete-action-button">
-                      {{ $l.down }}
+                      {{ l.down }}
                     </el-button>
                   </template>
                 </el-table-column>
@@ -909,11 +909,11 @@
           </div>
         </div>
       </template>
-      <span slot="footer" class="dialog-footer">
+      <template #footer><span class="dialog-footer">
         <el-button @click="manufacturer.detailFormVisible = false" class="dialog-cancel-button">
-          {{ $c.cancel }}
+          {{ c.cancel }}
         </el-button>
-      </span>
+      </span></template>
     </CustomDialog>
   </div>
 </template>
@@ -922,8 +922,8 @@
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
 
-import { getToken, localGet } from '@/utils/auth'
-import { _, api, defaultConfig,initFuncs,  zForm, zFormDialog, zPagination, zTable } from '@/views/_common'
+import { getToken, localGet } from '@/utils/auth.js'
+import { _, api, defaultConfig,initFuncs,  zForm, zFormDialog, zPagination, zTable } from '@/views/_common/index.js'
 
 import CustomDialog from '../../_common/CustomDialog.vue'
 import filePreviews from '../../_common/filePreviews.vue'
@@ -959,9 +959,9 @@ export default {
       console.log(reg.test(this.contactInfo.data.contact_phone))
       this.rulesRules.isPhone = false
       if (this.contactInfo.data.contact_phone === '') {
-        callback(new Error(this.$l.input_phone))
+        callback(new Error(this.l.input_phone))
       } else if (!reg.test(this.contactInfo.data.contact_phone)) {
-        callback(new Error(this.$l.input_confirm_phone))
+        callback(new Error(this.l.input_confirm_phone))
       } else {
         this.rulesRules.isPhone = true
         callback()
@@ -971,9 +971,9 @@ export default {
       const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ // 邮箱正则表达式
       this.rulesRules.isEmail = false
       if (this.contactInfo.data.contact_email === '') {
-        callback(new Error(this.$l.input_email))
+        callback(new Error(this.l.input_email))
       } else if (!reg.test(this.contactInfo.data.contact_email)) {
-        callback(new Error(this.$l.ininput_confirm_email))
+        callback(new Error(this.l.ininput_confirm_email))
       } else {
         this.rulesRules.isEmail = true
         callback()
@@ -984,9 +984,9 @@ export default {
 
       // Trạng thái producer: onboarding, discontinued, in use
       options_authorization_status: [
-        { value: 'onboarding', label: this.$l.producer_status_onboarding },
-        { value: 'discontinued', label: this.$l.producer_status_discontinued },
-        { value: 'in_use', label: this.$l.producer_status_in_use },
+        { value: 'onboarding', label: this.l.producer_status_onboarding },
+        { value: 'discontinued', label: this.l.producer_status_discontinued },
+        { value: 'in_use', label: this.l.producer_status_in_use },
       ],
       maxSizeInBytes: 5 * 1024 * 1024,
       fileSizeInBytes: 0,
@@ -1056,43 +1056,43 @@ export default {
         dialogTableVisible2: false,
         columns: [
           {
-            title: this.$l.contact_name,
+            title: this.l.contact_name,
             key: 'contact_name',
           },
           {
-            title: this.$l.contact_job_title,
+            title: this.l.contact_job_title,
             key: 'contact_job_title',
           },
           {
-            title: this.$l.contact_phone,
+            title: this.l.contact_phone,
             key: 'contact_phone',
           },
           {
-            title: this.$l.contact_email,
+            title: this.l.contact_email,
             key: 'contact_email',
           },
         ],
         fields: [
           {
-            title: this.$l.contact_name,
+            title: this.l.contact_name,
             key: 'contact_name',
             span: 12,
             required: true,
           },
           {
-            title: this.$l.contact_job_title,
+            title: this.l.contact_job_title,
             key: 'contact_job_title',
             span: 12,
             required: true,
           },
           {
-            title: this.$l.contact_phone,
+            title: this.l.contact_phone,
             key: 'contact_phone',
             span: 12,
             required: true,
           },
           {
-            title: this.$l.contact_email,
+            title: this.l.contact_email,
             key: 'contact_email',
             span: 12,
             required: true,
@@ -1107,43 +1107,43 @@ export default {
         dialogTableVisible2: false,
         columns: [
           {
-            title: this.$l.address_zh,
+            title: this.l.address_zh,
             key: 'address_zh',
           },
           {
-            title: this.$l.address_en,
+            title: this.l.address_en,
             key: 'address_en',
           },
           {
-            title: this.$l.own_processes,
+            title: this.l.own_processes,
             key: 'own_processes',
           },
           {
-            title: this.$l.match_processes,
+            title: this.l.match_processes,
             key: 'match_processes',
           },
         ],
         fields: [
           {
-            title: this.$l.address_zh,
+            title: this.l.address_zh,
             key: 'address_zh',
             span: 12,
             required: true,
           },
           {
-            title: this.$l.address_en,
+            title: this.l.address_en,
             key: 'address_en',
             span: 12,
             required: true,
           },
           {
-            title: this.$l.own_processes,
+            title: this.l.own_processes,
             key: 'own_processes',
             span: 12,
             required: true,
           },
           {
-            title: this.$l.match_processes,
+            title: this.l.match_processes,
             key: 'match_processes',
             span: 12,
             required: true,
@@ -1159,35 +1159,35 @@ export default {
         fileUrl: '',
         columns: [
           {
-            title: this.$l.fileName,
+            title: this.l.fileName,
             key: 'file_name',
           },
           {
-            title: this.$l.fileType,
+            title: this.l.fileType,
             key: 'attachment_type',
             formatter: this.matterType,
           },
           {
-            title: this.$l.create_people,
+            title: this.l.create_people,
             key: 'create_user',
           },
           {
-            title: this.$l.create_date,
+            title: this.l.create_date,
             key: 'create_time',
           },
           {
-            title: this.$l.modify_user,
+            title: this.l.modify_user,
             key: 'modify_user',
           },
           {
-            title: this.$l.modify_time,
+            title: this.l.modify_time,
             key: 'modify_time',
           },
         ],
         options: [
           {
             value: '0A',
-            label: this.$l.business_license,
+            label: this.l.business_license,
           },
           {
             value: '0B',
@@ -1195,7 +1195,7 @@ export default {
           },
           {
             value: '0C',
-            label: this.$l.other_attachment,
+            label: this.l.other_attachment,
           },
         ],
         fileList: {
@@ -1404,7 +1404,7 @@ export default {
         .then((r) => {
           console.log(r)
           this.$message({
-            message: this.$c.success,
+            message: this.c.success,
             type: 'success',
           })
           this.getList()
@@ -1414,19 +1414,19 @@ export default {
         .catch((e) => {
           console.log(e)
           // this.$message({
-          //   message: e.message || this.$l.error,
+          //   message: e.message || this.l.error,
           //   type: 'error',
           // })
         })
     },
     deleteItem(index, data) {
       console.log(data)
-      this.$prompt(this.$l.delete_confirm, this.$c.oprConfirm, {
+      this.$prompt(this.l.delete_confirm, this.c.oprConfirm, {
         type: 'warning',
         inputPattern: /^[Y]{1}$/i,
         inputErrorMessage: '请输入Y/y',
-        confirmButtonText: this.$c.confirm,
-        cancelButtonText: this.$c.cancel,
+        confirmButtonText: this.c.confirm,
+        cancelButtonText: this.c.cancel,
       })
         .then(() => {
           this.$request(
@@ -1440,19 +1440,19 @@ export default {
               console.log(r)
               this.$message({
                 type: 'success',
-                message: this.$c.success,
+                message: this.c.success,
               })
               this.getList()
             })
             .catch((e) => {
               console.log(e)
-              this.$message.error(this.$l.delete_error)
+              this.$message.error(this.l.delete_error)
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: this.$l.cancel_delete,
+            message: this.l.cancel_delete,
           })
         })
     },
@@ -1485,7 +1485,7 @@ export default {
             })
             // 创建一个超链接，将文件流赋进去，然后实现这个超链接的单击事件
             const elink = document.createElement('a')
-            elink.download = decodeURIComponent(this.$l.fileBasic_download + '.zip')
+            elink.download = decodeURIComponent(this.l.fileBasic_download + '.zip')
             elink.style.display = 'none'
             elink.href = URL.createObjectURL(blob)
             document.body.appendChild(elink)
@@ -1494,7 +1494,7 @@ export default {
             document.body.removeChild(elink)
             this.loading = false
           } catch {
-            this.$message.error(this.$l.file_export_failed)
+            this.$message.error(this.l.file_export_failed)
           }
         }
       })
@@ -1523,7 +1523,7 @@ export default {
           })
           // 创建一个隐藏的 <a> 元素
           const elink = document.createElement('a')
-          elink.download = this.$l.file_download + '.xlsx' // 确保包含文件扩展名
+          elink.download = this.l.file_download + '.xlsx' // 确保包含文件扩展名
           elink.style.display = 'none'
           elink.href = URL.createObjectURL(blob)
           // 添加到 DOM 并触发点击事件
@@ -1609,7 +1609,7 @@ export default {
       if (Object.keys(this.contactInfo.data).length === 0) {
         this.$message({
           type: 'info',
-          message: this.$l.info_empty_error,
+          message: this.l.info_empty_error,
         })
         return
       }
@@ -1620,14 +1620,14 @@ export default {
 
       if (!phoneRegex.test(this.contactInfo.data.contact_phone)) {
         this.$message({
-          message: this.$l.input_confirm_phone,
+          message: this.l.input_confirm_phone,
           type: 'error',
         })
         return
       }
       if (!emailRegex.test(this.contactInfo.data.contact_email)) {
         this.$message({
-          message: this.$l.ininput_confirm_email,
+          message: this.l.ininput_confirm_email,
           type: 'error',
         })
         return
@@ -1676,7 +1676,7 @@ export default {
       if (!address_en || !address_zh || !own_processes || !match_processes) {
         this.$message({
           type: 'info',
-          message: this.$l.info_empty_error,
+          message: this.l.info_empty_error,
         })
         return
       }
@@ -1723,7 +1723,7 @@ export default {
       if (!this.attachment.fileList.file.name) {
         this.attachment.fileList.file = {}
         this.$refs.fileInput.value = ''
-        return this.$message.error(this.$l.file_is_empty)
+        return this.$message.error(this.l.file_is_empty)
       }
       // 确定上传文件对话框
       if (this.fileSizeInBytes > this.maxSizeInBytes) {
@@ -1739,7 +1739,7 @@ export default {
             this.$set(r.data[0], 'attachment_type', this.attachment.fileList.attachment_type)
             this.attachment.list.push(r.data[0])
             this.$message({
-              message: this.$c.oprConfirm,
+              message: this.c.oprConfirm,
               type: 'success',
             })
             this.attachment.dialogFormVisible = false
@@ -1755,14 +1755,14 @@ export default {
       this.uploadQuery.file = e.target.files[0]
       console.log(this.uploadQuery.file)
       if (!this.uploadQuery.file) {
-        alert(this.$l.select_file)
+        alert(this.l.select_file)
         return
       }
     },
     //上传模板
     uploadExcel() {
       if (!this.uploadQuery.file) {
-        alert(this.$l.select_file)
+        alert(this.l.select_file)
         return
       }
 
@@ -1774,7 +1774,7 @@ export default {
           console.log(r)
           this.$message({
             type: 'success',
-            message: this.$l.upload_success,
+            message: this.l.upload_success,
           })
           this.visabled.uploadFile = false
           this.uploadQuery.file = {}
@@ -1786,12 +1786,12 @@ export default {
     },
     attachmentDeleteItem(data, index) {
       console.log(data)
-      this.$prompt(this.$l.prompt, this.$c.oprConfirm, {
+      this.$prompt(this.l.prompt, this.c.oprConfirm, {
         type: 'warning',
         inputPattern: /^[Y]{1}$/i,
-        inputErrorMessage: this.$l.inputErrorMessage,
-        confirmButtonText: this.$c.confirm,
-        cancelButtonText: this.$c.cancel,
+        inputErrorMessage: this.l.inputErrorMessage,
+        confirmButtonText: this.c.confirm,
+        cancelButtonText: this.c.cancel,
       })
         .then(() => {
           this.attachment.list.splice(index, 1)
@@ -1799,7 +1799,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: this.$l.info,
+            message: this.l.info,
           })
         })
     },
@@ -1812,11 +1812,11 @@ export default {
 
       if (value.target.files.length == 0) {
         this.attachment.fileList.file = {}
-        return this.$message.error(this.$l.file_is_empty)
+        return this.$message.error(this.l.file_is_empty)
       }
       if (!value.target.files[0].type) {
         this.$refs.fileInput.value = ''
-        return this.$message.error(this.$l.unsupported_file_type)
+        return this.$message.error(this.l.unsupported_file_type)
       }
       this.fileSizeInBytes = value.target.files[0].size
       if (this.fileSizeInBytes > this.maxSizeInBytes) {
@@ -1878,7 +1878,7 @@ export default {
           this.$set(r.data[0], 'attachment_type', this.attachment.fileList.attachment_type)
           this.attachment.list.push(r.data[0])
           this.$message({
-            message: this.$c.oprConfirm,
+            message: this.c.oprConfirm,
             type: 'success',
           })
           this.attachment.dialogFormVisible = false
@@ -1889,7 +1889,7 @@ export default {
     },
     async uploadFile() {
       if (!this.attachment.fileList.attachment_type) {
-        return this.$message.error(this.$l.select_file_type)
+        return this.$message.error(this.l.select_file_type)
       }
       this.attachment.divide.taskId = this.generateUUID()
       let uploadedChunks = 0
@@ -1927,7 +1927,7 @@ export default {
         await this.$request(this.$api.baseUrl + '/Compliance/complianceAttachments/getTaskStatus', fileObj, 'post').then((r) => {
           this.$message({
             type: 'success',
-            message: this.$c.oprConfirm,
+            message: this.c.oprConfirm,
           })
           this.attachment.list.push(r.data[0])
           this.$refs.fileInput.value = ''
@@ -1938,7 +1938,7 @@ export default {
       } catch (error) {
         this.$message({
           type: 'error',
-          message: this.$l.upload_failed,
+          message: this.l.upload_failed,
         })
       }
     },
@@ -2002,19 +2002,19 @@ export default {
     },
     displayYnFlag(value) {
       if (value === 'Y') {
-        return this.$c.Y
+        return this.c.Y
       }
       if (value === 'N') {
-        return this.$c.N
+        return this.c.N
       }
       return '--'
     },
     displayProductFlag(value) {
       if (value === 'Y') {
-        return this.$l.product
+        return this.l.product
       }
       if (value === 'N') {
-        return this.$l.exploit
+        return this.l.exploit
       }
       return '--'
     },
@@ -2042,9 +2042,9 @@ export default {
     getStatusLabel(status) {
       if (!status) return '--'
       const statusMap = {
-        onboarding: this.$l.producer_status_onboarding,
-        in_use: this.$l.producer_status_in_use,
-        discontinued: this.$l.producer_status_discontinued,
+        onboarding: this.l.producer_status_onboarding,
+        in_use: this.l.producer_status_in_use,
+        discontinued: this.l.producer_status_discontinued,
       }
       return statusMap[status.toLowerCase()] || status
     },
@@ -2065,7 +2065,7 @@ export default {
     // 下载单个厂商的所有附件
     downloadAllAttachments(manufacturerId) {
       if (!manufacturerId) {
-        this.$message.warning(this.$c.no_data)
+        this.$message.warning(this.c.no_data)
         return
       }
       const url = api.baseUrl + '/Compliance/complianceManufacturer/downloadAttachments'
@@ -2088,17 +2088,17 @@ export default {
           a.click()
           URL.revokeObjectURL(a.href)
           document.body.removeChild(a)
-          this.$message.success(this.$c.success)
+          this.$message.success(this.c.success)
         })
         .catch((error) => {
           console.log(error)
-          this.$message.error(this.$c.fail)
+          this.$message.error(this.c.fail)
         })
     },
 
     downAttachments(data) {
       if (!data) {
-        this.$message.warning(this.$c.no_data)
+        this.$message.warning(this.c.no_data)
         return
       }
 
@@ -2141,11 +2141,11 @@ export default {
           a.click()
           URL.revokeObjectURL(objectUrl)
           document.body.removeChild(a)
-          this.$message.success(this.$c.success)
+          this.$message.success(this.c.success)
         })
         .catch((error) => {
           console.log(error)
-          this.$message.error(this.$c.fail)
+          this.$message.error(this.c.fail)
         })
     },
   },

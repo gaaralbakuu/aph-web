@@ -1,5 +1,5 @@
 <template>
-  <CustomDialog :visible.sync="dialogVisible" :title="$l.filePreview" width="80%" center @contextmenu.prevent @selectstart.prevent @dragstart.prevent top="0.5vh" :height="'100%'">
+  <CustomDialog v-model:visible="dialogVisible" :title="l.filePreview" width="80%" center @contextmenu.prevent @selectstart.prevent @dragstart.prevent top="0.5vh" :height="'100%'">
     <template #content>
       <div style="height: 100%;" v-if="isTextFile" @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
         <textarea v-model="fileContent" readonly @contextmenu.prevent @selectstart.prevent @dragstart.prevent v-disable-selection></textarea>
@@ -23,7 +23,7 @@
         <vue-pdf-viewer :src="fileUrl" @contextmenu.prevent @selectstart.prevent @dragstart.prevent />
       </div>
       <div style="height: 100%;" v-else @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
-        <p>{{ $l.fileDontSupport }}</p>
+        <p>{{ l.fileDontSupport }}</p>
       </div>
     </template>
   </CustomDialog>

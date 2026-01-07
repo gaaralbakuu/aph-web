@@ -3,41 +3,41 @@
     <!-- <div class="learning-filter">
       <div class="filter-item">
         <el-dropdown trigger="click" @command="handleCommand">
-          <div>{{$l.demand}}：<b style="color: #409fee;">{{showObj.demand}}</b><i class="el-icon-arrow-down el-icon--right"></i>
+          <div>{{ l.demand}}：<b style="color: #409fee;">{{showObj.demand}}</b><i class="el-icon-arrow-down el-icon--right"></i>
           </div>
-          <el-dropdown-menu slot="dropdown">
+          <template #dropdown><el-dropdown-menu>
             <el-dropdown-item v-for="(item,index) in paramsObj.demand" :key="index" :divided="index>0"
               :command="'demand-'+item.value+'-'+item.label">
               {{item.label}}
             </el-dropdown-item>
-          </el-dropdown-menu>
+          </el-dropdown-menu></template>
         </el-dropdown>
       </div>
       <div class="filter-item">
         <el-dropdown trigger="click" @command="handleCommand">
-          <div>{{$l.type}}：<b style="color: #409fee;">{{showObj.type}}</b><i class="el-icon-arrow-down el-icon--right"></i></div>
-          <el-dropdown-menu slot="dropdown">
+          <div>{{ l.type}}：<b style="color: #409fee;">{{showObj.type}}</b><i class="el-icon-arrow-down el-icon--right"></i></div>
+          <template #dropdown><el-dropdown-menu>
             <el-dropdown-item v-for="(item,index) in paramsObj.type" :key="index" :divided="index>0"
               :command="'type-'+item.value+'-'+item.label">
               {{item.label}}
             </el-dropdown-item>
-          </el-dropdown-menu>
+          </el-dropdown-menu></template>
         </el-dropdown>
       </div>
       <div class="filter-item" @click="query.timeSortingDsec = !query.timeSortingDsec">
-        {{$l.time}} <i :class="query.timeSortingDsec?'el-icon-bottom':'el-icon-top'"
+        {{ l.time}} <i :class="query.timeSortingDsec?'el-icon-bottom':'el-icon-top'"
           style="color: #409fee;font-weight: 800;"></i>
       </div>
     </div> -->
 
     <el-menu class="horizontal-menu" :default-active="showObj.activeName" mode="horizontal" @select="handleSelect"
       active-text-color="#409fee">
-      <el-menu-item index="first">{{$c.all}}</el-menu-item>
-      <!-- <el-menu-item index="second">{{$l.notStart}}</el-menu-item> -->
-      <!-- <el-menu-item index="third">{{$l.onGoing}}</el-menu-item> -->
-      <!-- <el-menu-item index="six">{{$l.notComplete}}</el-menu-item> -->
-      <!-- <el-menu-item index="fourth">{{$l.completed}}</el-menu-item> -->
-      <!-- <el-menu-item index="five">{{$l.historyCompleted}}</el-menu-item> -->
+      <el-menu-item index="first">{{ c.all}}</el-menu-item>
+      <!-- <el-menu-item index="second">{{ l.notStart}}</el-menu-item> -->
+      <!-- <el-menu-item index="third">{{ l.onGoing}}</el-menu-item> -->
+      <!-- <el-menu-item index="six">{{ l.notComplete}}</el-menu-item> -->
+      <!-- <el-menu-item index="fourth">{{ l.completed}}</el-menu-item> -->
+      <!-- <el-menu-item index="five">{{ l.historyCompleted}}</el-menu-item> -->
     </el-menu>
 
 
@@ -51,7 +51,7 @@
             {{item.video_name_label}}
           </div>
           <div class="course-info">
-            {{$l.source}}:{{item.course_name_label}}
+            {{ l.source}}:{{item.course_name_label}}
           </div>
 
           <!-- <div class="course-info">
@@ -60,14 +60,14 @@
         </div>
         <div class="progress">
           <div class="status">
-            {{secondsToMinutes(item.max_progress)==secondsToMinutes(item.duration)? $l.learning:$l.learnedCompletly}}
+            {{secondsToMinutes(item.max_progress)==secondsToMinutes(item.duration)? l.learning:l.learnedCompletly}}
           </div>
           <div class="duration">
             {{secondsToMinutes(item.max_progress)+' / '+ secondsToMinutes(item.duration)}}
           </div>
         </div>
         <div class="btn-right">
-          <el-button type="primary" round @click="btnClick(item)">{{$l.goStudy}}</el-button>
+          <el-button type="primary" round @click="btnClick(item)">{{ l.goStudy}}</el-button>
         </div>
         <!-- <div class="delete">
           <i class="el-icon-delete"></i>
@@ -84,8 +84,8 @@
         hislist: [],
         showObj: {
           activeName: 'first',
-          demand: this.$c.all,
-          type: this.$c.all,
+          demand: this.c.all,
+          type: this.c.all,
         },
         query: {
           demand: "",
@@ -95,28 +95,28 @@
         paramsObj: {
           demand: [{
               value: "all",
-              label: this.$c.all
+              label: this.c.all
             },
             {
               value: "Y",
-              label: this.$l.compulsory
+              label: this.l.compulsory
             },
             {
               value: "N",
-              label: this.$l.elective
+              label: this.l.elective
             }
           ],
           type: [{
               value: "all",
-              label: this.$c.all
+              label: this.c.all
             },
             {
               value: "course",
-              label: this.$l.course
+              label: this.l.course
             },
             {
               value: "topic",
-              label: this.$l.topic
+              label: this.l.topic
             }
           ],
         }

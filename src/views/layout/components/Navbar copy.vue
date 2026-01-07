@@ -1,22 +1,22 @@
 <template>
   <div class="navbar">
-    <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
-    <breadcrumb class="breadcrumb-container" />
+    <Hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
+    <Breadcrumb class="breadcrumb-container" />
     <div class="flex1"></div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <error-log class="errLog-container right-menu-item" />
-        <el-tooltip :content="$l.screenfull" effect="dark" placement="bottom">
-          <screenfull class="screenfull right-menu-item" />
+        <ErrorLog class="errLog-container right-menu-item" />
+        <el-tooltip :content="l.screenfull" effect="dark" placement="bottom">
+          <Screenfull class="screenfull right-menu-item" />
         </el-tooltip>
-        <el-tooltip :content="$l.size" effect="dark" placement="bottom">
-          <size-select class="international right-menu-item" />
+        <el-tooltip :content="l.size" effect="dark" placement="bottom">
+          <SizeSelect class="international right-menu-item" />
         </el-tooltip>
-        <el-tooltip :content="$l.language" effect="dark" placement="bottom">
-          <lang-select class="international right-menu-item" />
+        <el-tooltip :content="l.language" effect="dark" placement="bottom">
+          <LangSelect class="international right-menu-item" />
         </el-tooltip>
-        <el-tooltip :content="$l.theme" effect="dark" placement="bottom">
-          <theme-picker class="theme-switch right-menu-item" />
+        <el-tooltip :content="l.theme" effect="dark" placement="bottom">
+          <ThemePicker class="theme-switch right-menu-item" />
         </el-tooltip>
       </template>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -26,44 +26,44 @@
             <label>{{user.userId}}</label>
             <div>{{user.userName}}</div>
           </div>
-          <svg-icon class-name="more-icon" icon-class="more" />
+          <SvgIcon class-name="more-icon" icon-class="more" />
         </div>
-        <el-dropdown-menu slot="dropdown">
+        <template #dropdown><el-dropdown-menu>
           <!-- <el-dropdown-item>
             <div @click="toggleAvatarShow">上传头像</div>
           </el-dropdown-item> -->
           <el-dropdown-item>
-            <div @click="passwordFormVisible = true">{{$l.changePwd}}</div>
+            <div @click="passwordFormVisible = true">{{ l.changePwd}}</div>
           </el-dropdown-item>
           <el-dropdown-item divided>
-            <div @click="logout">{{$l.logout}}</div>
+            <div @click="logout">{{ l.logout}}</div>
           </el-dropdown-item>
-        </el-dropdown-menu>
+        </el-dropdown-menu></template>
       </el-dropdown>
     </div>
 
-    <el-dialog :title="$l.changePwd" :visible.sync="passwordFormVisible">
+    <el-dialog :title="l.changePwd" v-model:visible="passwordFormVisible">
       <div style="padding-right: 120px;">
         <!--表单-->
         <el-form :model="pass" :hide-required-asterisk="false" label-width="120px">
-          <el-form-item :label="$l.oldPwd">
+          <el-form-item :label="l.oldPwd">
             <el-input type="password" v-model="pass.oldPwd"></el-input>
           </el-form-item>
-          <el-form-item :label="$l.newPwd1">
+          <el-form-item :label="l.newPwd1">
             <el-input type="password" v-model="pass.newPwd1"></el-input>
           </el-form-item>
-          <el-form-item :label="$l.newPwd2">
+          <el-form-item :label="l.newPwd2">
             <el-input type="password" v-model="pass.newPwd2"></el-input>
           </el-form-item>
         </el-form>
         <!--表单-->
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="passwordFormVisible = false">{{$c.cancel}}</el-button>
-        <el-button type="primary" @click.native="submitPass()" :loading="loading">
-          {{$c.confirm}}
+      <template #footer><div class="dialog-footer">
+        <el-button @click="passwordFormVisible = false">{{ c.cancel}}</el-button>
+        <el-button type="primary" @click="submitPass()" :loading="loading">
+          {{ c.confirm}}
         </el-button>
-      </div>
+      </div></template>
     </el-dialog>
 
     <my-upload field="img" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
@@ -80,13 +80,13 @@ import { mapGetters } from 'vuex'
 import avatar from '@/assets/default_avatar.png'
 import { getToken } from '@/utils/auth'
 
-import Breadcrumb from './Breadcrumb'
-import ErrorLog from './ErrorLog'
-import Hamburger from './Hamburger'
-import LangSelect from './LangSelect'
-import Screenfull from './Screenfull'
-import SizeSelect from './SizeSelect'
-import ThemePicker from './ThemePicker'
+import Breadcrumb from './Breadcrumb.vue'
+import ErrorLog from './ErrorLog.vue'
+import Hamburger from './Hamburger.vue'
+import LangSelect from './LangSelect.vue'
+import Screenfull from './Screenfull.vue'
+import SizeSelect from './SizeSelect.vue'
+import ThemePicker from './ThemePicker.vue'
 
 const token = getToken()
 
@@ -127,11 +127,11 @@ export default {
     },
     submitPass() {
       if (!this.pass.newPwd1 || !this.pass.newPwd2 || !this.pass.oldPwd) {
-        this.$message({ message: this.$l.pwdCheck, type: 'error' })
+        this.$message({ message: this.l.pwdCheck, type: 'error' })
         return
       }
       if (this.pass.newPwd1 !== this.pass.newPwd2) {
-        this.$message({ message: this.$l.pwdNoEqual, type: 'error' })
+        this.$message({ message: this.l.pwdNoEqual, type: 'error' })
         return
       }
       this.loading = true
@@ -140,7 +140,7 @@ export default {
         .then(() => {
           this.loading = false
           this.$message({
-            message: this.$l.pwdSuccess,
+            message: this.l.pwdSuccess,
             type: 'success',
           })
           this.passwordFormVisible = false

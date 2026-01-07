@@ -8,21 +8,21 @@
           <p>{{ company }}</p>
         </div>
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" :placeholder="$l.username" name="username" type="text"
+          <el-input v-model="loginForm.username" :placeholder="l.username" name="username" type="text"
             auto-complete="on">
-            <template slot="suffix">
+            <template #suffix>
               <div class="svg-container">
-                <svg-icon icon-class="user" />
+                <SvgIcon icon-class="user" />
               </div>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input :type="passwordType" v-model="loginForm.password" :placeholder="$l.password" name="password"
-            auto-complete="on" @keyup.enter.native="validateCode">
-            <template slot="suffix">
+          <el-input :type="passwordType" v-model="loginForm.password" :placeholder="l.password" name="password"
+            auto-complete="on" @keyup.enter="validateCode">
+            <template #suffix>
               <div class="svg-container pointer" @click="showPwd">
-                <svg-icon :icon-class="eyeClass" />
+                <SvgIcon :icon-class="eyeClass" />
               </div>
             </template>
           </el-input>
@@ -30,21 +30,21 @@
 
         <el-form-item prop="code" v-show="identify.codeShow">
           <div class="code-wrapper">
-            <el-input v-model="loginForm.code" :placeholder="$l.code" name="code" type="text"
+            <el-input v-model="loginForm.code" :placeholder="l.code" name="code" type="text"
               :maxlength="identify.maxLength"></el-input>
-            <div class="login-code" :title="$l.captchaRefresh" @click="refreshCaptcha">
-              <img v-if="identify.image" :src="identify.image" class="captcha-image" :alt="$l.captchaAlt" />
+            <div class="login-code" :title="l.captchaRefresh" @click="refreshCaptcha">
+              <img v-if="identify.image" :src="identify.image" class="captcha-image" :alt="l.captchaAlt" />
             </div>
           </div>
         </el-form-item>
 
         <el-button :loading="loading" type="primary" round style="width: 100%; margin-top: 20px; margin-bottom: 30px"
-          @click.native.prevent="validateCode">{{ $l.login }}
+          @click.prevent="validateCode">{{ l.login }}
         </el-button>
         <div style="text-align:right;margin-bottom:30px">
-          <el-link :underline="false"  @click="register(2)" type="primary" style="font-size:12px;float:left">{{$l.forgetPass}}</el-link>
+          <el-link :underline="false"  @click="register(2)" type="primary" style="font-size:12px;float:left">{{ l.forgetPass}}</el-link>
           <!-- <el-link :underline="false" @click="register" type="primary" style="font-size:12px">忘记密码</el-link> -->
-          <el-link :underline="false"  @click="register(1)" type="primary" style="font-size:12px;float:right">{{$l.register}}</el-link>
+          <el-link :underline="false"  @click="register(1)" type="primary" style="font-size:12px;float:right">{{ l.register}}</el-link>
           <div style="clear:both"></div>
         </div>
         <div class="copyright">
@@ -75,14 +75,14 @@ export default {
         username: [
           {
             required: true,
-            message: this.$l.usernameValidate,
+            message: this.l.usernameValidate,
             trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: this.$l.passwordValidate,
+            message: this.l.passwordValidate,
             trigger: 'blur',
           },
         ],
@@ -142,7 +142,7 @@ export default {
               this.hideCaptcha()
               this.loginForm.code = ''
               this.$message({
-                message: this.$l.success,
+                message: this.l.success,
                 type: 'success',
               })
               this.$router.push({ path: this.redirect || '/' })
@@ -192,7 +192,7 @@ export default {
         }
       } catch (error) {
         this.$message({
-          message: this.$l.captchaLoadFailed,
+          message: this.l.captchaLoadFailed,
           type: 'error',
         })
       }
@@ -200,7 +200,7 @@ export default {
     validateCode() {
       if (this.identify.codeShow && !this.loginForm.code) {
         this.$message({
-          message: this.$l.code,
+          message: this.l.code,
           type: 'error',
         })
         return

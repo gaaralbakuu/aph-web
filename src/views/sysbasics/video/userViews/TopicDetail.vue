@@ -10,14 +10,14 @@
             <span>{{topic.title_label}}</span>
           </div>
           <div class="create">
-            <span>{{$l.create_time}}：{{topic.create_time}}</span><span></span>
+            <span>{{ l.create_time}}：{{topic.create_time}}</span><span></span>
           </div>
         </div>
       </div>
       <div class="activity-container">
         <div class="left">
           <div class="title-label">
-            {{$l.content}}
+            {{ l.content}}
           </div>
           <!-- <div class="filter">
             <el-form :inline="true">
@@ -47,7 +47,7 @@
                   </div>
                 </div>
                 <div class="btn-right">
-                  <el-button type="primary" round @click="toPlayPageTag(item)">{{$l.study}}</el-button>
+                  <el-button type="primary" round @click="toPlayPageTag(item)">{{ l.study}}</el-button>
                 </div>
               </div>
             </div>

@@ -25,7 +25,7 @@
         <el-table :data="data" v-loading="isLoading" class="w-full modern-table" highlight-current-row @row-click="handleRowClick" :row-style="{ cursor: 'pointer' }">
           <!-- Serial Number Column -->
           <el-table-column :label="l.serialNumber" width="80" fixed="left">
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="font-mono text-gray-500 font-medium">
                 {{ (page.page - 1) * page.pageSize + scope.$index + 1 }}
               </span>
@@ -34,7 +34,7 @@
 
           <!-- Folder Column -->
           <el-table-column prop="folder_name" :label="'Folder name'" width="140" show-overflow-tooltip>
-            <template slot-scope="scope">
+            <template #default="scope">
               <div v-if="scope.row.folder_name" class="flex items-center gap-2">
                 <i :class="scope.row.folder_icon || 'fa-folder'" class="fa text-sm" :style="{ color: scope.row.folder_color || '#3B82F6' }"></i>
                 <span class="text-gray-700 text-sm">{{ scope.row.folder_name }}</span>
@@ -45,7 +45,7 @@
 
           <!-- File Name Column -->
           <el-table-column prop="file_name" :label="l.fileName" min-width="200" show-overflow-tooltip>
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="flex items-center gap-2">
                 <i class="fa fa-file-o text-blue-500"></i>
                 <span class="text-blue-600 hover:text-blue-800 cursor-pointer font-medium hover:underline" @click.stop="handleFilePreview(scope.row)">
@@ -57,7 +57,7 @@
 
           <!-- File Type Column -->
           <el-table-column prop="file_suffix" :label="l.fileType" width="100">
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono uppercase">
                 {{ scope.row.file_suffix }}
               </span>
@@ -66,7 +66,7 @@
 
           <!-- Upload Date Column -->
           <el-table-column prop="create_time" :label="l.uploadDate" width="120" show-overflow-tooltip>
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="text-gray-600">
                 {{ scope.row.create_time }}
               </span>
@@ -75,7 +75,7 @@
 
           <!-- Description Column -->
           <el-table-column prop="description" :label="l.description" min-width="150" show-overflow-tooltip>
-            <template slot-scope="scope">
+            <template #default="scope">
               <span class="text-gray-700">
                 {{ scope.row.description || c.empty }}
               </span>
@@ -84,7 +84,7 @@
 
           <!-- Actions Column -->
           <el-table-column fixed="right" :label="c.operation" width="120">
-            <template slot-scope="scope">
+            <template #default="scope">
               <div class="flex items-center gap-2">
                 <!-- Download Button -->
                 <button @click.stop="handleAction('view', scope.row)" class="h-8 w-8 flex items-center justify-center bg-green-50 hover:bg-green-100 text-green-600 rounded-full transition-colors duration-200" :title="l.download">
@@ -118,7 +118,7 @@
     <div v-if="data && data.length > 0" class="px-6 py-4 border-t border-gray-100 bg-gray-50">
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-500">{{ l.totalDocuments }}: {{ total }}</div>
-        <z-pagination :pagination="pagination" :total="total" :page.sync="page.page" :limit.sync="page.pageSize" @change="handlePageChange" class="custom-pagination" />
+        <z-pagination :pagination="pagination" :total="total" v-model:page="page.page" v-model:limit="page.pageSize" @change="handlePageChange" class="custom-pagination" />
       </div>
     </div>
   </div>

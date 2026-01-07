@@ -4,19 +4,19 @@
       <div class="navigation">
         <el-collapse v-model="activeName" accordion>
           <el-collapse-item name="2">
-            <template slot="title">
-              <div class="title-label">{{$l.tag}}：</div>
+            <template #title>
+              <div class="title-label">{{ l.tag}}：</div>
               <div class="title hide-scrollbar">
                 <el-tag class="tags" closable v-for="(i,index) in selectedTags" :key="index"
                   @close="handleClose(index,'selectedTags')">{{i.name_label}}</el-tag>
               </div>
               <div @click.stop='log(1)'>
                 <el-tooltip
-                  :content="$l.tagTips"
+                  :content="l.tagTips"
                   placement="top">
                   <el-switch @change="getCourseList" style="white-space: nowrap;margin-right: 1em;"
                     v-model="courseObj.query.search_type" active-color="#13ce66" inactive-color="#ddd" :active-value="0"
-                    :inactive-value="1" :active-text="$l.strictMode">
+                    :inactive-value="1" :active-text="l.strictMode">
                   </el-switch>
                 </el-tooltip>
               </div>
@@ -34,10 +34,12 @@
         <div class="menu">
 
           <el-tree ref="catalogTree" icon-class='el-icon-d-arrow-right'	 :expand-on-click-node='false' node-key="id" :accordion="true" :default-expand-all="true" :data="classList">
-            <div class="custom-menu-node" slot-scope="{ node, data }" @click.prevent="clickMenu(node,data)">
-              <span>{{ data.name_label }}
-              </span>
-            </div>
+            <template #default="{ node, data }">
+              <div class="custom-menu-node" @click.prevent="clickMenu(node,data)">
+                <span>{{ data.name_label }}
+                </span>
+              </div>
+            </template>
           </el-tree>
         </div>
 
@@ -46,11 +48,11 @@
           <div class="filter_sort">
             <div style="padding: 15px 0px;">
               <el-form inline label-position="left">
-                <el-form-item :label="$l.courseName">
+                <el-form-item :label="l.courseName">
                   <el-input v-model="courseObj.query.name" clearable @clear='getCourseList'
-                    @keyup.native.enter="getCourseList"></el-input>
+                    @keyup.enter="getCourseList"></el-input>
                 </el-form-item>
-                <el-form-item> <el-button type="primary" @click="getCourseList">{{$c.m_search}}</el-button></el-form-item>
+                <el-form-item> <el-button type="primary" @click="getCourseList">{{ c.m_search}}</el-button></el-form-item>
               </el-form>
 
             </div>
@@ -72,7 +74,7 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
             <div class="custom-menu-node" style="background-color: white;">
-              <el-button type="primary" plain size="mini" v-show="breadcrumb.length>0" @click="resetMenu">{{$l.reset}}</el-button>
+              <el-button type="primary" plain size="mini" v-show="breadcrumb.length>0" @click="resetMenu">{{ l.reset}}</el-button>
             </div>
           </div>
 
@@ -81,7 +83,7 @@
               <el-image v-if="i.thumbnail_path" class="img" :src="$api.videoServer+'/'+i.thumbnail_path"></el-image>
               <div v-else class="emptyImg">
                 <div class="text">
-                  {{$l.noCover}}
+                  {{ l.noCover}}
                 </div>
               </div>
               <div class="info">
@@ -159,17 +161,17 @@
         activeName: "",
         breadcrumb: [],
         rankList: [{
-            label: this.$l.latest,
+            label: this.l.latest,
             current: false,
             asc: false
           },
           {
-            label: this.$l.mostPopular,
+            label: this.l.mostPopular,
             current: false,
             asc: false
           },
           {
-            label: this.$l.positiveReview,
+            label: this.l.positiveReview,
             current: false,
             asc: false
           },
@@ -253,7 +255,7 @@
               this.tagObj.total = r.data.total
               this.tagObj.list.unshift({
                 id: "",
-                name_label: this.$c.all
+                name_label: this.c.all
               })
               this.selectTag(this.tagObj.list[0])
               /* if (r.data.total == 0) {
@@ -301,7 +303,7 @@
           }
 
           if (this.selectedTags.length >= 5) {
-            this.$message.error(this.$l.mostTagsTips)
+            this.$message.error(this.l.mostTagsTips)
           } else {
             this.selectedTags.push(i)
           }

@@ -147,9 +147,11 @@
                               fit="cover"
                               class="w-full h-full"
                             >
-                                <div slot="error" class="flex justify-center items-center w-full h-full bg-gray-100 text-gray-400">
-                                    <i class="el-icon-picture-outline text-2xl"></i>
-                                </div>
+                                <template #error>
+                                  <div class="flex justify-center items-center w-full h-full bg-gray-100 text-gray-400">
+                                      <i class="el-icon-picture-outline text-2xl"></i>
+                                  </div>
+                                </template>
                             </el-image>
                             <div v-else class="w-full h-full flex flex-col items-center justify-center bg-blue-50 text-[#065FD4]">
                                 <i class="el-icon-document-checked text-4xl mb-2"></i>

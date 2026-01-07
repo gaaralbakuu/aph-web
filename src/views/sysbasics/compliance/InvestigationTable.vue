@@ -24,10 +24,9 @@
           
           <!-- Second header row - child columns (only render if maxRowSpan > 1) -->
           <tr v-if="getMaxRowSpan() > 1" class="bg-white">
-            <template v-for="(col, colIdx) in columns">
+            <template v-for="(col, colIdx) in columns" :key="'col-' + colIdx">
               <!-- If column has children, render each child -->
-              <template v-if="col.children && col.children.length > 0">
-                <th v-for="(childCol, childIdx) in col.children" :key="childCol.id" :style="getStickyStyleForChild(col, childCol, colIdx, childIdx, true)" :class="[childCol.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky z-10 transition-colors bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']" style="top: 44px;">
+              <th v-if="col.children && col.children.length > 0" v-for="(childCol, childIdx) in col.children" :key="childCol.id" :style="getStickyStyleForChild(col, childCol, colIdx, childIdx, true)" :class="[childCol.className, ' px-2 py-3 font-medium text-sm text-black text-left whitespace-nowrap sticky z-10 transition-colors bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 tracking-wide', col.freeze ? 'sticky-' + col.freeze : '']" style="top: 44px;">
                   <div v-if="childCol.id === 'current_year'" class="block max-w-full overflow-hidden overflow-ellipsis leading-5">
                     {{ new Date().getFullYear() }}
                   </div>
@@ -38,7 +37,6 @@
                     {{ l[childCol.title] || childCol.title }}
                   </div>
                 </th>
-              </template>
               <!-- Columns without children don't render anything in second row (they use rowspan) -->
             </template>
           </tr>
@@ -82,7 +80,7 @@
                 <!-- In original file, line 691 is inside CustomDialog content, `issueYearsDialogMeta.vendor_code`. -->
                 <!-- `issueYearsDialogMeta` is reactive object. -->
                 <!-- Ah, line 691 in provided file (previous turn) was: -->
-                <!-- `<span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || $c.empty }}</span>` -->
+                <!-- `<span class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ issueYearsDialogMeta.vendor_code || c.empty }}</span>` -->
                 <!-- If `issueYearsDialogMeta` is reactive, it should be fine. -->
                 <!-- But wait, if `issueYearsDialogMeta` is not initialized properly? -->
                 <!-- `const issueYearsDialogMeta = reactive({ vendor_code: '', ... })`. It is initialized. -->
@@ -178,10 +176,10 @@
                         >
                           <i class="el-icon-more w-3.5 text-sm text-gray-400"></i>
                         </el-button>
-                        <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item @click.native="handleAction('history', item)">{{ l.history }}</el-dropdown-item>
-                          <el-dropdown-item @click.native="handleAction('edit_notices', item)">{{ l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
-                        </el-dropdown-menu>
+                        <template #dropdown><el-dropdown-menu>
+                          <el-dropdown-item @click="handleAction('history', item)">{{ l.history }}</el-dropdown-item>
+                          <el-dropdown-item @click="handleAction('edit_notices', item)">{{ l.edit_notices || 'Edit Notices' }}</el-dropdown-item>
+                        </el-dropdown-menu></template>
                       </el-dropdown>
                     </div>
                 </template>
@@ -241,7 +239,7 @@
     </div>
 
     <CustomDialog
-      :visible.sync="issueYearsDialogVisible"
+      v-model:visible="issueYearsDialogVisible"
       :title="l.issue_years_average_detail_title"
       :clickOutside="false"
       width="70%"

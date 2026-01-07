@@ -11,7 +11,7 @@
         <el-table :data="tableList.list" style="width: 100%" highlight-current-row>
           <el-table-column :label="l.issueBasicInfo">
             <el-table-column v-for="(item, index) in tableList.columns1" :key="index" :prop="item.key" :label="item.title || item.key" :width="item.width" show-overflow-tooltip>
-              <template slot-scope="scope">
+              <template #default="scope">
                 <span v-if="item.key === 'serialNumbers'">
                   {{ scope.$index + 1 }}
                 </span>
@@ -29,7 +29,7 @@
           </el-table-column>
 
           <el-table-column fixed="right" :label="l.operation" width="170">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button @click="audit(scope.row, scope.$index)" type="text" size="small">{{ l.audit }}</el-button>
 
               <el-button @click="getHisList(scope.row, scope.$index)" type="text" size="small">{{ l.viewHistory }}</el-button>
@@ -37,7 +37,7 @@
           </el-table-column>
         </el-table>
 
-        <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList"></z-pagination>
+        <z-pagination :pagination="pagination" :total="tableList.total" v-model:page="tableList.curPage" v-model:limit="tableList.pageSize" @change="getList"></z-pagination>
 
         <!-- 查看 -->
       </div>
@@ -46,7 +46,7 @@
     <!-- 预览 -->
     <filePreviews v-if="fileUrl" :file-url="fileUrl" :visible="dialogVisible" @update:visible="dialogVisible = $event" />
 
-    <el-dialog :title="l.auditResult" :visible.sync="visible.passForm" width="30%">
+    <el-dialog :title="l.auditResult" v-model:visible="visible.passForm" width="30%">
       <el-form>
         <el-form-item :label="l.results" :label-width="formLabelWidth">
           <el-radio-group v-model="check.rec_status">
@@ -70,10 +70,10 @@
           <el-input type="textarea" v-model="check.verify_detail" :placeholder="l.verificationDetailsPlaceholder"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <template #footer><div class="dialog-footer">
         <el-button @click="visible.passForm = false">{{ l.cancel }}</el-button>
         <el-button type="primary" @click="passsubmit">{{ l.submit }}</el-button>
-      </div>
+      </div></template>
     </el-dialog>
   </div>
 </template>
@@ -88,7 +88,7 @@ import { zPagination } from '@/views/_common'
 import { zTable } from '@/views/_common'
 import filePreviews from '../../_common/filePreviews.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
-import { useRouter, useRoute } from 'vue-router/composables'
+import { useRouter, useRoute } from 'vue-router'
 
 const { proxy } = getCurrentInstance()
 const { l, c } = useLocalI18n('improveManagementInfo') // Assuming correct namespace

@@ -10,42 +10,37 @@
       >
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="this.$l.helpManual"> </el-form-item>
+            <el-form-item :label="this.l.helpManual"> </el-form-item>
             <!-- <el-form-item>
-                <el-button @click="getList()" type="primary">{{
-                  $c.queryButton
+                <el-button @click="getList()" type="primary">{{ c.queryButton
                 }}</el-button>
               </el-form-item> -->
           </el-col>
           <!-- <el-col :span="4">
             <el-form-item>
-              <el-button @click="getList()" type="primary">{{
-                $c.queryButton
+              <el-button @click="getList()" type="primary">{{ c.queryButton
               }}</el-button>
             </el-form-item>
           </el-col> -->
 
           <!-- <el-col :span="4">
               <el-form-item>
-                <el-button @click="addClickHelp()" type="primary">{{
-                  $l.cAdd
+                <el-button @click="addClickHelp()" type="primary">{{ l.cAdd
                 }}</el-button>
               </el-form-item>
             </el-col> -->
           <el-col :span="12">
-            <el-form-item :label="this.$l.seamainContact"> </el-form-item>
+            <el-form-item :label="this.l.seamainContact"> </el-form-item>
           </el-col>
           <!-- <el-col :span="4">
             <el-form-item>
-              <el-button @click="addClickCis()" type="primary">{{
-                $l.cAdd
+              <el-button @click="addClickCis()" type="primary">{{ l.cAdd
               }}</el-button>
             </el-form-item>
           </el-col> -->
           <!-- <el-col :span="4">
             <el-form-item>
-              <el-button @click="getList()" type="primary">{{
-                $c.queryButton
+              <el-button @click="getList()" type="primary">{{ c.queryButton
               }}</el-button>
             </el-form-item>
           </el-col> -->
@@ -65,7 +60,7 @@
                   :width="item.width"
                   show-overflow-tooltip
                 >
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <span v-if="item.key === 'file_name'">
                       <a
                         href="javascript:void(0);"
@@ -83,15 +78,15 @@
                 </el-table-column>
                 <!-- <el-table-column
                   fixed="right"
-                  :label="this.$c.operation"
+                  :label="this.c.operation"
                   width="120"
                 >
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button
                       @click="deleteClick(scope.row, scope.$index)"
                       type="text"
                       size="small"
-                      >{{ $c.delete }}</el-button
+                      >{{ c.delete }}</el-button
                     >
                   </template>
                 </el-table-column> -->
@@ -99,8 +94,8 @@
               <z-pagination
                 :pagination="pagination"
                 :total="helpManualList.total"
-                :page.sync="helpManualList.curPage"
-                :limit.sync="helpManualList.pageSize"
+                v-model:page="helpManualList.curPage"
+                v-model:limit="helpManualList.pageSize"
                 @change="getList"
               >
               </z-pagination>
@@ -123,7 +118,7 @@
                   :width="item.width"
                   show-overflow-tooltip
                 >
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <span v-if="item.key === 'serialNumbers'">
                       {{ scope.$index + 1 }}
                     </span>
@@ -134,15 +129,15 @@
                 </el-table-column>
                 <!-- <el-table-column
                   fixed="right"
-                  :label="this.$c.operation"
+                  :label="this.c.operation"
                   width="120"
                 >
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button
                       @click="deleteCisClick(scope.row, scope.$index)"
                       type="text"
                       size="small"
-                      >{{ $c.delete }}</el-button
+                      >{{ c.delete }}</el-button
                     >
                   </template>
                 </el-table-column> -->
@@ -150,8 +145,8 @@
               <z-pagination
                 :pagination="pagination"
                 :total="CisCContacterList.total"
-                :page.sync="CisCContacterList.curPage"
-                :limit.sync="CisCContacterList.pageSize"
+                v-model:page="CisCContacterList.curPage"
+                v-model:limit="CisCContacterList.pageSize"
                 @change="getCisList"
               >
               </z-pagination>
@@ -164,7 +159,7 @@
         title="aaa"
         width="60%"
         :lock-scroll="true"
-        :visible.sync="addHelpFormVisible"
+        v-model:visible="addHelpFormVisible"
       >
         <div style="padding: 0 50px">
           <input
@@ -174,8 +169,7 @@
             style="display: none"
           />
           <el-col :span="24"
-            ><el-button type="primary" @click="$refs.fileinput.click()">{{
-              $l.selectFile
+            ><el-button type="primary" @click="$refs.fileinput.click()">{{ l.selectFile
             }}</el-button></el-col
           >
           <el-table :data="addHelpManual.fileList" style="width: 90%">
@@ -189,21 +183,21 @@
             </el-table-column>
             <!-- <el-table-column
               fixed="right"
-              :label="this.$c.operation"
+              :label="this.c.operation"
               width="145"
             >
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button
                   @click="removeClick(scope.row)"
                   type="text"
                   size="small"
-                  >{{ $c.delete }}</el-button
+                  >{{ c.delete }}</el-button
                 >
               </template>
             </el-table-column> -->
           </el-table>
         </div>
-        <span slot="footer" style="padding: 0 50px">
+        <template #footer><span style="padding: 0 50px">
           <el-button @click="addHelpFormVisible = false">{{
             $t('common').cancel
           }}</el-button>
@@ -211,14 +205,14 @@
             {{ $t('common').confirm }}
           </el-button>
           <slot name="operation"></slot>
-        </span>
+        </span></template>
       </el-dialog>
 
       <el-dialog
         title="aaa"
         width="60%"
         :lock-scroll="true"
-        :visible.sync="addCisFormVisible"
+        v-model:visible="addCisFormVisible"
       >
         <div style="padding: 0 50px">
           <el-form
@@ -242,7 +236,7 @@
             ></el-col>
           </el-form>
         </div>
-        <span slot="footer" style="padding: 0 50px">
+        <template #footer><span style="padding: 0 50px">
           <el-button @click="addCisFormVisible = false">{{
             $t('common').cancel
           }}</el-button>
@@ -250,7 +244,7 @@
             {{ $t('common').confirm }}
           </el-button>
           <slot name="operation"></slot>
-        </span>
+        </span></template>
       </el-dialog>
 
       <FilePreviews
@@ -323,12 +317,12 @@ export default {
         total: 0,
         columns: [
           {
-            title: this.$l.serialNumbers,
+            title: this.l.serialNumbers,
             key: 'serialNumbers',
             width: 100,
           },
           {
-            title: this.$l.manualName,
+            title: this.l.manualName,
             key: 'file_name',
             width: 340,
           },
@@ -342,17 +336,17 @@ export default {
         total: 0,
         columns: [
           {
-            title: this.$l.serialNumbers,
+            title: this.l.serialNumbers,
             key: 'serialNumbers',
             width: 100,
           },
           {
-            title: this.$l.contactEmail,
+            title: this.l.contactEmail,
             key: 'contacter_mail',
             width: 280,
           },
           {
-            title: this.$l.contactPhone,
+            title: this.l.contactPhone,
             key: 'contacter_phone',
             width: 120,
           },
@@ -361,7 +355,7 @@ export default {
       options: [
         {
           value: '0A',
-          label: this.$l.businessLicense, // { businessLicense: '营业执照' }
+          label: this.l.businessLicense, // { businessLicense: '营业执照' }
         },
         {
           value: '0B',
@@ -369,15 +363,15 @@ export default {
         },
         {
           value: '0C',
-          label: this.$l.otherAttachment, // { otherAttachment: '其他附件' }
+          label: this.l.otherAttachment, // { otherAttachment: '其他附件' }
         },
         {
           value: '1',
-          label: this.$l.dueDiligence, // { dueDiligence: '尽职调查' }
+          label: this.l.dueDiligence, // { dueDiligence: '尽职调查' }
         },
         {
           value: '2',
-          label: this.$l.improve, // { improve: '改善' }
+          label: this.l.improve, // { improve: '改善' }
         },
       ],
       addHelpManual: {
@@ -389,12 +383,12 @@ export default {
         total: 0,
         columns: [
           {
-            title: this.$l.manualName,
+            title: this.l.manualName,
             key: 'file_name',
             width: 400,
           },
           {
-            title: this.$l.fileSuffix,
+            title: this.l.fileSuffix,
             key: 'file_suffix',
             width: 250,
           },
@@ -414,25 +408,25 @@ export default {
         total: 0,
         fields: [
           {
-            title: this.$l.name,
+            title: this.l.name,
             key: 'contacter_name',
             type: 'el-input',
-            placeholder: this.$l.pleaseEnterAName,
+            placeholder: this.l.pleaseEnterAName,
             span: 8,
             // rules: [{ required: true, message: '姓名不能为空', trigger: 'blur' }]
           },
           {
-            title: this.$l.contactEmail,
+            title: this.l.contactEmail,
             key: 'contacter_mail',
             type: 'el-input',
-            placeholder: this.$l.pleaseEnterAMailbox,
+            placeholder: this.l.pleaseEnterAMailbox,
             span: 8,
           },
           {
-            title: this.$l.contactPhone,
+            title: this.l.contactPhone,
             key: 'contacter_phone',
             type: 'el-input',
-            placeholder: this.$l.pleaseEnterThePhone,
+            placeholder: this.l.pleaseEnterThePhone,
             span: 8,
           },
         ],
@@ -500,7 +494,7 @@ export default {
       if (this.fileList && this.fileList.length == 0) {
         this.$message({
           type: 'info',
-          message: this.$l.attachmentAddFail, // { attachmentAddFail: '附件添加失败' }
+          message: this.l.attachmentAddFail, // { attachmentAddFail: '附件添加失败' }
         })
       }
       const formData = new FormData()
@@ -518,7 +512,7 @@ export default {
           console.log(r)
           this.$message({
             type: 'success',
-            message: this.$l.attachmentAddSuccess, // { attachmentAddSuccess: '附件添加成功' }
+            message: this.l.attachmentAddSuccess, // { attachmentAddSuccess: '附件添加成功' }
           })
           this.addHelpFormVisible = false
           this.getList()
@@ -526,7 +520,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: this.$l.attachmentAddFail, // { attachmentAddFail: '附件添加失败' }
+            message: this.l.attachmentAddFail, // { attachmentAddFail: '附件添加失败' }
           })
         })
     },
@@ -537,11 +531,11 @@ export default {
     submmitaddCis() {
       console.log(this.addCisCCtacter.list)
       this.$confirm(
-        this.$l.confirmAddRow, // { confirmAddRow: '此操作将新增该数据, 是否继续?' }
-        this.$l.addContact, // { addContact: '新增联系人' }
+        this.l.confirmAddRow, // { confirmAddRow: '此操作将新增该数据, 是否继续?' }
+        this.l.addContact, // { addContact: '新增联系人' }
         {
-          confirmButtonText: this.$l.confirm, // { confirm: '确定' }
-          cancelButtonText: this.$l.cancel, // { cancel: '取消' }
+          confirmButtonText: this.l.confirm, // { confirm: '确定' }
+          cancelButtonText: this.l.cancel, // { cancel: '取消' }
           type: 'warning',
         }
       )
@@ -555,7 +549,7 @@ export default {
               console.log(r)
               this.$message({
                 type: 'success',
-                message: this.$l.attachmentAddSuccess, // { attachmentAddSuccess: '附件添加成功' }
+                message: this.l.attachmentAddSuccess, // { attachmentAddSuccess: '附件添加成功' }
               })
               this.getCisList()
               this.addCisFormVisible = false
@@ -563,14 +557,14 @@ export default {
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: this.$l.addFail, // { addFail: '添加失败' }
+                message: this.l.addFail, // { addFail: '添加失败' }
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: this.$l.addFail, // { addFail: '添加失败' }
+            message: this.l.addFail, // { addFail: '添加失败' }
           })
         })
     },
@@ -579,11 +573,11 @@ export default {
       console.log(row)
       let i = index + 1
       this.$confirm(
-        this.$l.confirmDeleteRow.replace('{row}', i), // { confirmDeleteRow: '此操作将删除第{row}行数据, 是否继续?' }
-        this.$l.deleteContact, // { deleteContact: '删除联系人' }
+        this.l.confirmDeleteRow.replace('{row}', i), // { confirmDeleteRow: '此操作将删除第{row}行数据, 是否继续?' }
+        this.l.deleteContact, // { deleteContact: '删除联系人' }
         {
-          confirmButtonText: this.$l.confirm, // { confirm: '确定' }
-          cancelButtonText: this.$l.cancel, // { cancel: '取消' }
+          confirmButtonText: this.l.confirm, // { confirm: '确定' }
+          cancelButtonText: this.l.cancel, // { cancel: '取消' }
           type: 'warning',
         }
       )
@@ -597,21 +591,21 @@ export default {
               console.log(r)
               this.$message({
                 type: 'success',
-                message: this.$l.deleteSuccess, // { deleteSuccess: '删除成功' }
+                message: this.l.deleteSuccess, // { deleteSuccess: '删除成功' }
               })
               this.getCisList()
             })
             .catch(() => {
               this.$message({
                 type: 'info',
-                message: this.$l.deleteFail, // { deleteFail: '删除失败' }
+                message: this.l.deleteFail, // { deleteFail: '删除失败' }
               })
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: this.$l.deleteFail, // { deleteFail: '删除失败' }
+            message: this.l.deleteFail, // { deleteFail: '删除失败' }
           })
         })
     },

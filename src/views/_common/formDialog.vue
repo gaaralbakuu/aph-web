@@ -1,11 +1,11 @@
 <template>
-  <el-dialog :title="name + (data.id ? $c.edit : $c.create)" :width="formProps.dialogWidth" :close-on-click-modal="false" :visible.sync="dialogShow">
+  <el-dialog :title="name + (data.id ? c.edit : c.create)" :width="formProps.dialogWidth" :close-on-click-modal="false" v-model:visible="dialogShow">
     <div style="padding-right: 100px">
       <z-form :data="data" :formProps="formProps" :fields="fields"></z-form>
       <slot class="operation1" name="operation1"></slot>
       <div class="align-r">
-        <el-button @click="dialogShow = false">{{ $c.cancel }}</el-button>
-        <el-button v-if="!formProps.disabled" type="primary" @click.native="submmit" :loading="submmitLoading">{{ $c.confirm }}</el-button>
+        <el-button @click="dialogShow = false">{{ c.cancel }}</el-button>
+        <el-button v-if="!formProps.disabled" type="primary" @click="submmit" :loading="submmitLoading">{{ c.confirm }}</el-button>
         <slot name="operation"></slot>
       </div>
     </div>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import zForm from './form'
+import zForm from './form.vue'
 
 export default {
   name: 'z-form-dialog',

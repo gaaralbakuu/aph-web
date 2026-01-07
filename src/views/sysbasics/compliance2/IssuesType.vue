@@ -24,86 +24,86 @@
       <iframe :src="docUrl" style="width:100%; height:100vh;" frameborder="0" v-show="false"></iframe>
     </template>
 
-    <el-dialog :title="$l.select" :visible.sync="selectFormVisible" width="70%">
+    <el-dialog :title="l.select" v-model:visible="selectFormVisible" width="70%">
       <el-table :data="manufacture.tableData" height="400px">
         <el-table-column v-for="(item, index) in manufacture.column" :key="index" :label="item.label" :prop="item.key">
         </el-table-column>
         <el-table-column align="right">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button size="mini" type="primary" @click="selectManufacture(scope.$index, scope.row)">select</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-dialog>
     <el-table :data="detailtable" border>
-      <el-table-column :label="$l.ordinal" type="index" width="50"></el-table-column>
-      <el-table-column prop="issue_type" :label="$l.issueType" width="70">
+      <el-table-column :label="l.ordinal" type="index" width="50"></el-table-column>
+      <el-table-column prop="issue_type" :label="l.issueType" width="70">
       </el-table-column>
-      <el-table-column prop="issue_desc" :label="$l.issueDesc" width="250">
+      <el-table-column prop="issue_desc" :label="l.issueDesc" width="250">
       </el-table-column>
-      <el-table-column prop="issue_suggest" :label="$l.suggest" width="250">
+      <el-table-column prop="issue_suggest" :label="l.suggest" width="250">
       </el-table-column>
-      <el-table-column prop="corrective_plan" :label="$l.correctivePlan" width="250">
+      <el-table-column prop="corrective_plan" :label="l.correctivePlan" width="250">
       </el-table-column>
-      <el-table-column prop="attchments" :label="$l.attchments" width="120">
-        <template slot-scope="scope">
+      <el-table-column prop="attchments" :label="l.attchments" width="120">
+        <template #default="scope">
           <el-button type="text" @click="getAtt(scope.$index, scope.row)">查看附件</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="corrective_principal" :label="$l.correctivePrincipal" width="120">
+      <el-table-column prop="corrective_principal" :label="l.correctivePrincipal" width="120">
       </el-table-column>
-      <el-table-column prop="corrective_date" :label="$l.correctiveDate" width="90">
+      <el-table-column prop="corrective_date" :label="l.correctiveDate" width="90">
       </el-table-column>
-      <el-table-column prop="verify_detail" :label="$l.verifyDetail" width="250">
+      <el-table-column prop="verify_detail" :label="l.verifyDetail" width="250">
       </el-table-column>
-      <el-table-column prop="is_finish" :label="$l.isFinish" width="110" :formatter="formatIsFinish">
+      <el-table-column prop="is_finish" :label="l.isFinish" width="110" :formatter="formatIsFinish">
       </el-table-column>
-      <el-table-column prop="is_verify_pass" :label="$l.isPass" width="90" :formatter="formatIsPass">
+      <el-table-column prop="is_verify_pass" :label="l.isPass" width="90" :formatter="formatIsPass">
       </el-table-column>
-      <el-table-column prop="audit_time" :label="$l.verifyDate" width="90">
+      <el-table-column prop="audit_time" :label="l.verifyDate" width="90">
       </el-table-column>
-      <el-table-column fixed="right" :label="$l.operate" width="130" v-if="showHis == false">
-        <template slot-scope="scope">
-          <el-button @click="editDetail(scope.$index, scope.row)" type="text">{{ $l.Rectification }}</el-button>
+      <el-table-column fixed="right" :label="l.operate" width="130" v-if="showHis == false">
+        <template #default="scope">
+          <el-button @click="editDetail(scope.$index, scope.row)" type="text">{{ l.Rectification }}</el-button>
           <el-button v-show="scope.row.is_sumbit == 'Y'" @click="takeOut(scope.$index, scope.row)"
             type="text">取回</el-button>
           <el-button @click="getDetails(scope.$index, scope.row)" type="text"> 历史 </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="getList" @current-change="getList" :current-page.sync="query.page"
-      :page-sizes="[6, 12, 15, 20]" :page-size.sync="query.pageSize" layout="total, sizes, prev, pager, next, jumper"
+    <el-pagination @size-change="getList" @current-change="getList" v-model:current-page="query.page"
+      :page-sizes="[6, 12, 15, 20]" v-model:page-size="query.pageSize" layout="total, sizes, prev, pager, next, jumper"
       :total="table.total">
     </el-pagination>
-    <el-dialog :title="$l.Rectification" :visible.sync="editVisible" width="50%">
+    <el-dialog :title="l.Rectification" v-model:visible="editVisible" width="50%">
       <el-form :model="editForm" :rules="rules" ref="editForm">
-        <el-form-item :label="$l.correctiveDate" :label-width="formLabelWidth" prop="corrective_date">
-          <el-date-picker v-model="editForm.corrective_date" type="datetime" :placeholder="$l.inputCorrective_date">
+        <el-form-item :label="l.correctiveDate" :label-width="formLabelWidth" prop="corrective_date">
+          <el-date-picker v-model="editForm.corrective_date" type="datetime" :placeholder="l.inputCorrective_date">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$l.correctivePrincipal" :label-width="formLabelWidth" prop="corrective_principal">
-          <el-input v-model="editForm.corrective_principal" :placeholder="$l.inputPrincipal"></el-input>
+        <el-form-item :label="l.correctivePrincipal" :label-width="formLabelWidth" prop="corrective_principal">
+          <el-input v-model="editForm.corrective_principal" :placeholder="l.inputPrincipal"></el-input>
         </el-form-item>
-        <el-form-item :label="$l.correctivePlan" :label-width="formLabelWidth" prop="corrective_plan">
-          <el-input type="textarea" v-model="editForm.corrective_plan" :placeholder="$l.inputPlan"
+        <el-form-item :label="l.correctivePlan" :label-width="formLabelWidth" prop="corrective_plan">
+          <el-input type="textarea" v-model="editForm.corrective_plan" :placeholder="l.inputPlan"
             :autosize="{ minRows: 4 }"></el-input>
         </el-form-item>
-        <!-- <el-form-item :label="$l.fileName" :label-width="formLabelWidth" prop="fileName">
-          <el-input v-model="editForm.fileName" :placeholder="$l.inputfileName" class="custom-textarea"></el-input>
+        <!-- <el-form-item :label="l.fileName" :label-width="formLabelWidth" prop="fileName">
+          <el-input v-model="editForm.fileName" :placeholder="l.inputfileName" class="custom-textarea"></el-input>
         </el-form-item> -->
-        <!-- <el-form-item :label="$l.attachment_type" style="margin-left: 1.3%;" prop="attachment_type">
+        <!-- <el-form-item :label="l.attachment_type" style="margin-left: 1.3%;" prop="attachment_type">
           <el-radio-group v-model="editForm.attachment_type">
-            <el-radio v-model="editForm.attachment_type" label="0A">{{$l.license}}</el-radio>
+            <el-radio v-model="editForm.attachment_type" label="0A">{{ l.license}}</el-radio>
             <el-radio v-model="editForm.attachment_type" label="0B">NDA</el-radio>
-            <el-radio v-model="editForm.attachment_type" label="0C">{{$l.OtherAttachment}}</el-radio>
-            <el-radio v-model="editForm.attachment_type" label="1">{{$l.Diligence}}</el-radio>
-            <el-radio  v-model="editForm.attachment_type" label="2">{{$l.enhance}}</el-radio>
+            <el-radio v-model="editForm.attachment_type" label="0C">{{ l.OtherAttachment}}</el-radio>
+            <el-radio v-model="editForm.attachment_type" label="1">{{ l.Diligence}}</el-radio>
+            <el-radio  v-model="editForm.attachment_type" label="2">{{ l.enhance}}</el-radio>
           </el-radio-group>
         </el-form-item> -->
         <el-form-item label="佐证资料" style="margin-left: 1.3%;">
           <el-upload style="margin-left: 2.5%;" ref="upload" action="" :file-list="fileList" :auto-upload="false"
             :multiple="true" :on-change="handleChange" :on-remove="handleRemove">
-            <el-button size="small" type="primary">{{ $l.upload }}</el-button>
+            <el-button size="small" type="primary">{{ l.upload }}</el-button>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -114,28 +114,28 @@
         <el-table-column prop="create_time" label="创建时间" width="150">
         </el-table-column>
         <el-table-column fixed="right" width="145">
-          <template slot-scope="scope">
-            <el-button @click="removeAttachments(scope.row, scope.$index, 1)" type="text" size="small">{{ $c.delete
+          <template #default="scope">
+            <el-button @click="removeAttachments(scope.row, scope.$index, 1)" type="text" size="small">{{ c.delete
               }}</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editVisible = false">{{ $l.cancel }}</el-button>
-        <el-button type="primary" @click="submitAtt">{{ $l.submit }}</el-button>
-      </span>
+      <template #footer><span class="dialog-footer">
+        <el-button @click="editVisible = false">{{ l.cancel }}</el-button>
+        <el-button type="primary" @click="submitAtt">{{ l.submit }}</el-button>
+      </span></template>
     </el-dialog>
 
-    <el-dialog :visible.sync="fileTableVisable">
+    <el-dialog v-model:visible="fileTableVisable">
       <div>
         <!-- 文件表格 -->
         <el-table :data="file.list" style="width: 90%">
           <el-table-column v-for="(item, index) in file.columns" :key="index" :prop="item.key" :label="item.title"
             :width="item.width">
           </el-table-column>
-          <el-table-column fixed="right" :label="this.$c.operation" width="145">
-            <template slot-scope="scope">
-              <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ $c.check }}</el-button>
+          <el-table-column fixed="right" :label="this.c.operation" width="145">
+            <template #default="scope">
+              <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -254,39 +254,39 @@ export default {
         },
         {
           key: "name_zh",
-          label: this.$l.CNname
+          label: this.l.CNname
         },
         {
           key: "name_en",
-          label: this.$l.ENname
+          label: this.l.ENname
         },
         {
           key: "legal_person",
-          label: this.$l.legal_person
+          label: this.l.legal_person
         },
         {
           key: "contact_name",
-          label: this.$l.contact_name
+          label: this.l.contact_name
         },
         {
           key: "contact_phone",
-          label: this.$l.contact_phone
+          label: this.l.contact_phone
         },
         {
           key: "contact_email",
-          label: this.$l.contact_email
+          label: this.l.contact_email
         },
         {
           key: "customs_number",
-          label: this.$l.customs_number
+          label: this.l.customs_number
         },
         {
           key: "biz_license_number",
-          label: this.$l.biz_license_number
+          label: this.l.biz_license_number
         },
         {
           key: "requestor_facility_name",
-          label: this.$l.facility_name
+          label: this.l.facility_name
         },
         ],
         tableData: [],

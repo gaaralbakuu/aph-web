@@ -1,38 +1,38 @@
 <template>
 	<div ref="hello" class="app-container" v-loading="pageLoading">
-		<el-button type="primary" class="fr" @click="createItem">{{ $c.create }}</el-button>
+		<el-button type="primary" class="fr" @click="createItem">{{ c.create }}</el-button>
 		<div class="filter-container">
 			<el-input
 				style="width: 300px;"
-				:placeholder="$c.queryPlaceholder"
+				:placeholder="c.queryPlaceholder"
 				clearable
 				prefix-icon="el-icon-search"
 				class="filter-item"
-				@keyup.enter.native="research"
+				@keyup.enter="research"
 				@clear="research"
 				v-model="query.queryString"
 			></el-input>
-			<el-button class="filter-item" type="success" plain @click="research">{{ $c.queryButton }}</el-button>
-			<el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{ $c.export }}</el-button>
+			<el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton }}</el-button>
+			<el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{ c.export }}</el-button>
 		</div>
 		<z-table :list="list" :tableProps="tableProps" :columns="columns" @editItem="editItem" @deleteItem="deleteItem">
 			<template v-slot:content="{ row, key }">
 				<div v-if="key == 'epidemicdate'">
-					<span>{{ row[key] | datetime }}</span>
+					<span>{{ $filters.datetime(row[key]) }}</span>
 				</div>
 				<span v-else>{{ row[key] }}</span>
 			</template>
 			<template v-slot:operation="v">
-				<a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ $c.edit }}</a>
+				<a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ c.edit }}</a>
 				<span>&nbsp;</span>
-				<a href="#" class="text-green" @click.prevent="copyItem(v.row, v.$index)">{{ $c.copy }}</a>
+				<a href="#" class="text-green" @click.prevent="copyItem(v.row, v.$index)">{{ c.copy }}</a>
 				<span>&nbsp;</span>
-				<a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ $c.delete }}</a>
+				<a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ c.delete }}</a>
 				<span>&nbsp;</span>
-				<a href="#" class="text-blue" @click.prevent="pushItem(v.row, v.$index)">{{ $c.push }}</a>
+				<a href="#" class="text-blue" @click.prevent="pushItem(v.row, v.$index)">{{ c.push }}</a>
 			</template>
 		</z-table>
-		<z-pagination :pagination="pagination" :total="total" :page.sync="query.page" :limit.sync="query.size" @change="getList"></z-pagination>
+		<z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList"></z-pagination>
 		<z-form-dialog
 			:name="name"
 			:data="data"
@@ -40,14 +40,14 @@
 			:fields="fields"
 			@submmit="submmit"
 			:submmitLoading="submmitLoading"
-			:visible.sync="editFormVisible"
+			v-model:visible="editFormVisible"
 		></z-form-dialog>
-		<z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="userFields" @submmit="push" :submmitLoading="submmitLoading" :visible.sync="pushFormVisible">
+		<z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="userFields" @submmit="push" :submmitLoading="submmitLoading" v-model:visible="pushFormVisible">
 			<template v-slot:operation1="v">
 				<div style="text-align: center;padding-left: 75px;">
 					<div style="min-height: 36px;">
 						<div class="flex flex-center" style="font-size: 12px; margin-bottom:10px;">
-							<span style="font-size: 20px;font-weight: bold;">{{ $l.pushList }}</span>
+							<span style="font-size: 20px;font-weight: bold;">{{ l.pushList }}</span>
 							<div class="flex1"></div>
 							<el-input style="display:inline-block;width: 200px;" suffix-icon="el-icon-search" size="mini" clearable v-model="userQueryId"></el-input>
 							<el-button class="ml-5" size="mini" type="primary" icon="el-icon-plus" circle plain @click="addUserItem"></el-button>
@@ -56,7 +56,7 @@
 					<div>
 						<z-table :list="userTable" :tableProps="userTableProps" :columns="userColumns">
 							<template v-slot:operation="v">
-								<a href="#" class="text-red" @click.prevent="deleteUserItem(v.row, v.$index)">{{ $c.delete }}</a>
+								<a href="#" class="text-red" @click.prevent="deleteUserItem(v.row, v.$index)">{{ c.delete }}</a>
 							</template>
 						</z-table>
 					</div>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common';
+import { _, api, defaultConfig,initFuncs, zFormDialog, zPagination, zTable } from '@/views/_common/index.js';
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
 	api: api.epidemic,
@@ -87,44 +87,44 @@ export default {
 			...config,
 			pushFormVisible: false,
 			dialogVisible: false,
-			name: this.$l.title,
+			name: this.l.title,
 			columns: [
 				{
-					title: this.$l.epidemicbegdate,
+					title: this.l.epidemicbegdate,
 					key: 'epidemicbegdate',
 					width: 160
 				},
 				{
-					title: this.$l.epidemicenddate,
+					title: this.l.epidemicenddate,
 					key: 'epidemicenddate',
 					width: 200
 				},
 				{
-					title: this.$l.epidemicdate,
+					title: this.l.epidemicdate,
 					key: 'epidemicdate',
 					width: 200
 				},
 				{
-					title: this.$l.username,
+					title: this.l.username,
 					key: 'username'
 				},
 				{
-					title: this.$l.epidemic_note,
+					title: this.l.epidemic_note,
 					key: 'epidemic_note',
 					width: 100
 				},
 				{
-					title: this.$c.modify_user,
+					title: this.c.modify_user,
 					key: 'modify_user'
 				},
 				{
-					title: this.$c.modify_time,
+					title: this.c.modify_time,
 					key: 'modify_time'
 				}
 			],
 			fields: [
 				{
-					title: this.$l.epidemicbegdate,
+					title: this.l.epidemicbegdate,
 					key: 'epidemicbegdate',
 					span: 12,
 					name: 'date',
@@ -134,7 +134,7 @@ export default {
 					}
 				},
 				{
-					title: this.$l.epidemicenddate,
+					title: this.l.epidemicenddate,
 					key: 'epidemicenddate',
 					span: 12,
 					name: 'date',
@@ -144,7 +144,7 @@ export default {
 					}
 				},
 				{
-					title: this.$l.epidemicdate,
+					title: this.l.epidemicdate,
 					key: 'epidemicdate',
 					span: 12,
 					name: 'date',
@@ -155,12 +155,12 @@ export default {
 				},
 
 				{
-					title: this.$l.username,
+					title: this.l.username,
 					key: 'username',
 					required: true
 				},
 				{
-					title: this.$l.epidemic_note,
+					title: this.l.epidemic_note,
 					key: 'epidemic_note',
 					required: true
 				}
@@ -172,18 +172,18 @@ export default {
 			typeOptions: [],
 			userFields: [
 				{
-					title: this.$l.subTitle,
+					title: this.l.subTitle,
 					key: 'subject',
 					required: true
 				},
 				{
-					title: this.$l.msgBody,
+					title: this.l.msgBody,
 					name: 'textarea',
 					key: 'body',
 					required: true
 				},
 				{
-					title: this.$l.sendAll,
+					title: this.l.sendAll,
 					key: 'sendAll',
 					name: 'select',
 					events: {},
@@ -198,13 +198,13 @@ export default {
 						}
 					],
 					props: {
-						placeholder: this.$l.sendAllPd
+						placeholder: this.l.sendAllPd
 					},
 					required: true,
 					span: 6
 				},
 				{
-					title: this.$l.userid,
+					title: this.l.userid,
 					key: 'empnopz',
 					name: 'select',
 					events: {},
@@ -225,7 +225,7 @@ export default {
 					span: 6
 				},
 				{
-					title: this.$l.department,
+					title: this.l.department,
 					key: 'deptnopz',
 					name: 'select',
 					events: {},
@@ -246,7 +246,7 @@ export default {
 					span: 6
 				},
 				{
-					title: this.$l.organization,
+					title: this.l.organization,
 					key: 'orgidpz',
 					name: 'select',
 					events: {},
@@ -267,12 +267,12 @@ export default {
 					span: 6
 				},
 				{
-					title: this.$l.otherpz,
+					title: this.l.otherpz,
 					key: 'otherspz',
 					required: true
 				}
 			],
-			userColumns: [{ title: this.$l.userid, key: 'uid' }, { title: this.$l.userName, key: 'uName' }, { title: this.$l.department, key: 'orgName' }],
+			userColumns: [{ title: this.l.userid, key: 'uid' }, { title: this.l.userName, key: 'uName' }, { title: this.l.department, key: 'orgName' }],
 			userTableProps: {
 				border: true,
 				opsColWith: 60,

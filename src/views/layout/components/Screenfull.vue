@@ -1,6 +1,6 @@
 <template>
   <div @click="click">
-    <svg-icon class="screenfull-svg" icon-class="screenfull"/>
+    <SvgIcon class="screenfull-svg" icon-class="screenfull"/>
   </div>
 </template>
 

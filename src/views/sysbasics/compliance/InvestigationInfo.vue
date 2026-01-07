@@ -12,7 +12,7 @@
         <el-table :data="tableList.list" style="width: 100%" highlight-current-row>
           <el-table-column :label="l.basicInformation">
             <el-table-column v-for="(item, index) in tableList.columns1" :key="index" :prop="item.key" :label="item.title || item.key" :width="item.width" show-overflow-tooltip>
-              <template slot-scope="scope">
+              <template #default="scope">
                 <span v-if="item.key === 'address'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
                 <span v-else>
                   {{ scope.row[item.key] }}
@@ -22,7 +22,7 @@
           </el-table-column>
           <el-table-column :label="l.complianceContactInfor">
             <el-table-column v-for="(item, index) in tableList.columns2" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
-              <template slot-scope="scope">
+              <template #default="scope">
                 <span v-if="item.key === 'contact_name'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
                 <span v-else-if="item.key === 'contact_phone'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
                 <span v-else-if="item.key === 'contact_email'" :title="scope.row[item.key]" class="truncate-lines" v-html="scope.row[item.key]"></span>
@@ -34,7 +34,7 @@
           </el-table-column>
           <el-table-column :label="l.seaAudit">
             <el-table-column v-for="(item, index) in tableList.columns4" :key="index" :prop="item.key" :label="item.title" :width="item.width" show-overflow-tooltip>
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-button v-if="item.key === 'audit_file'" type="text" size="small" @click="clickViewFile(scope.row)" style="color: orange">
                   {{ l.viewFile }}
                 </el-button>
@@ -49,7 +49,7 @@
             </el-table-column>
           </el-table-column>
           <el-table-column fixed="right" :label="c.operation" width="170">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-button @click="checkClick(scope.row, scope.$index)" type="text" size="small">{{ c.check }}</el-button>
 
               <el-button v-show="showAuth.m_audit && scope.row.rec_status === -1" @click="auditNew(scope.row, scope.$index)" type="text" size="small" style="color: green">{{ l.newOrder }}</el-button>
@@ -60,15 +60,15 @@
           </el-table-column>
         </el-table>
 
-        <z-pagination :pagination="pagination" :total="tableList.total" :page.sync="tableList.curPage" :limit.sync="tableList.pageSize" @change="getList"></z-pagination>
+        <z-pagination :pagination="pagination" :total="tableList.total" v-model:page="tableList.curPage" v-model:limit="tableList.pageSize" @change="getList"></z-pagination>
 
-        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields1" @submmit="submitAudit" :visible.sync="auditFormsVisible"></z-form-dialog>
+        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields1" @submmit="submitAudit" v-model:visible="auditFormsVisible"></z-form-dialog>
 
         <!-- 审核 -->
-        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields" @submmit="submitAudit" :visible.sync="auditFormVisible"></z-form-dialog>
+        <z-form-dialog :data="auditSurvey.list" :formProps="auditSurvey.formProps" :fields="auditSurvey.fields" @submmit="submitAudit" v-model:visible="auditFormVisible"></z-form-dialog>
 
         <!-- 查看 -->
-        <el-dialog width="80%" :lock-scroll="true" :visible.sync="checkFormVisible" custom-class="custom-dialog">
+        <el-dialog width="80%" :lock-scroll="true" v-model:visible="checkFormVisible" custom-class="custom-dialog">
           <div style="padding: 0 50px">
             <div>
               <el-form :model="checkSurvey.list">
@@ -122,7 +122,7 @@
               <el-table :data="checkSurvey.fileList" style="width: 90%">
                 <el-table-column v-for="(item, index) in checkSurvey.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
                 <el-table-column fixed="right" :label="c.operation" width="145">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
                   </template>
                 </el-table-column>
@@ -132,13 +132,13 @@
         </el-dialog>
 
         <!-- 查看附件 -->
-        <el-dialog width="50%" :title="l.chenck_attachment" :lock-scroll="true" :visible.sync="viewFileFormVisible" custom-class="custom-dialog">
+        <el-dialog width="50%" :title="l.chenck_attachment" :lock-scroll="true" v-model:visible="viewFileFormVisible" custom-class="custom-dialog">
           <div style="padding: 0 50px">
             <!-- 文件表格 -->
             <el-table :data="checkFile.fileList" style="width: 100%">
               <el-table-column v-for="(item, index) in checkFile.columns" :key="index" :prop="item.key" :label="item.title" :width="item.width"></el-table-column>
               <el-table-column fixed="right" :label="c.operation" width="100">
-                <template slot-scope="scope">
+                <template #default="scope">
                   <el-button @click="getFilePreview(scope.row.file_url)" type="text" size="small">{{ c.check }}</el-button>
                 </template>
               </el-table-column>
@@ -163,7 +163,7 @@ import { zPagination } from '@/views/_common'
 import { zTable } from '@/views/_common'
 import filePreviews from '../../_common/filePreviews.vue'
 import { useLocalI18n } from '@/composables/useLocalI18n'
-import { useRouter, useRoute } from 'vue-router/composables'
+import { useRouter, useRoute } from 'vue-router'
 
 const { proxy } = getCurrentInstance()
 const { l, c } = useLocalI18n('investigation')

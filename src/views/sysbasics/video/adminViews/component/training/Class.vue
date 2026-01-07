@@ -1,8 +1,10 @@
 <template>
   <div class="trainingManage-container">
     <div class="component">
-      <el-drawer class="drawer-container" :visible.sync="showObj.classShow" :wrapperClosable='false' size="40%">
-        <div slot='title' class="title">{{l.createClass}}</div>
+      <el-drawer class="drawer-container" v-model:visible="showObj.classShow" :wrapperClosable='false' size="40%">
+        <template #title>
+          <div class="title">{{l.createClass}}</div>
+        </template>
         <div class="form-container">
           <div class="form">
             <el-form label-width="80px" size="medium">
@@ -35,7 +37,7 @@
               </el-form-item>
               <el-form-item :label="l.affiliatedPlan" required>
                 <el-input v-model="classObj.form.train_name_label" disabled>
-                  <template slot="append">
+                  <template #append>
                     <el-button @click="showObj.selectTraining=true"
                       style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
                   </template>
@@ -43,7 +45,7 @@
               </el-form-item>
               <el-form-item :label="l.classTeacher" required>
                 <el-input v-model="classObj.form.teacher_name" disabled>
-                  <template slot="append">
+                  <template #append>
                     <el-button @click="showObj.selectUser = true"
                       style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
                   </template>
@@ -68,11 +70,11 @@
         </div>
       </el-drawer>
 
-      <el-dialog class="examRecord-dialog" :title="l.examRecord" :visible.sync="showObj.recordDialog" width="50%">
+      <el-dialog class="examRecord-dialog" :title="l.examRecord" v-model:visible="showObj.recordDialog" width="50%">
         <el-form :inline="true">
           <el-form-item :label="l.studentBarcode">
             <el-input v-model="examObj.recordQuery.userid" :placeholder="l.pleaseInput"
-              @keyup.native.enter="getExamRecord" clearable></el-input>
+              @keyup.enter="getExamRecord" clearable></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="getExamRecord">{{l.search}}</el-button>
@@ -87,7 +89,7 @@
           <a-table-column :title="l.score" dataIndex="score">
           </a-table-column>
           <a-table-column :title="l.operation" :width="150" align="center" fixed="right">
-            <template slot-scope="text, record, index">
+            <template #default="{ text, record, index }">
               <a-button class="text-green" type="link" size="small" @click="reviewExam(record)">{{l.viewDetails}}</a-button>
               <a-button type="link" size="small" @click="readExam(record)">{{l.correctPapers}}</a-button>
             </template>
@@ -98,12 +100,12 @@
           :pageSize="examObj.recordQuery.pageSize" :showSizeChanger="true" :showQuickJumper="true" :showTotal="(total, range) => `共 ${total} 条`"
           :total="examObj.recordTotal" style="float: right;">
         </a-pagination>
-        <div slot="footer">
+        <template #footer>
           <el-button type="primary" @click="showObj.recordDialog = false">{{l.close}}</el-button>
-        </div>
+        </template>
       </el-dialog>
 
-      <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.courseDialog" width="70%">
+      <el-dialog :title="showObj.courseAndExamDialogTitle" v-model:visible="showObj.courseDialog" width="70%">
         <a-table :dataSource='learningObj.unfinishCourse' style="width: 100%">
           <a-table-column :title='l.serialNumber' type="index" :width="50"></a-table-column>
           <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
@@ -111,7 +113,7 @@
         </a-table>
       </el-dialog>
 
-      <el-dialog :title="showObj.courseAndExamDialogTitle" :visible.sync="showObj.examDialog" width="70%">
+      <el-dialog :title="showObj.courseAndExamDialogTitle" v-model:visible="showObj.examDialog" width="70%">
         <a-table :dataSource='learningObj.unfinishExam' style="width: 100%">
           <a-table-column :title='l.serialNumber' type="index" :width="50"></a-table-column>
           <a-table-column :title="l.name" dataIndex="name_zh"></a-table-column>
@@ -124,7 +126,7 @@
       </el-dialog>
 
       <!-- 选择培训dialog -->
-      <el-dialog :visible.sync="showObj.selectTraining" @open='getTrainingList' :title="l.selectTraining" width="75%">
+      <el-dialog v-model:visible="showObj.selectTraining" @open='getTrainingList' :title="l.selectTraining" width="75%">
         <div class="pageBody-filter">
           <el-form inline>
             <el-form-item :label="l.college">
@@ -136,7 +138,7 @@
             </el-form-item>
             <el-form-item :label="l.trainingName">
               <el-input v-model="trainingObj.query.name" clearable @clear='getTrainingList'
-                @keyup.native.enter="getTrainingList"></el-input>
+                @keyup.enter="getTrainingList"></el-input>
             </el-form-item>
             <el-form-item :label="l.status">
               <el-select v-model="trainingObj.query.is_valid" @change="getTrainingList" style="width: 100px;">
@@ -155,7 +157,7 @@
             </a-table-column>
             <a-table-column :title="l.simplifiedChinese" dataIndex="name_zh"></a-table-column>
             <a-table-column :title="l.college" dataIndex="college_id">
-              <template slot-scope="text, record, index">
+              <template #default="{ text, record, index }">
                 {{returnCollegeLabel(record.college_id)}}
               </template>
             </a-table-column>
@@ -163,7 +165,7 @@
             <a-table-column :title="l.endTime" dataIndex="end_date"></a-table-column>
             <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
             <a-table-column :title="l.operation" fixed="right">
-              <template slot-scope="text, record, index">
+              <template #default="{ text, record, index }">
                 <a-button type='link' @click="selectTraining(record)">{{l.select}}</a-button>
               </template>
             </a-table-column>
@@ -176,7 +178,7 @@
         <el-form inline>
           <el-form-item :label="l.userInfo">
             <el-input v-model="userObj.query.queryString" clearable @clear='getUserList'
-              @keyup.native.enter="getUserList"></el-input>
+              @keyup.enter="getUserList"></el-input>
           </el-form-item>
           <el-form-item :label="l.status">
             <el-select v-model="userObj.query.status" @change="getUserList">
@@ -197,7 +199,7 @@
             <a-table-column :title="l.position" dataIndex="work_name"></a-table-column>
             <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
             <a-table-column :title="l.operation" fixed="right">
-              <template slot-scope="text, record, index">
+              <template #default="{ text, record, index }">
                 <a-button type='link' @click="selectUser(record)">{{l.select}}</a-button>
               </template>
             </a-table-column>
@@ -210,9 +212,11 @@
       </el-dialog>
 
       <!-- 新增或修改课程以及配套资源 -->
-      <el-drawer class="drawer-container" direction='btt' :visible.sync="showObj.modifyClass" :wrapperClosable='false'
+      <el-drawer class="drawer-container" direction='btt' v-model:visible="showObj.modifyClass" :wrapperClosable='false'
         size="95%">
-        <div slot='title' class="title">{{l.manageClass}}</div>
+        <template #title>
+          <div class="title">{{l.manageClass}}</div>
+        </template>
         <el-tabs type="border-card" class="form-container" @tab-click="tabClick" v-model="showObj.activeTabName">
           <el-tab-pane :label="l.basicInfo" name="data">
             <el-form label-width="80px" size="medium">
@@ -245,7 +249,7 @@
               </el-form-item>
               <el-form-item :label="l.affiliatedPlan">
                 <el-input v-model="classObj.form.train_name_label" disabled>
-                  <template slot="append">
+                  <template #append>
                     <el-button @click="showObj.selectTraining=true"
                       style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
                   </template>
@@ -253,7 +257,7 @@
               </el-form-item>
               <el-form-item :label="l.classTeacher">
                 <el-input v-model="classObj.form.teacher_name" disabled>
-                  <template slot="append">
+                  <template #append>
                     <el-button @click="showObj.selectUser = true"
                       style="background-color: #67C23A;color: white;">{{l.select}}</el-button>
                   </template>
@@ -285,17 +289,17 @@
               <a-table-column :title="l.serialNumber" type="index" :width="55"></a-table-column>
               <a-table-column :title="l.name" dataIndex="name_label"></a-table-column>
               <a-table-column :title="l.type" dataIndex="type">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   {{record.type==1?l.exam:l.course}}
                 </template>
               </a-table-column>
               <a-table-column :title="l.required" dataIndex="is_must">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   {{record.is_must==1?l.required:l.elective}}
                 </template>
               </a-table-column>
               <a-table-column :title="l.operation" fixed="right">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <a-button class="text-green" type='link' @click="previewDetail(record)">{{l.preview}}</a-button>
                   <a-button v-show="record.type==1" type='link' @click="getExamRecord(record)">{{l.statistics}}</a-button>
                 </template>
@@ -331,7 +335,7 @@
               <a-table-column :title="l.position" dataIndex="workName"></a-table-column>
               <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
               <a-table-column :title="l.operation" fixed="right">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <a-button type='link' :class="record.is_valid=='Y'?'text-red':'text-green'" @click="toggleStudentStatus(record)">{{record.is_valid=='Y'?l.disable:l.enable}}</a-button>
                 </template>
               </a-table-column>
@@ -345,42 +349,42 @@
               <a-table-column :title="l.department" dataIndex="dept_no"></a-table-column>
               <a-table-column :title="l.departmentName" dataIndex="department_t"></a-table-column>
               <a-table-column :title="l.courseCount" dataIndex="course_num">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <div class='total-num'>
                     {{record.course_num}}
                   </div>
                 </template>
               </a-table-column>
               <a-table-column :title="l.completedCourses" dataIndex="finsh_course_num">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <div @click="checkCourse(record.finsh_course_List,l.completedCourses)" class='finish-num'>
                     {{record.finsh_course_num}}
                   </div>
                 </template>
               </a-table-column>
               <a-table-column :title="l.unfinishedCourses" dataIndex="finsh_course_num">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <div @click="checkCourse(record.no_finsh_course_List,l.unfinishedCourses)" class='unfinish-num'>
                     {{record.no_finsh_course_List.length}}
                   </div>
                 </template>
               </a-table-column>
               <a-table-column :title="l.examCount" dataIndex="exam_num">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <div class='total-num'>
                     {{record.exam_num}}
                   </div>
                 </template>
               </a-table-column>
               <a-table-column :title="l.completedExams" dataIndex="finsh_exam_num">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <div @click="checkExam([...record.finsh_course_exam_List,...record.finsh_train_exam_List],l.completedExams)" class='finish-num'>
                     {{record.finsh_exam_num}}
                   </div>
                 </template>
               </a-table-column>
               <a-table-column :title="l.unfinishedExams" dataIndex="finsh_course_num">
-                <template slot-scope="text, record, index">
+                <template #default="{ text, record, index }">
                   <div @click="checkExam([...record.no_finsh_course_exam_List,...record.no_finsh_train_exam_List],l.unfinishedExams)" class='unfinish-num'>
                     {{record.no_finsh_course_exam_List.length + record.no_finsh_train_exam_List.length}}
                   </div>
@@ -394,7 +398,7 @@
         </div>
       </el-drawer>
 
-      <chooseUser :visible.sync="showObj.selectStudent" :useridList.sync="studentObj.setClassmateList"
+      <chooseUser v-model:visible="showObj.selectStudent" v-model:useridList="studentObj.setClassmateList"
         @submmit="submmitClassmate"></chooseUser>
     </div>
 
@@ -410,7 +414,7 @@
           </el-form-item>
           <el-form-item :label="l.className">
             <el-input v-model="classObj.query.name" clearable @clear='getClassList'
-              @keyup.native.enter="getClassList"></el-input>
+              @keyup.enter="getClassList"></el-input>
           </el-form-item>
           <el-form-item :label="l.status">
             <el-select v-model="classObj.query.is_valid" @change="getClassList">
@@ -432,7 +436,7 @@
           </a-table-column>
           <a-table-column :title="l.simplifiedChinese" dataIndex="name_zh"></a-table-column>
           <a-table-column :title="l.college" dataIndex="college_id">
-            <template slot-scope="text, record, index">
+            <template #default="{ text, record, index }">
               {{returnCollegeLabel(record.college_id)}}
             </template>
           </a-table-column>
@@ -441,7 +445,7 @@
           <a-table-column :title="l.trainingObjective" dataIndex="train_target"></a-table-column>
           <a-table-column :title="l.trainingTarget" dataIndex="train_object"></a-table-column>
           <a-table-column :title="l.classTeacher" dataIndex="class_teacher">
-            <template slot-scope="text, record, index">
+            <template #default="{ text, record, index }">
               <div v-if="record.class_teacher"> {{record.tearcher[0].name_t}}</div>
             </template>
           </a-table-column>
@@ -449,7 +453,7 @@
           <a-table-column :title="l.endTime" dataIndex="end_date"></a-table-column>
           <a-table-column :title="l.status" dataIndex="is_valid"></a-table-column>
           <a-table-column :title="l.operation" fixed="right">
-            <template slot-scope="text, record, index">
+            <template #default="{ text, record, index }">
               <a-button type='link' @click="modifyClass(record)">{{l.manage}}</a-button>
               <a-button v-if="record.is_valid=='N'" type='link' style="color: seagreen;" @click="modifyStatus(record)">{{l.enable}}</a-button>
               <a-button v-else type='link' style="color: red;" @click="modifyStatus(record)">{{l.disable}}</a-button>

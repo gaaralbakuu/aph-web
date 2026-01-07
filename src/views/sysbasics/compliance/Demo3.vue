@@ -62,11 +62,11 @@
       </template>
     </z-table>
     <!-- 分页 -->
-    <z-pagination :pagination="pagination" :total="direct.query.total" :page.sync="direct.query.page" :limit.sync="direct.query.pageSize" @change="getList"></z-pagination>
+    <z-pagination :pagination="pagination" :total="direct.query.total" v-model:page="direct.query.page" v-model:limit="direct.query.pageSize" @change="getList"></z-pagination>
     <!-- 创建/编辑窗口 -->
-    <z-form-dialog :name="l.dict" :data="direct.data" :formProps="formProps" :fields="direct.fields" @submmit="submmit" :submmitLoading="submmitLoading" :visible.sync="direct.addOrEditFormVisible1"></z-form-dialog>
+    <z-form-dialog :name="l.dict" :data="direct.data" :formProps="formProps" :fields="direct.fields" @submmit="submmit" :submmitLoading="submmitLoading" v-model:visible="direct.addOrEditFormVisible1"></z-form-dialog>
     <!-- 数据管理页面 -->
-    <el-dialog :title="l.dict_option" :visible.sync="direct.dialogTableVisible1" width="70%">
+    <el-dialog :title="l.dict_option" v-model:visible="direct.dialogTableVisible1" width="70%">
       <el-button type="primary" class="create_btn" @click="addChildre">{{ c.create }}</el-button>
       <z-table :list="directChildre.list" :tableProps="tableProps" :columns="directChildre.columns" @editItem="editItemChildre">
         <template v-slot:operation="v">
@@ -80,7 +80,7 @@
       </z-table>
     </el-dialog>
     <!-- 创建/编辑窗口 -->
-    <z-form-dialog :name="l.dict_option" :data="directChildre.data" :formProps="formProps" :fields="directChildre.fields" @submmit="submmitChildre" :submmitLoading="submmitLoading" :visible.sync="directChildre.addOrEditFormVisible2"></z-form-dialog>
+    <z-form-dialog :name="l.dict_option" :data="directChildre.data" :formProps="formProps" :fields="directChildre.fields" @submmit="submmitChildre" :submmitLoading="submmitLoading" v-model:visible="directChildre.addOrEditFormVisible2"></z-form-dialog>
   </div>
 </template>
 

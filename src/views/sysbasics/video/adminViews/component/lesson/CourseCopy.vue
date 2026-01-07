@@ -333,7 +333,7 @@
             <div class="flex-1 overflow-auto">
               <a-table class="draggable-table-video" :dataSource="manageObj.selectedVideoList" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }">
                 <a-table-column :title="l.cover">
-                  <template slot-scope="text, record">
+                  <template #default="{ text, record }">
                     <div v-if="record">
                       <img v-if="record.thumbnail_path && !imageErrors['vid_' + record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-20 h-12 object-cover bg-[#E5E5E5] rounded-sm" @error="handleImageError('vid_' + record.id)" />
                       <div v-else class="w-20 h-12 bg-[#E5E5E5] rounded-sm flex items-center justify-center text-[#999999]"><i class="el-icon-picture-outline"></i></div>
@@ -433,7 +433,7 @@
         <div class="flex-1 overflow-auto">
           <a-table :dataSource="videoListObj.list" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }">
             <a-table-column :title="l.cover">
-              <template slot-scope="text, record">
+              <template #default="{ text, record }">
                 <div v-if="record">
                   <img v-if="record.thumbnail_path && !imageErrors['sel_vid_' + record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-16 h-10 object-cover" @error="handleImageError('sel_vid_' + record.id)" />
                   <div v-else class="w-16 h-10 bg-[#E5E5E5] flex items-center justify-center text-[#999999]"><i class="el-icon-picture-outline"></i></div>

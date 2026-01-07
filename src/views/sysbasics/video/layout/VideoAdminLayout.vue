@@ -18,8 +18,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
             </svg>
           </div>
-          <size-select />
-          <lang-select />
+          <SizeSelect />
+          <LangSelect />
           <div class="relative group ml-auto">
             <div class="h-10 w-10 rounded-md text-[20px] cursor-pointer flex items-center justify-center bg-[#f5f5f5] text-black hover:bg-[#eaeaea] hover:text-black dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#272727] dark:hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
@@ -43,18 +43,18 @@
                 </div>
                 <div class="flex flex-col border-b border-[#ebebeb] dark:border-gray-600 py-1">
                   <router-link to="/videoLayout/home" class="px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-                    {{ $c.videoUserHome }}
+                    {{ c.videoUserHome }}
                   </router-link>
                   <router-link to="/home/welcome" class="px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-                    {{ $c.apacheHome }}
+                    {{ c.apacheHome }}
                   </router-link>
                   <!-- <div @click="passwordFormVisible = true" class="cursor-pointer px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-                    {{ $l.changePwd }}
+                    {{ l.changePwd }}
                   </div> -->
                 </div>
                 <div class="flex flex-col pt-1">
                   <div @click="logout" class="cursor-pointer px-5 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-                    {{ $l.logout }}
+                    {{ l.logout }}
                   </div>
                 </div>
               </div>

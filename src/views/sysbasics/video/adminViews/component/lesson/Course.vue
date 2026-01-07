@@ -342,7 +342,7 @@
             <div class="flex-1 overflow-auto">
               <a-table class="draggable-table-video" :dataSource="manageObj.selectedVideoList" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }">
                 <a-table-column :title="l.cover">
-                  <template slot-scope="text, record">
+                  <template #default="{ text, record }">
                     <div v-if="record">
                       <img v-if="record.thumbnail_path && !imageErrors['vid_' + record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-20 h-12 object-cover bg-[#E5E5E5] rounded-sm" @error="handleImageError('vid_' + record.id)" />
                       <div v-else class="w-20 h-12 bg-[#E5E5E5] rounded-sm flex items-center justify-center text-[#999999]"><i class="el-icon-picture-outline"></i></div>
@@ -442,7 +442,7 @@
         <div class="flex-1 overflow-auto">
           <a-table :dataSource="videoListObj.list" row-key="id" :pagination="false" :row-selection="{ selectedRowKeys: videoSelectedRowKeys, onChange: videoSelectionChange }">
             <a-table-column :title="l.cover">
-              <template slot-scope="text, record">
+              <template #default="{ text, record }">
                 <div v-if="record">
                   <img v-if="record.thumbnail_path && !imageErrors['sel_vid_' + record.id]" :src="$api.videoServer + '/' + record.thumbnail_path" class="w-16 h-10 object-cover" @error="handleImageError('sel_vid_' + record.id)" />
                   <div v-else class="w-16 h-10 bg-[#E5E5E5] flex items-center justify-center text-[#999999]"><i class="el-icon-picture-outline"></i></div>
@@ -693,39 +693,39 @@ export default {
         courseCatalog: [],
         question_type: [
           {
-            label: this.$l.fillIn,
+            label: this.l.fillIn,
             value: 0,
           },
           {
-            label: this.$l.radio,
+            label: this.l.radio,
             value: 1,
           },
           {
-            label: this.$l.checkbox,
+            label: this.l.checkbox,
             value: 2,
           },
           {
-            label: this.$l.judge,
+            label: this.l.judge,
             value: 3,
           },
         ],
         question_status: [
           {
-            label: this.$l.published,
+            label: this.l.published,
             value: 0,
           },
           {
-            label: this.$l.unpublished,
+            label: this.l.unpublished,
             value: 1,
           },
         ],
         lecturer_status: [
           {
-            label: this.$l.externalLecturer,
+            label: this.l.externalLecturer,
             value: 0,
           },
           {
-            label: this.$l.internalLecturer,
+            label: this.l.internalLecturer,
             value: 1,
           },
         ],
@@ -796,7 +796,7 @@ export default {
     },
 
     attachmentWarning() {
-      this.$message.warning(this.$l.attachmentWarningMessage)
+      this.$message.warning(this.l.attachmentWarningMessage)
     },
 
     getAttachments(id) {
@@ -847,7 +847,7 @@ export default {
               file_size: r.data.file_size,
             })
             this.$refs.attachmentInput.value = ''
-            this.$message.success(this.$l.operateSuccess)
+            this.$message.success(this.l.operateSuccess)
           }
         })
         .catch((e) => {
@@ -1036,7 +1036,7 @@ export default {
     selectTag(i) {
       if (!this.selectedTags.includes(i)) {
         if (this.selectedTags.length >= 5) {
-          return this.$message.error(this.$l.most5Tags)
+          return this.$message.error(this.l.most5Tags)
         } else {
           this.selectedTags.push(i)
         }
@@ -1085,7 +1085,7 @@ export default {
 
     handleSubmit() {
       if (this.manageObj.selectedVideoList.length == 0) {
-        return this.$message.error(this.$l.containOneVideoAtleat)
+        return this.$message.error(this.l.containOneVideoAtleat)
       }
       if (this.rightCheck(this.courseObj.newForm, true)) {
         if (this.coverObj.file.name) {
@@ -1139,13 +1139,13 @@ export default {
 
       this.courseObj.newForm.tag_ids = this.selectedTags.map((i) => i.id)
 
-      if (!this.courseObj.newForm.name_zh) return this.$message.error(this.$l.titleError)
+      if (!this.courseObj.newForm.name_zh) return this.$message.error(this.l.titleError)
 
       let postData = { ...this.courseObj.newForm, video_exam_list, attachmentids_list, is_update_version: 0 }
 
       this.$request(this.$api.videoServer + '/Video/VideoCourseCatalog/addOrModifyCourse', postData, 'post').then((r) => {
         if (r.httpCode == 200) {
-          this.$message.success(this.$l.operateSuccess)
+          this.$message.success(this.l.operateSuccess)
           this.showObj.addOrModifyCourse = false
           this.getCourseList()
         }
@@ -1187,11 +1187,11 @@ export default {
       if (this.rightCheck(i, true)) {
         let currentStatus = i.is_valid
         let value = currentStatus == 'N' ? 'Y' : 'N'
-        let oprate = currentStatus == 'N' ? this.$c.enable : this.$c.disable
+        let oprate = currentStatus == 'N' ? this.c.enable : this.c.disable
         let name = i.name_zh
 
         this.showObj.confirmData = {
-          title: this.$l.confirmTips || 'Confirm',
+          title: this.l.confirmTips || 'Confirm',
           message: `${oprate}《${name}》?`,
           callback: () => {
             this.$request(
@@ -1202,7 +1202,7 @@ export default {
               },
               'post'
             ).then((r) => {
-              this.$message.success(this.$l.operateSuccess)
+              this.$message.success(this.l.operateSuccess)
               this.getCourseList()
             })
           },
@@ -1225,7 +1225,7 @@ export default {
     rightCheck(i, toast = false) {
       if (this.isAdmin) return true
       if (this.publicCodeObj.collegeList.some((c) => c.id == i.college_id)) return true
-      if (toast) this.$message.error(this.$l.noRightToEdit)
+      if (toast) this.$message.error(this.l.noRightToEdit)
       return false
     },
 
@@ -1278,7 +1278,7 @@ export default {
       let minutes = Math.floor((duration % 3600) / 60)
       let seconds = duration % 60
       if (unit) {
-        return [hours > 0 ? `${hours}${this.$l.hours}` : '', minutes.toString().padStart(2, '0') + this.$l.mins, seconds.toString().padStart(2, '0') + this.$l.seconds].filter(Boolean).join('')
+        return [hours > 0 ? `${hours}${this.l.hours}` : '', minutes.toString().padStart(2, '0') + this.l.mins, seconds.toString().padStart(2, '0') + this.l.seconds].filter(Boolean).join('')
       } else {
         return [hours > 0 ? `${hours}:` : '', minutes.toString().padStart(2, '0') + ':', seconds.toString().padStart(2, '0')].filter(Boolean).join('')
       }

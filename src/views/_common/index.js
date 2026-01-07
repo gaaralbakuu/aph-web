@@ -3,10 +3,10 @@ import _ from 'lodash'
 
 import api from '@/api'
 
-import zForm from './Form'
-import zFormDialog from './FormDialog'
-import zPagination from './Pagination'
-import zTable from './Table'
+import zForm from './form.vue'
+import zFormDialog from './formDialog.vue'
+import zPagination from './pagination.vue'
+import zTable from './table.vue'
 
 var defaultConfig = {
   // apiList,
