@@ -1,29 +1,42 @@
 <template>
-  <li class="text-[13px] list-none">
+  <li>
     <div v-if="hasChildren" class="flex flex-col">
       <button
         type="button"
-        :class="['flex w-full items-center rounded-lg transition-colors duration-200 focus:outline-none h-8']"
+        :class="buttonClasses"
         :style="buttonStyle"
         @click="toggleOpen"
         :title="collapse ? item.title : ''"
       >
-        <div :class="['flex flex-1 items-center', {'gap-3': !collapse}, {'justify-center': collapse}]">
-          <span v-if="!collapse" class="truncate font-semibold">{{ item.title }}</span>
+        <div :class="['flex flex-1 items-center', {'gap-3': !collapse}, {'justify-center': collapse}]" :style="contentStyle">
+          <i
+            v-if="isFontIcon"
+            :class="['fa', iconName, 'text-base']"
+            aria-hidden="true"
+          ></i>
+          <svg-icon v-else :icon-class="iconName" class="h-5 w-5" />
+          <span v-if="!collapse" class="truncate">{{ item.title }}</span>
         </div>
-        <HugeiconsIcon :icon="ArrowDown01FreeIcons" class="transition-transform duration-200 size-5" :class="{ 'rotate-180': isOpen }" />
+        <i
+          v-if="!collapse"
+          class="fa fa-chevron-down text-xs transition-transform duration-200"
+          :class="{ 'rotate-180': isOpen }"
+          :style="{ color: branchActive ? activeColor : textColor }"
+        ></i>
       </button>
       <transition name="sidebar-fade">
         <ul
           v-show="isOpen && !collapse"
-          class=""
+          class="mt-1 space-y-1 border-l border-white/10 pl-3"
         >
-          <SidebarItem
+          <SidebarItem2
             v-for="child in item.children"
             :key="child.id"
             :item="child"
             :level="level + 1"
             :collapse="collapse"
+            :text-color="textColor"
+            :active-color="activeColor"
           />
         </ul>
       </transition>
@@ -32,12 +45,18 @@
       <a
         :href="item.target"
         :target="isExternalLink(item.target) ? '_blank' : '_self'"
-        :class="['flex w-full items-center rounded-lg transition-colors duration-200 focus:outline-none h-8', {'text-lime-600': isActive}, {'text-gray-500': !isActive}]"
+        :class="leafClasses"
         :style="leafStyle"
         @click="handleLeafClick"
         :title="collapse ? item.title : ''"
       >
-        <div :class="['flex flex-1 items-center', {'gap-3': !collapse}, {'justify-center': collapse}]">
+        <div :class="['flex flex-1 items-center', {'gap-3': !collapse}, {'justify-center': collapse}]" :style="contentStyle">
+          <i
+            v-if="isFontIcon"
+            :class="['fa', iconName, 'text-base']"
+            aria-hidden="true"
+          ></i>
+          <SvgIcon v-else :icon-class="iconName" class="h-5 w-5" />
           <span v-if="!collapse" class="truncate">{{ item.title }}</span>
         </div>
       </a>
@@ -48,8 +67,6 @@
 import { ref, computed, watch, getCurrentInstance } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { validateURL } from '@/utils/validate'
-import { ArrowDown01FreeIcons } from '@hugeicons/core-free-icons/index'
-import { HugeiconsIcon } from '@hugeicons/vue'
 
 const props = defineProps({
   item: {
@@ -63,6 +80,14 @@ const props = defineProps({
   collapse: {
     type: Boolean,
     default: false,
+  },
+  textColor: {
+    type: String,
+    default: '#B8C7CE',
+  },
+  activeColor: {
+    type: String,
+    default: '#FFFFFF',
   },
 })
 
@@ -128,10 +153,33 @@ const isActive = computed(() => {
   return route.name === props.item.target
 })
 
+const buttonClasses = computed(() => {
+  return [
+    'flex h-11 w-full items-center rounded-lg transition-colors duration-200 focus:outline-none',
+    props.collapse ? 'justify-center px-0' : 'justify-between px-3',
+    'hover:bg-white/5',
+  ]
+})
+
 const buttonStyle = computed(() => {
   return {
     color: branchActive.value ? props.activeColor : props.textColor,
     backgroundColor: branchActive.value ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+  }
+})
+
+const leafClasses = computed(() => {
+  return [
+    'flex h-11 w-full items-center rounded-lg transition-colors duration-200 focus:outline-none',
+    props.collapse ? 'justify-center px-0' : 'justify-start px-3',
+    'hover:bg-white/5',
+  ]
+})
+
+const leafStyle = computed(() => {
+  return {
+    backgroundColor: isActive.value ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+    color: isActive.value ? props.activeColor : props.textColor,
   }
 })
 

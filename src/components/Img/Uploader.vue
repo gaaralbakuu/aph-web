@@ -17,143 +17,147 @@
   </viewer>
 </template>
 
-<script>
-import 'viewerjs/dist/viewer.css'
+<script setup>
+import { ref, computed, watch } from 'vue'
+// import 'viewerjs/dist/viewer.css'
 
-export default {
+const props = defineProps({
+  images: {
+    type: Array,
+    default: function () {
+      return []
+    },
+  },
+  disabled: {
+    type: Boolean,
+    default: function () {
+      return false
+    },
+  },
+  maxCount: {
+    type: Number,
+    default: function () {
+      return 9
+    },
+  },
+  multiple: {
+    type: Boolean,
+    default: function () {
+      return false
+    },
+  },
+  showCount: {
+    type: Boolean,
+    default: function () {
+      return true
+    },
+  },
+  imgSize: {
+    type: Number,
+    default: function () {
+      return 80
+    },
+  },
+})
+
+const emit = defineEmits(['change', 'addImg', 'deleteImg'])
+
+const countDisable = ref({
+  type: Boolean,
+  default: function () {
+    return true
+  },
+})
+
+const up_input = ref(null)
+
+const addImg = (event) => {
+  //是否允许编辑
+  if (props.disabled) return
+  let inputDOM = up_input.value
+  let files = inputDOM.files
+  //是否超出最大文件数量限制
+  if (props.images.length + files.length > props.maxCount) {
+    console.info('Max images count limit')
+    countDisable.value = true
+    return
+  }
+  //是否有自定义回调函数
+  // Note: $listeners.addImg check replaced with emit
+  emit('addImg', files, props.images)
+  // Default behavior if no listener (Vue 3 always emits)
+  if (!event.defaultPrevented) {
+    for (let i = 0; i < files.length; i++) {
+      props.images.push(files[i])
+    }
+  }
+}
+
+const deleteImg = (index) => {
+  //是否有自定义回调函数
+  // Note: $listeners.deleteImg check replaced with emit
+  emit('deleteImg', index, props.images)
+  // Default behavior if no listener
+  if (props.images.length > index) {
+    props.images.splice(index, 1)
+  }
+  if (props.images.length >= props.maxCount) {
+    countDisable.value = true
+  } else {
+    countDisable.value = false
+  }
+}
+
+const createObjectURL = (file) => {
+  let url = null
+  if (window.createObjectURL != undefined) {
+    // basic
+    url = window.createObjectURL(file)
+  } else if (window.URL != undefined) {
+    // mozilla(firefox)
+    url = window.URL.createObjectURL(file)
+  } else if (window.webkitURL != undefined) {
+    // webkit or chrome
+    url = window.webkitURL.createObjectURL(file)
+  }
+  return url
+}
+
+const imgSrcs = computed(() => {
+  let imgSrcs = []
+  props.images.forEach((i) => {
+    if (i.name) {
+      imgSrcs.push(createObjectURL(i))
+    } else {
+      imgSrcs.push(i)
+    }
+  })
+  if (imgSrcs.length >= props.maxCount) {
+    countDisable.value = true
+  } else {
+    countDisable.value = false
+  }
+  return imgSrcs
+})
+
+const sizeStyle = computed(() => {
+  let tmp = props.imgSize + 'px'
+  return {
+    width: tmp,
+    height: tmp,
+  }
+})
+
+watch(() => props.images, (val) => {
+  emit('change', val)
+})
+
+defineOptions({
   model: {
     prop: 'images',
     event: 'change',
   },
-  data() {
-    return {
-      countDisable: {
-        type: Boolean,
-        default: function () {
-          return true
-        },
-      },
-    }
-  },
-  props: {
-    images: {
-      type: Array,
-      default: function () {
-        return []
-      },
-    },
-    disabled: {
-      type: Boolean,
-      default: function () {
-        return false
-      },
-    },
-    maxCount: {
-      type: Number,
-      default: function () {
-        return 9
-      },
-    },
-    multiple: {
-      type: Boolean,
-      default: function () {
-        return false
-      },
-    },
-    showCount: {
-      type: Boolean,
-      default: function () {
-        return true
-      },
-    },
-    imgSize: {
-      type: Number,
-      default: function () {
-        return 80
-      },
-    },
-  },
-  methods: {
-    addImg(event) {
-      //是否允许编辑
-      if (this.disabled) return
-      let inputDOM = this.$refs.up_input
-      let files = inputDOM.files
-      //是否超出最大文件数量限制
-      if (this.images.length + files.length > this.maxCount) {
-        console.info('Max images count limit')
-        this.countDisable = true
-        return
-      }
-      //是否有自定义回调函数
-      if (this.$listeners.addImg) {
-        this.$emit('addImg', files, this.images)
-      } else {
-        for (let i = 0; i < files.length; i++) {
-          this.images.push(files[i])
-        }
-      }
-    },
-    deleteImg(index) {
-      //是否有自定义回调函数
-      if (this.$listeners.deleteImg) {
-        this.$emit('deleteImg', index, this.images)
-      } else {
-        this.images.splice(index, 1)
-      }
-      if (this.images.length >= this.maxCount) {
-        this.countDisable = true
-      } else {
-        this.countDisable = false
-      }
-    },
-    createObjectURL(file) {
-      let url = null
-      if (window.createObjectURL != undefined) {
-        // basic
-        url = window.createObjectURL(file)
-      } else if (window.URL != undefined) {
-        // mozilla(firefox)
-        url = window.URL.createObjectURL(file)
-      } else if (window.webkitURL != undefined) {
-        // webkit or chrome
-        url = window.webkitURL.createObjectURL(file)
-      }
-      return url
-    },
-  },
-  watch: {
-    images: function (val) {
-      this.$emit('change', val)
-    },
-  },
-  computed: {
-    imgSrcs: function () {
-      let imgSrcs = []
-      let that = this
-      this.images.forEach((i) => {
-        if (i.name) {
-          imgSrcs.push(that.createObjectURL(i))
-        } else {
-          imgSrcs.push(i)
-        }
-      })
-      if (imgSrcs.length >= this.maxCount) {
-        that.countDisable = true
-      } else {
-        that.countDisable = false
-      }
-      return imgSrcs
-    },
-    sizeStyle: function () {
-      let tmp = this.imgSize + 'px'
-      return {
-        width: tmp,
-        height: tmp,
-      }
-    },
-  },
-}
+})
 </script>
 
 <style scoped>

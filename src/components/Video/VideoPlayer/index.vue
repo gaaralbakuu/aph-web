@@ -112,177 +112,176 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Loading } from '@element-plus/icons-vue'
 
-export default {
-  name: 'VideoPlayer',
-  components: {
-    Loading
+defineOptions({
+  name: 'VideoPlayer'
+})
+
+const props = defineProps({
+  videoSrc: {
+    type: String,
+    required: true
   },
-  props: {
-    videoSrc: {
-      type: String,
-      required: true
-    },
-    poster: {
-      type: String,
-      default: ''
-    },
-    autoplay: {
-      type: Boolean,
-      default: false
-    }
+  poster: {
+    type: String,
+    default: ''
   },
-  data() {
-    return {
-      isPlaying: false,
-      currentTime: 0,
-      duration: 0,
-      volume: 1,
-      isMuted: false,
-      playbackRate: 1,
-      showControls: true,
-      isLoading: true,
-      hasError: false,
-      controlsTimeout: null
-    }
-  },
-  computed: {
-    progressPercent() {
-      return this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0
-    }
-  },
-  mounted() {
-    this.setupVideoEvents()
-    if (this.autoplay) {
-      this.playVideo()
-    }
-  },
-  beforeUnmount() {
-    this.clearControlsTimeout()
-    if (this.$refs.videoPlayer) {
-      this.$refs.videoPlayer.removeEventListener('loadedmetadata', this.onLoadedMetadata)
-      this.$refs.videoPlayer.removeEventListener('timeupdate', this.onTimeUpdate)
-      this.$refs.videoPlayer.removeEventListener('ended', this.onEnded)
-      this.$refs.videoPlayer.removeEventListener('play', this.onPlay)
-      this.$refs.videoPlayer.removeEventListener('pause', this.onPause)
-      this.$refs.videoPlayer.removeEventListener('error', this.onError)
-    }
-  },
-  methods: {
-    setupVideoEvents() {
-      const video = this.$refs.videoPlayer
-      if (video) {
-        video.addEventListener('loadedmetadata', this.onLoadedMetadata)
-        video.addEventListener('timeupdate', this.onTimeUpdate)
-        video.addEventListener('ended', this.onEnded)
-        video.addEventListener('play', this.onPlay)
-        video.addEventListener('pause', this.onPause)
-        video.addEventListener('error', this.onError)
-      }
-    },
+  autoplay: {
+    type: Boolean,
+    default: false
+  }
+})
 
-    onLoadedMetadata() {
-      this.duration = this.$refs.videoPlayer.duration
-      this.isLoading = false
-      this.$emit('loaded', { duration: this.duration })
-    },
+const emit = defineEmits(['loaded', 'timeupdate', 'ended', 'play', 'pause', 'error'])
 
-    onTimeUpdate() {
-      this.currentTime = this.$refs.videoPlayer.currentTime
-      this.$emit('timeupdate', { currentTime: this.currentTime, duration: this.duration })
-    },
+const videoPlayer = ref(null)
+const isPlaying = ref(false)
+const currentTime = ref(0)
+const duration = ref(0)
+const volume = ref(1)
+const isMuted = ref(false)
+const playbackRate = ref(1)
+const showControls = ref(true)
+const isLoading = ref(true)
+const hasError = ref(false)
+const controlsTimeout = ref(null)
 
-    onEnded() {
-      this.isPlaying = false
-      this.$emit('ended')
-    },
+const progressPercent = computed(() => {
+  return duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0
+})
 
-    onPlay() {
-      this.isPlaying = true
-      this.$emit('play')
-    },
-
-    onPause() {
-      this.isPlaying = false
-      this.$emit('pause')
-    },
-
-    onError() {
-      this.hasError = true
-      this.isLoading = false
-      this.$emit('error')
-    },
-
-    togglePlayPause() {
-      if (this.isPlaying) {
-        this.pauseVideo()
-      } else {
-        this.playVideo()
-      }
-    },
-
-    playVideo() {
-      this.$refs.videoPlayer.play()
-    },
-
-    pauseVideo() {
-      this.$refs.videoPlayer.pause()
-    },
-
-    seekToPosition(event) {
-      const rect = event.target.getBoundingClientRect()
-      const percent = (event.clientX - rect.left) / rect.width
-      const newTime = percent * this.duration
-      this.$refs.videoPlayer.currentTime = newTime
-    },
-
-    toggleMute() {
-      this.isMuted = !this.isMuted
-      this.$refs.videoPlayer.muted = this.isMuted
-    },
-
-    changeVolume() {
-      this.$refs.videoPlayer.volume = this.volume
-      this.isMuted = this.volume === 0
-    },
-
-    changePlaybackRate() {
-      this.$refs.videoPlayer.playbackRate = this.playbackRate
-    },
-
-    toggleFullscreen() {
-      const video = this.$refs.videoPlayer
-      if (video.requestFullscreen) {
-        video.requestFullscreen()
-      } else if (video.webkitRequestFullscreen) {
-        video.webkitRequestFullscreen()
-      } else if (video.msRequestFullscreen) {
-        video.msRequestFullscreen()
-      }
-    },
-
-    retryLoad() {
-      this.hasError = false
-      this.isLoading = true
-      this.$refs.videoPlayer.load()
-    },
-
-    formatTime(seconds) {
-      const mins = Math.floor(seconds / 60)
-      const secs = Math.floor(seconds % 60)
-      return `${mins}:${secs.toString().padStart(2, '0')}`
-    },
-
-    clearControlsTimeout() {
-      if (this.controlsTimeout) {
-        clearTimeout(this.controlsTimeout)
-        this.controlsTimeout = null
-      }
-    }
+const setupVideoEvents = () => {
+  const video = videoPlayer.value
+  if (video) {
+    video.addEventListener('loadedmetadata', onLoadedMetadata)
+    video.addEventListener('timeupdate', onTimeUpdate)
+    video.addEventListener('ended', onEnded)
+    video.addEventListener('play', onPlay)
+    video.addEventListener('pause', onPause)
+    video.addEventListener('error', onError)
   }
 }
+
+const onLoadedMetadata = () => {
+  duration.value = videoPlayer.value.duration
+  isLoading.value = false
+  emit('loaded', { duration: duration.value })
+}
+
+const onTimeUpdate = () => {
+  currentTime.value = videoPlayer.value.currentTime
+  emit('timeupdate', { currentTime: currentTime.value, duration: duration.value })
+}
+
+const onEnded = () => {
+  isPlaying.value = false
+  emit('ended')
+}
+
+const onPlay = () => {
+  isPlaying.value = true
+  emit('play')
+}
+
+const onPause = () => {
+  isPlaying.value = false
+  emit('pause')
+}
+
+const onError = () => {
+  hasError.value = true
+  isLoading.value = false
+  emit('error')
+}
+
+const togglePlayPause = () => {
+  if (isPlaying.value) {
+    pauseVideo()
+  } else {
+    playVideo()
+  }
+}
+
+const playVideo = () => {
+  videoPlayer.value.play()
+}
+
+const pauseVideo = () => {
+  videoPlayer.value.pause()
+}
+
+const seekToPosition = (event) => {
+  const rect = event.target.getBoundingClientRect()
+  const percent = (event.clientX - rect.left) / rect.width
+  const newTime = percent * duration.value
+  videoPlayer.value.currentTime = newTime
+}
+
+const toggleMute = () => {
+  isMuted.value = !isMuted.value
+  videoPlayer.value.muted = isMuted.value
+}
+
+const changeVolume = () => {
+  videoPlayer.value.volume = volume.value
+  isMuted.value = volume.value === 0
+}
+
+const changePlaybackRate = () => {
+  videoPlayer.value.playbackRate = playbackRate.value
+}
+
+const toggleFullscreen = () => {
+  const video = videoPlayer.value
+  if (video.requestFullscreen) {
+    video.requestFullscreen()
+  } else if (video.webkitRequestFullscreen) {
+    video.webkitRequestFullscreen()
+  } else if (video.msRequestFullscreen) {
+    video.msRequestFullscreen()
+  }
+}
+
+const retryLoad = () => {
+  hasError.value = false
+  isLoading.value = true
+  videoPlayer.value.load()
+}
+
+const formatTime = (seconds) => {
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+const clearControlsTimeout = () => {
+  if (controlsTimeout.value) {
+    clearTimeout(controlsTimeout.value)
+    controlsTimeout.value = null
+  }
+}
+
+onMounted(() => {
+  setupVideoEvents()
+  if (props.autoplay) {
+    playVideo()
+  }
+})
+
+onBeforeUnmount(() => {
+  clearControlsTimeout()
+  if (videoPlayer.value) {
+    videoPlayer.value.removeEventListener('loadedmetadata', onLoadedMetadata)
+    videoPlayer.value.removeEventListener('timeupdate', onTimeUpdate)
+    videoPlayer.value.removeEventListener('ended', onEnded)
+    videoPlayer.value.removeEventListener('play', onPlay)
+    videoPlayer.value.removeEventListener('pause', onPause)
+    videoPlayer.value.removeEventListener('error', onError)
+  }
+})
 </script>
 
 <style scoped>

@@ -53,27 +53,13 @@ const emptyData = {};
 export default {
 	name: 'demo',
 	components: { zTable, zFormDialog, zPagination },
-	data: function() {
+	data() {
 		return {
 			api: api.publiccode,
-			name: this.l.title,
-			columns: [
-				{ title: this.l.role_id, key: 'rule_no' },
-				{ title: this.l.role_id, key: 'name_zh' },
-				{ title: this.l.role_name, key: 'lengths' },
-				{ title: this.l.role_desc, key: 'rule_type' },
-				{ title: this.l.role_desc, key: 'code_pz' }
-			],
-			fields: [
-				{ title: 'rule_no', key: 'rule_no', required: true },
-				{ title: 'role_name', key: 'role_name', required: true },
-				{ title: 'role_desc', key: 'role_desc', required: true }
-			],
-			detailFields: [
-				{ title: 'name_zh', key: 'name_zh', required: true },
-				{ title: 'name_tw', key: 'name_tw', required: true },
-				{ title: 'name_en', key: 'name_en', required: true }
-			],
+			name: '',
+			columns: [],
+			fields: [],
+			detailFields: [],
 			tableProps: {
 				border: true,
 				opsColWith: 100,
@@ -104,13 +90,7 @@ export default {
 			editFormVisible: false,
 			currentDataId: 0,
 			menuData: [],
-			detailColumns: [
-				{ title: this.l.userid, key: 'name_zh' },
-				{ title: this.l.username, key: 'name_tw' },
-				{ title: this.l.username, key: 'name_en' },
-				{ title: this.l.username, key: 'create_time' },
-				{ title: this.l.username, key: 'modify_time' }
-			],
+			detailColumns: [],
 			detailTableProps: {
 				border: true,
 				opsColWith: 60,
@@ -131,6 +111,34 @@ export default {
 			addUsers: '',
 			submitAddUserLoading: false
 		};
+	},
+	created() {
+		this.name = this.l.title;
+		this.columns = [
+			{ title: this.l.role_id, key: 'rule_no' },
+			{ title: this.l.role_id, key: 'name_zh' },
+			{ title: this.l.role_name, key: 'lengths' },
+			{ title: this.l.role_desc, key: 'rule_type' },
+			{ title: this.l.role_desc, key: 'code_pz' }
+		];
+		this.fields = [
+			{ title: 'rule_no', key: 'rule_no', required: true },
+			{ title: 'role_name', key: 'role_name', required: true },
+			{ title: 'role_desc', key: 'role_desc', required: true }
+		];
+		this.detailFields = [
+			{ title: 'name_zh', key: 'name_zh', required: true },
+			{ title: 'name_tw', key: 'name_tw', required: true },
+			{ title: 'name_en', key: 'name_en', required: true }
+		];
+		this.detailColumns = [
+			{ title: this.l.userid, key: 'name_zh' },
+			{ title: this.l.username, key: 'name_tw' },
+			{ title: this.l.username, key: 'name_en' },
+			{ title: this.l.username, key: 'create_time' },
+			{ title: this.l.username, key: 'modify_time' }
+		];
+		this.getList();
 	},
 	methods: {
 		getList() {
@@ -282,9 +290,6 @@ export default {
 					this.pageLoading = false;
 				});
 		}
-	},
-	created: function() {
-		this.getList();
 	},
 	watch: {
 		data: function(val) {}

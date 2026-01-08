@@ -1,58 +1,46 @@
 <template>
-  <div class="flex h-full" :class="{ mobile: device === 'mobile' }">
-    <div
-      v-if="device === 'mobile' && !isCollapse"
-      class="fixed inset-0 z-40 bg-black/50"
-      @click="handleClickOutside"
-    ></div>
-    <aside
-      class="app-aside relative z-50 flex h-full flex-col border-r border-white/10 bg-gray-900 text-gray-100 shadow-xl transition-all duration-300"
-      :style="[{ backgroundColor: menuBackgroundColor }, menuWidthStyle]"
-      :class="{ hideSidebar: isCollapse }"
-    >
-      <div class="flex h-full flex-col">
-        <div :class="['flex h-14 items-center justify-center border-b border-white/10', {'px-4': !isCollapse, 'px-1': isCollapse}]" >
-          <template v-if=" !isCollapse ">
-            <span class="truncate text-lg font-semibold tracking-wide">{{ sysname }}</span>
-          </template>
-          <template v-else>
-            <div class="pt-0.5">
-              <img class="w-11" :src="scuLogo" />
+  <div class="h-full">
+    <div>
+      <div :class="['bg-[#f5f9fc] flex flex-col border-r border-gray-100 transition fixed top-0 left-0 h-full z-100', { '-translate-x-full': isCollapse, 'w-80': !isCollapse }]">
+        <div class="border-b border-gray-200">
+          <div class="h-12 flex justify-between items-center">
+            <div class="flex items-center px-4 h-full font-semibold">
+              {{ sysname }}
             </div>
-          </template>
+            <div class="pr-2 transition-transform duration-200" :class="{ 'translate-x-full pl-2 relative': isCollapse }">
+              <Button variant="secondary" class="bg-transparent hover:bg-gray-200 shadow-none size-8 p-0" @click="toggleSideBar">
+                <HugeiconsIcon :icon="MenuCollapseIcon" v-if="!isCollapse" />
+                <HugeiconsIcon :icon="Menu01Icon" v-else />
+              </Button>
+            </div>
+          </div>
         </div>
-        <nav :class="['flex-1 overflow-y-auto py-1', {'px-1': isCollapse, 'px-3': !isCollapse}]" >
-          <ul class="space-y-1">
-            <SidebarItem
-              v-for="item in user.menus"
-              :key="item.id"
-              :item="item"
-              :collapse="isCollapse"
-              :level="0"
-              :text-color="textColor"
-              :active-color="textActiveColor"
-            />
-          </ul>
-        </nav>
+        <div class="flex-1 overflow-hidden">
+          <ScrollArea class="size-full">
+            <div class="p-4">
+              <SidebarItem v-for="item in user.menus" :key="item.id" :item="item" :collapse="isCollapse" :level="0" />
+            </div>
+          </ScrollArea>
+        </div>
       </div>
-    </aside>
-    <div class="app-aside-right no-scroll-x flex h-full flex-1 flex-col bg-gray-50 dark:bg-black">
-      <header class="flex h-auto flex-col border-b border-gray-100/60 bg-white/70 dark:border-white/10 dark:bg-black/40">
-        <navbar />
-      </header>
-      <main class="flex-1 overflow-y-auto">
-        <keep-alive v-if="showTagBar" :include="cachedViews">
-          <router-view />
-        </keep-alive>
-        <router-view v-else />
-      </main>
+    </div>
+    <div class="flex flex-col h-full transition-[margin-left] duration-200" :class="[{ 'ml-0': isCollapse, 'ml-80': !isCollapse && !isMobile }]">
+      <div>
+        <header class="h-12">
+          <!-- <Navbar /> -->
+        </header>
+      </div>
+      <TagsView v-if="showTagBar" />
+      <div clas="test">
+        <RouterView />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 
 import scuLogoImg from '@/assets/apache.png'
@@ -63,8 +51,17 @@ import SidebarItem from './components/SidebarItem.vue'
 import TagsView from './components/TagsView.vue'
 
 import { useResizeHandler } from '@/composables/useResizeHandler.js'
+import { useAppStore } from '@/stores/app.js'
+import { useTagsViewStore } from '@/stores/tagsView.js'
+import { useUserStore } from '@/stores/user.js'
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue'
+import Button from '@/components/ui/button/Button.vue'
+import { Menu01Icon, MenuCollapseIcon } from '@hugeicons/core-free-icons/index'
+import { HugeiconsIcon } from '@hugeicons/vue'
 
-const store = useStore()
+const appStore = useAppStore()
+const tagsViewStore = useTagsViewStore()
+const userStore = useUserStore()
 const route = useRoute()
 
 // Initialize Resize Handler
@@ -85,20 +82,22 @@ const scuLogo = scuLogoImg
 
 const { menuBackgroundColor, textColor, textActiveColor, showTagBar } = config
 
-const sidebar = computed(() => store.getters.sidebar)
-const user = computed(() => store.getters.user)
-const isCollapse = computed(() => !sidebar.value.opened)
-const device = computed(() => store.state.app.device)
-const cachedViews = computed(() => store.state.tagsView.cachedViews)
+const { sidebar, device } = storeToRefs(appStore)
+const { cachedViews } = storeToRefs(tagsViewStore)
+const { user } = storeToRefs(userStore)
 
-const menuWidthStyle = computed(() => {
-  const width = isCollapse.value ? (device.value === 'mobile' ? 0 : config.menuCollapseWidth) : config.menuWidth
-  const widthValue = width + 'px'
-  return { width: widthValue, minWidth: widthValue }
-})
+const isCollapse = computed(() => !sidebar.value.opened)
+
+const isMobile = computed(() => device.value === 'mobile')
+
+console.log(isMobile.value)
 
 const handleClickOutside = () => {
-  store.dispatch('closeSideBar', { withoutAnimation: false })
+  appStore.closeSideBar({ withoutAnimation: false })
+}
+
+const toggleSideBar = () => {
+  appStore.toggleSideBar()
 }
 </script>
 
@@ -112,21 +111,5 @@ const handleClickOutside = () => {
 .sidebar-fade-leave-to {
   opacity: 0;
   transform: translateY(-4px);
-}
-
-.app-aside nav::-webkit-scrollbar {
-  width: 6px;
-}
-
-.app-aside nav::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 9999px;
-}
-
-.mobile .app-aside {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
 }
 </style>

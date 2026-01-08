@@ -1,12 +1,12 @@
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
-import { useStore } from 'vuex'
+import { onMounted, onBeforeUnmount, watch } from 'vue'
+import { useAppStore } from '@/stores/app'
 import { useRoute } from 'vue-router'
 
 const WIDTH = 1024
 const RATIO = 3
 
 export function useResizeHandler() {
-  const store = useStore()
+  const appStore = useAppStore()
   const route = useRoute()
   const { body } = document
 
@@ -18,25 +18,25 @@ export function useResizeHandler() {
   const resizeHandler = () => {
     if (!document.hidden) {
       const mobile = isMobile()
-      store.dispatch('toggleDevice', mobile ? 'mobile' : 'desktop')
+      appStore.toggleDevice(mobile ? 'mobile' : 'desktop')
 
       if (mobile) {
-        store.dispatch('closeSideBar', { withoutAnimation: true })
+        appStore.closeSideBar({ withoutAnimation: true })
       }
     }
   }
 
   watch(() => route.path, () => {
-    if (store.state.app.device === 'mobile' && store.state.app.sidebar.opened) {
-      store.dispatch('closeSideBar', { withoutAnimation: false })
+    if (appStore.device === 'mobile' && appStore.sidebar.opened) {
+      appStore.closeSideBar({ withoutAnimation: false })
     }
   })
 
   onMounted(() => {
     const mobile = isMobile()
     if (mobile) {
-      store.dispatch('toggleDevice', 'mobile')
-      store.dispatch('closeSideBar', { withoutAnimation: true })
+      appStore.toggleDevice('mobile')
+      appStore.closeSideBar({ withoutAnimation: true })
     }
     window.addEventListener('resize', resizeHandler)
   })

@@ -18,7 +18,7 @@ import Antd from 'ant-design-vue'
 import Cookies from 'js-cookie'
 import { createApp } from 'vue'
 import Viewer from 'v-viewer'
-import 'viewerjs/dist/viewer.css'
+// import 'viewerjs/dist/viewer.css'
 import { createI18n } from 'vue-i18n'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 

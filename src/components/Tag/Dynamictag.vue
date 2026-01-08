@@ -26,7 +26,9 @@
 }
 </style>
 
-<script>
+<script setup>
+import { ref, watch, nextTick } from 'vue'
+
 const defaultConfig = {
   tagSize: 'medium',
   buttonSize: 'mini',
@@ -34,47 +36,47 @@ const defaultConfig = {
   inputWidth: '120',
   // buttonLabel: '+ New Tag'
 }
-export default {
+
+defineOptions({
   model: {
     prop: 'tags',
     event: 'change',
   },
-  props: {
-    tags: Array,
-    config: Object,
-  },
-  data() {
-    return {
-      conf: Object.assign({}, defaultConfig, this.config),
-      inputVisible: false,
-      inputValue: '',
-    }
-  },
-  methods: {
-    handleClose(tag) {
-      this.tags.splice(this.tags.indexOf(tag), 1)
-    },
+})
 
-    showInput() {
-      this.inputVisible = true
-      this.$nextTick((_) => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
-    },
+const props = defineProps({
+  tags: Array,
+  config: Object,
+})
 
-    handleInputConfirm() {
-      const inputValue = this.inputValue
-      if (inputValue) {
-        this.tags.push(inputValue)
-      }
-      this.inputVisible = false
-      this.inputValue = ''
-    },
-  },
-  watch: {
-    tags: function (newValue, oldValue) {
-      this.$emit('update', newValue)
-    },
-  },
+const emit = defineEmits(['update'])
+
+const conf = ref(Object.assign({}, defaultConfig, props.config))
+const inputVisible = ref(false)
+const inputValue = ref('')
+const saveTagInput = ref(null)
+
+const handleClose = (tag) => {
+  props.tags.splice(props.tags.indexOf(tag), 1)
 }
+
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    saveTagInput.value.$refs.input.focus()
+  })
+}
+
+const handleInputConfirm = () => {
+  const inputValueLocal = inputValue.value
+  if (inputValueLocal) {
+    props.tags.push(inputValueLocal)
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
+
+watch(() => props.tags, (newValue, oldValue) => {
+  emit('update', newValue)
+})
 </script>

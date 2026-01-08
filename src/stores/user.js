@@ -71,7 +71,8 @@ export const useUserStore = defineStore('user', () => {
           id: '0',
           title: '欢迎页',
           icon: 'home',
-          target: 'welcome'
+          target: 'welcome',
+          is_show: 'Y'
         })
 
         userData.menus = res

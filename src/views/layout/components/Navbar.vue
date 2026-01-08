@@ -2,7 +2,7 @@
   <el-menu class="navbar" mode="horizontal">
     <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
 
-    <Breadcrumb class="breadcrumb-container"></Breadcrumb>
+    <!-- <Breadcrumb class="breadcrumb-container"></Breadcrumb> -->
 
     <div class="right-menu">
       <ErrorLog class="errLog-container right-menu-item"></ErrorLog>
@@ -72,7 +72,7 @@ const logout = () => {
 }
 </script>
 
-<style rel="stylesheet/scss" scoped>
+<style scoped>
 .navbar {
   height: 50px;
   line-height: 50px;

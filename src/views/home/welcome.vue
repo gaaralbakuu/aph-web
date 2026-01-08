@@ -1,15 +1,11 @@
 <template>
   <div class="welcome-container">
-    <div class="welcome-text">
-      {{ t('welcome.title') }}
-    </div>
+    <div class="welcome-text">sdaasddas</div>
   </div>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
 defineOptions({ name: 'Welcome' })
-const { t } = useI18n()
 </script>
 
 <style scoped>

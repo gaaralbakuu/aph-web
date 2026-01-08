@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 const style = {
   primary: { 'background-color': '#ecf5ff', 'border-color': '#409eff' },
   success: { 'background-color': '#f0f9eb', 'border-color': '#67c23a' },
@@ -12,20 +12,14 @@ const style = {
   warning: { 'background-color': '#fdf6ec', 'border-color': '#e6a23c' },
   danger: { 'background-color': '#fef0f0', 'border-color': '#f56c6c' }
 }
-export default {
-  props: {
-    content: String,
-    type: {
-      type: String,
-      default: 'primary'
-    }
-  },
-  data: function () {
-    return {
-      style: style
-    }
+
+defineProps({
+  content: String,
+  type: {
+    type: String,
+    default: 'primary'
   }
-}
+})
 </script>
 
 <style scoped>

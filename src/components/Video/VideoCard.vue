@@ -121,110 +121,112 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'VideoCard',
-  props: {
-    id: {
-      type: [String, Number],
-      required: true
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      default: ''
-    },
-    thumbnail: {
-      type: String,
-      default: ''
-    },
-    duration: {
-      type: Number,
-      default: 0
-    },
-    views: {
-      type: Number,
-      default: 0
-    },
-    likes: {
-      type: Number,
-      default: 0
-    },
-    uploadDate: {
-      type: [String, Date],
-      default: null
-    },
-    tags: {
-      type: Array,
-      default: () => []
-    },
-    author: {
-      type: String,
-      default: ''
-    },
-    isFavorite: {
-      type: Boolean,
-      default: false
-    }
+<script setup>
+defineOptions({
+  name: 'VideoCard'
+})
+
+const props = defineProps({
+  id: {
+    type: [String, Number],
+    required: true
   },
-  methods: {
-    onImageError() {
-      // Handle thumbnail load error
-      this.$emit('thumbnail-error', this.id)
-    },
-
-    toggleFavorite() {
-      this.$emit('toggle-favorite', this.id)
-    },
-
-    shareVideo() {
-      this.$emit('share', this.id)
-    },
-
-    showMoreOptions() {
-      this.$emit('more-options', this.id)
-    },
-
-    formatDuration(seconds) {
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds % 3600) / 60)
-      const secs = Math.floor(seconds % 60)
-
-      if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-      }
-      return `${minutes}:${secs.toString().padStart(2, '0')}`
-    },
-
-    formatNumber(num) {
-      if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M'
-      }
-      if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K'
-      }
-      return num.toString()
-    },
-
-    formatDate(date) {
-      if (!date) return ''
-
-      const now = new Date()
-      const uploadDate = new Date(date)
-      const diffTime = Math.abs(now - uploadDate)
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-      if (diffDays === 1) return 'Today'
-      if (diffDays === 2) return 'Yesterday'
-      if (diffDays <= 7) return `${diffDays - 1} days ago`
-      if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} weeks ago`
-      if (diffDays <= 365) return `${Math.ceil(diffDays / 30)} months ago`
-      return `${Math.ceil(diffDays / 365)} years ago`
-    }
+  title: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  thumbnail: {
+    type: String,
+    default: ''
+  },
+  duration: {
+    type: Number,
+    default: 0
+  },
+  views: {
+    type: Number,
+    default: 0
+  },
+  likes: {
+    type: Number,
+    default: 0
+  },
+  uploadDate: {
+    type: [String, Date],
+    default: null
+  },
+  tags: {
+    type: Array,
+    default: () => []
+  },
+  author: {
+    type: String,
+    default: ''
+  },
+  isFavorite: {
+    type: Boolean,
+    default: false
   }
+})
+
+const emit = defineEmits(['thumbnail-error', 'toggle-favorite', 'share', 'more-options'])
+
+const onImageError = () => {
+  // Handle thumbnail load error
+  emit('thumbnail-error', props.id)
+}
+
+const toggleFavorite = () => {
+  emit('toggle-favorite', props.id)
+}
+
+const shareVideo = () => {
+  emit('share', props.id)
+}
+
+const showMoreOptions = () => {
+  emit('more-options', props.id)
+}
+
+const formatDuration = (seconds) => {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+  return `${minutes}:${secs.toString().padStart(2, '0')}`
+}
+
+const formatNumber = (num) => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M'
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K'
+  }
+  return num.toString()
+}
+
+const formatDate = (date) => {
+  if (!date) return ''
+
+  const now = new Date()
+  const uploadDate = new Date(date)
+  const diffTime = Math.abs(now - uploadDate)
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 1) return 'Today'
+  if (diffDays === 2) return 'Yesterday'
+  if (diffDays <= 7) return `${diffDays - 1} days ago`
+  if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} weeks ago`
+  if (diffDays <= 365) return `${Math.ceil(diffDays / 30)} months ago`
+  return `${Math.ceil(diffDays / 365)} years ago`
 }
 </script>
 

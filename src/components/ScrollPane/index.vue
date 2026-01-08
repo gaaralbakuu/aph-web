@@ -4,38 +4,42 @@
   </el-scrollbar>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+
 const padding = 15 // tag's padding
 
-export default {
-  name: 'ScrollPane',
-  data () {
-    return {
-      left: 0
-    }
-  },
-  methods: {
-    handleScroll (e) {
-      const eventDelta = e.wheelDelta || -e.deltaY * 40
-      const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap
-      $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4
-    },
-    moveToTarget ($target) {
-      const $container = this.$refs.scrollContainer.$el
-      const $containerWidth = $container.offsetWidth
-      const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap
-      const $targetLeft = $target.offsetLeft
-      const $targetWidth = $target.offsetWidth
-      if ($targetLeft > $containerWidth) {
-        // tag in the right
-        $scrollWrapper.scrollLeft = $targetLeft - $containerWidth + $targetWidth + padding
-      } else {
-        // tag in the left
-        $scrollWrapper.scrollLeft = $targetLeft - padding
-      }
-    }
+defineOptions({
+  name: 'ScrollPane'
+})
+
+const left = ref(0)
+const scrollContainer = ref(null)
+
+const handleScroll = (e) => {
+  const eventDelta = e.wheelDelta || -e.deltaY * 40
+  const $scrollWrapper = scrollContainer.value.$refs.wrap
+  $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4
+}
+
+const moveToTarget = ($target) => {
+  const $container = scrollContainer.value.$el
+  const $containerWidth = $container.offsetWidth
+  const $scrollWrapper = scrollContainer.value.$refs.wrap
+  const $targetLeft = $target.offsetLeft
+  const $targetWidth = $target.offsetWidth
+  if ($targetLeft > $containerWidth) {
+    // tag in the right
+    $scrollWrapper.scrollLeft = $targetLeft - $containerWidth + $targetWidth + padding
+  } else {
+    // tag in the left
+    $scrollWrapper.scrollLeft = $targetLeft - padding
   }
 }
+
+defineExpose({
+  moveToTarget
+})
 </script>
 
 <style scoped>

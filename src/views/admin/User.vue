@@ -22,7 +22,7 @@
 			<el-button class="filter-item" type="info" plain @click="exportData" :loading="exportLoading">{{ c.export }}</el-button>
 		</div>
 		<z-table :list="list" :tableProps="tableProps" :columns="userObj.columns" @editItem="editItem" @deleteItem="deleteItem">
-			<template v-slot:content="{ row, key }">
+			<template #content="{ row, key }">
 				<div v-if="key == 'in_date' || key == 'out_date'">
 					<span>{{ $filters.datetime(row[key]) }}</span>
 				</div>
@@ -34,7 +34,7 @@
 				</div>
 				<span v-else>{{ row[key] }}</span>
 			</template>
-			<template v-slot:operation="v">
+			<template #operation="v">
 				<a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ l.editItem }}</a>
 				&nbsp;
 				<a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ c.delete }}</a>
@@ -65,7 +65,7 @@
 				v-model="deptObj.query"
 			></el-input>
 			<z-table :list="deptObj.list" :tableProps="tableProps" :columns="deptObj.columns">
-				<template v-slot:operation="v">
+				<template #operation="v">
 					<a href="#" class="text-blue" @click.prevent="sendDeptItem(v.row, v.$index)">{{ c.confirm}}</a>
 					&nbsp;
 				</template>

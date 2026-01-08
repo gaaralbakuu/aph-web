@@ -47,55 +47,61 @@ const config = Object.assign({}, _.cloneDeep(defaultConfig), {
 export default {
   components: { zTable, zFormDialog, zPagination },
   name: 'sysbasicsSymesg',
-  data: function () {
+  data() {
     return {
       ...config,
-      name: this.l.title,
-      columns: [
-    { title: this.l.msg_id, key: 'msg_id' , width: 160 },
-    { title: this.l.msg_name_zh, key: 'msg_name_zh' , width: 200 },
-    { title: this.l.msg_name_en, key: 'msg_name_en' , width: 200 },
-    { title: this.l.msg_name_tw, key: 'msg_name_tw'  },
-    { title: this.l.msg_type, key: 'msg_type' , width: 100 },
-    { title: this.l.msg_id_pz, key: 'msg_id_pz' , width: 100 },
-    { title: this.c.modify_user, key: 'modify_user'  },
-    { title: this.c.modify_time, key: 'modify_time' }
-  ],
-  fields: [
-    { title: this.l.msg_id, key: 'msg_id',  required: true },  // 在编辑状态时只读 props: { disabled: true }
-    { title: this.l.msg_name_zh, key: 'msg_name_zh' , required: true },
-    { title: this.l.msg_name_en, key: 'msg_name_en' , required: true },
-    { title: this.l.msg_name_tw, key: 'msg_name_tw' , required: true },
-    {
-          title: this.l.msg_type,
-          key: 'msg_type',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'M', label: '提示' },
-            { value: 'E', label: '错误' },
-            { value: 'A', label: '警示' },
-          ],
-          props: { placeholder: this.l.systemPd },
-          required: true,
-          span: 12,
-        },
-     {
-          title: this.l.msg_id_pz,
-          key: 'msg_id_pz',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'Y', label: 'Y' },
-            { value: 'N', label: 'N' },
-          ],
-          props: { placeholder: this.l.systemPd },
-          required: true,
-          span: 12,
-        },
-  ],
+      name: '',
+      columns: [],
+      fields: [],
       typeOptions: [],
     }
+  },
+  created() {
+    this.name = this.l.title;
+    this.columns = [
+      { title: this.l.msg_id, key: 'msg_id', width: 160 },
+      { title: this.l.msg_name_zh, key: 'msg_name_zh', width: 200 },
+      { title: this.l.msg_name_en, key: 'msg_name_en', width: 200 },
+      { title: this.l.msg_name_tw, key: 'msg_name_tw' },
+      { title: this.l.msg_type, key: 'msg_type', width: 100 },
+      { title: this.l.msg_id_pz, key: 'msg_id_pz', width: 100 },
+      { title: this.c.modify_user, key: 'modify_user' },
+      { title: this.c.modify_time, key: 'modify_time' }
+    ];
+    this.fields = [
+      { title: this.l.msg_id, key: 'msg_id', required: true },
+      { title: this.l.msg_name_zh, key: 'msg_name_zh', required: true },
+      { title: this.l.msg_name_en, key: 'msg_name_en', required: true },
+      { title: this.l.msg_name_tw, key: 'msg_name_tw', required: true },
+      {
+        title: this.l.msg_type,
+        key: 'msg_type',
+        name: 'select',
+        events: {},
+        options: [
+          { value: 'M', label: '提示' },
+          { value: 'E', label: '错误' },
+          { value: 'A', label: '警示' },
+        ],
+        props: { placeholder: this.l.systemPd },
+        required: true,
+        span: 12,
+      },
+      {
+        title: this.l.msg_id_pz,
+        key: 'msg_id_pz',
+        name: 'select',
+        events: {},
+        options: [
+          { value: 'Y', label: 'Y' },
+          { value: 'N', label: 'N' },
+        ],
+        props: { placeholder: this.l.systemPd },
+        required: true,
+        span: 12,
+      },
+    ];
+    this.getList();
   },
   methods: {
     ...initFuncs,
@@ -115,12 +121,6 @@ export default {
           this.pageLoading = false
         })
     },
-  },
-  created: function () {
-    this.getList()
-   // this.$request(this.api + 'getlist').then((r) => {
-   //   this.typeOptions = r.data
-   // })
   },
 }
 </script>

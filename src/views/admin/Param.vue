@@ -49,45 +49,54 @@ const config = Object.assign({}, _.cloneDeep(defaultConfig), {
 export default {
   components: { zTable, zFormDialog, zPagination },
   name: 'adminParam',
-  data: function () {
+  data() {
     return {
       ...config,
-      name: this.l.title,
-      columns: [
-    { title: this.l.param_type, key: 'param_type', width: 160 },
-    { title: this.l.param_name, key: 'param_name', width: 180 },
-    { title: this.l.param_priority, key: 'param_priority', width: 100 },
-    { title: this.l.param_value, key: 'param_value', width: 180 },
-    { title: this.l.param_condition1, key: 'param_condition1', width: 100 },
-    { title: this.l.param_condition2, key: 'param_condition2', width: 100 },
-    { title: this.l.param_condition3, key: 'param_condition3', width: 100 },
-    { title: this.l.remarks, key: 'remarks' },
-    { title: this.c.modify_user, key: 'modify_user', width: 90 },
-    { title: this.c.modify_time, key: 'modify_time', width: 140 },
-  ],
-  fields: [
-    { title: this.l.param_type, key: 'param_type', required: true },
-    { title: this.l.param_name, key: 'param_name', required: true },
-    {
-      title: this.l.param_priority,
-      key: 'param_priority',
-      required: true,
-      name: 'number',
-    },
-    { title: this.l.param_value, key: 'param_value' },
-    { title: this.l.param_condition1, key: 'param_condition1' },
-    { title: this.l.param_condition2, key: 'param_condition2' },
-    { title: this.l.param_condition3, key: 'param_condition3' },
-    {
-      title: this.l.remarks,
-      key: 'remarks',
-      name: 'textarea',
-      required: true,
-      tips: this.l.remarksTip,
-    },
-  ],
+      name: '',
+      columns: [],
+      fields: [],
       typeOptions: [],
     }
+  },
+  created() {
+    this.name = this.l.title;
+    this.columns = [
+      { title: this.l.param_type, key: 'param_type', width: 160 },
+      { title: this.l.param_name, key: 'param_name', width: 180 },
+      { title: this.l.param_priority, key: 'param_priority', width: 100 },
+      { title: this.l.param_value, key: 'param_value', width: 180 },
+      { title: this.l.param_condition1, key: 'param_condition1', width: 100 },
+      { title: this.l.param_condition2, key: 'param_condition2', width: 100 },
+      { title: this.l.param_condition3, key: 'param_condition3', width: 100 },
+      { title: this.l.remarks, key: 'remarks' },
+      { title: this.c.modify_user, key: 'modify_user', width: 90 },
+      { title: this.c.modify_time, key: 'modify_time', width: 140 },
+    ];
+    this.fields = [
+      { title: this.l.param_type, key: 'param_type', required: true },
+      { title: this.l.param_name, key: 'param_name', required: true },
+      {
+        title: this.l.param_priority,
+        key: 'param_priority',
+        required: true,
+        name: 'number',
+      },
+      { title: this.l.param_value, key: 'param_value' },
+      { title: this.l.param_condition1, key: 'param_condition1' },
+      { title: this.l.param_condition2, key: 'param_condition2' },
+      { title: this.l.param_condition3, key: 'param_condition3' },
+      {
+        title: this.l.remarks,
+        key: 'remarks',
+        name: 'textarea',
+        required: true,
+        tips: this.l.remarksTip,
+      },
+    ];
+    this.getList();
+    this.$request(this.api + 'gettypelist').then((r) => {
+      this.typeOptions = r.data;
+    });
   },
   methods: {
     ...initFuncs,
@@ -107,12 +116,6 @@ export default {
           this.pageLoading = false
         })
     },
-  },
-  created: function () {
-    this.getList()
-    this.$request(this.api + 'gettypelist').then((r) => {
-      this.typeOptions = r.data
-    })
   },
 }
 </script>
