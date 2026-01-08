@@ -1,659 +1,519 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-button type="primary" class="fr" @click="createItem">{{ c.create
-        }}</el-button>
-        <div class="filter-container">
-          <el-input
-            style="width: 300px"
-            :placeholder="l.search"
-            clearable
-            prefix-icon="el-icon-search"
-            class="filter-item"
-            v-model="query.queryString.str"
-          ></el-input>
-          <el-button
-            class="filter-item"
-            type="success"
-            @click="researchMain"
-            plain
-            >{{ c.queryButton }}</el-button
-          >
-        </div>
-      </el-col>
-      <el-col :span="11">
-        <z-table
-          :list="list"
-          :tableProps="tableProps"
-          @current-change="clickDetail"
-          :columns="columns"
-        >
-          <template v-slot:content="v">
-            <span
-              v-if="v.key === 'status'"
-              class="label"
-              :class="statusClass[v.row['status']]"
-            >
-              {{ status[v.row['status']] }}
-            </span>
-            <span v-else>{{ v.row[v.key] }}</span>
-          </template>
-          <template v-slot:operation="v">
-            <!-- <a href="#" class="text-green">复制</a> -->
-            <a
-              href="#"
-              :class="statusButtonClass[v.row.status]"
-              :dta="v"
-              @click.prevent="disOrEnable(v.row)"
-              >{{ statusButton[v.row.status] }}</a
-            >
-            <a href="#" class="text-blue" @click.prevent="editItem(v.row)">{{ c.edit
-            }}</a>
-            <a href="#" class="text-red" @click.prevent="deleteItem(v.row)">{{ c.delete
-            }}</a>
-          </template>
-        </z-table>
-        <z-pagination
-          :list="list"
-          :pagination="pagination"
-          :total="total"
-          v-model:page="query.page"
-          v-model:limit="query.size"
-          @change="getList"
-        ></z-pagination>
-      </el-col>
-      <z-form-dialog
-        :name="name"
-        :data="data"
-        :formProps="formProps"
-        :fields="fields"
-        @submmit="submmit"
-        :submmitLoading="submmitLoading"
-        v-model:visible="editFormVisible"
-      >
-      </z-form-dialog>
-
-      <el-col :span="13" v-show="detailFlag">
-        <div
-          style="
-            padding: 10px 0;
-            min-height: 40px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-          "
-        >
-          <div style="display: flex; align-items: center; gap: 4px">
-            <div style="white-space: pre">Số phiên bản</div>
-            <el-select
-              @change="changeVersionProcess"
-              style="width: 100%"
-              v-model="versionProcessSelected"
-              :placeholder="l.typePd"
-            >
-              <el-option
-                v-for="item in versionProcess"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <div style="display: flex; flex-direction: row-reverse; gap: 4px">
-            <el-button @click="openDetail" type="primary" plain>{{ l.addDetail
-            }}</el-button>
-            <el-button
-              :loading="sortLoading"
-              v-if="indexFlag"
-              @click="updateDetailSort"
-              style="margin-left: 0"
-              type="success"
-              plain
-              >{{ c.saveIndex }}</el-button
-            >
-          </div>
-          <!-- <el-input
-            style="width: 300px"
-            placeholder="输入名称查询按回车"
-            clearable
-            prefix-icon="el-icon-search"
-            class="filter-item"
-            @keyup.enter="research"
-            @clear="research"
-            v-model="queryDetail.queryString.str"
-          ></el-input>
-          <el-button class="filter-item" type="success" plain @click="getDetailList"
-            >查询</el-button
-          > -->
-        </div>
-        <z-table
-          ref="dragTable"
-          :list="listDetail"
-          row-key="id"
-          :tableProps="tableProps"
-          :columns="columnsDetail"
-        >
-          <template v-slot:content="v">
-            <span
-              v-if="v.key === 'status'"
-              class="label"
-              :class="statusClass[v.row['status']]"
-            >
-              {{ status[v.row['status']] }}
-            </span>
-            <span v-else>{{ v.row[v.key] }}</span>
-          </template>
-          <template v-slot:operation="v">
-            <a
-              href="#"
-              :class="statusButtonClass[v.row.status]"
-              :dta="v"
-              @click.prevent="disOrEnable(v.row)"
-              >{{ statusButton[v.row.status] }}</a
-            >
-            <a href="#" class="text-blue" @click.prevent="editDetail(v.row)">{{ c.edit
-            }}</a>
-            <a href="#" class="text-red" @click.prevent="deleteDetail(v.row)">{{ c.delete
-            }}</a>
-          </template>
-        </z-table>
-        <!-- <z-pagination
-          :pagination="pagination"
-          :total="totalDetail"
-          v-model:page="queryDetail.page"
-          v-model:limit="queryDetail.size"
-          @change="getDetailList"
-        ></z-pagination> -->
-      </el-col>
-    </el-row>
-
-    <!-- detail -->
-    <el-dialog
-      :title="
-        this.l.detailField + (dataDetail ? this.c.edit : this.c.create)
-      "
-      :close-on-click-modal="false"
-      v-model:visible="visibleDetail"
-      width="600px"
-    >
-      <el-form :model="dataDetail">
-        <div style="display: flex; gap: 10px;margin-bottom:  10px;">
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-            <div style="font-weight: bold">Tên</div>
-            <div>
-              <el-input
-                :placeholder="l.detailNamePd"
-                v-model="dataMain.name"
-              ></el-input>
-            </div>
-          </div>
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-            <div style="font-weight: bold">Kích hoạt</div>
-            <div style="height: 32px; display: flex; align-items: center">
-              <el-switch
-                v-model="dataMain.status"
-                inactiveValue="2"
-                activeValue="1"
-              >
-              </el-switch>
-            </div>
-          </div>
-        </div>
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
-          <div style="font-weight: bold">Thông tin chi tiết</div>
-          <div style="height: 32px; display: flex; align-items: center">
-            <el-input
-              value="info"
-              style="display: none"
-              v-model="dataDetail.type"
-            ></el-input>
-            <el-input
-              :placeholder="l.detailTitlePd"
-              :label="l.detailTitlePddname"
-              v-model="dataDetail.title"
-            ></el-input>
-          </div>
-        </div>
-        <el-form-item>
-          <el-row
-            v-for="(item, index) in dataDetail.list"
-            :key="index"
-            style="margin-top: 5px"
-          >
-            <el-col :span="7">
-              <el-input
-                :placeholder="l.detailKeyPd"
-                v-model="item.key"
-              ></el-input>
-            </el-col>
-            <el-col style="margin-left: 5px" :span="7">
-              <el-input :placeholder="l.detailLabelPd" v-model="item.label">
-              </el-input>
-            </el-col>
-            <el-col style="margin-left: 5px" :span="5">
-              <el-checkbox v-model="item.enter">Xuống hàng</el-checkbox>
-            </el-col>
-
-            <el-col :span="4" style="margin-left: 5px">
-              <el-button
-                type="danger"
-                size="mini"
-                icon="el-icon-minus"
-                circle
-                @click="removeItem(index)"
-              ></el-button>
-              <el-button
-                v-show="index == dataDetail.list.length - 1"
-                style="margin-left: 3px"
-                type="primary"
-                size="mini"
-                icon="el-icon-plus"
-                circle
-                @click="addItem()"
-              ></el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <div style="display: flex; gap: 4px; flex-wrap: wrap">
-          <el-tag
-            v-for="item in listField"
-            :key="item"
-            effect="dark"
-            @click="copyToClipboard(item)"
-            style="margin-left: 0; cursor: pointer"
-          >
-            {{ item }}
-          </el-tag>
-        </div>
-      </el-form>
-      <div style="padding-right: 100px; margin-top: 40px">
-        <div class="align-r">
-          <el-button @click="visibleDetail = false">{{ c.cancel }}</el-button>
-          <el-button
-            v-if="!formProps.disabled"
-            type="primary"
-            @click="submmitDetail"
-            :loading="submmitLoadingDetail"
-            >{{ c.confirm }}
-          </el-button>
-          <slot name="operation"></slot>
-        </div>
+  <div class="p-6 space-y-6" v-loading="pageLoading">
+    <div class="flex justify-between items-start">
+      <div class="space-y-4 flex-1">
+         <div class="flex items-center space-x-4">
+             <Input
+                v-model="query.queryString.str"
+                :placeholder="l.search"
+                class="w-[300px]"
+                @keyup.enter="researchMain"
+             />
+             <Button variant="secondary" @click="researchMain">{{ c.queryButton }}</Button>
+         </div>
       </div>
-    </el-dialog>
+      <Button @click="createItem">{{ c.create }}</Button>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+       <!-- Left Panel: Workflow List -->
+       <div class="col-span-12 lg:col-span-5">
+          <div class="rounded-md border">
+             <Table>
+                <TableHeader>
+                   <TableRow>
+                      <TableHead v-for="col in columns" :key="col.key">{{ col.title }}</TableHead>
+                      <TableHead>Op</TableHead>
+                   </TableRow>
+                </TableHeader>
+                <TableBody>
+                   <TableRow
+                      v-for="(row, index) in list"
+                      :key="index"
+                      class="cursor-pointer"
+                      :class="{ 'bg-muted/50': processCode === row.process_code && detailFlag }"
+                      @click="clickDetail(row)"
+                   >
+                      <TableCell v-for="col in columns" :key="col.key">
+                         <template v-if="col.key === 'status'">
+                            <span class="px-2 py-0.5 rounded text-xs text-white" :class="statusClass[row.status]">{{ status[row.status] }}</span>
+                         </template>
+                         <template v-else>{{ row[col.key] }}</template>
+                      </TableCell>
+                      <TableCell>
+                         <div class="flex space-x-2">
+                             <Button variant="ghost" size="icon" class="h-6 w-6" :class="statusButtonClass[row.status]" @click.stop.prevent="disOrEnable(row)">
+                                <i :class="row.status == 1 ? 'fa fa-ban' : 'fa fa-check'"></i>
+                             </Button>
+                             <Button variant="ghost" size="icon" class="h-6 w-6" @click.stop.prevent="editItem(row)">
+                                <i class="fa fa-pencil text-blue-600"></i>
+                             </Button>
+                             <Button variant="ghost" size="icon" class="h-6 w-6" @click.stop.prevent="deleteItem(row)">
+                                <i class="fa fa-trash text-red-600"></i>
+                             </Button>
+                         </div>
+                      </TableCell>
+                   </TableRow>
+                </TableBody>
+             </Table>
+          </div>
+          <div class="mt-4 flex justify-end">
+             <Pagination
+               v-model="query.page"
+               :total="total"
+               :page-size="query.size"
+               @update:modelValue="val => { query.page = val; getList() }"
+             />
+          </div>
+       </div>
+
+       <!-- Right Panel: Workflow Details -->
+       <div class="col-span-12 lg:col-span-7" v-if="detailFlag">
+          <div class="flex justify-between items-center mb-4 min-h-[40px]">
+             <div class="flex items-center space-x-2 w-1/2">
+                <span class="whitespace-nowrap text-sm font-bold">Version:</span>
+                <Select v-model="versionProcessSelected" @update:modelValue="changeVersionProcess">
+                   <SelectItem v-for="item in versionProcess" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                   </SelectItem>
+                </Select>
+             </div>
+             <div class="flex space-x-2">
+                <Button @click="openDetail" variant="outline">{{ l.addDetail }}</Button>
+                <Button v-if="indexFlag" @click="updateDetailSort" :disabled="sortLoading" variant="secondary">{{ c.saveIndex }}</Button>
+             </div>
+          </div>
+
+          <div class="rounded-md border">
+             <Table>
+                <TableHeader>
+                   <TableRow>
+                      <TableHead v-for="col in columnsDetail" :key="col.key">{{ col.title }}</TableHead>
+                      <TableHead>Op</TableHead>
+                   </TableRow>
+                </TableHeader>
+                <draggable
+                   v-model="listDetail"
+                   tag="tbody"
+                   item-key="id"
+                   @end="onDragEnd"
+                   handle=".drag-handle"
+                >
+                   <template #item="{ element, index }">
+                      <TableRow class="hover:bg-muted/50">
+                         <TableCell v-for="col in columnsDetail" :key="col.key" class="drag-handle cursor-move">
+                            <template v-if="col.key === 'status'">
+                               <span class="px-2 py-0.5 rounded text-xs text-white" :class="statusClass[element.status]">{{ status[element.status] }}</span>
+                            </template>
+                            <template v-else>{{ element[col.key] }}</template>
+                         </TableCell>
+                         <TableCell>
+                            <div class="flex space-x-2">
+                               <Button variant="ghost" size="icon" class="h-6 w-6" :class="statusButtonClass[element.status]" @click.stop.prevent="disOrEnable(element)">
+                                  <i :class="element.status == 1 ? 'fa fa-ban' : 'fa fa-check'"></i>
+                               </Button>
+                               <Button variant="ghost" size="icon" class="h-6 w-6" @click.stop.prevent="editDetail(element)">
+                                  <i class="fa fa-pencil text-blue-600"></i>
+                               </Button>
+                               <Button variant="ghost" size="icon" class="h-6 w-6" @click.stop.prevent="deleteDetail(element)">
+                                  <i class="fa fa-trash text-red-600"></i>
+                               </Button>
+                            </div>
+                         </TableCell>
+                      </TableRow>
+                   </template>
+                </draggable>
+             </Table>
+          </div>
+       </div>
+    </div>
+
+    <!-- Main Workflow Dialog -->
+    <Dialog :open="editFormVisible" @update:open="val => editFormVisible = val">
+      <DialogContent class="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{{ name }}</DialogTitle>
+        </DialogHeader>
+        <div class="grid gap-4 py-4">
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.name }}</Label>
+              <Input v-model="data.name" class="col-span-3" />
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.process_code }}</Label>
+              <Input v-model="data.process_code" class="col-span-3" />
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.isEnable }}</Label>
+              <div class="col-span-3">
+                 <!-- Switch logic -->
+                 <input type="checkbox" :checked="data.status == '1'" @change="e => data.status = e.target.checked ? '1' : '2'" />
+              </div>
+           </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" @click="editFormVisible = false">{{ c.cancel }}</Button>
+          <Button type="submit" @click="submmit" :disabled="submmitLoading">{{ c.confirm }}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    <!-- Detail Dialog -->
+    <Dialog :open="visibleDetail" @update:open="val => visibleDetail = val">
+      <DialogContent class="sm:max-w-[700px]">
+        <DialogHeader>
+          <DialogTitle>{{ l.detailField }} {{ dataDetail ? c.edit : c.create }}</DialogTitle>
+        </DialogHeader>
+        <div class="space-y-4 py-4">
+           <div class="flex gap-4">
+              <div class="flex-1 space-y-2">
+                 <Label class="font-bold">Name</Label>
+                 <Input v-model="dataMain.name" :placeholder="l.detailNamePd" />
+              </div>
+              <div class="flex-1 space-y-2">
+                 <Label class="font-bold">Status</Label>
+                 <div>
+                    <input type="checkbox" :checked="dataMain.status == '1'" @change="e => dataMain.status = e.target.checked ? '1' : '2'" />
+                 </div>
+              </div>
+           </div>
+
+           <div class="space-y-2">
+              <Label class="font-bold">Detail Info</Label>
+              <div class="flex items-center gap-2">
+                 <Input v-model="dataDetail.title" :placeholder="l.detailTitlePd" />
+              </div>
+           </div>
+
+           <div class="space-y-2 max-h-[300px] overflow-auto border p-2 rounded">
+              <div v-for="(item, index) in dataDetail.list" :key="index" class="flex items-center gap-2 mb-2">
+                 <Input v-model="item.key" :placeholder="l.detailKeyPd" class="w-1/3" />
+                 <Input v-model="item.label" :placeholder="l.detailLabelPd" class="w-1/3" />
+                 <div class="flex items-center gap-1 w-[100px]">
+                    <input type="checkbox" v-model="item.enter" /> <span class="text-xs">Line Break</span>
+                 </div>
+                 <Button variant="destructive" size="icon" @click="removeItem(index)">
+                    <i class="fa fa-minus"></i>
+                 </Button>
+                 <Button v-if="index == dataDetail.list.length - 1" size="icon" @click="addItem()">
+                    <i class="fa fa-plus"></i>
+                 </Button>
+              </div>
+           </div>
+
+           <div class="flex flex-wrap gap-2">
+              <span
+                 v-for="item in listField"
+                 :key="item"
+                 class="px-2 py-1 bg-gray-200 rounded text-xs cursor-pointer hover:bg-gray-300"
+                 @click="copyToClipboard(item)"
+              >
+                 {{ item }}
+              </span>
+           </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" @click="visibleDetail = false">{{ c.cancel }}</Button>
+          <Button type="submit" @click="submmitDetail" :disabled="submmitLoadingDetail">{{ c.confirm }}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
-<script>
-import Sortable from 'sortablejs'
 
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance, watch } from 'vue'
+import draggable from 'vuedraggable'
 import {
-  _,
-  api,
-  dayjs,
-  defaultConfig,
-  initFuncs,
-  zFormDialog,
-  zPagination,
-  zTable,
-} from '@/views/_common'
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectItem } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from '@/components/ui/dialog'
+import { Pagination } from '@/components/ui/pagination'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import { _, api, defaultConfig } from '@/views/_common'
+
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('adminWorkflowFields')
+
+const pageLoading = ref(false)
+const list = ref([])
+const total = ref(0)
+const editFormVisible = ref(false)
+const submmitLoading = ref(false)
+const sortLoading = ref(false)
+
+const detailFlag = ref(false)
+const visibleDetail = ref(false)
+const submmitLoadingDetail = ref(false)
+const indexFlag = ref(false)
+
+const processCode = ref('')
+const listDetail = ref([])
+const listSortIds = ref([])
+const versionProcess = ref([])
+const versionProcessSelected = ref('')
+const listField = ref([])
+
+const dataMain = ref({})
+const dataDetailInit = { title: '', type: 'info', list: [{ key: '', type: '' }] }
+const dataDetail = ref(_.cloneDeep(dataDetailInit))
 
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.workflowField,
-  apiEdit: api.workflowField + 'addormodify',
   apiCreate: api.workflowField + 'addormodify',
   apiParamShow: api.param + 'getparamshow',
-  tableProps: {
-    'highlight-current-row': true,
-    border: true,
-    opsColWith: '120',
-  },
-  initData: { status: '1' },
-  data: {},
-  editFormVisible: false, //编辑模态框的显示状态
-  list: [],
-  total: 0,
-  query: {
-    queryString: {},
-    size: 10,
-    page: 1,
-  },
-
-  formProps: {
-    dialogWidth: '40%',
-    labelWidth: '140px',
-  },
-
-  pagination: {
-    //分页组件配置 如不需分页，可以把pagination设置为null
-    layout: 'prev, pager, next, ->, total',
-  },
 })
-export default {
-  name: 'adminWorkflowFields',
-  components: { zTable, zFormDialog, zPagination },
-  data: function () {
-    return {
-      ...config,
-      statusButton: { 1: this.c.disable, 2: this.c.enable },
-      statusButtonClass: { 1: 'text-yellow', 2: 'text-green' },
-      parentId: '',
-      name: this.l.title,
-      workflowOptions: [],
-      detailFlag: false,
-      visibleDetail: false,
-      status: { 1: this.c.enabled, 2: this.c.disabled },
-      statusClass: { 2: 'bg-red', 1: 'bg-green' },
-      columns: [
-        { title: this.l.name, key: 'name' },
-        { title: this.l.process_code, key: 'process_code', width: 70 },
-        { title: this.l.status, key: 'status', width: 70 },
-        { title: this.c.modify_user, key: 'modify_user', width: 100 },
-        { title: this.c.modify_time, key: 'modify_time', width: 140 },
-      ],
-      fields: [
-        {
-          title: this.l.name,
-          key: 'name',
-          span: 24,
-          //required: true,
-        },
-        {
-          title: this.l.process_code,
-          key: 'process_code',
-          span: 24,
-          //required: true,
-        },
-        {
-          title: this.l.isEnable,
-          key: 'status',
-          span: 8,
-          name: 'switch',
-          props: { inactiveValue: '2', activeValue: '1' },
-        },
-      ],
-      dataMain: {},
-      dataDetailInit: {
-        title: '',
-        type: 'info',
-        list: [{ key: '', type: '' }],
-      },
-      dataDetail: {
-        title: '',
-        type: 'info',
-        list: [{ key: '', type: '' }],
-      },
-      queryDetail: { queryString: {}, size: 99, page: 1 },
-      processCode: '',
-      listDetail: [],
-      totalDetail: 0,
-      detailName: '',
-      indexFlag: false,
-      sortLoading: false,
-      submmitLoadingDetail: false,
-      listSortIds: [],
-      typeOptions: [
-        { value: 'info', label: 'Info' },
-        { value: 'grid', label: 'Grid' },
-      ],
 
-      versionProcess: [],
-      versionProcessSelected: '',
-      listField: [],
+const query = reactive({
+  queryString: { str: '' },
+  size: 10,
+  page: 1,
+})
 
-      columnsDetail: [
-        { title: this.l.detialNmae, key: 'name', width: 120 },
-        { title: this.l.field_json, key: 'field_json', width: 140 },
-        { title: this.l.status, key: 'status', width: 80 },
-        { title: this.c.modify_user, key: 'modify_user', width: 100 },
-        { title: this.c.modify_time, key: 'modify_time', width: 140 },
-      ],
-      tableData: [],
+const queryDetail = reactive({ queryString: {}, size: 99, page: 1 })
+
+const data = ref({})
+const initData = { status: '1' }
+const name = computed(() => l.value?.title || 'Title')
+
+const status = computed(() => ({ 1: c.value?.enabled, 2: c.value?.disabled }))
+const statusClass = { 1: 'bg-green-500', 2: 'bg-red-500' }
+const statusButton = computed(() => ({ 1: c.value?.disable, 2: c.value?.enable }))
+const statusButtonClass = { 1: 'text-yellow-600', 2: 'text-green-600' }
+
+const columns = computed(() => [
+  { title: l.value?.name, key: 'name' },
+  { title: l.value?.process_code, key: 'process_code' },
+  { title: l.value?.status, key: 'status' },
+  { title: c.value?.modify_user, key: 'modify_user' },
+  { title: c.value?.modify_time, key: 'modify_time' },
+])
+
+const columnsDetail = computed(() => [
+  { title: l.value?.detialNmae, key: 'name' },
+  { title: l.value?.field_json, key: 'field_json' },
+  { title: l.value?.status, key: 'status' },
+  { title: c.value?.modify_user, key: 'modify_user' },
+  { title: c.value?.modify_time, key: 'modify_time' },
+])
+
+const getList = () => {
+    pageLoading.value = true
+    proxy.$request(config.api + 'getlist', query)
+        .then(r => {
+            list.value = r.data.list
+            total.value = r.datas.total
+            pageLoading.value = false
+        })
+        .catch(() => pageLoading.value = false)
+}
+
+const researchMain = () => {
+    listDetail.value = []
+    query.page = 1
+    getList()
+}
+
+const createItem = () => {
+    data.value = _.cloneDeep(initData)
+    editFormVisible.value = true
+}
+
+const editItem = (row) => {
+    data.value = _.cloneDeep(row)
+    data.value.status = String(data.value.status)
+    editFormVisible.value = true
+}
+
+const deleteItem = (row) => {
+    if(window.confirm(c.value?.deleteConfirm)) {
+        pageLoading.value = true
+        proxy.$request(config.api + 'delete/' + row.id, {}, 'post')
+            .then(() => {
+                pageLoading.value = false
+                proxy.$message.success(c.value?.deleteSuccess)
+                getList()
+            })
+            .catch(() => pageLoading.value = false)
     }
-  },
-  methods: {
-    ...initFuncs,
-    changeGridField() {
-      if (this.dataDetail.type == 'info') this.dataDetail.grid_field = ''
-    },
-    changeVersionProcess() {
-      this.getDetailList()
-    },
-    researchMain() {
-      this.listDetail = []
-      this.query.page = 1
-      this.getList()
-    },
-    formatAfterGet(data) {
-      data.status = data.status.toString()
-      return data
-    },
-    updateDetailSort() {
-      this.sortLoading = true
-      this.$request(this.api + 'UpdateSort', this.listSortIds, 'post')
-        .then((r) => {
-          this.sortLoading = false
-          this.getDetailList()
-        })
-        .catch((e) => {
-          this.sortLoading = false
-        })
-    },
-    createItem() {
-      this.data = _.cloneDeep(this.initData)
-      this.editFormVisible = true
-    },
-    disOrEnable(v) {
-      let status = { 1: this.c.disable, 2: this.c.enable }
-      this.$confirm(status[v.status] + this.l.record, this.c.oprConfirm).then(
-        () => {
-          this.pageLoading = true
-          this.$request(this.api + 'DisOrEnable/' + v.id, {}, 'post')
-            .then((r) => {
-              this.pageLoading = false
-              this.$message({
-                message: this.c.success,
-                type: 'success',
-              })
-              if (v.parent_id) this.getDetailList()
-              if (!v.parent_id) this.getList()
-            })
-            .catch(() => {
-              this.pageLoading = false
-            })
-        }
-      )
-    },
-    openDetail() {
-      this.dataMain = { status: '1' }
-      this.visibleDetail = true
-      this.dataDetail = _.cloneDeep(this.dataDetailInit)
-    },
-    clickDetail(v) {
-      this.dataMain = {}
-      this.processCode = ''
-      this.dataDetail = _.cloneDeep(this.dataDetailInit)
-      if (v) {
-        this.queryDetail.queryString.parentId = v.id
-        this.processCode = v.process_code
-        this.getListVersion(v.process_code)
-      }
+}
 
-      this.detailFlag = true
-    },
-    getListVersion(id) {
-      this.$request(api.param + 'getlistversion', { id: id }).then((r) => {
-        if (r.data.length != 0) {
-          this.versionProcessSelected = r.data[0].OID
+const disOrEnable = (row) => {
+    if(window.confirm(statusButton.value[row.status] + l.value?.record)) {
+        pageLoading.value = true
+        proxy.$request(config.api + 'DisOrEnable/' + row.id, {}, 'post')
+            .then(() => {
+                pageLoading.value = false
+                proxy.$message.success(c.value?.success)
+                if(row.parent_id) getDetailList()
+                else getList()
+            })
+            .catch(() => pageLoading.value = false)
+    }
+}
+
+const submmit = () => {
+    submmitLoading.value = true
+    let url = config.apiCreate
+    proxy.$request(url, data.value, 'post')
+        .then(() => {
+            submmitLoading.value = false
+            proxy.$message.success(c.value?.success)
+            editFormVisible.value = false
+            getList()
+        })
+        .catch(() => submmitLoading.value = false)
+}
+
+const clickDetail = (row) => {
+    dataMain.value = {}
+    processCode.value = ''
+    dataDetail.value = _.cloneDeep(dataDetailInit)
+    if(row) {
+        queryDetail.queryString.parentId = row.id
+        processCode.value = row.process_code
+        getListVersion(row.process_code)
+    }
+    detailFlag.value = true
+}
+
+const getListVersion = (id) => {
+    proxy.$request(api.param + 'getlistversion', { id: id }).then(r => {
+        if(r.data.length != 0) {
+            versionProcessSelected.value = r.data[0].OID
         } else {
-          this.versionProcessSelected = ''
+            versionProcessSelected.value = ''
         }
-        this.versionProcess = r.data.map((item) => {
-          return { value: item.OID, label: item.VERSION }
-        })
+        versionProcess.value = r.data.map(item => ({ value: item.OID, label: item.VERSION }))
+        getDetailList()
+    })
+}
 
-        this.getDetailList()
-      })
-    },
-    getDetailList() {
-      this.pageLoading = true
-      let url = this.api + 'getlist'
-      this.$request(url, {
-        ...this.queryDetail,
+const changeVersionProcess = () => {
+    getDetailList()
+}
+
+const getDetailList = () => {
+    pageLoading.value = true
+    let url = config.api + 'getlist'
+    proxy.$request(url, {
+        ...queryDetail,
         queryString: JSON.stringify({
-          ...this.queryDetail.queryString,
-          oid: this.versionProcessSelected,
-        }),
-      })
-        .then((r) => {
-          this.pageLoading = false
-          this.listDetail = []
-          this.listDetail = r.data.list
-
-          this.listSortIds = this.listDetail.map((v) => {
-            return v.id
-          })
-          this.setSort()
-          this.$forceUpdate()
+            ...queryDetail.queryString,
+            oid: versionProcessSelected.value
         })
-        .catch(() => {
-          this.pageLoading = false
-        })
+    }).then(r => {
+        pageLoading.value = false
+        listDetail.value = r.data.list
+        listSortIds.value = listDetail.value.map(v => v.id)
+    }).catch(() => pageLoading.value = false)
 
-      this.$request(
-        this.apiParamShow,
-        { id: this.versionProcessSelected },
-        'get'
-      ).then((r) => {
-        this.listField = r.data
-      })
-    },
-    editDetail(v) {
-      this.$request(this.api + 'getbyid', { id: v.id }).then((r) => {
-        let data = r.data
-        if (data) {
-          this.dataMain = {
-            id: data.id,
-            process_code: data.process_code,
-            name: data.name,
-            sort: data.sort,
-            status: data.status.toString(),
-          }
+    proxy.$request(config.apiParamShow, { id: versionProcessSelected.value }, 'get').then(r => {
+        listField.value = r.data
+    })
+}
 
-          if (data.field_json) this.dataDetail = JSON.parse(data.field_json)
+const openDetail = () => {
+    dataMain.value = { status: '1' }
+    visibleDetail.value = true
+    dataDetail.value = _.cloneDeep(dataDetailInit)
+}
+
+const editDetail = (row) => {
+    proxy.$request(config.api + 'getbyid', { id: row.id }).then(r => {
+        let d = r.data
+        if(d) {
+            dataMain.value = {
+                id: d.id,
+                process_code: d.process_code,
+                name: d.name,
+                sort: d.sort,
+                status: String(d.status)
+            }
+            if(d.field_json) dataDetail.value = JSON.parse(d.field_json)
         }
+        visibleDetail.value = true
+    })
+}
 
-        this.$forceUpdate()
-        this.visibleDetail = true
-      })
-    },
-
-    deleteDetail(v) {
-      this.$confirm(this.c.cfmDelete, this.c.oprConfirm).then(() => {
-        this.pageLoading = true
-        let url = this.api + 'delete/' + v.id
-
-        this.$request(url, {}, 'post')
-          .then((r) => {
-            this.pageLoading = false
-            this.$message({
-              message: this.c.success,
-              type: 'success',
+const deleteDetail = (row) => {
+    if(window.confirm(c.value?.deleteConfirm)) {
+        pageLoading.value = true
+        proxy.$request(config.api + 'delete/' + row.id, {}, 'post')
+            .then(() => {
+                pageLoading.value = false
+                proxy.$message.success(c.value?.deleteSuccess)
+                getDetailList()
             })
-            this.getDetailList()
-          })
-          .catch(() => {
-            this.pageLoading = false
-          })
-      })
-    },
-
-    addItem() {
-      this.dataDetail.list.push({ key: '', label: '' })
-    },
-    removeItem(i) {
-      this.dataDetail.list.splice(i, 1)
-      if (this.dataDetail.list.length == 0) this.addItem()
-    },
-    setSort() {
-      let el = this.$refs.dragTable.$el.querySelectorAll(
-        '.el-table__body-wrapper > table > tbody'
-      )[0]
-      this.sortable = Sortable.create(el, {
-        ghostClass: 'sortable-ghost',
-        setData: function (dataTransfer) {
-          dataTransfer.setData('Text', '')
-        },
-        onEnd: (evt) => {
-          // const targetRow = this.listDetail.splice(evt.oldIndex, 1)[0]
-          // this.detailList.splice(evt.newIndex, 0, targetRow)
-          var tmp = this.listSortIds[evt.oldIndex]
-          this.listSortIds[evt.oldIndex] = this.listSortIds[evt.newIndex]
-          this.listSortIds[evt.newIndex] = tmp
-          this.indexFlag = true
-        },
-      })
-    },
-    submmitDetail() {
-      this.submmitLoading = true
-      let url = this.apiCreate
-      let obj = {
-        field_json: JSON.stringify(this.dataDetail),
-        parent_id: this.queryDetail.queryString.parentId,
-        process_code: this.processCode,
-        status: this.dataMain.status,
-        oid: this.versionProcessSelected,
-        version: this.versionProcess.find((x) => {
-          return x.value == this.versionProcessSelected
-        }).label,
-        ...this.dataMain,
-      }
-      this.$request(url, obj, 'post')
-        .then((r) => {
-          this.submmitLoadingDetail = false
-          this.$message({
-            message: this.c.success,
-            type: 'success',
-          })
-          this.visibleDetail = false
-          this.getDetailList()
-        })
-        .catch(() => {
-          this.submmitLoadingDetail = false
-        })
-    },
-
-    copyToClipboard(text) {
-      const textarea = document.createElement('textarea')
-      textarea.value = text
-      document.body.appendChild(textarea)
-      textarea.select()
-      try {
-        document.execCommand('copy')
-        this.$message({
-          message: 'Copy thành công',
-          type: 'success',
-        })
-      } catch (err) {
-        this.$message({
-          message: 'Copy thất bại',
-          type: 'error',
-        })
-      }
-      document.body.removeChild(textarea)
-    },
-  },
-  created: function () {
-    this.getList()
-  },
+            .catch(() => pageLoading.value = false)
+    }
 }
+
+const addItem = () => {
+    dataDetail.value.list.push({ key: '', label: '' })
+}
+
+const removeItem = (i) => {
+    dataDetail.value.list.splice(i, 1)
+    if(dataDetail.value.list.length == 0) addItem()
+}
+
+const copyToClipboard = (text) => {
+   navigator.clipboard.writeText(text).then(() => {
+      proxy.$message.success('Copy success')
+   }, () => {
+      proxy.$message.error('Copy failed')
+   })
+}
+
+const submmitDetail = () => {
+    submmitLoadingDetail.value = true
+    let url = config.apiCreate
+    let obj = {
+        field_json: JSON.stringify(dataDetail.value),
+        parent_id: queryDetail.queryString.parentId,
+        process_code: processCode.value,
+        status: dataMain.value.status,
+        oid: versionProcessSelected.value,
+        version: versionProcess.value.find(x => x.value == versionProcessSelected.value)?.label,
+        ...dataMain.value
+    }
+    proxy.$request(url, obj, 'post')
+        .then(() => {
+            submmitLoadingDetail.value = false
+            proxy.$message.success(c.value?.success)
+            visibleDetail.value = false
+            getDetailList()
+        })
+        .catch(() => submmitLoadingDetail.value = false)
+}
+
+const onDragEnd = (evt) => {
+    indexFlag.value = true
+    listSortIds.value = listDetail.value.map(v => v.id)
+}
+
+const updateDetailSort = () => {
+    sortLoading.value = true
+    proxy.$request(config.api + 'UpdateSort', listSortIds.value, 'post')
+        .then(() => {
+            sortLoading.value = false
+            getDetailList()
+            indexFlag.value = false
+        })
+        .catch(() => sortLoading.value = false)
+}
+
+onMounted(() => {
+    getList()
+})
 </script>
+
 <style scoped>
-::v-deep .el-card__header {
-  padding: 6px 20px !important;
-}
-::v-deep .el-card__body {
-  padding-left: 0px !important;
-}
 </style>

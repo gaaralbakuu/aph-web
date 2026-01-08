@@ -1,250 +1,344 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{ c.create}}</el-button>
-    <div class="filter-container">
-      <el-input style="width: 250px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item"
-        @keyup.enter="research" @clear="research" v-model="query.queryString.str"></el-input>
-      <el-select v-model="query.queryString.system" class="filter-item" clearable :placeholder="l.systemPd">
-        <el-option label="ALL" value="all"></el-option>
-        <el-option label="IOS" value="ios"></el-option>
-        <el-option label="Android" value="android"></el-option>
-      </el-select>
-      <el-select v-model="query.queryString.install_type" class="filter-item" clearable
-        :placeholder="l.install_typePd">
-        <el-option :label="l.full" value="1"></el-option>
-        <el-option :label="l.incremental" value="2"></el-option>
-      </el-select>
-      <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton}}</el-button>
+  <div class="p-6 space-y-6" v-loading="pageLoading">
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <Input
+          v-model="query.queryString.str"
+          :placeholder="l?.search"
+          class="w-[250px]"
+          @keyup.enter="research"
+        />
+        <Select v-model="query.queryString.system" :placeholder="l?.systemPd">
+          <SelectItem value="all">ALL</SelectItem>
+          <SelectItem value="ios">IOS</SelectItem>
+          <SelectItem value="android">Android</SelectItem>
+        </Select>
+        <Select v-model="query.queryString.install_type" :placeholder="l?.install_typePd">
+          <SelectItem value="1">{{ l?.full }}</SelectItem>
+          <SelectItem value="2">{{ l?.incremental }}</SelectItem>
+        </Select>
+        <Button variant="secondary" @click="research">{{ c?.queryButton }}</Button>
+      </div>
+      <Button @click="createItem">{{ c?.create }}</Button>
     </div>
-    <z-table :list="list" :tableProps="tableProps" :columns="columns">
-      <template v-slot:content="v">
-        <template v-if="v.key === 'system'">
-          <span>{{ systemMap[v.row[v.key]] }}</span>
-        </template>
-        <template v-else-if="v.key === 'install_type'">
-          <span>{{ typeMap[v.row[v.key]] }}</span>
-        </template>
-        <span v-else>{{ v.row[v.key] }}</span>
-      </template>
-      <template v-slot:operation="v">
-        <a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ c.edit}}</a>&nbsp;
-        <a href="#" class="text-green" @click.prevent="copyItem(v.row, v.$index)">{{ c.copy}}</a>&nbsp;
-        <a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ c.delete}}</a>
-      </template>
-    </z-table>
-    <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size"
-      @change="getList"></z-pagination>
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit"
-      :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
+
+    <!-- Table -->
+    <div class="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead v-for="col in columns" :key="col.key" :style="{ width: col.width + 'px' }">
+              {{ col.title }}
+            </TableHead>
+            <TableHead>Operation</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="(row, index) in list" :key="index">
+            <TableCell v-for="col in columns" :key="col.key">
+               <template v-if="col.key === 'system'">
+                {{ systemMap[row[col.key]] }}
+              </template>
+              <template v-else-if="col.key === 'install_type'">
+                {{ typeMap[row[col.key]] }}
+              </template>
+              <template v-else>
+                {{ row[col.key] }}
+              </template>
+            </TableCell>
+            <TableCell>
+              <div class="flex space-x-2">
+                <Button variant="link" class="text-blue-600 h-auto p-0" @click.prevent="editItem(row, index)">{{ c?.edit }}</Button>
+                <Button variant="link" class="text-green-600 h-auto p-0" @click.prevent="copyItem(row, index)">{{ c?.copy }}</Button>
+                <Button variant="link" class="text-red-600 h-auto p-0" @click.prevent="deleteItem(row, index)">{{ c?.delete }}</Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-end">
+      <Pagination
+        v-model="query.page"
+        :total="total"
+        :page-size="query.size"
+        @update:modelValue="handlePageChange"
+      />
+    </div>
+
+    <!-- Dialog -->
+    <Dialog :open="editFormVisible" @update:open="val => editFormVisible = val">
+      <DialogContent class="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{{ name }}</DialogTitle>
+          <DialogDescription>
+            Make changes to the app version here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.app_id }} *</Label>
+             <Input v-model="data.app_id" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.app_name }} *</Label>
+             <Input v-model="data.app_name" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.system }} *</Label>
+             <Select v-model="data.system" class="col-span-3">
+                <SelectItem value="all">ALL</SelectItem>
+                <SelectItem value="android">Android</SelectItem>
+                <SelectItem value="ios">IOS</SelectItem>
+             </Select>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.is_test }}</Label>
+             <Select v-model="data.is_test" class="col-span-3">
+                <SelectItem value="Y">Y</SelectItem>
+                <SelectItem value="N">N</SelectItem>
+             </Select>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.install_type }}</Label>
+             <Select v-model="data.install_type" class="col-span-3" :disabled="data.system === 'all'">
+                <SelectItem :value="1">{{ l?.full }}</SelectItem>
+                <SelectItem :value="2">{{ l?.incremental }}</SelectItem>
+             </Select>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.version }} *</Label>
+             <Input v-model="data.version" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.url }} *</Label>
+             <Input v-model="data.file" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.version_notes }} *</Label>
+             <Textarea v-model="data.version_notes" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+             <Label class="text-right">{{ l?.remarks }}</Label>
+             <Textarea v-model="data.remarks" class="col-span-3" />
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button type="submit" @click="submmit" :disabled="submmitLoading">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
-<script>
-import { getToken } from '@/utils/auth'
+
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance, watch } from 'vue'
 import {
-  _,
-  api,
-  defaultConfig,
-  initFuncs,
-  zFormDialog,
-  zPagination,
-  zTable,
-} from '@/views/_common'
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectItem } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Pagination } from '@/components/ui/pagination'
+
+import { _, api, defaultConfig } from '@/views/_common'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('adminAppVersion')
+
+const pageLoading = ref(false)
+const list = ref([])
+const total = ref(0)
+const editFormVisible = ref(false)
+const submmitLoading = ref(false)
+
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.appVersion,
   apiCreate: api.appVersion + 'addormodify',
   apiEdit: api.appVersion + 'addormodify',
-  tableProps: {
-    border: true,
-    opsColWith: 140,
-  },
-  formProps: {
-    dialogWidth: '50%',
-    labelWidth: '140px',
-  },
-  initData: { pkg_url: '', install_type: '', file: '' },
 })
-export default {
-  components: { zTable, zFormDialog, zPagination },
-  name: 'adminAppVersion',
-  data: function () {
-    return {
-      ...config,
-      query: {
-        queryString: { str: '', system: '', install_type: undefined },
-        size: 10,
-        page: 1,
-      },
-      name: this.l.title,
-      data: {},
-      systemMap: { all: 'ALL', android: 'Android', ios: 'IOS' },
-      typeMap: { 1: this.l.full, 2: this.l.incremental },
-      columns: [
-        { title: this.l.app_id, key: 'app_id', width: 120 },
-        { title: this.l.app_name, key: 'app_name', width: 140 },
-        { title: this.l.system, key: 'system', width: 100 },
-        { title: this.l.is_test, key: 'is_test', width: 80 },
-        { title: this.l.install_type, key: 'install_type', width: 100 },
-        { title: this.l.version, key: 'version', width: 120 },
-        { title: this.l.pkg_url, key: 'pkg_url', width: 120 },
-        { title: this.l.wgt_url, key: 'wgt_url', width: 120 },
-        { title: this.l.version_notes, key: 'version_notes', width: 220 },
-        { title: this.l.remarks, key: 'remarks', width: 140 },
-        { title: this.c.modify_user, key: 'modify_user', width: 90 },
-        { title: this.c.modify_time, key: 'modify_time', width: 140 },
-      ],
-      fields: [
-        { title: this.l.app_id, key: 'app_id', required: true, span: 12 },
-        { title: this.l.app_name, key: 'app_name', required: true, span: 12 },
-        {
-          title: this.l.system,
-          key: 'system',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'all', label: 'ALL' },
-            { value: 'android', label: 'Android' },
-            { value: 'ios', label: 'IOS' },
-          ],
-          props: { placeholder: this.l.systemPd },
-          required: true,
-          span: 12,
-        },
-       {
-          title: this.l.is_test,
-          key: 'is_test',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'Y', label: 'Y' },
-            { value: 'N', label: 'N' },
-          ],
-          props: { placeholder: this.l.is_testPd },
-          required: true,
-          span: 12,
-        },
-        {
-          title: this.l.install_type,
-          key: 'install_type',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 1, label: this.l.full },
-            { value: 2, label: this.l.incremental },
-          ],
-          props: { placeholder: this.l.install_typePd },
-          required: true,
-          span: 12,
-        },
-        { title: this.l.version, key: 'version', span: 12, required: true },
-        {
-          title: this.l.url,
-          key: 'file',
-          required: true,
-          span: 24,
-        },
-        {
-          title: this.l.version_notes,
-          key: 'version_notes',
-          name: 'textarea',
-          required: true,
-          span: 24,
-        },
 
-        { title: this.l.remarks, key: 'remarks', name: 'textarea', span: 24 },
-      ],
-    }
-  },
-  methods: {
-    ...initFuncs,
-    editItem(v) {
-      this.data = _.cloneDeep(this.initData)
-      this.pageLoading = true
-      let url = this.api + 'getbyid'
-      if (this.apiSingle) {
-        url = this.apiSingle
-      }
-      this.$request(url, { id: v.id })
-        .then((r) => {
-          this.pageLoading = false
-          this.data = this.formatAfterGet(r.data || {})
-          let file = this.data.pkg_url ? this.data.pkg_url : this.data.wgt_url
-          this.$set(this.data, 'file', file)
-          if (this.data.system == 'all') {
-            this.getFieldConfig(this.fields,'install_type').props.disabled = true
-          } else {
-            this.getFieldConfig(this.fields,'install_type').props.disabled = false
-          }
-          this.editFormVisible = true
-        })
-        .catch(() => {
-          this.pageLoading = false
-        })
-    },
-    copyItem(v) {
-      this.data = _.cloneDeep(v)
-      delete this.data.id
-      delete this.data.create_time
-      delete this.data.create_user
-      delete this.data.modify_time
-      delete this.data.modify_user
-      let file = this.data.pkg_url ? this.data.pkg_url : this.data.wgt_url
-      this.$set(this.data, 'file', file)
-      if (this.data.system == 'all') {
-        this.getFieldConfig(this.fields,'install_type').props.disabled = true
-      } else {
-        this.getFieldConfig(this.fields,'install_type').props.disabled = false
-      }
-      this.editFormVisible = true
-    },
-    formatBeforeSave(data) {
-      this.data.wgt_url = ''
-      this.data.pkg_url = ''
-      if (this.data.file) {
-        if (this.data.install_type == 1) {
-          this.data.pkg_url = this.data.file
-        }
-        if (this.data.install_type == 2 || this.data.system == 'all') {
-          this.data.wgt_url = this.data.file
-        }
-      }
-      if (this.data.install_type == 1 && this.data.system == 'ios') {
-        if (this.data.pkg_url && this.data.pkg_url.indexOf('apps.apple') < 0) {
-          this.$message({
-            message: this.l.iosUrlCheck,
-            type: 'error',
-          })
-        }
-      }
+const query = reactive({
+  queryString: { str: '', system: '', install_type: undefined },
+  size: 10,
+  page: 1,
+})
 
-      return this.data
-    },
-    formatQuery(query) {
-      let q = _.cloneDeep(query)
-      q.queryString = JSON.stringify(q.queryString)
+const data = ref({})
+const initData = { pkg_url: '', install_type: '', file: '' }
+const name = computed(() => l.value?.title || 'Title')
 
-      return q
-    },
-    createItem() {
-      this.data = _.cloneDeep(this.initData)
-      this.getFieldConfig(this.fields,'install_type').props.disabled = false
-      this.editFormVisible = true
-    },
-    appStoreChange() {
-      if (this.data.system == 'all') {
-        this.getFieldConfig(this.fields,'install_type').props.disabled = true
-        this.data.install_type = 2
-      } else {
-        this.getFieldConfig(this.fields,'install_type').props.disabled = false
-      }
-      this.$forceUpdate()
-    },
-  },
-  created: function () {
-    this.getFieldConfig(this.fields,'install_type').events.change = this.appStoreChange
-    this.getFieldConfig(this.fields,'system').events.change = this.appStoreChange
-    this.getList()
-  },
+const systemMap = { all: 'ALL', android: 'Android', ios: 'IOS' }
+const typeMap = computed(() => ({ 1: l.value?.full, 2: l.value?.incremental }))
+
+const columns = computed(() => [
+  { title: l.value?.app_id, key: 'app_id', width: 120 },
+  { title: l.value?.app_name, key: 'app_name', width: 140 },
+  { title: l.value?.system, key: 'system', width: 100 },
+  { title: l.value?.is_test, key: 'is_test', width: 80 },
+  { title: l.value?.install_type, key: 'install_type', width: 100 },
+  { title: l.value?.version, key: 'version', width: 120 },
+  { title: l.value?.pkg_url, key: 'pkg_url', width: 120 },
+  { title: l.value?.wgt_url, key: 'wgt_url', width: 120 },
+  { title: l.value?.version_notes, key: 'version_notes', width: 220 },
+  { title: l.value?.remarks, key: 'remarks', width: 140 },
+  { title: c.value?.modify_user, key: 'modify_user', width: 90 },
+  { title: c.value?.modify_time, key: 'modify_time', width: 140 },
+])
+
+const getList = () => {
+  pageLoading.value = true
+  const q = formatQuery(query)
+  proxy.$request(config.api + 'list', q)
+    .then(r => {
+      list.value = r.data.rows
+      total.value = r.data.total
+      pageLoading.value = false
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
 }
+
+const research = () => {
+  query.page = 1
+  getList()
+}
+
+const handlePageChange = (newPage) => {
+  query.page = newPage
+  getList()
+}
+
+const formatQuery = (q) => {
+  let _q = _.cloneDeep(q)
+  _q.queryString = JSON.stringify(_q.queryString)
+  return _q
+}
+
+const createItem = () => {
+  data.value = _.cloneDeep(initData)
+  editFormVisible.value = true
+}
+
+const editItem = (row) => {
+  data.value = _.cloneDeep(initData)
+  pageLoading.value = true
+  let url = config.api + 'getbyid'
+  proxy.$request(url, { id: row.id })
+    .then((r) => {
+      pageLoading.value = false
+      data.value = formatAfterGet(r.data || {})
+      let file = data.value.pkg_url ? data.value.pkg_url : data.value.wgt_url
+      data.value.file = file
+      editFormVisible.value = true
+    })
+    .catch(() => {
+      pageLoading.value = false
+    })
+}
+
+const copyItem = (row) => {
+  let newData = _.cloneDeep(row)
+  delete newData.id
+  delete newData.create_time
+  delete newData.create_user
+  delete newData.modify_time
+  delete newData.modify_user
+
+  let file = newData.pkg_url ? newData.pkg_url : newData.wgt_url
+  newData.file = file
+  data.value = newData
+  editFormVisible.value = true
+}
+
+const deleteItem = (row) => {
+  if (window.confirm(c.value?.deleteConfirm)) {
+     proxy.$request(config.api + 'delete', { id: row.id })
+      .then(() => {
+        proxy.$message.success(c.value?.deleteSuccess)
+        getList()
+      })
+  }
+}
+
+const formatAfterGet = (d) => {
+  return d
+}
+
+const formatBeforeSave = (d) => {
+  d.wgt_url = ''
+  d.pkg_url = ''
+  if (d.file) {
+    if (d.install_type == 1) {
+      d.pkg_url = d.file
+    }
+    if (d.install_type == 2 || d.system == 'all') {
+      d.wgt_url = d.file
+    }
+  }
+  if (d.install_type == 1 && d.system == 'ios') {
+    if (d.pkg_url && d.pkg_url.indexOf('apps.apple') < 0) {
+      proxy.$message({
+        message: l.value?.iosUrlCheck,
+        type: 'error',
+      })
+    }
+  }
+  return d
+}
+
+const submmit = () => {
+  submmitLoading.value = true
+  let d = _.cloneDeep(data.value)
+  d = formatBeforeSave(d)
+
+  let url = d.id ? config.apiEdit : config.apiCreate
+
+  proxy.$request(url, d)
+    .then(() => {
+      submmitLoading.value = false
+      editFormVisible.value = false
+      proxy.$message.success(c.value?.saveSuccess)
+      getList()
+    })
+    .catch(() => {
+      submmitLoading.value = false
+    })
+}
+
+watch(() => data.value.system, (val) => {
+  if (val === 'all') {
+    data.value.install_type = 2
+  }
+})
+
+onMounted(() => {
+  getList()
+})
 </script>
+
 <style scoped>
 </style>

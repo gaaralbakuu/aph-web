@@ -1,138 +1,230 @@
 <template>
-  <div class="app-container" v-loading="pageLoading">
-    <el-button type="primary" class="fr" @click="createItem">{{ c.create}}</el-button>
-    <div class="filter-container">
-      <el-input style="width: 200px" :placeholder="l.org_id" clearable prefix-icon="el-icon-search" class="filter-item"
-        @keyup.enter="research" @clear="research" v-model="query.orgid"></el-input>
-      <el-input style="width: 200px" :placeholder="l.dept_codes" clearable prefix-icon="el-icon-search"
-        class="filter-item" @keyup.enter="research" @clear="research" v-model="query.deptcodes">
-      </el-input>
-      <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton}}</el-button>
+  <div class="p-6 space-y-6" v-loading="pageLoading">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <Input
+          v-model="query.orgid"
+          :placeholder="l.org_id"
+          class="w-[200px]"
+          @keyup.enter="research"
+        />
+        <Input
+          v-model="query.deptcodes"
+          :placeholder="l.dept_codes"
+          class="w-[200px]"
+          @keyup.enter="research"
+        />
+        <Button variant="secondary" @click="research">{{ c.queryButton }}</Button>
+      </div>
+      <Button @click="createItem">{{ c.create }}</Button>
     </div>
-    <z-table :list="list" :tableProps="tableProps" :columns="columns">
-      <template v-slot:content="v">
-        <template v-if="v.key === 'system'">
-          <span></span>
-        </template>
-        <span v-else>{{ v.row[v.key] }}</span>
-      </template>
-      <template v-slot:operation="v">
-        <a href="#" class="text-blue" @click.prevent="editItem(v.row, v.$index)">{{ c.edit}}</a>&nbsp;
-        <a href="#" class="text-red" @click.prevent="deleteItem(v.row, v.$index)">{{ c.delete}}</a>
-      </template>
-    </z-table>
-    <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size"
-      @change="getList"></z-pagination>
-    <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit"
-      :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
+
+    <div class="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead v-for="col in columns" :key="col.key">
+              {{ col.title }}
+            </TableHead>
+            <TableHead>Operation</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="(row, index) in list" :key="index">
+            <TableCell v-for="col in columns" :key="col.key">
+               <template v-if="col.key === 'system'"></template>
+               <template v-else>{{ row[col.key] }}</template>
+            </TableCell>
+            <TableCell>
+              <div class="flex space-x-2">
+                <Button variant="link" class="text-blue-600 h-auto p-0" @click.prevent="editItem(row, index)">{{ c.edit }}</Button>
+                <Button variant="link" class="text-red-600 h-auto p-0" @click.prevent="deleteItem(row, index)">{{ c.delete }}</Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+
+    <div class="flex justify-end">
+      <Pagination
+        v-model="query.page"
+        :total="total"
+        :page-size="query.size"
+        @update:modelValue="handlePageChange"
+      />
+    </div>
+
+    <Dialog :open="editFormVisible" @update:open="val => editFormVisible = val">
+      <DialogContent class="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{{ name }}</DialogTitle>
+        </DialogHeader>
+        <div class="grid gap-4 py-4">
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.org_id }} *</Label>
+              <Input v-model="data.org_id" class="col-span-3" />
+           </div>
+
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.dept_codes }} *</Label>
+              <!-- DynamicTag replacement: Input for now, or use tags input logic. Original used 'dynamicTag'. Assuming comma separated. -->
+              <!-- Or implement simple tag input. For now: Text input. -->
+              <!-- Or DynamicTag component if available. -->
+              <Input v-model="data.dept_codes_str" class="col-span-3" placeholder="Use comma to separate" />
+           </div>
+
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.menu_name }} *</Label>
+              <Select v-model="data.menu_id" class="col-span-3">
+                 <SelectItem v-for="opt in menuOptions" :key="opt.menu_id" :value="opt.menu_id">
+                    {{ opt.menu_name_label }}
+                 </SelectItem>
+              </Select>
+           </div>
+
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ c.remarks }}</Label>
+              <Input v-model="data.remark" class="col-span-3" />
+           </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" @click="editFormVisible = false">{{ c.cancel }}</Button>
+          <Button type="submit" @click="submmit" :disabled="submmitLoading">{{ c.confirm }}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
-<script>
-import { localGet } from '@/utils/auth'
+
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue'
 import {
-  _,
-  api,
-  defaultConfig,
-  initFuncs,
-  zFormDialog,
-  zPagination,
-  zTable,
-} from '@/views/_common'
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectItem } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from '@/components/ui/dialog'
+import { Pagination } from '@/components/ui/pagination'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import { _, api, defaultConfig } from '@/views/_common'
+import { localGet } from '@/utils/auth'
+
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('adminAstrictAuth')
+
+const pageLoading = ref(false)
+const list = ref([])
+const total = ref(0)
+const editFormVisible = ref(false)
+const submmitLoading = ref(false)
+const menuOptions = ref([])
+
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
   api: api.auth,
-  apiSingle: api.auth + 'GetCAuthBlackById',
   apiCreate: api.auth + 'InsertOrUpdateCAuthBlack',
-  apiEdit: api.auth + 'InsertOrUpdateCAuthBlack',
-  apiDelete: api.auth + 'DeleteCAuthBlackById',
   apiList: api.auth + 'GetCAuthBlacklist',
-  tableProps: {
-    border: true,
-    opsColWith: 140,
-  },
-  formProps: {
-    dialogWidth: '50%',
-    labelWidth: '140px',
-  },
-  initData: { dept_codes: [] },
 })
-export default {
-  components: { zTable, zFormDialog, zPagination },
-  name: 'adminAstrictAuth',
-  data: function () {
-    return {
-      ...config,
-      query: {
-        size: 10,
-        page: 1,
-      },
-      name: this.l.title,
-      currentLang: localGet('lang') || 'zh-CN',
-      data: {},
-      columns: [
-        { title: this.l.org_id, key: 'org_id', width: 120 },
-        { title: this.l.dept_codes, key: 'dept_codes', width: 300 },
-        { title: this.l.menu_name, key: 'menu_name', width: 200 },
-        { title: this.c.remarks, key: 'remark' },
-      ],
-      fields: [
-        { title: this.l.org_id, key: 'org_id', required: true, span: 24 },
-        {
-          title: this.l.dept_codes,
-          name: 'dynamicTag',
-          key: 'dept_codes',
-          required: true,
-          span: 24,
-        },
-        {
-          title: this.l.menu_name,
-          key: 'menu_id',
-          name: 'select',
-          options: [],
-          props: {},
-          required: true,
-          span: 24,
-        },
-        { title: this.c.remarks, key: 'remark', span: 24 },
-      ],
-    }
-  },
-  methods: {
-    ...initFuncs,
-    init() {
-      this.$request(this.$api.menu + 'getlist', {
-        type: 'APP',
-      })
-        .then((r) => {
-          this.setFieldOptions(this.fields,'menu_id', r.data, 'menu_id', 'menu_name_label')
-        })
-        .catch(() => {})
-    },
-    formatList(list) {
-      // 依据实际需求处理
-      const tmp = _.cloneDeep(list)
-      return tmp.map((i) => {
-        i.menu_name = JSON.parse(i.menu_name || '[]')
-        i.menu_name = i.menu_name.find((i) => i.key == this.currentLang)?.label
-        return i
-      })
-    },
-    formatAfterGet(data) {
-      // 依据实际需求处理
-      data.dept_codes = (data.dept_codes || '').split(',')
-      return data
-    },
-    formatBeforeSave(data) {
-      // 依据实际需求处理
-      const tmp = _.cloneDeep(data)
-      tmp.dept_codes = (tmp.dept_codes || []).join(',')
-      return tmp
-    },
-  },
-  created: function () {
-    this.getList()
-    this.init()
-  },
+
+const query = reactive({
+  size: 10,
+  page: 1,
+  orgid: '',
+  deptcodes: ''
+})
+
+const data = ref({})
+const currentLang = localGet('lang') || 'zh-CN'
+const name = computed(() => l.value?.title || 'Title')
+
+const columns = computed(() => [
+  { title: l.value?.org_id, key: 'org_id' },
+  { title: l.value?.dept_codes, key: 'dept_codes' },
+  { title: l.value?.menu_name, key: 'menu_name' },
+  { title: c.value?.remarks, key: 'remark' },
+])
+
+const init = () => {
+    proxy.$request(proxy.$api.menu + 'getlist', { type: 'APP' }).then(r => {
+        menuOptions.value = r.data
+    })
 }
+
+const getList = () => {
+    pageLoading.value = true
+    proxy.$request(config.apiList, query).then(r => {
+        list.value = formatList(r.data.rows)
+        total.value = r.data.total
+        pageLoading.value = false
+    }).catch(() => pageLoading.value = false)
+}
+
+const formatList = (l) => {
+    return l.map(i => {
+        const menus = JSON.parse(i.menu_name || '[]')
+        const label = menus.find(m => m.key == currentLang)?.label
+        i.menu_name = label || i.menu_name
+        return i
+    })
+}
+
+const research = () => {
+    query.page = 1
+    getList()
+}
+
+const handlePageChange = (val) => {
+    query.page = val
+    getList()
+}
+
+const createItem = () => {
+    data.value = { dept_codes: [] }
+    data.value.dept_codes_str = ''
+    editFormVisible.value = true
+}
+
+const editItem = (row) => {
+    data.value = _.cloneDeep(row)
+    data.value.dept_codes_str = (data.value.dept_codes || '').toString() // ensure string
+    editFormVisible.value = true
+}
+
+const deleteItem = (row) => {
+    if(window.confirm(c.value?.deleteConfirm)) {
+        pageLoading.value = true
+        proxy.$request(api.auth + 'DeleteCAuthBlackById', { id: row.id }, 'post')
+        .then(() => {
+            pageLoading.value = false
+            proxy.$message.success(c.value?.deleteSuccess)
+            getList()
+        })
+        .catch(() => pageLoading.value = false)
+    }
+}
+
+const submmit = () => {
+    submmitLoading.value = true
+    const d = _.cloneDeep(data.value)
+    d.dept_codes = d.dept_codes_str
+
+    proxy.$request(config.apiCreate, d, 'post').then(() => {
+        submmitLoading.value = false
+        editFormVisible.value = false
+        proxy.$message.success(c.value?.success)
+        getList()
+    }).catch(() => submmitLoading.value = false)
+}
+
+onMounted(() => {
+    getList()
+    init()
+})
 </script>
+
 <style scoped>
 </style>

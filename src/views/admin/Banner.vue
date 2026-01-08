@@ -1,251 +1,283 @@
 <template>
-    <div class="app-container" v-loading="pageLoading">
-        <el-button type="primary" class="fr" @click="createItem" style="margin-left: 5px">{{ c.create}}</el-button>
-        <el-button :loading="sortLoading" v-if="indexFlag" class="fr" @click="updateDetailSort" type="success" plain>{{ c.saveIndex}}</el-button>
-        <div class="filter-container">
-            <el-input style="width: 200px" :placeholder="l.search" clearable prefix-icon="el-icon-search" class="filter-item" @keyup.enter="research" @clear="research"
-                v-model="query.queryString.str"></el-input>
-            <el-select v-model="query.queryString.status" class="filter-item" clearable :placeholder="l.statusPd">
-                <el-option :label="c.all" value="0"></el-option>
-                <el-option :label="c.enabled" value="1"></el-option>
-                <el-option :label="c.disabled" value="2"></el-option>
-            </el-select>
-            <el-button class="filter-item" type="success" plain @click="research">{{ c.queryButton}}</el-button>
-            <!-- <el-button
-        class="filter-item"
-        type="info"
-        plain
-        @click="exportData"
-        :loading="exportLoading"
-        >导出
-      </el-button> -->
-        </div>
-        <z-table ref="dragTable" :list="list" :tableProps="tableProps" :columns="columns" @editItem="editItem" @deleteItem="deleteItem">
-            <template v-slot:content="v">
-                <span v-if="v.key === 'status'" class="label" :class="statusClass[v.row['status']]">
-                    {{ status[v.row['status']] }}
-                </span>
-                <span v-else>{{ v.row[v.key] }}</span>
-            </template>
-        </z-table>
-        <z-pagination :pagination="pagination" :total="total" v-model:page="query.page" v-model:limit="query.size" @change="getList"></z-pagination>
-        <z-form-dialog :name="name" :data="data" :formProps="formProps" :fields="fields" @submmit="submmit" :submmitLoading="submmitLoading" v-model:visible="editFormVisible"></z-form-dialog>
+  <div class="p-6 space-y-6" v-loading="pageLoading">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <Input
+          v-model="query.queryString.str"
+          :placeholder="l.search"
+          class="w-[200px]"
+          @keyup.enter="research"
+        />
+        <Select v-model="query.queryString.status" class="w-[140px]" placeholder="Status">
+           <SelectItem value="0">{{ c.all }}</SelectItem>
+           <SelectItem value="1">{{ c.enabled }}</SelectItem>
+           <SelectItem value="2">{{ c.disabled }}</SelectItem>
+        </Select>
+        <Button variant="secondary" @click="research">{{ c.queryButton }}</Button>
+      </div>
+      <div class="flex space-x-2">
+         <Button v-if="indexFlag" @click="updateDetailSort" :disabled="sortLoading" variant="secondary">{{ c.saveIndex }}</Button>
+         <Button @click="createItem">{{ c.create }}</Button>
+      </div>
     </div>
+
+    <div class="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead v-for="col in columns" :key="col.key">
+              {{ col.title }}
+            </TableHead>
+            <TableHead>Operation</TableHead>
+          </TableRow>
+        </TableHeader>
+        <draggable
+           v-model="list"
+           tag="tbody"
+           item-key="id"
+           @end="onDragEnd"
+           handle=".drag-handle"
+        >
+           <template #item="{ element, index }">
+              <TableRow class="hover:bg-muted/50">
+                 <TableCell v-for="col in columns" :key="col.key" class="drag-handle cursor-move">
+                    <template v-if="col.key === 'status'">
+                       <span class="px-2 py-0.5 rounded text-xs text-white" :class="statusClass[element.status]">{{ status[element.status] }}</span>
+                    </template>
+                    <template v-else>{{ element[col.key] }}</template>
+                 </TableCell>
+                 <TableCell>
+                    <div class="flex space-x-2">
+                       <Button variant="ghost" size="icon" class="h-6 w-6" @click.prevent="editItem(element, index)">
+                          <i class="fa fa-pencil text-blue-600"></i>
+                       </Button>
+                       <Button variant="ghost" size="icon" class="h-6 w-6" @click.prevent="deleteItem(element, index)">
+                          <i class="fa fa-trash text-red-600"></i>
+                       </Button>
+                    </div>
+                 </TableCell>
+              </TableRow>
+           </template>
+        </draggable>
+      </Table>
+    </div>
+
+    <div class="flex justify-end">
+      <Pagination
+        v-model="query.page"
+        :total="total"
+        :page-size="query.size"
+        @update:modelValue="handlePageChange"
+      />
+    </div>
+
+    <Dialog :open="editFormVisible" @update:open="val => editFormVisible = val">
+      <DialogContent class="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{{ name }}</DialogTitle>
+        </DialogHeader>
+        <div class="grid gap-4 py-4">
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.name }} *</Label>
+              <Input v-model="data.name" class="col-span-3" />
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.description }}</Label>
+              <Input v-model="data.description" class="col-span-3" />
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.link }}</Label>
+              <Input v-model="data.link" class="col-span-3" />
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.isEnable }}</Label>
+              <div class="col-span-3">
+                 <input type="checkbox" :checked="data.status == '1'" @change="e => data.status = e.target.checked ? '1' : '2'" />
+              </div>
+           </div>
+           <div class="grid grid-cols-4 items-start gap-4">
+              <Label class="text-right pt-2">{{ l.upload }}</Label>
+              <div class="col-span-3">
+                 <!-- Simple file input placeholder -->
+                 <input type="file" @change="e => data.file = [e.target.files[0]]" />
+                 <div v-if="data.file_url" class="mt-2 text-xs">{{ data.file_url }}</div>
+              </div>
+           </div>
+           <!-- Extra Selects -->
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.empnopz }} *</Label>
+              <Select v-model="data.empnopz" class="col-span-3">
+                 <SelectItem value="Y">Y</SelectItem>
+                 <SelectItem value="N">N</SelectItem>
+              </Select>
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.orgidpz }} *</Label>
+              <Select v-model="data.orgidpz" class="col-span-3">
+                 <SelectItem value="Y">Y</SelectItem>
+                 <SelectItem value="N">N</SelectItem>
+              </Select>
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.deptnopz }} *</Label>
+              <Select v-model="data.deptnopz" class="col-span-3">
+                 <SelectItem value="Y">Y</SelectItem>
+                 <SelectItem value="N">N</SelectItem>
+              </Select>
+           </div>
+           <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">{{ l.otherspz }} *</Label>
+              <Select v-model="data.otherspz" class="col-span-3">
+                 <SelectItem value="Y">Y</SelectItem>
+                 <SelectItem value="N">N</SelectItem>
+              </Select>
+           </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" @click="editFormVisible = false">{{ c.cancel }}</Button>
+          <Button type="submit" @click="submmit" :disabled="submmitLoading">{{ c.confirm }}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </div>
 </template>
 
-<script>
-import Sortable from 'sortablejs'
-
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue'
+import draggable from 'vuedraggable'
 import {
-    _,
-    api,
-    defaultConfig,
-    initFuncs,
-    zFormDialog,
-    zPagination,
-    zTable,
-} from '@/views/_common'
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectItem } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from '@/components/ui/dialog'
+import { Pagination } from '@/components/ui/pagination'
+import { useLocalI18n } from '@/composables/useLocalI18n'
+import { _, api, defaultConfig } from '@/views/_common'
+
+const { proxy } = getCurrentInstance()
+const { l, c } = useLocalI18n('adminBanner')
+
+const pageLoading = ref(false)
+const list = ref([])
+const total = ref(0)
+const editFormVisible = ref(false)
+const submmitLoading = ref(false)
+const sortLoading = ref(false)
+const indexFlag = ref(false)
+
 const config = Object.assign({}, _.cloneDeep(defaultConfig), {
-    api: api.banner,
-    initData: { file: [], status: '1' },
+  api: api.banner,
 })
-export default {
-    name: 'adminBanner',
-    components: { zTable, zFormDialog, zPagination },
-    data: function () {
-        return {
-            ...config,
-            status: { 1: this.c.enabled, 2: this.c.disabled },
-            statusClass: { 2: 'bg-red', 1: 'bg-green' },
-            indexFlag: false,
-            sortLoading: false,
-            name: this.l.title,
-            query: {
-                queryString: {},
-                size: 10,
-                page: 1,
-            },
-            columns: [
-                { title: this.l.name, key: 'name', width: 200 },
-                { title: this.l.description, key: 'description' },
-                { title: this.l.link, key: 'link' },
-                { title: this.l.file_name, key: 'file_name' },
-                { title: this.l.file_url, key: 'file_url' },
-                { title: this.l.empnopz, key: 'empnopz' },
-                { title: this.l.orgidpz, key: 'orgidpz' },
-                { title: this.l.deptnopz, key: 'deptnopz' },
-                { title: this.l.otherspz, key: 'otherspz' },
-                { title: this.l.status, key: 'status', width: 70 },
-                { title: this.c.modify_user, key: 'modify_user', width: 100 },
-                { title: this.c.modify_time, key: 'modify_time', width: 140 },
-            ],
-            fields: [
-                { title: this.l.name, key: 'name', required: true },
-                { title: this.l.description, key: 'description' },
-                { title: this.l.link, key: 'link' },
-                {
-                    title: this.l.isEnable,
-                    key: 'status',
-                    span: 8,
-                    name: 'switch',
-                    props: { inactiveValue: '2', activeValue: '1' },
-                },
-                {
-                    title: this.l.upload,
-                    key: 'file',
-                    name: 'imgUploader',
-                    props: {
-                        showCount: false,
-                        maxCount: 1,
-                    },
-                    events: {
-                        addImg: this.addImg,
-                        deleteImg: this.deleteImg,
-                    },
-                },
-        {
-          title: this.l.empnopz,
-          key: 'empnopz',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'N', label: 'N' },
-            { value: 'Y', label: 'Y' },
-          ],
-          props: { placeholder: this.l.orgidpzPd },
-          required: true,
-          span: 12,
-          },
-          {
-                title: this.l.orgidpz,
-          key: 'orgidpz',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'N', label: 'N' },
-            { value: 'Y', label: 'Y' },
-          ],
-          props: { placeholder: this.l.orgidpzPd },
-          required: true,
-          span: 12,
-          },
-          {
-                title: this.l.deptnopz,
-          key: 'deptnopz',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'N', label: 'N' },
-            { value: 'Y', label: 'Y' },
-          ],
-          props: { placeholder: this.l.deptnopzPd },
-          required: true,
-          span: 12,
-          },
-          {
-          title: this.l.otherspz,
-          key: 'otherspz',
-          name: 'select',
-          events: {},
-          options: [
-            { value: 'N', label: 'N' },
-            { value: 'Y', label: 'Y' },
-          ],
-          props: { placeholder: this.l.otherspzPd },
-          required: true,
-          span: 12,
-          },
-       ],
-    }
-  },
-    methods: {
-        ...initFuncs,
-        setSort() {
-            let el = this.$refs.dragTable.$el.querySelectorAll(
-                '.el-table__body-wrapper > table > tbody'
-            )[0]
-            this.sortable = Sortable.create(el, {
-                ghostClass: 'sortable-ghost',
-                setData: function (dataTransfer) {
-                    dataTransfer.setData('Text', '')
-                },
-                onEnd: (evt) => {
-                    var tmp = this.list[evt.oldIndex]
-                    this.list[evt.oldIndex] = this.list[evt.newIndex]
-                    this.list[evt.newIndex] = tmp
-                    this.indexFlag = true
-                },
-            })
-        },
-        createItem() {
-            this.data = _.cloneDeep(this.initData)
-            this.editFormVisible = true
-        },
 
-        addImg(v, list) {
-            console.log(this.data)
-            this.data.file.push(v[0])
-        },
+const query = reactive({
+  queryString: { str: '', status: '' },
+  size: 10,
+  page: 1,
+})
 
-        deleteImg(i, list) {
-            this.data.file_id = ''
-            this.data.file = []
-        },
-    
-        submmit() {
-            this.submmitLoading = true
+const initData = { file: [], status: '1' }
+const data = ref({ ...initData })
+const name = computed(() => l.value?.title || 'Title')
 
-            let formData = new FormData()
-            if (this.data.file && this.data.file[0]) {
-                formData.append('file[]', this.data.file[0])
-            }
+const status = computed(() => ({ 1: c.value?.enabled, 2: c.value?.disabled }))
+const statusClass = { 1: 'bg-green-500', 2: 'bg-red-500' }
 
-            formData.append('model', JSON.stringify(this.data))
+const columns = computed(() => [
+  { title: l.value?.name, key: 'name', width: 200 },
+  { title: l.value?.description, key: 'description' },
+  { title: l.value?.link, key: 'link' },
+  { title: l.value?.file_name, key: 'file_name' },
+  { title: l.value?.file_url, key: 'file_url' },
+  { title: l.value?.empnopz, key: 'empnopz' },
+  { title: l.value?.orgidpz, key: 'orgidpz' },
+  { title: l.value?.deptnopz, key: 'deptnopz' },
+  { title: l.value?.otherspz, key: 'otherspz' },
+  { title: l.value?.status, key: 'status', width: 70 },
+  { title: c.value?.modify_user, key: 'modify_user', width: 100 },
+  { title: c.value?.modify_time, key: 'modify_time', width: 140 },
+])
 
-            this.$request(this.api + 'createormodify', formData, 'post')
-                .then((r) => {
-                    this.submmitLoading = false
-                    this.$message({
-                        message: this.c.success,
-                        type: 'success',
-                    })
-                    this.editFormVisible = false
-                    this.getList()
-                })
-                .catch(() => {
-                    this.submmitLoading = false
-                })
-        },
-
-        updateDetailSort() {
-            this.sortLoading = true
-            let listSortIds = this.list.map((v) => {
-                return v.id
-            })
-            this.$request(this.api + 'updateSeq', listSortIds, 'post')
-                .then((r) => {
-                    this.sortLoading = false
-                    this.getList()
-                })
-                .catch((e) => {
-                    this.sortLoading = false
-                })
-        },
-
-        formatAfterGet(data) {
-            data.status = data.status.toString()
-            return data
-        },
-
-        formatList(data) {
-            //this.setSort()
-            return data
-        },
-    },
-    created: function () {
-        this.getList()
-    },
+const getList = () => {
+    pageLoading.value = true
+    proxy.$request(config.api + 'getlist', query).then(r => {
+        list.value = r.data.rows
+        total.value = r.data.total
+        pageLoading.value = false
+    }).catch(() => pageLoading.value = false)
 }
+
+const research = () => {
+    query.page = 1
+    getList()
+}
+
+const handlePageChange = (val) => {
+    query.page = val
+    getList()
+}
+
+const createItem = () => {
+    data.value = _.cloneDeep(initData)
+    editFormVisible.value = true
+}
+
+const editItem = (row) => {
+    data.value = _.cloneDeep(row)
+    data.value.status = String(data.value.status)
+    data.value.file = [] // Reset file input
+    editFormVisible.value = true
+}
+
+const deleteItem = (row) => {
+    if(window.confirm(c.value?.deleteConfirm)) {
+        pageLoading.value = true
+        proxy.$request(config.api + 'delete', { id: row.id }).then(() => {
+            pageLoading.value = false
+            proxy.$message.success(c.value?.deleteSuccess)
+            getList()
+        }).catch(() => pageLoading.value = false)
+    }
+}
+
+const submmit = () => {
+    submmitLoading.value = true
+    let formData = new FormData()
+    if (data.value.file && data.value.file[0]) {
+        formData.append('file[]', data.value.file[0])
+    }
+    formData.append('model', JSON.stringify(data.value))
+
+    proxy.$request(config.api + 'createormodify', formData, 'post').then(() => {
+        submmitLoading.value = false
+        proxy.$message.success(c.value?.success)
+        editFormVisible.value = false
+        getList()
+    }).catch(() => submmitLoading.value = false)
+}
+
+const onDragEnd = () => {
+    indexFlag.value = true
+}
+
+const updateDetailSort = () => {
+    sortLoading.value = true
+    let listSortIds = list.value.map(v => v.id)
+    proxy.$request(config.api + 'updateSeq', listSortIds, 'post').then(() => {
+        sortLoading.value = false
+        indexFlag.value = false
+        getList()
+    }).catch(() => sortLoading.value = false)
+}
+
+onMounted(() => {
+    getList()
+})
 </script>
+
 <style scoped>
 </style>
