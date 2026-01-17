@@ -1,24 +1,28 @@
 // Plugin để quản lý dialog stack ESC key handling
 export default {
-  install(Vue, options = {}) {
+  install(app, options = {}) {
     // Tạo instance duy nhất để quản lý ESC key
     let isListenerAdded = false
     
     const handleEscKey = function(event) {
       if (event.key === 'Escape') {
-        // Tìm Vue instance có store
-        const app = document.querySelector('#app').__vue__
-        if (app && app.$store && app.$store.getters) {
+        // Access store via app config or global properties
+        const store = app.config.globalProperties.$store
+
+        if (store && store.getters) {
           try {
-            const dialogCount = app.$store.getters['dialogStack/dialogCount']
+            const dialogCount = store.getters['dialogStack/dialogCount']
             
             if (dialogCount > 0) {
               event.preventDefault()
               event.stopPropagation()
               
-              const topDialog = app.$store.getters['dialogStack/topDialog']
+              const topDialog = store.getters['dialogStack/topDialog']
               if (topDialog) {
-                app.$root.$emit('close-top-dialog', topDialog.id)
+                // Use a global event bus or mitt, or direct store dispatch
+                // Since $emit on root is deprecated in Vue 3, use a custom event or store action
+                // For now, assume store action or document event dispatch
+                document.dispatchEvent(new CustomEvent('close-top-dialog', { detail: topDialog.id }))
               }
             }
           } catch (error) {
@@ -28,15 +32,15 @@ export default {
       }
     }
     
-    // Thêm method vào Vue prototype để có thể gọi từ bất kỳ component nào
-    Vue.prototype.$initDialogEscHandler = function() {
+    // Thêm method vào Vue prototype (app.config.globalProperties) để có thể gọi từ bất kỳ component nào
+    app.config.globalProperties.$initDialogEscHandler = function() {
       if (!isListenerAdded) {
         document.addEventListener('keydown', handleEscKey)
         isListenerAdded = true
       }
     }
     
-    Vue.prototype.$removeDialogEscHandler = function() {
+    app.config.globalProperties.$removeDialogEscHandler = function() {
       if (isListenerAdded) {
         document.removeEventListener('keydown', handleEscKey)
         isListenerAdded = false

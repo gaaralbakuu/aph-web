@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Vue from 'vue'
+import { ElMessage } from 'element-plus'
 
 import { getCookie, getToken, localGet } from '@/utils/auth'
 
@@ -46,7 +46,7 @@ service.interceptors.response.use(
     const res = response.data
     if (typeof res !== 'object') {
       console.info(res)
-      Vue.prototype.$message({
+      ElMessage({
         message: 'An unknown error occured.',
         type: 'error',
         duration: 5 * 1000
@@ -60,7 +60,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    /* Vue.prototype.$message({
+    /* ElMessage({
       message: error.message,
       type: 'error',
       duration: 5 * 1000
@@ -98,7 +98,7 @@ export default function request(url, data, method, donotAutoShowError, customCon
     .catch(e => {
       // debugger;
       if (!donotAutoShowError) {
-        Vue.prototype.$message({
+        ElMessage({
           message: (e && e.message) ? e.message : 'Unknown Error',
           type: 'error',
           duration: 5 * 1000

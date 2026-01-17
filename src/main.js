@@ -1,5 +1,5 @@
-import 'element-ui/lib/theme-chalk/index.css'
-import 'ant-design-vue/dist/antd.css'
+import 'element-plus/dist/index.css'
+import 'ant-design-vue/dist/reset.css'
 import '@fontsource/momo-signature';
 import '@fontsource/momo-trust-display';
 import '@fontsource/momo-trust-sans';
@@ -13,12 +13,11 @@ import '@/utils/filter'
 import '@/utils/hls-debug'
 
 import '@/assets/css/tailwind.css'
-import Element from 'element-ui'
+import ElementPlus from 'element-plus'
 import Antd from 'ant-design-vue'
-// import VueCompositionAPI from '@vue/composition-api'
 import Cookies from 'js-cookie'
-import Vue from 'vue'
-import VueI18n from 'vue-i18n'
+import { createApp } from 'vue'
+import { createI18n } from 'vue-i18n'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 
 import api from '@/api'
@@ -29,21 +28,22 @@ import viVN from './lang/vi-VN'
 import mixinCommon from '@/mixin/mixin.js'
 import router from '@/router'
 import store from '@/store'
-import { localGet, localSet, setCookie } from '@/utils/auth'
+import { localGet, localSet } from '@/utils/auth'
 import dialogEscPlugin from '@/utils/dialogEscPlugin.js'
 import request from '@/utils/request'
 
 import App from './App.vue'
 
+const app = createApp(App)
 
-// Vue.use(VueCompositionAPI)
-Vue.use(VueI18n)
-Vue.use(VueQueryPlugin)
-Vue.use(Antd)
-const i18n = new VueI18n({
-  // 默认语言
+app.use(VueQueryPlugin)
+app.use(Antd)
+app.use(store)
+app.use(router)
+
+const i18n = createI18n({
+  legacy: true, // Enable legacy mode for Options API support
   locale: 'vi-VN',
-  // 引入语言文件
   messages: {
     'zh-CN': zhCn,
     'en-US': enUS,
@@ -52,34 +52,30 @@ const i18n = new VueI18n({
   },
   silentTranslationWarn: true,
 })
-Vue.mixin(mixinCommon)
-Vue.use(dialogEscPlugin)
 
-Vue.use(Element, {
-  size: Cookies.get('size') || 'small', // set element-ui default size [medium,small,mini]
-  i18n: (key, value) => {
-    console.log(key, value)
+app.use(i18n)
 
-    return i18n.t(key, value)
-  },
+// Mixin needs to be global property or composable in Vue 3, but for compatibility we can mix it in
+app.mixin(mixinCommon)
+
+// Register updated dialogEscPlugin
+app.use(dialogEscPlugin)
+
+app.use(ElementPlus, {
+  size: Cookies.get('size') || 'small',
 })
 
-Vue.config.productionTip = false
+// Global Properties
+app.config.globalProperties.$request = request
+app.config.globalProperties.$api = api
+app.config.globalProperties._i18n = i18n
 
-Vue.prototype.$request = request
-Vue.prototype.$api = api
-
+// Lang handling
 let language = localGet('lang')
 if (!language) {
   language = navigator.language || navigator.browserLanguage
   if (language) localSet('lang', language)
 }
-if (language) i18n.locale = language
+if (language) i18n.global.locale = language // In legacy mode, locale is directly accessible
 
-Vue.prototype._i18n = i18n
-new Vue({
-  i18n,
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount('#app')
+app.mount('#app')

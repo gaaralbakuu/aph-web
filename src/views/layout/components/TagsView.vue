@@ -2,143 +2,143 @@
   <div class="tags-view-container">
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
       <router-link
-        v-for="tag in Array.from(visitedViews)"
-        ref="tag"
-        :class="isActive(tag)?'active':''"
+        v-for="tag in visitedViews"
+        ref="tagRef"
+        :class="isActive(tag) ? 'active' : ''"
         :to="tag"
         :key="tag.path"
         class="tags-view-item"
-        @contextmenu.prevent.native="openMenu(tag,$event)">
-        <span v-show="isActive(tag)" class="el-icon-more" @click.prevent.stop="openMenu(tag,$event)"/>
+        @contextmenu.prevent="openMenu(tag, $event)"
+      >
+        <span v-show="isActive(tag)" class="el-icon-more" @click.prevent.stop="openMenu(tag, $event)" />
         {{ tag.title }}
-        <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"/>
+        <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </scroll-pane>
-    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">{{ $l.refresh }}</li>
+    <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
+      <li @click="refreshSelectedTag(selectedTag)">{{ l.refresh }}</li>
       <!-- <li @click="closeSelectedTag(selectedTag)">关闭当前</li> -->
-      <li @click="closeOthersTags">{{ $l.closeOtherTags }}</li>
-      <li @click="closeAllTags">{{ $l.closeAllTags }}</li>
+      <li @click="closeOthersTags">{{ l.closeOtherTags }}</li>
+      <li @click="closeAllTags">{{ l.closeAllTags }}</li>
     </ul>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch, nextTick, getCurrentInstance, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
 import ScrollPane from '@/components/ScrollPane'
+import { useLocalI18n } from '@/composables/useLocalI18n'
 
-export default {
-  name: 'TagsView',
-  components: { ScrollPane },
-  data () {
-    return {
-      visible: false,
-      top: 0,
-      left: 0,
-      selectedTag: {}
-    }
-  },
-  computed: {
-    visitedViews () {
-      return this.$store.state.tagsView.visitedViews
-    }
-  },
-  watch: {
-    $route () {
-      this.addViewTags()
-      this.moveToCurrentTag()
-    },
-    visible (value) {
-      if (value) {
-        document.body.addEventListener('click', this.closeMenu)
-      } else {
-        document.body.removeEventListener('click', this.closeMenu)
-      }
-    }
-  },
-  mounted () {
-    this.addViewTags()
+// Props/Emits if needed
 
-    console.log(this.$l)
-  },
-  methods: {
-    generateRoute () {
-      if (this.$route.name) {
-        return this.$route
-      }
-      return false
-    },
-    isActive (route) {
-      return route.path === this.$route.path
-    },
-    addViewTags () {
-      const route = this.generateRoute()
-      if (!route) {
-        return false
-      }
-      this.$store.dispatch('addView', route)
-    },
-    moveToCurrentTag () {
-      const tags = this.$refs.tag
-      this.$nextTick(() => {
-        for (const tag of tags) {
-          if (tag.to.path === this.$route.path) {
-            this.$refs.scrollPane.moveToTarget(tag.$el)
+const store = useStore()
+const router = useRouter()
+const route = useRoute()
+const { proxy } = getCurrentInstance()
+const { l } = useLocalI18n()
 
-            // when query is different then update
-            if (tag.to.fullPath !== this.$route.fullPath) {
-              this.$store.dispatch('updateVisitedView', this.$route)
-            }
+const visible = ref(false)
+const top = ref(0)
+const left = ref(0)
+const selectedTag = ref({})
+const scrollPane = ref(null)
+const tagRef = ref([])
 
-            break
-          }
-        }
-      })
-    },
-    refreshSelectedTag (view) {
-      this.$store.dispatch('delCachedView', view).then(() => {
-        const { fullPath } = view
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: '/redirect' + fullPath
-          })
-        })
-      })
-    },
-    closeSelectedTag (view) {
-      this.$store.dispatch('delView', view).then(({ visitedViews }) => {
-        if (this.isActive(view)) {
-          const latestView = visitedViews.slice(-1)[0]
-          if (latestView) {
-            this.$router.push(latestView).catch(() => {})
-          } else {
-            this.$router.push('/').catch(() => {})
-          }
-        }
-      })
-    },
-    closeOthersTags () {
-      this.$router.push(this.selectedTag)
-      this.$store.dispatch('delOthersViews', this.selectedTag).then(() => {
-        this.moveToCurrentTag()
-      })
-    },
-    closeAllTags () {
-      this.$store.dispatch('delAllViews')
-      this.$router.push('/').catch(() => {})
-    },
-    openMenu (tag, e) {
-      this.visible = true
-      this.selectedTag = tag
-      // const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
-      // this.left = e.clientX - offsetLeft + 8 // 15: margin right
-      this.left = e.clientX
-      this.top = e.clientY + 15
-    },
-    closeMenu () {
-      this.visible = false
-    }
+const visitedViews = computed(() => store.state.tagsView.visitedViews)
+
+const isActive = (r) => r.path === route.path
+
+const addViewTags = () => {
+  if (route.name) {
+    store.dispatch('addView', route)
   }
 }
+
+const moveToCurrentTag = () => {
+  const tags = tagRef.value
+  nextTick(() => {
+    // If tagRef is an array of components or elements, find the matching one
+    // Note: In Vue 3, ref inside v-for gives an array.
+    if (!tags) return
+
+    for (const tag of tags) {
+      // tag here is likely the RouterLink component instance
+      if (tag.to.path === route.path) {
+        if (scrollPane.value) {
+          scrollPane.value.moveToTarget(tag.$el)
+        }
+        if (tag.to.fullPath !== route.fullPath) {
+          store.dispatch('updateVisitedView', route)
+        }
+        break
+      }
+    }
+  })
+}
+
+const refreshSelectedTag = (view) => {
+  store.dispatch('delCachedView', view).then(() => {
+    const { fullPath } = view
+    nextTick(() => {
+      router.replace({ path: '/redirect' + fullPath })
+    })
+  })
+}
+
+const closeSelectedTag = (view) => {
+  store.dispatch('delView', view).then(({ visitedViews: views }) => {
+    if (isActive(view)) {
+      const latestView = views.slice(-1)[0]
+      if (latestView) {
+        router.push(latestView).catch(() => {})
+      } else {
+        router.push('/').catch(() => {})
+      }
+    }
+  })
+}
+
+const closeOthersTags = () => {
+  router.push(selectedTag.value)
+  store.dispatch('delOthersViews', selectedTag.value).then(() => {
+    moveToCurrentTag()
+  })
+}
+
+const closeAllTags = () => {
+  store.dispatch('delAllViews')
+  router.push('/').catch(() => {})
+}
+
+const openMenu = (tag, e) => {
+  visible.value = true
+  selectedTag.value = tag
+  left.value = e.clientX
+  top.value = e.clientY + 15
+}
+
+const closeMenu = () => {
+  visible.value = false
+}
+
+watch(route, () => {
+  addViewTags()
+  moveToCurrentTag()
+})
+
+watch(visible, (value) => {
+  if (value) {
+    document.body.addEventListener('click', closeMenu)
+  } else {
+    document.body.removeEventListener('click', closeMenu)
+  }
+})
+
+onMounted(() => {
+  addViewTags()
+})
 </script>
 
 <style rel="stylesheet/scss" scoped>
@@ -161,6 +161,7 @@ export default {
   font-size: 12px;
   margin-left: 5px;
   margin-top: 4px;
+  text-decoration: none;
 }
 .tags-view-container .tags-view-wrapper .tags-view-item:first-of-type {
   margin-left: 15px;
@@ -172,16 +173,6 @@ export default {
   background-color: #409EFF;
   color: #fff;
   border-color: #409EFF;
-  /*&::before {*/
-  /*content: '';*/
-  /*background: #fff;*/
-  /*display: inline-block;*/
-  /*width: 8px;*/
-  /*height: 8px;*/
-  /*border-radius: 50%;*/
-  /*position: relative;*/
-  /*margin-right: 2px;*/
-  /*}*/
 }
 .tags-view-container .contextmenu {
   margin: 0;

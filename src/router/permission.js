@@ -1,7 +1,7 @@
 import 'nprogress/nprogress.css' // progress bar style
 
 import NProgress from 'nprogress' // progress bar
-import Vue from 'vue'
+import { ElMessage } from 'element-plus'
 
 import { getToken } from '@/utils/auth' // getToken from cookie
 
@@ -45,7 +45,7 @@ router.beforeEach((to, from, next) => {
           .catch((err) => {
             console.log(err)
             store.dispatch('FedLogOut').then(() => {
-              Vue.prototype.$message.error('用户身份验证失败，请重新登录')
+              ElMessage.error('用户身份验证失败，请重新登录')
               next({ path: '/' })
             })
           })

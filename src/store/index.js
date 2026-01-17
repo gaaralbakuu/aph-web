@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 
 import app from './modules/app'
 import dialogStack from './modules/dialogStack'
@@ -8,9 +7,7 @@ import permission from './modules/permission'
 import tagsView from './modules/tagsView'
 import user from './modules/user'
 
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
+const store = createStore({
   modules: {
     app,
     errorLog,
