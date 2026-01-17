@@ -36,9 +36,12 @@ import request from '@/utils/request'
 
 import App from './App.vue'
 import { createPinia } from 'pinia'
+import { vLoading } from '@/directives/v-loading'
 
 const pinia = createPinia()
 const app = createApp(App)
+
+app.directive('loading', vLoading)
 
 // Register SvgIcon globally
 app.component('svg-icon', SvgIcon)
